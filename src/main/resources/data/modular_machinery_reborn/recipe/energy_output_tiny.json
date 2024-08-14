@@ -1,0 +1,26 @@
+{
+    "result": {
+        "id": "modular_machinery_reborn:energyoutputhatch_tiny",
+        "count": 1
+    },
+    "pattern": [
+        "ere",
+        "dmd",
+        " d "
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "r": {
+            "tag": "c:storage_blocks/redstone"
+        },
+        "e": {
+            "item": "minecraft:repeater"
+        },
+        "d": {
+            "tag": "c:dusts/redstone"
+        },
+        "m": {
+            "item": "modular_machinery_reborn:casing_plain"
+        }
+    }
+}

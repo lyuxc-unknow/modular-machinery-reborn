@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "result": {
+        "id": "modular_machinery_reborn:casing_plain",
+        "count": 2
+    },
+    "pattern": [
+        " m ",
+        "mrm",
+        " m "
+    ],
+    "key": {
+        "r": {
+            "tag": "c:storage_blocks/redstone"
+        },
+        "m": {
+            "item": "modular_machinery_reborn:modularium"
+        }
+    }
+}

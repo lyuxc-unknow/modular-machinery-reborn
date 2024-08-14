@@ -1,0 +1,90 @@
+package es.degrassi.mmreborn.common.machine;
+
+import com.google.gson.JsonElement;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
+import es.degrassi.mmreborn.ModularMachineryReborn;
+import es.degrassi.mmreborn.common.data.MMRConfig;
+import es.degrassi.mmreborn.common.util.CustomJsonReloadListener;
+import es.degrassi.mmreborn.common.util.MMRLogger;
+import java.io.IOException;
+import java.util.Map;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.FilePackResources;
+import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.PathPackResources;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.neoforged.neoforge.common.conditions.ICondition.IContext;
+
+public class MachineJsonReloadListener extends CustomJsonReloadListener {
+
+  private static final String MAIN_PACKNAME = "main";
+  public static IContext context;
+
+  public MachineJsonReloadListener() {
+    super(MMRConfig.get().general.machineDirectory);
+  }
+
+  @Override
+  protected void apply(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profiler) {
+    MMRLogger.INSTANCE.info("Reading Modular Machinery Reborn Machines...");
+
+    ModularMachineryReborn.MACHINES.clear();
+
+    context = this.getContext();
+
+    map.forEach((id, json) -> {
+      MachineLocation location = getMachineLocation(resourceManager, id);
+
+      MMRLogger.INSTANCE.info("Parsing machine json: {} in datapack: {}", id, location.getPackName());
+
+      //Check if the content of the json file is a json object
+      if(!json.isJsonObject()) {
+        MMRLogger.INSTANCE.error("Bad machine JSON: {} must be a json object and not an array or primitive, skipping...", id);
+        return;
+      }
+
+      //If there is already a machine with same id: error and skip
+      if(ModularMachineryReborn.MACHINES.containsKey(id)) {
+        MMRLogger.INSTANCE.error("A machine with id: {} already exists, skipping...", id);
+        return;
+      }
+
+      //Read the file as a CustomMachine
+      DataResult<DynamicMachine> result = DynamicMachine.CODEC.read(JsonOps.INSTANCE, json);/*MachineLoader.GSON.fromJson(jsonObject, DynamicMachine.class);*/
+      if (result.result().isPresent()) {
+        DynamicMachine machine = result.result().get();
+        machine.setRegistryName(location.getId());
+        ModularMachineryReborn.MACHINES.put(id, machine);
+        MMRLogger.INSTANCE.info("Successfully parsed machine json: {}", id);
+      } else if(result.error().isPresent())
+        MMRLogger.INSTANCE.error("Error while parsing machine json: {}, skipping...\n{}", id, result.error().get().message());
+    });
+    context = null;
+
+    MMRLogger.INSTANCE.info("Finished creating {} modular machines.", ModularMachineryReborn.MACHINES.keySet().size());
+  }
+
+  private MachineLocation getMachineLocation(ResourceManager resourceManager, ResourceLocation id) {
+    ResourceLocation path = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "machines/" + id.getPath() + ".json");
+    try {
+      Resource res = resourceManager.getResourceOrThrow(path);
+      String packName = res.sourcePackId();
+      if(packName.equals(MAIN_PACKNAME))
+        return MachineLocation.fromDefault(id, packName);
+//            else if(packName.contains("KubeJS") && ModList.get().isLoaded("kubejs"))
+//                return KubeJSIntegration.getMachineLocation(res, packName, id);
+      else {
+        try(PackResources pack = res.source()) {
+          if(pack instanceof FilePackResources)
+            return MachineLocation.fromDatapackZip(id, packName);
+          else if(pack instanceof PathPackResources)
+            return MachineLocation.fromDatapack(id, packName);
+        }
+      }
+    } catch (IOException ignored) {}
+    return MachineLocation.fromDefault(id, MAIN_PACKNAME);
+  }
+}

@@ -1,0 +1,226 @@
+{
+  "registryName": "iron_centrifuge",
+  "localizedName": "Iron Reinforced Centrifuge",
+  "color": "e81ecd",
+  "structure": {
+    "pattern": [
+      ["ccc", "ccc", "ccc"],
+      ["bmb", "i i", "bib"],
+      ["bib", "igi", "bib"]
+    ],
+    "keys": {
+      "c": [
+        "modular_machinery_reborn:casing[casing=plain]",
+        "modular_machinery_reborn:casing[casing=vent]",
+        "modular_machinery_reborn:casing[casing=firebox]",
+        "modular_machinery_reborn:casing[casing=gearbox]",
+        "modular_machinery_reborn:casing[casing=reinforced]",
+        "modular_machinery_reborn:casing[casing=circuitry]",
+
+        "modular_machinery_reborn:energyinputhatch[size=\"tiny\"]",
+        "modular_machinery_reborn:energyinputhatch[size=\"small\"]",
+        "modular_machinery_reborn:energyinputhatch[size=\"normal\"]",
+        "modular_machinery_reborn:energyinputhatch[size=\"reinforced\"]",
+        "modular_machinery_reborn:energyinputhatch[size=\"big\"]",
+        "modular_machinery_reborn:energyinputhatch[size=\"huge\"]",
+        "modular_machinery_reborn:energyinputhatch[size=\"ludicrous\"]",
+        "modular_machinery_reborn:energyinputhatch[size=\"ultimate\"]",
+
+        "modular_machinery_reborn:energyoutputhatch[size=\"tiny\"]",
+        "modular_machinery_reborn:energyoutputhatch[size=\"small\"]",
+        "modular_machinery_reborn:energyoutputhatch[size=\"normal\"]",
+        "modular_machinery_reborn:energyoutputhatch[size=\"reinforced\"]",
+        "modular_machinery_reborn:energyoutputhatch[size=\"big\"]",
+        "modular_machinery_reborn:energyoutputhatch[size=\"huge\"]",
+        "modular_machinery_reborn:energyoutputhatch[size=\"ludicrous\"]",
+        "modular_machinery_reborn:energyoutputhatch[size=\"ultimate\"]"
+      ],
+      "i": [
+        "minecraft:iron_block"
+      ],
+      "b": [
+        "minecraft:iron_bars"
+      ],
+      "g": [
+        "minecraft:glass"
+      ]
+    }
+  },
+  "parts": [
+    {
+      "pos": [-1, -1, 0],
+      "elements": [
+        "modular_machinery_reborn:casing",
+        "modular_machinery_reborn:energyinputhatch",
+        "modular_machinery_reborn:energyoutputhatch"
+      ]
+    },
+    {
+      "pos": [0, -1, 0],
+      "elements": [
+        "modular_machinery_reborn:casing",
+        "modular_machinery_reborn:energyinputhatch",
+        "modular_machinery_reborn:energyoutputhatch"
+      ]
+    },
+    {
+      "pos": [1, -1, 0],
+      "elements": [
+        "modular_machinery_reborn:casing",
+        "modular_machinery_reborn:energyinputhatch",
+        "modular_machinery_reborn:energyoutputhatch"
+      ]
+    },
+
+    {
+      "pos": [-1, -1, 1],
+      "elements": [
+        "modular_machinery_reborn:casing",
+        "modular_machinery_reborn:energyinputhatch",
+        "modular_machinery_reborn:energyoutputhatch"
+      ]
+    },
+    {
+      "pos": [0, -1, 1],
+      "elements": [
+        "modular_machinery_reborn:casing",
+        "modular_machinery_reborn:energyinputhatch",
+        "modular_machinery_reborn:energyoutputhatch"
+      ]
+    },
+    {
+      "pos": [1, -1, 1],
+      "elements": [
+        "modular_machinery_reborn:casing",
+        "modular_machinery_reborn:energyinputhatch",
+        "modular_machinery_reborn:energyoutputhatch"
+      ]
+    },
+    {
+      "pos": [-1, -1, 2],
+      "elements": [
+        "modular_machinery_reborn:casing",
+        "modular_machinery_reborn:energyinputhatch",
+        "modular_machinery_reborn:energyoutputhatch"
+      ]
+    },
+    {
+      "pos": [0, -1, 2],
+      "elements": [
+        "modular_machinery_reborn:casing",
+        "modular_machinery_reborn:energyinputhatch",
+        "modular_machinery_reborn:energyoutputhatch"
+      ]
+    },
+    {
+      "pos": [1, -1, 2],
+      "elements": [
+        "modular_machinery_reborn:casing",
+        "modular_machinery_reborn:energyinputhatch",
+        "modular_machinery_reborn:energyoutputhatch"
+      ]
+    },
+    {
+      "pos": [0, 1, 2],
+      "elements": [
+        "minecraft:iron_block"
+      ]
+    },
+    {
+      "pos": [0, 1, 0],
+      "elements": [
+        "minecraft:iron_block"
+      ]
+    },
+    {
+      "pos": [-1, 1, 1],
+      "elements": [
+        "minecraft:iron_block"
+      ]
+    },
+    {
+      "pos": [1, 1, 1],
+      "elements": [
+        "minecraft:iron_block"
+      ]
+    },
+    {
+      "pos": [1, 1, 2],
+      "elements": [
+        "minecraft:iron_bars"
+      ]
+    },
+    {
+      "pos": [-1, 1, 2],
+      "elements": [
+        "minecraft:iron_bars"
+      ]
+    },
+    {
+      "pos": [1, 1, 0],
+      "elements": [
+        "minecraft:iron_bars"
+      ]
+    },
+    {
+      "pos": [-1, 1, 0],
+      "elements": [
+        "minecraft:iron_bars"
+      ]
+    },
+    {
+      "pos": [0, 1, 1],
+      "elements": [
+        "minecraft:glass"
+      ]
+    },
+    {
+      "pos": [0, 0, 2],
+      "elements": [
+        "minecraft:iron_block"
+      ]
+    },
+    {
+      "pos": [-1, 0, 1],
+      "elements": [
+        "minecraft:iron_block"
+      ]
+    },
+    {
+      "pos": [1, 0, 1],
+      "elements": [
+        "minecraft:iron_block"
+      ]
+    },
+    {
+      "pos": [1, 0, 2],
+      "elements": [
+        "minecraft:iron_bars"
+      ]
+    },
+    {
+      "pos": [-1, 0, 2],
+      "elements": [
+        "minecraft:iron_bars"
+      ]
+    },
+    {
+      "pos": [1, 0, 0],
+      "elements": [
+        "minecraft:iron_bars"
+      ]
+    },
+    {
+      "pos": [-1, 0, 0],
+      "elements": [
+        "minecraft:iron_bars"
+      ]
+    },
+    {
+      "pos": [0, 0, 1],
+      "elements": [
+        "minecraft:water"
+      ]
+    }
+  ]
+}

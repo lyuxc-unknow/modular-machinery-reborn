@@ -1,0 +1,37 @@
+{
+  "machine": "modular_machinery_reborn:alloy_furnace",
+  "type": "modular_machinery_reborn:machine_recipe",
+  "id": "modular_machinery_reborn:alloy_smelter_diamond",
+  "time": 5,
+  "requirements": [
+    {
+      "type": "modular_machinery_reborn:energy",
+      "mode": "input",
+      "amount": 100
+    },
+    {
+      "type": "modular_machinery_reborn:item",
+      "mode": "output",
+      "item": {
+        "id": "minecraft:diamond",
+        "count": 1
+      }
+    },
+    {
+      "type": "modular_machinery_reborn:item",
+      "mode": "input",
+      "item": {
+        "id": "minecraft:coal",
+        "count": 32
+      }
+    },
+    {
+      "type": "modular_machinery_reborn:item",
+      "mode": "input",
+      "item": {
+        "id": "minecraft:tnt",
+        "count": 8
+      }
+    }
+  ]
+}

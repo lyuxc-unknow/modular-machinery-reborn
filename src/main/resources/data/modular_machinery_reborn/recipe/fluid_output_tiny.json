@@ -1,0 +1,23 @@
+{
+    "result": {
+        "id": "modular_machinery_reborn:fluidoutputhatch_tiny",
+        "count": 1
+    },
+    "pattern": [
+        "c",
+        "m",
+        "h"
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "c": {
+            "item": "minecraft:bucket"
+        },
+        "h": {
+            "item": "minecraft:hopper"
+        },
+        "m": {
+            "item": "modular_machinery_reborn:casing_plain"
+        }
+    }
+}

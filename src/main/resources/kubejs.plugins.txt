@@ -1,0 +1,1 @@
+es.degrassi.mmreborn.common.integration.kubejs.MMRKubeJSPlugin

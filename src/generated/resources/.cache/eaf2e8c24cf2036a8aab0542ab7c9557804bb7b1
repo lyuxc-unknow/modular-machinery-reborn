@@ -1,0 +1,11 @@
+// 1.21	2024-08-13T09:12:57.190187	Tags for minecraft:block mod id modular_machinery_reborn
+64710dbc2fc16e4d95649815f908c72981fe8392 data/minecraft/tags/block/mineable/pickaxe.json
+64710dbc2fc16e4d95649815f908c72981fe8392 data/minecraft/tags/block/needs_stone_tool.json
+8011d09c288275b75a7da1250836bb0eda1ed65e data/modular_machinery_reborn/tags/block/all_casing.json
+28e6acf869ffd9550f4eae15e26d2d2888120be0 data/modular_machinery_reborn/tags/block/casing.json
+0d265f4d34bf4d33bd2bedfc43fe6cfc85f35993 data/modular_machinery_reborn/tags/block/energyinputhatch.json
+923b9ea6cfc786f44b64830feb28bc5743f8d01b data/modular_machinery_reborn/tags/block/energyoutputhatch.json
+459cd4a9607845e7aeb29b3f912f3543415dcf05 data/modular_machinery_reborn/tags/block/fluidinputhatch.json
+282a5937fcfa59a03e48af431c5d5943b13b3af7 data/modular_machinery_reborn/tags/block/fluidoutputhatch.json
+cd9b83a5b78781261c7a772919ccd4469e02e054 data/modular_machinery_reborn/tags/block/inputbus.json
+127b9acfdf21a3e392c7060b58ec4bdd09ff5dc4 data/modular_machinery_reborn/tags/block/outputbus.json

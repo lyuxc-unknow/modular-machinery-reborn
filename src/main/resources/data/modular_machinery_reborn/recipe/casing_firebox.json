@@ -1,0 +1,26 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "result": {
+        "id": "modular_machinery_reborn:casing_firebox",
+        "count": 2
+    },
+    "pattern": [
+        "rfr",
+        "c c",
+        "rir"
+    ],
+    "key": {
+        "r": {
+            "tag": "c:dusts/redstone"
+        },
+        "i": {
+            "tag": "c:ingots/iron"
+        },
+        "c": {
+            "item": "modular_machinery_reborn:casing_plain"
+        },
+        "f": {
+            "item": "minecraft:flint"
+        }
+    }
+}

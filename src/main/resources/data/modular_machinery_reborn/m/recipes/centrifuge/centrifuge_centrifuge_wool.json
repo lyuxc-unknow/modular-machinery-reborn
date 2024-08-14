@@ -1,0 +1,46 @@
+{
+    "type": "modular_machinery_reborn:recipe",
+    "machine": "modular_machinery_reborn:iron_centrifuge",
+    "id": "modular_machinery_reborn:centrifuge_centrifuge_wool",
+    "time": 60,
+    "requirements": [
+        {
+            "type": "modular_machinery_reborn:energy",
+            "io-type": "input",
+            "energyPerTick": 16
+        },
+        {
+            "type": "modular_machinery_reborn:item",
+            "io-type": "output",
+            "item": "minecraft:string",
+            "amount": 2
+        },
+        {
+            "type": "modular_machinery_reborn:item",
+            "io-type": "output",
+            "item": "minecraft:string",
+            "amount": 2,
+            "chance": 0.75
+        },
+        {
+            "type": "modular_machinery_reborn:item",
+            "io-type": "output",
+            "item": "minecraft:string",
+            "amount": 1,
+            "chance": 0.4
+        },
+        {
+            "type": "modular_machinery_reborn:item",
+            "io-type": "output",
+            "item": "minecraft:string",
+            "amount": 1,
+            "chance": 0.2
+        },
+        {
+            "type": "modular_machinery_reborn:item",
+            "io-type": "input",
+            "item": "minecraft:wool",
+            "amount": 1
+        }
+    ]
+}

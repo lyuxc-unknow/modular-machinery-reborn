@@ -1,0 +1,26 @@
+{
+    "result": {
+        "id": "modular_machinery_reborn:outputbus_small",
+        "count": 1
+    },
+    "pattern": [
+        "cmc",
+        "mbm",
+        " h "
+    ],
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "c": {
+            "item": "minecraft:chest"
+        },
+        "h": {
+            "item": "minecraft:hopper"
+        },
+        "m": {
+            "item": "modular_machinery_reborn:modularium"
+        },
+        "b": {
+            "item": "modular_machinery_reborn:outputbus_tiny"
+        }
+    }
+}

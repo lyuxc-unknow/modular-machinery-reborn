@@ -1,0 +1,41 @@
+{
+  "machine": "modular_machinery_reborn:alloy_furnace",
+  "type": "modular_machinery_reborn:machine_recipe",
+  "id": "modular_machinery_reborn:alloy_smelter_modularium",
+  "time": 120,
+  "requirements": [
+    {
+      "type": "modular_machinery_reborn:energy",
+      "mode": "input",
+      "amount": 20
+    },
+    {
+      "type": "modular_machinery_reborn:item",
+      "mode": "output",
+      "item": {
+        "id": "modular_machinery_reborn:modularium",
+        "count": 4
+      }
+    },
+    {
+      "type": "modular_machinery_reborn:item",
+      "mode": "input",
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "type": "modular_machinery_reborn:item",
+      "mode": "input",
+      "item": "minecraft:gold_ingot"
+    },
+    {
+      "type": "modular_machinery_reborn:item",
+      "mode": "input",
+      "item": "minecraft:redstone"
+    },
+    {
+      "type": "modular_machinery_reborn:item",
+      "mode": "input",
+      "item": "minecraft:glowstone_dust"
+    }
+  ]
+}

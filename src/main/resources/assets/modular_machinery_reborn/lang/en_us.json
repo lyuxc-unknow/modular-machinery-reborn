@@ -1,0 +1,292 @@
+{
+  "itemGroup.modular_machinery_reborn.group": "Modular Machinery Reborn",
+  "modular_machinery_reborn.command.reload.machines": "Successfully reloaded modular machinery machines !",
+  "modular_machinery_reborn.command.reload.recipes": "Successfully reloaded modular machinery recipes !",
+
+  "modular_machinery_reborn.gui.title.controller": "Controller",
+
+  "gui.controller.blueprint": "Blueprint Found: %s",
+  "gui.controller.blueprint.none": "None",
+  "gui.controller.structure": "Structure Found: %s",
+  "gui.controller.structure.none": "None",
+  "gui.controller.status": "Status:",
+  "gui.controller.status.redstone_stopped": "Machine stopped by incoming redstone signal",
+  "gui.controller.status.missing_structure": "Missing structure",
+  "gui.controller.status.no_recipe": "No matching recipe found",
+  "gui.controller.status.crafting": "Processing...",
+  "gui.controller.status.crafting.progress": "Progress: %s",
+
+  "craftcheck.failure.item.input": "Missing input item!",
+  "craftcheck.failure.item.output.space": "Not enough inventory space for item output(s)!",
+  "craftcheck.failure.fluid.input": "Missing fluid input!",
+  "craftcheck.failure.fluid.output.space": "Not enough tank space for fluid output(s)!",
+  "craftcheck.failure.gas.input": "Missing gas input!",
+  "craftcheck.failure.gas.output.space": "Not enough space for gas output(s)!",
+  "craftcheck.failure.energy.input": "Not enough energy!",
+
+  "component.missing.modular_machinery_reborn.energy.output": "No Energy Output Hatch found!",
+  "component.missing.modular_machinery_reborn.energy.input": "No Energy Input Hatch found!",
+  "component.missing.modular_machinery_reborn.fluid.output": "No Fluid Output Hatch found!",
+  "component.missing.modular_machinery_reborn.fluid.input": "No Fluid Input Hatch found!",
+  "component.missing.modular_machinery_reborn.gas.output": "No Fluid Output Hatch found!",
+  "component.missing.modular_machinery_reborn.gas.input": "No Fluid Input Hatch found!",
+  "component.missing.modular_machinery_reborn.item.output": "No Item Output found!",
+  "component.missing.modular_machinery_reborn.item.input": "No Item Input found!",
+
+  "gui.blueprint.popout.info": "Sneak to freeze the current preview to be able to preview it in world.",
+  "gui.blueprint.popout.place": "Rightclick to place preview; move away from the placed one or open another structure preview (blueprint) to remove the one in-world.",
+
+  "jei.category.preview": "Structure Preview",
+
+  "message.structurebuild.confirmrotation": "Controller is facing %s",
+  "message.structurebuild.confirmrotation.rotating": "Rotating structure for saving by %s degrees...",
+  "message.structurebuild.empty": "You have nothing selected to save.",
+  "message.structurebuild.warndedicated": "You're saving the machine on a dedicated server! Be sure to download it from the server!",
+  "message.structurebuild.save": "Machine saved as %s in the machinery directory!",
+  "message.structurebuild.fail": "Failed to save the machine to a file! Check the log for more information!",
+
+  "tooltip.machinery.empty": "Empty",
+
+  "tooltip.machinery.fuel": "Accepts any fuel.",
+  "tooltip.machinery.fuel.item": "BurnTime: %s",
+  "tooltip.machinery.fuel.in": "Required total Fuel Burntime:",
+  "tooltip.machinery.fuel.in.total": "%s ticks.",
+
+  "tooltip.machinery.blueprint.required": "Requires Blueprint\",",
+  "tooltip.machinery.blueprint.upgrades": "Upgrades\",",
+
+  "tooltip.machinery.duration": "Processing Time: %s ticks",
+
+  "tooltip.machinery.chance.in": "Consumption Chance: %s",
+  "tooltip.machinery.chance.out": "Production Chance: %s",
+  "tooltip.machinery.chance.in.never": "Doesn't get consumed.",
+  "tooltip.machinery.chance.out.never": "Is never produced.",
+
+  "tooltip.machinery.energy.in": "Required Energy:",
+  "tooltip.machinery.energy.in.tick": "Per Tick: %s %s/t",
+  "tooltip.machinery.energy.in.total": "Total: %s %s",
+  "tooltip.machinery.energy.out": "Produced Energy:",
+  "tooltip.machinery.energy.out.tick": "Per Tick: %s %s/t",
+  "tooltip.machinery.energy.out.total": "Total: %s %s",
+
+  "tooltip.energy.type.fe": "FE",
+  "tooltip.energy.type.ic2_eu": "EU",
+  "tooltip.energy.type.gt_eu": "EU",
+
+  "tooltip.constructtool.creative": "Creative Structure-To-JSON Tool",
+
+  "tooltip.itembus.slot": "1 Slot",
+  "tooltip.itembus.slots": "%s Slots",
+
+  "tooltip.fluidhatch.empty": "Empty",
+  "tooltip.fluidhatch.fluid": "[Fluid]",
+  "tooltip.fluidhatch.gas": "[Gas]",
+  "tooltip.fluidhatch.tank": "%smb / %smb",
+  "tooltip.fluidhatch.tank.gas": "%s / %s",
+  "tooltip.fluidhatch.tank.info": "Can hold %s mb",
+  "tooltip.fluidhatch.tank.mek": "Accepts Mekanism Gas",
+
+  "tooltip.energyhatch.charge": "%s / %s %s",
+  "tooltip.energyhatch.storage": "Stores %s FE",
+  "tooltip.energyhatch.out.transfer": "Transfers %s FE per tick",
+  "tooltip.energyhatch.in.accept": "Accepts %s FE per tick",
+
+  "tooltip.energyhatch.ic2.powerrate": "EU/t",
+  "tooltip.energyhatch.ic2.any": "Any",
+  "tooltip.energyhatch.ic2.out.voltage": "EU Output Voltage: %s",
+  "tooltip.energyhatch.ic2.out.transfer": "EU Output Transfer: %s %s",
+  "tooltip.energyhatch.ic2.in.voltage": "EU Input Voltage: %s",
+  "tooltip.energyhatch.ic2.in.transfer": "EU Input Transfer: %s %s",
+
+  "tooltip.energyhatch.gregtech.voltage.in": "Voltage IN: §a%s §7(§a%s§7)",
+  "tooltip.energyhatch.gregtech.voltage.out": "Voltage OUT: §a%s §7(§a%s§7)",
+  "tooltip.energyhatch.gregtech.amperage": "Amperage: §e%s",
+  "tooltip.energyhatch.gregtech.storage": "Internal Energy Capacity: §9%s",
+
+  "tooltip.ic2.powertier.0.name": "ULV",
+  "tooltip.ic2.powertier.1.name": "LV",
+  "tooltip.ic2.powertier.2.name": "MV",
+  "tooltip.ic2.powertier.3.name": "HV",
+  "tooltip.ic2.powertier.4.name": "EV",
+  "tooltip.ic2.powertier.5.name": "IV",
+  "tooltip.ic2.powertier.6.name": "LuV",
+  "tooltip.ic2.powertier.7.name": "ZPM",
+  "tooltip.ic2.powertier.8.name": "UV",
+  "tooltip.ic2.powertier.9.name": "UHV",
+  "tooltip.ic2.powertier.10.name": "UEV",
+  "tooltip.ic2.powertier.11.name": "UIV",
+  "tooltip.ic2.powertier.12.name": "UXV",
+
+  "item.modular_machinery_reborn.blueprint": "Machine Blueprint",
+  "item.modular_machinery_reborn.modularium": "Modularium",
+  "item.modular_machinery_reborn.constructtool": "Construct Selection Tool",
+
+  "block.modular_machinery_reborn.controller": "Machine Controller",
+
+  "block.modular_machinery_reborn.casing_plain": "Machine Casing",
+  "block.modular_machinery_reborn.casing_vent": "Machine Vent",
+  "block.modular_machinery_reborn.casing_firebox": "Firebox Casing",
+  "block.modular_machinery_reborn.casing_gearbox": "Machine Gearbox",
+  "block.modular_machinery_reborn.casing_reinforced": "Reinforced Machine Casing",
+  "block.modular_machinery_reborn.casing_circuitry": "Machine Circuitry",
+
+  "block.modular_machinery_reborn.inputbus_tiny": "Tiny Item Input",
+  "block.modular_machinery_reborn.inputbus_small": "Small Item Input",
+  "block.modular_machinery_reborn.inputbus_normal": "Normal Item Input",
+  "block.modular_machinery_reborn.inputbus_reinforced": "Reinforced Item Input",
+  "block.modular_machinery_reborn.inputbus_big": "Big Item Input",
+  "block.modular_machinery_reborn.inputbus_huge": "Huge Item Input",
+  "block.modular_machinery_reborn.inputbus_ludicrous": "Ludicrous Item Input",
+
+  "block.modular_machinery_reborn.outputbus_tiny": "Tiny Item Output",
+  "block.modular_machinery_reborn.outputbus_small": "Small Item Output",
+  "block.modular_machinery_reborn.outputbus_normal": "Normal Item Output",
+  "block.modular_machinery_reborn.outputbus_reinforced": "Reinforced Item Output",
+  "block.modular_machinery_reborn.outputbus_big": "Big Item Output",
+  "block.modular_machinery_reborn.outputbus_huge": "Huge Item Output",
+  "block.modular_machinery_reborn.outputbus_ludicrous": "Ludicrous Item Output",
+
+  "block.modular_machinery_reborn.fluidinputhatch_tiny": "Tiny Fluid Input Hatch",
+  "block.modular_machinery_reborn.fluidinputhatch_small": "Small Fluid Input Hatch",
+  "block.modular_machinery_reborn.fluidinputhatch_normal": "Normal Fluid Input Hatch",
+  "block.modular_machinery_reborn.fluidinputhatch_reinforced": "Reinforced Fluid Input Hatch",
+  "block.modular_machinery_reborn.fluidinputhatch_big": "Big Fluid Input Hatch",
+  "block.modular_machinery_reborn.fluidinputhatch_huge": "Huge Fluid Input Hatch",
+  "block.modular_machinery_reborn.fluidinputhatch_ludicrous": "Ludicrous Fluid Input Hatch",
+  "block.modular_machinery_reborn.fluidinputhatch_vacuum": "Vacuum Fluid Input Hatch",
+
+  "block.modular_machinery_reborn.fluidoutputhatch_tiny": "Tiny Fluid Output Hatch",
+  "block.modular_machinery_reborn.fluidoutputhatch_small": "Small Fluid Output Hatch",
+  "block.modular_machinery_reborn.fluidoutputhatch_normal": "Normal Fluid Output Hatch",
+  "block.modular_machinery_reborn.fluidoutputhatch_reinforced": "Reinforced Fluid Output Hatch",
+  "block.modular_machinery_reborn.fluidoutputhatch_big": "Big Fluid Output Hatch",
+  "block.modular_machinery_reborn.fluidoutputhatch_huge": "Huge Fluid Output Hatch",
+  "block.modular_machinery_reborn.fluidoutputhatch_ludicrous": "Ludicrous Fluid Output Hatch",
+  "block.modular_machinery_reborn.fluidoutputhatch_vacuum": "Vacuum Fluid Output Hatch",
+
+  "block.modular_machinery_reborn.energyinputhatch_tiny": "Tiny Energy Input Hatch",
+  "block.modular_machinery_reborn.energyinputhatch_small": "Small Energy Input Hatch",
+  "block.modular_machinery_reborn.energyinputhatch_normal": "Normal Energy Input Hatch",
+  "block.modular_machinery_reborn.energyinputhatch_reinforced": "Reinforced Energy Input Hatch",
+  "block.modular_machinery_reborn.energyinputhatch_big": "Big Energy Input Hatch",
+  "block.modular_machinery_reborn.energyinputhatch_huge": "Huge Energy Input Hatch",
+  "block.modular_machinery_reborn.energyinputhatch_ludicrous": "Ludicrous Energy Input Hatch",
+  "block.modular_machinery_reborn.energyinputhatch_ultimate": "Ultimate Energy Input Hatch",
+
+  "block.modular_machinery_reborn.energyoutputhatch_tiny": "Tiny Energy Output Hatch",
+  "block.modular_machinery_reborn.energyoutputhatch_small": "Small Energy Output Hatch",
+  "block.modular_machinery_reborn.energyoutputhatch_normal": "Normal Energy Output Hatch",
+  "block.modular_machinery_reborn.energyoutputhatch_reinforced": "Reinforced Energy Output Hatch",
+  "block.modular_machinery_reborn.energyoutputhatch_big": "Big Energy Output Hatch",
+  "block.modular_machinery_reborn.energyoutputhatch_huge": "Huge Energy Output Hatch",
+  "block.modular_machinery_reborn.energyoutputhatch_ludicrous": "Ludicrous Energy Output Hatch",
+  "block.modular_machinery_reborn.energyoutputhatch_ultimate": "Ultimate Energy Output Hatch",
+
+  "text.autoconfig.modular_machinery_reborn.category.general": "General",
+
+  "text.autoconfig.modular_machinery_reborn.option.general.debugLevel": "Debug Level",
+  "text.autoconfig.modular_machinery_reborn.option.general.logMissingOptional": "Log Missing Optional",
+  "text.autoconfig.modular_machinery_reborn.option.general.logFirstEitherError": "Log First Either Error",
+  "text.autoconfig.modular_machinery_reborn.option.general.general_casing_color": "Default Casing Color",
+  "text.autoconfig.modular_machinery_reborn.option.general.structureRenderTime": "Structure Render Time",
+  "text.autoconfig.modular_machinery_reborn.option.general.blockTagCycleTime": "Block Tag Cycle Time",
+  "text.autoconfig.modular_machinery_reborn.option.general.checkStructureTicks": "Structure Check Time",
+  "text.autoconfig.modular_machinery_reborn.option.general.checkRecipeTicks": "Recipe Check Time",
+  "text.autoconfig.modular_machinery_reborn.option.general.machineDirectory": "Machines Directory",
+
+  "text.autoconfig.modular_machinery_reborn.category.energy_hatch": "Energy Hatch",
+
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.TINY": "Energy Hatch Tiny",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.TINY.size": "Energy Storage for tiny size",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.TINY.transferRate": "Energy Transfer per tick for tiny size",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.TINY.ic2_tier": "IC2 Voltage Tier for tiny size",
+
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.SMALL": "Energy Hatch Small",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.SMALL.size": "Energy Storage for small size",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.SMALL.transferRate": "Energy Transfer per tick for small size",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.SMALL.ic2_tier": "IC2 Voltage Tier for small size",
+
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.NORMAL": "Energy Hatch Normal",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.NORMAL.size": "Energy Storage for normal size",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.NORMAL.transferRate": "Energy Transfer per tick for normal size",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.NORMAL.ic2_tier": "IC2 Voltage Tier for normal size",
+
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.REINFORCED": "Energy Hatch Reinforced",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.REINFORCED.size": "Energy Storage for reinforced size",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.REINFORCED.transferRate": "Energy Transfer per tick for reinforced size",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.REINFORCED.ic2_tier": "IC2 Voltage Tier for reinforced size",
+
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.BIG": "Energy Hatch Big",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.BIG.size": "Energy Storage for big size",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.BIG.transferRate": "Energy Transfer per tick for big size",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.BIG.ic2_tier": "IC2 Voltage Tier for big size",
+
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.HUGE": "Energy Hatch Huge",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.HUGE.size": "Energy Storage for huge size",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.HUGE.transferRate": "Energy Transfer per tick for huge size",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.HUGE.ic2_tier": "IC2 Voltage Tier for huge size",
+
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.LUDICROUS": "Energy Hatch Ludicrous",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.LUDICROUS.size": "Energy Storage for ludicrous size",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.LUDICROUS.transferRate": "Energy Transfer per tick for ludicrous size",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.LUDICROUS.ic2_tier": "IC2 Voltage Tier for ludicrous size",
+
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.ULTIMATE": "Energy Hatch Ultimate",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.ULTIMATE.size": "Energy Storage for ultimate size",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.ULTIMATE.transferRate": "Energy Transfer per tick for ultimate size",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.ULTIMATE.ic2_tier": "IC2 Voltage Tier for ultimate size",
+
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.displayFETooltip": "Energy Storage and Transfer rate in tooltips",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.displayIC2EUTooltip": "IC2 EU in tooltips",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.type": "Recipe energy preview",
+
+  "text.autoconfig.modular_machinery_reborn.category.fluid_hatch": "Fluid Hatch",
+
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.TINY": "Fluid Hatch Tiny",
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.TINY.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.SMALL": "Fluid Hatch Small",
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.SMALL.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.NORMAL": "Fluid Hatch Normal",
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.NORMAL.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.REINFORCED": "Fluid Hatch Reinforced",
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.REINFORCED.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.BIG": "Fluid Hatch Big",
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.BIG.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.HUGE": "Fluid Hatch Huge",
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.HUGE.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.LUDICROUS": "Fluid Hatch Ludicrous",
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.LUDICROUS.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.VACUUM": "Fluid Hatch Vacuum",
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.VACUUM.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.category.item_bus": "Item Bus",
+
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.TINY": "Item Bus Tiny",
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.TINY.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.SMALL": "Item Bus Small",
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.SMALL.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.NORMAL": "Item Bus Normal",
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.NORMAL.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.REINFORCED": "Item Bus Reinforced",
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.REINFORCED.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.BIG": "Item Bus Big",
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.BIG.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.HUGE": "Item Bus Huge",
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.HUGE.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.LUDICROUS": "Item Bus Ludicrous",
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.LUDICROUS.size": "Size"
+}
+
