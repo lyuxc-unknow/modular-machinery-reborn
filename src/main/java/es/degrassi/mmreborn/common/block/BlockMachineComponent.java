@@ -33,6 +33,14 @@ public abstract class BlockMachineComponent extends Block implements BlockDynami
     return Config.machineColor;
   }
 
+  @Override
+  @SuppressWarnings("deprecation")
+  protected boolean triggerEvent(BlockState pState, Level pLevel, BlockPos pPos, int pId, int pParam) {
+    super.triggerEvent(pState, pLevel, pPos, pId, pParam);
+    final BlockEntity be = pLevel.getBlockEntity(pPos);
+    return be != null && be.triggerEvent(pId, pParam);
+  }
+
   @Nullable
   @Override
   public BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {

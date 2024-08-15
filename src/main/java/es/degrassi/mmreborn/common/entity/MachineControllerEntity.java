@@ -11,7 +11,8 @@ import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.entity.base.BlockEntityRestrictedTick;
-import es.degrassi.mmreborn.common.entity.base.ColorableMachineEntity;
+import es.degrassi.mmreborn.common.entity.base.BlockEntitySynchronized;
+import es.degrassi.mmreborn.common.entity.base.ColorableMachineComponentEntity;
 import es.degrassi.mmreborn.common.entity.base.MachineComponentEntity;
 import es.degrassi.mmreborn.common.item.ItemBlueprint;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
@@ -25,7 +26,6 @@ import es.degrassi.mmreborn.common.util.IOInventory;
 import es.degrassi.mmreborn.common.util.MMRLogger;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
@@ -81,7 +81,6 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
     if (getBlockState().getAnalogOutputSignal(getLevel(), getBlockPos()) > 0) {
       return;
     }
-//    structureChecker.checkIn(MMRConfig.get().general.checkStructureTicks, getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING));
     checkStructure();
     updateComponents();
 
@@ -128,14 +127,14 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
     if (getLevel() == null) return;
     List<MachineRecipe> availableRecipes =
       foundMachine == null ? List.of() :
-      getLevel()
-        .getRecipeManager()
-        .getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get())
-        .stream()
-        .map(RecipeHolder::value)
-        .filter(recipe -> recipe.getOwningMachine() != null)
-        .filter(recipe -> recipe.getOwningMachine().equals(this.foundMachine))
-        .toList();
+        getLevel()
+          .getRecipeManager()
+          .getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get())
+          .stream()
+          .map(RecipeHolder::value)
+          .filter(recipe -> recipe.getOwningMachine() != null)
+          .filter(recipe -> recipe.getOwningMachine().equals(this.foundMachine))
+          .toList();
 
     MachineRecipe highestValidity = null;
     RecipeCraftingContext.CraftingCheckResult highestValidityResult = null;
@@ -185,6 +184,14 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
       PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getBlockPos()), new SUpdateCraftingStatusPacket(status, getBlockPos()));
   }
 
+  public void setFoundMachine(DynamicMachine machine) {
+    this.foundMachine = null;
+    if (machine == null)
+      this.foundPattern = null;
+    setRequestModelUpdate(true);
+    markForUpdate();
+  }
+
   public void setMachine(DynamicMachine machine) {
     setRequestModelUpdate(true);
     markForUpdate();
@@ -196,10 +203,8 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
   }
 
   private void checkStructure() {
-//    this.patternRotation = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
-//    structureChecker.checkIn(1, getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING));
     if (ticksExisted % MMRConfig.get().general.checkStructureTicks == 0) {
-      if (this.foundMachine != DynamicMachine.DUMMY && this.foundPattern != null) {
+      if ((this.foundMachine != null && this.foundMachine != DynamicMachine.DUMMY) && this.foundPattern != null) {
         if (this.foundMachine.requiresBlueprint() && !this.foundMachine.equals(getBlueprintMachine())) {
           this.activeRecipe = null;
           setMachine(null);
@@ -207,6 +212,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
           setRequestModelUpdate(true);
           markForUpdate();
         } else if (!foundPattern.match(getLevel(), getBlockPos(), getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING))) {
+          distributeCasingColor(true);
           this.activeRecipe = null;
           setMachine(null);
           setCraftingStatus(CraftingStatus.MISSING_STRUCTURE);
@@ -214,7 +220,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
           markForUpdate();
         }
       }
-      if (this.foundMachine == DynamicMachine.DUMMY || this.foundPattern == null) {
+      if (this.foundMachine == null || this.foundMachine == DynamicMachine.DUMMY || this.foundPattern == null) {
         setMachine(null);
         DynamicMachine blueprint = getBlueprintMachine();
         if (blueprint != null) {
@@ -223,7 +229,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
             markForUpdate();
             if (this.foundMachine.getMachineColor() != Config.machineColor) {
               setRequestModelUpdate(true);
-              distributeCasingColor();
+              distributeCasingColor(false);
             }
           } else {
             this.activeRecipe = null;
@@ -240,7 +246,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
               markForUpdate();
               if (this.foundMachine.getMachineColor() != Config.machineColor) {
                 setRequestModelUpdate(true);
-                distributeCasingColor();
+                distributeCasingColor(false);
               }
               return;
             }
@@ -255,21 +261,59 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
     }
   }
 
-  public void distributeCasingColor() {
-    if (this.foundMachine != null && this.foundPattern != null) {
-      int color = this.foundMachine.getMachineColor();
-      tryColorize(getBlockPos(), color);
-      for (BlockPos pos : this.foundPattern.getBlocks(getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).keySet()) {
-        tryColorize(this.getBlockPos().offset(pos), color);
+  protected void setInStructure() {
+    if (this.foundMachine != null && this.foundMachine != DynamicMachine.DUMMY && this.foundPattern != null && this.foundPattern != Structure.EMPTY) {
+      setInStructure(true);
+      BlockPos[] blockPos = foundPattern.getBlocks(getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).keySet().toArray(BlockPos[]::new);
+      distributeCasingColor(true, blockPos);
+      for (BlockPos pos : blockPos) {
+        if (getLevel().getBlockEntity(getBlockPos().offset(pos)) instanceof BlockEntitySynchronized entity) {
+          entity.setInStructure(true);
+          entity.setChanged();
+        }
+      }
+    } else if (getBlueprintMachine() != null && !getBlueprintMachine().getPattern().match(getLevel(), getBlockPos(), getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING))) {
+      BlockPos[] blockPos = getBlueprintMachine().getPattern().getBlocks(getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).keySet().toArray(BlockPos[]::new);
+      distributeCasingColor(true, blockPos);
+      for (BlockPos pos : blockPos) {
+        if (getLevel().getBlockEntity(getBlockPos().offset(pos)) instanceof BlockEntitySynchronized entity) {
+          entity.setInStructure(false);
+          entity.setChanged();
+        }
+      }
+    }
+  }
+
+  public void distributeCasingColor(boolean default_, BlockPos... poss) {
+    int color = default_ ? Config.machineColor : this.foundMachine.getMachineColor();
+    tryColorize(getBlockPos(), color);
+    for (BlockPos pos : poss) {
+      tryColorize(this.getBlockPos().offset(pos), color);
+    }
+  }
+
+  public void distributeCasingColor(boolean default_) {
+    if (this.foundMachine != null && this.foundMachine != DynamicMachine.DUMMY && this.foundPattern != null) {
+      distributeCasingColor(default_, foundPattern.getBlocks(getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).keySet().toArray(BlockPos[]::new));
+    } else {
+      if (getBlueprintMachine() != null && !getBlueprintMachine().getPattern().match(getLevel(), getBlockPos(), getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING))) {
+        BlockPos[] blockPos = getBlueprintMachine().getPattern().getBlocks(getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).keySet().toArray(BlockPos[]::new);
+        distributeCasingColor(true, blockPos);
+        for (BlockPos pos : blockPos) {
+          if (getLevel().getBlockEntity(getBlockPos().offset(pos)) instanceof BlockEntitySynchronized entity) {
+            entity.setInStructure(false);
+            entity.setChanged();
+          }
+        }
       }
     }
   }
 
   private void tryColorize(BlockPos pos, int color) {
     BlockEntity te = this.getLevel().getBlockEntity(pos);
-    if (te instanceof ColorableMachineEntity entity) {
+    if (te instanceof ColorableMachineComponentEntity entity) {
       entity.setMachineColor(color);
-      getLevel().setBlockAndUpdate(pos, getLevel().getBlockState(pos));
+      entity.setChanged();
     }
   }
 

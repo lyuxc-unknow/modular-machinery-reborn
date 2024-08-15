@@ -4,7 +4,6 @@ import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -19,9 +18,6 @@ public record SMachineUpdatePacket(DynamicMachine machine, BlockPos pos) impleme
   public Type<SMachineUpdatePacket> type() {
     return TYPE;
   }
-  public SMachineUpdatePacket(FriendlyByteBuf friendlyByteBuf) {
-    this(friendlyByteBuf.readJsonWithCodec(DynamicMachine.CODEC.codec()), friendlyByteBuf.readBlockPos());
-  }
 
   public static final StreamCodec<RegistryFriendlyByteBuf, SMachineUpdatePacket> CODEC = StreamCodec.composite(
     ByteBufCodecs.fromCodecWithRegistries(DynamicMachine.CODEC.codec()),
@@ -35,7 +31,10 @@ public record SMachineUpdatePacket(DynamicMachine machine, BlockPos pos) impleme
     if (context.flow().isClientbound())
       context.enqueueWork(() -> {
         if (context.player().level().getBlockEntity(packet.pos) instanceof MachineControllerEntity entity) {
-          entity.setMachine(packet.machine);
+          if (packet.machine == DynamicMachine.DUMMY)
+            entity.setFoundMachine(null);
+          else
+            entity.setMachine(packet.machine);
         }
       });
   }

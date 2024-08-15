@@ -2,10 +2,7 @@ package es.degrassi.mmreborn.common.network.server;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
-import es.degrassi.mmreborn.common.machine.DynamicMachine;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -17,17 +14,9 @@ public record SUpdateCraftingStatusPacket(MachineControllerEntity.CraftingStatus
 
   public static final Type<SUpdateCraftingStatusPacket> TYPE = new Type<>(ModularMachineryReborn.rl("update_crafting_status"));
 
-  public SUpdateCraftingStatusPacket(String type, String message, BlockPos pos) {
-    this(MachineControllerEntity.CraftingStatus.of(type, message), pos);
-  }
-
   @Override
   public Type<SUpdateCraftingStatusPacket> type() {
     return TYPE;
-  }
-
-  public SUpdateCraftingStatusPacket(FriendlyByteBuf friendlyByteBuf) {
-    this(friendlyByteBuf.readUtf(), friendlyByteBuf.readUtf(), friendlyByteBuf.readBlockPos());
   }
 
   public static final StreamCodec<RegistryFriendlyByteBuf, SUpdateCraftingStatusPacket> CODEC = StreamCodec.composite(

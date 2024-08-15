@@ -20,9 +20,5 @@ public class PacketManager {
     registrar.playToClient(SMachineUpdatePacket.TYPE, SMachineUpdatePacket.CODEC, SMachineUpdatePacket::handle);
     registrar.playToClient(SUpdateCraftingStatusPacket.TYPE, SUpdateCraftingStatusPacket.CODEC, SUpdateCraftingStatusPacket::handle);
     registrar.playToClient(SUpdateMachineColorPacket.TYPE, SUpdateMachineColorPacket.CODEC, SUpdateMachineColorPacket::handle);
-//    registrar.play(SUpdateMachinesPacket.ID, SUpdateMachinesPacket::new, handler ->
-//      handler.client(SUpdateMachinesPacket::handle));
-//    registrar.play(CPlaceStructurePacket.ID, CPlaceStructurePacket::new, handler ->
-//      handler.server(CPlaceStructurePacket::handle));
   }
 }

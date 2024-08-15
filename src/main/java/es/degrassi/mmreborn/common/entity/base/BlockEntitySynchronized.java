@@ -15,7 +15,9 @@ import org.jetbrains.annotations.NotNull;
 @Setter
 public class BlockEntitySynchronized extends BlockEntity {
   private static final String REQUEST_UPDATE_KEY = "requestModelUpdate";
+  private static final String IN_STRUCTURE_KEY = "inStructure";
   private boolean requestModelUpdate = false;
+  private boolean inStructure = false;
 
   public BlockEntitySynchronized(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
     super(type, pos, blockState);
@@ -26,10 +28,12 @@ public class BlockEntitySynchronized extends BlockEntity {
 
   public void readCustomNBT(CompoundTag nbt, HolderLookup.Provider pRegistries) {
     requestModelUpdate = nbt.contains(REQUEST_UPDATE_KEY) && nbt.getBoolean(REQUEST_UPDATE_KEY);
+    inStructure = nbt.contains(IN_STRUCTURE_KEY) && nbt.getBoolean(IN_STRUCTURE_KEY);
   }
 
   public void writeCustomNBT(CompoundTag nbt, HolderLookup.Provider pRegistries) {
     nbt.putBoolean(REQUEST_UPDATE_KEY, requestModelUpdate);
+    nbt.putBoolean(IN_STRUCTURE_KEY, inStructure);
   }
 
   @Override

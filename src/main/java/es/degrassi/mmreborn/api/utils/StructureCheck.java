@@ -34,6 +34,7 @@ public class StructureCheck {
       checkNotNull();
       checkNull();
       entity.set(machine, status, recipe);
+      colorize(machine);
     }
   }
 
@@ -74,7 +75,6 @@ public class StructureCheck {
       MMRLogger.INSTANCE.info("Structure matching: {} in machine {}", toCheck.asJson(), machine.getRegistryName());
       recipe = false;
       status = MachineControllerEntity.CraftingStatus.NO_RECIPE;
-      colorize(machine);
     } else {
       this.machine = null;
       toCheck = null;
@@ -91,7 +91,6 @@ public class StructureCheck {
       if (machine.getPattern().match(entity.getLevel(), entity.getBlockPos(), facing)) {
         recipe = false;
         status = MachineControllerEntity.CraftingStatus.NO_RECIPE;
-        colorize(machine);
         return;
       }
     }
@@ -103,7 +102,7 @@ public class StructureCheck {
 
   private void colorize(DynamicMachine machine) {
     if (machine.getMachineColor() != Config.machineColor) {
-      entity.distributeCasingColor();
+      entity.distributeCasingColor(false);
     }
   }
 }

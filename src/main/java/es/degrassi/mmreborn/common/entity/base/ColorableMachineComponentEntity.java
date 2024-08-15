@@ -30,11 +30,16 @@ public class ColorableMachineComponentEntity extends BlockEntitySynchronized imp
 
   @Override
   public void setMachineColor(int newColor) {
+    setChanged();
     this.definedColor = newColor;
     setRequestModelUpdate(true);
+    triggerEvent(1, 0);
+//    getLevel().updateNeighbourForOutputSignal(getBlockPos(), getBlockState().getBlock());
+//    getLevel().setBlockAndUpdate(getBlockPos(), getBlockState());
     this.markForUpdate();
     if (getLevel() instanceof ServerLevel l) {
-      PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getBlockPos()), new SUpdateMachineColorPacket(newColor, getBlockPos()));
+      PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getBlockPos()),
+        new SUpdateMachineColorPacket(newColor, getBlockPos()));
     }
   }
 
@@ -52,5 +57,25 @@ public class ColorableMachineComponentEntity extends BlockEntitySynchronized imp
   public void writeCustomNBT(CompoundTag nbt, HolderLookup.Provider pRegistries) {
     super.writeCustomNBT(nbt, pRegistries);
     nbt.putInt("casingColor", this.definedColor);
+  }
+
+  @Override
+  public boolean triggerEvent(int id, int type) {
+    if (id == 1) {
+      if (getLevel() != null && getLevel().isClientSide())
+        scheduleRenderUpdate();
+      return true;
+    }
+    return false;
+  }
+
+  public void scheduleRenderUpdate() {
+    if (getLevel() != null) {
+      if (getLevel().isClientSide()) {
+        getLevel().sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 1 << 3);
+      } else {
+        getLevel().blockEvent(getBlockPos(), getBlockState().getBlock(), 1, 0);
+      }
+    }
   }
 }
