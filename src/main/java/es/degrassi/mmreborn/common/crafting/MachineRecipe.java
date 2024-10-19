@@ -8,7 +8,6 @@ import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.codec.NamedMapCodec;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
-import es.degrassi.mmreborn.common.crafting.requirement.RequirementDuration;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.machine.IOType;
@@ -17,11 +16,8 @@ import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.MMRLogger;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 import lombok.Getter;
@@ -39,20 +35,15 @@ import org.jetbrains.annotations.NotNull;
 @Getter
 @Setter
 public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeInput> {
-//  public static final Map<DynamicMachine, List<MachineRecipe>> RECIPES = new LinkedHashMap<>();
 
   public static final NamedMapCodec<MachineRecipeBuilder> CODEC = NamedCodec.record(instance -> instance.group(
-    DefaultCodecs.RESOURCE_LOCATION.fieldOf("machine").forGetter(MachineRecipeBuilder::getMachine),
     DefaultCodecs.RESOURCE_LOCATION.fieldOf("id").forGetter(MachineRecipeBuilder::getId),
+    DefaultCodecs.RESOURCE_LOCATION.fieldOf("machine").forGetter(MachineRecipeBuilder::getMachine),
     NamedCodec.intRange(1, Integer.MAX_VALUE).fieldOf("time").forGetter(MachineRecipeBuilder::getTime),
     ComponentRequirement.CODEC.listOf().fieldOf("requirements").forGetter(MachineRecipeBuilder::getRequirements),
     NamedCodec.INT.optionalFieldOf("priority", 0).forGetter(MachineRecipeBuilder::getPrio),
     NamedCodec.BOOL.optionalFieldOf("voidFailure", true).forGetter(MachineRecipeBuilder::isVoidF)
-  ).apply(instance, (machine, id, time, requirements, priority, voidF) -> {
-//    MMRLogger.INSTANCE.info("Creating recipe with id: {}, \nmachine: {}, \ntime: {}, \nrequirements: {}, \npriority: {}, \nvoidOnFailure: {}\n", id, machine, time, requirements, priority, voidF);
-
-    return new MachineRecipeBuilder(id, machine, time, requirements, priority, voidF);
-  }), "Machine recipe");
+  ).apply(instance, MachineRecipeBuilder::new), "Machine recipe");
 
   @Override
   public boolean matches(@NotNull RecipeInput container, @NotNull Level level) {
@@ -237,9 +228,6 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
     public MachineRecipe build() {
       try {
         MachineRecipe recipe = new MachineRecipe(id, machine, time, prio, voidF);
-//        if (requirements.stream().noneMatch(req -> req.getRequirementType().equals(RequirementTypeRegistration.DURATION.get()))) {
-//          requirements.add(new RequirementDuration(time));
-//        }
         requirements.forEach(recipe::addRequirement);
         logBuild(recipe);
         return recipe;
@@ -250,9 +238,6 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
     public MachineRecipe build(ResourceLocation id) {
       try {
         MachineRecipe recipe = new MachineRecipe(id, machine, time, prio, voidF);
-//        if (requirements.stream().noneMatch(req -> req.getRequirementType().equals(RequirementTypeRegistration.DURATION.get()))) {
-//          requirements.add(new RequirementDuration(time));
-//        }
         requirements.forEach(recipe::addRequirement);
         logBuild(recipe);
         return recipe;

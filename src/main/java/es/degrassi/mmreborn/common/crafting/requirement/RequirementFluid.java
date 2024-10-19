@@ -2,7 +2,7 @@ package es.degrassi.mmreborn.common.crafting.requirement;
 
 import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.ModularMachineryReborn;
-import es.degrassi.mmreborn.api.codec.DefaultCodecs;
+import es.degrassi.mmreborn.api.FluidIngredient;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.codec.NamedMapCodec;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentOutputRestrictor;
@@ -19,7 +19,6 @@ import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.CopyHandlerHelper;
 import es.degrassi.mmreborn.common.util.HybridTank;
 import es.degrassi.mmreborn.common.util.ResultChance;
-import es.degrassi.mmreborn.common.util.nbt.NBTMatchingHelper;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,13 +30,14 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class RequirementFluid extends ComponentRequirement<HybridFluid, RequirementFluid> implements ComponentRequirement.ChancedRequirement {
   public static final NamedMapCodec<RequirementFluid> CODEC = NamedCodec.record(instance -> instance.group(
-    DefaultCodecs.FLUID_OR_STACK.fieldOf("fluid").forGetter(req -> req.required.asFluidStack()),
+    FluidIngredient.CODEC.fieldOf("fluid").forGetter(req -> req.ingredient),
     NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(ComponentRequirement::getActionType),
+    NamedCodec.INT.optionalFieldOf("amount").forGetter(req -> Optional.of(req.amount)),
     NamedCodec.floatRange(0, 1).optionalFieldOf("chance", 1f).forGetter(req -> req.chance),
     NamedCodec.of(CompoundTag.CODEC).optionalFieldOf("nbt", new CompoundTag()).forGetter(RequirementFluid::getTagMatch),
     NamedCodec.of(CompoundTag.CODEC).optionalFieldOf("nbt-display").forGetter(req -> Optional.ofNullable(req.getTagDisplay()))
-  ).apply(instance, (fluid, mode, chance, nbt, nbt_display) -> {
-    RequirementFluid requirementFluid = new RequirementFluid(mode, fluid);
+  ).apply(instance, (fluid, mode, amount, chance, nbt, nbt_display) -> {
+    RequirementFluid requirementFluid = new RequirementFluid(mode, fluid, amount.orElse(1000));
     requirementFluid.setChance(chance);
     requirementFluid.setMatchNBTTag(nbt);
     requirementFluid.setDisplayNBTTag(nbt_display.orElse(nbt));
@@ -46,31 +46,35 @@ public class RequirementFluid extends ComponentRequirement<HybridFluid, Requirem
 
   public final HybridFluid required;
   public float chance = 1F;
+  public final int amount;
 
   private HybridFluid requirementCheck;
   private boolean doesntConsumeInput;
+  private final FluidIngredient ingredient;
 
-  private CompoundTag tagMatch = null, tagDisplay = null;
+  private CompoundTag tagMatch = new CompoundTag(), tagDisplay = new CompoundTag();
 
   @Override
   public JsonObject asJson() {
     JsonObject json = super.asJson();
     json.addProperty("type", ModularMachineryReborn.rl("fluid").toString());
     json.addProperty("fluid", required.asFluidStack().getHoverName().getString());
+    json.addProperty("amount", required.asFluidStack().getAmount());
     json.addProperty("chance", chance);
     json.addProperty("nbt", tagMatch.getAsString());
     json.addProperty("nbt-display", tagDisplay.getAsString());
     return json;
   }
 
-  public RequirementFluid(IOType ioType, FluidStack fluid) {
-    this(RequirementTypeRegistration.FLUID.get(), ioType, new HybridFluid(fluid));
+  public RequirementFluid(IOType ioType, FluidIngredient fluid, int amount) {
+    this(RequirementTypeRegistration.FLUID.get(), ioType, fluid, amount);
   }
 
-  private RequirementFluid(RequirementType<RequirementFluid> type, IOType ioType, HybridFluid required) {
+  private RequirementFluid(RequirementType<RequirementFluid> type, IOType ioType, FluidIngredient fluid, int amount) {
     super(type, ioType);
-    this.required = required.copy();
-    this.requirementCheck = this.required.copy();
+    this.ingredient = fluid;
+    this.required = new HybridFluid(new FluidStack(fluid.getAll().getFirst(), amount));
+    this.amount = amount;
   }
 
 //    public static RequirementFluid createMekanismGasRequirement(RequirementTypeFluid type, IOType ioType, GasStack gasStack) {
@@ -84,7 +88,7 @@ public class RequirementFluid extends ComponentRequirement<HybridFluid, Requirem
 
   @Override
   public RequirementFluid deepCopy() {
-    RequirementFluid fluid = new RequirementFluid(this.getRequirementType(), this.getActionType(), this.required.copy());
+    RequirementFluid fluid = new RequirementFluid(this.getActionType(), new FluidIngredient(ingredient.getAll().getFirst()), amount);
     fluid.chance = this.chance;
     fluid.tagMatch = getTagMatch();
     fluid.tagDisplay = getTagDisplay();
@@ -93,9 +97,8 @@ public class RequirementFluid extends ComponentRequirement<HybridFluid, Requirem
 
   @Override
   public RequirementFluid deepCopyModified(List<RecipeModifier> modifiers) {
-    HybridFluid hybrid = this.required.copy();
-    hybrid.setAmount(Math.round(RecipeModifier.applyModifiers(modifiers, this, hybrid.getAmount(), false)));
-    RequirementFluid fluid = new RequirementFluid(this.getRequirementType(), this.getActionType(), hybrid);
+    int amount = Math.round(RecipeModifier.applyModifiers(modifiers, this, this.amount, false));
+    RequirementFluid fluid = new RequirementFluid(this.getActionType(), new FluidIngredient(ingredient.getAll().getFirst()), amount);
 
     fluid.chance = RecipeModifier.applyModifiers(modifiers, this, this.chance, true);
     fluid.tagMatch = getTagMatch();
@@ -115,9 +118,6 @@ public class RequirementFluid extends ComponentRequirement<HybridFluid, Requirem
 
   @Nullable
   public CompoundTag getTagMatch() {
-    if (tagMatch == null) {
-      return null;
-    }
     return tagMatch.copy();
   }
 
@@ -127,9 +127,6 @@ public class RequirementFluid extends ComponentRequirement<HybridFluid, Requirem
 
   @Nullable
   public CompoundTag getTagDisplay() {
-    if (tagDisplay == null) {
-      return null;
-    }
     return tagDisplay.copy();
   }
 
@@ -177,22 +174,23 @@ public class RequirementFluid extends ComponentRequirement<HybridFluid, Requirem
 //            }
 //        }
 
-    switch (getActionType()) {
-      case INPUT:
+    return switch (getActionType()) {
+      case INPUT -> {
         //If it doesn't consume the item, we only need to see if it's actually there.
         FluidStack drained = handler.drain(this.requirementCheck.copy().asFluidStack(), IFluidHandler.FluidAction.EXECUTE);
         if (drained.isEmpty()) {
-          return CraftCheck.failure("craftcheck.failure.fluid.input");
+          yield CraftCheck.failure("craftcheck.failure.fluid.input");
         }
         if (FluidStack.isSameFluidSameComponents(drained, required.copy().asFluidStack())) {
-          return CraftCheck.failure("craftcheck.failure.fluid.input");
+          yield CraftCheck.failure("craftcheck.failure.fluid.input");
         }
         this.requirementCheck.setAmount(Math.max(this.requirementCheck.getAmount() - drained.getAmount(), 0));
         if (this.requirementCheck.getAmount() <= 0) {
-          return CraftCheck.success();
+          yield CraftCheck.success();
         }
-        return CraftCheck.failure("craftcheck.failure.fluid.input");
-      case OUTPUT:
+        yield CraftCheck.failure("craftcheck.failure.fluid.input");
+      }
+      case OUTPUT -> {
         handler = CopyHandlerHelper.copyTank(handler, context.getMachineController().getLevel().registryAccess());
 
         for (ComponentOutputRestrictor restrictor : restrictions) {
@@ -210,11 +208,12 @@ public class RequirementFluid extends ComponentRequirement<HybridFluid, Requirem
           context.addRestriction(new ComponentOutputRestrictor.RestrictionTank(this.requirementCheck.copy(), component));
         }
         if (didFill) {
-          return CraftCheck.success();
+          yield CraftCheck.success();
         }
-        return CraftCheck.failure("craftcheck.failure.fluid.output.space");
-    }
-    return CraftCheck.skipComponent();
+        yield CraftCheck.failure("craftcheck.failure.fluid.output.space");
+      }
+    };
+//    return CraftCheck.skipComponent();
   }
 
 //    @net.minecraftforge.fml.common.Optional.Method(modid = "mekanism")

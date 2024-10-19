@@ -14,6 +14,7 @@ import javax.annotation.Nonnull;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -63,6 +64,10 @@ public class DynamicMachine {
     String localizationKey = registryName.getNamespace() + "." + registryName.getPath();
     return I18n.exists(localizationKey) ? I18n.get(localizationKey) :
       localizedName != null ? localizedName : localizationKey;
+  }
+
+  public Component getName() {
+    return Component.literal(getLocalizedName());
   }
 
   public int getMachineColor() {

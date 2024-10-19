@@ -28,7 +28,6 @@ public enum FluidHatchSize implements StringRepresentable {
 
   public static FluidHatchSize value(String value) {
     return switch(value.toUpperCase(Locale.ROOT)) {
-      case "TINY" -> TINY;
       case "SMALL" -> SMALL;
       case "NORMAL" -> NORMAL;
       case "REINFORCED" -> REINFORCED;
@@ -36,7 +35,7 @@ public enum FluidHatchSize implements StringRepresentable {
       case "HUGE" -> HUGE;
       case "LUDICROUS" -> LUDICROUS;
       case "VACUUM" -> VACUUM;
-      default -> null;
+      default -> TINY;
     };
   }
 

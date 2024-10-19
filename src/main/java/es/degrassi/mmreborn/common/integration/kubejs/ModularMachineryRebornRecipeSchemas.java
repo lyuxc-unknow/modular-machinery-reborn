@@ -8,13 +8,11 @@ import dev.latvian.mods.kubejs.recipe.component.NumberComponent;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import dev.latvian.mods.kubejs.recipe.component.TimeComponent;
 import dev.latvian.mods.kubejs.recipe.schema.KubeRecipeFactory;
-import dev.latvian.mods.kubejs.recipe.schema.RecipeOptional;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.kubejs.util.TickDuration;
 import dev.latvian.mods.rhino.type.TypeInfo;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
-import java.util.Collections;
 import java.util.List;
 import net.minecraft.resources.ResourceLocation;
 

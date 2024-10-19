@@ -1,7 +1,10 @@
 package es.degrassi.mmreborn;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import es.degrassi.mmreborn.client.ModularMachineryRebornClient;
 import es.degrassi.mmreborn.client.util.EnergyDisplayUtil;
+import es.degrassi.mmreborn.common.block.BlockController;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
@@ -45,7 +48,8 @@ public class ModularMachineryReborn {
   public static final String MODID = "modular_machinery_reborn";
   public static final Logger LOGGER = LogManager.getLogger("Modular Machinery Reborn");
 
-  public static final Map<ResourceLocation, DynamicMachine> MACHINES = new HashMap<>();
+  public static final BiMap<ResourceLocation, DynamicMachine> MACHINES = HashBiMap.create();
+  public static final BiMap<ResourceLocation, BlockController> MACHINES_BLOCK = HashBiMap.create();
 
   public ModularMachineryReborn(final IEventBus MOD_BUS) {
     ConfigHolder<MMRConfig> config = AutoConfig.register(MMRConfig.class, PartitioningSerializer.wrap(JanksonConfigSerializer::new));

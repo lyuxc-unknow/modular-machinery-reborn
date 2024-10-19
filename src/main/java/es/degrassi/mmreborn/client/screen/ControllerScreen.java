@@ -4,6 +4,7 @@ import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.client.container.ControllerContainer;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
+import es.degrassi.mmreborn.common.util.MMRLogger;
 import es.degrassi.mmreborn.common.util.RedstoneHelper;
 import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
@@ -26,6 +27,13 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerContaine
   }
 
   @Override
+  public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float pPartialTick) {
+    // Neo: replicate the super method's implementation to insert the event between background and widgets
+    super.render(guiGraphics, mouseX, mouseY, pPartialTick);
+    renderTooltip(guiGraphics, mouseX, mouseY);
+  }
+
+  @Override
   protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
     // render image background:
     guiGraphics.pose().pushPose();
@@ -34,11 +42,13 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerContaine
     int j = (this.height - this.imageHeight) / 2;
     guiGraphics.blit(TEXTURES_CONTROLLER, i, j, 0, 0, imageWidth, imageHeight);
     guiGraphics.pose().popPose();
+  }
 
-    // render strings:
+  @Override
+  protected void renderLabels(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
     guiGraphics.pose().pushPose();
     float scale = 0.72f;
-    guiGraphics.pose().translate(leftPos, topPos, 0);
+//    guiGraphics.pose().translate(leftPos, topPos, 0);
     guiGraphics.pose().scale(scale, scale, scale);
     int offsetX = 12;
     int offsetY = 12;
@@ -57,28 +67,11 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerContaine
       return;
     }
 
-    DynamicMachine machine = entity.getBlueprintMachine();
-    Component drawnHead;
-    if (machine != null) {
-      // render if blueprint is not null
-      drawnHead = Component.translatable("gui.controller.blueprint", "");
-      List<FormattedCharSequence> out = font.split(Component.literal(machine.getLocalizedName()), Mth.floor(135 * (1 / scale)));
-      guiGraphics.drawString(font, drawnHead, offsetX, offsetY, 0xFFFFFF);
-      for (FormattedCharSequence draw : out) {
-        offsetY += 10;
-        guiGraphics.drawString(font, draw, offsetX, offsetY, 0xFFFFFF);
-      }
-    } else {
-      drawnHead = Component.translatable("gui.controller.blueprint", Component.translatable("gui.controller.blueprint.none"));
-      guiGraphics.drawString(font, drawnHead, offsetX, offsetY, 0xFFFFFF);
-    }
-    offsetY += 15;
-
-    DynamicMachine found = entity.getFoundMachine();
-    if(found != DynamicMachine.DUMMY) {
+    DynamicMachine machine = entity.getFoundMachine();
+    if(machine != DynamicMachine.DUMMY) {
       // render if the structure of machine is not null
-      drawnHead = Component.translatable("gui.controller.structure", "");
-      List<FormattedCharSequence> out = font.split(Component.literal(found.getLocalizedName()), Mth.floor(135 * (1 / scale)));
+      Component drawnHead = Component.translatable("gui.controller.structure", "");
+      List<FormattedCharSequence>out = font.split(Component.literal(machine.getLocalizedName()), Mth.floor(135 * (1 / scale)));
       guiGraphics.drawString(font, drawnHead, offsetX, offsetY, 0xFFFFFF);
       for (FormattedCharSequence draw : out) {
         offsetY += 10;
@@ -86,7 +79,7 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerContaine
       }
     } else {
       // render if the structure of machine is null
-      drawnHead = Component.translatable("gui.controller.structure", Component.translatable("gui.controller.structure.none"));
+      Component drawnHead = Component.translatable("gui.controller.structure", Component.translatable("gui.controller.structure.none"));
       guiGraphics.drawString(font, drawnHead, offsetX, offsetY, 0xFFFFFF);
     }
     offsetY += 15;
@@ -96,7 +89,7 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerContaine
     guiGraphics.drawString(font, status, offsetX, offsetY, 0xFFFFFF);
     String statusKey = entity.getCraftingStatus().getUnlocMessage();
 
-    List<FormattedCharSequence> out = font.split(Component.translatable(statusKey), Mth.floor(135 * (1 / scale)));
+    List<FormattedCharSequence>out = font.split(Component.translatable(statusKey), Mth.floor(135 * (1 / scale)));
     for (FormattedCharSequence draw : out) {
       offsetY += 10;
       guiGraphics.drawString(font, draw, offsetX, offsetY, 0xFFFFFF);
@@ -104,16 +97,14 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerContaine
     offsetY += 15;
     if (entity.hasActiveRecipe()) {
       // render if the recipe of machine is not null
-      int percProgress = Mth.clamp(Mth.floor(entity.getCurrentActiveRecipeProgress(partialTick) * 100F), 0, 100);
+      int percProgress = Mth.clamp(
+        Mth.floor(
+          (entity.getRecipeTicks() / (float) entity.getActiveRecipe().getRecipe().getTickTime()) * 100F
+        ), 0, 100);
       Component progressStr = Component.translatable("gui.controller.status.crafting.progress", percProgress + "%");
       guiGraphics.drawString(font, progressStr, offsetX, offsetY, 0xFFFFFF);
     }
 
     guiGraphics.pose().popPose();
-    renderTooltip(guiGraphics, mouseX, mouseY);
-  }
-
-  @Override
-  protected void renderLabels(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
   }
 }

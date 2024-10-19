@@ -1,7 +1,9 @@
 package es.degrassi.mmreborn.common.registration;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
+import es.degrassi.mmreborn.common.item.ControllerItem;
 import es.degrassi.mmreborn.common.item.ItemBlueprint;
+import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import java.util.function.Supplier;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
@@ -21,11 +23,10 @@ public class CreativeTabsRegistration {
     .icon(ItemRegistration.MODULARIUM.get()::getDefaultInstance)
     .displayItems((params, output) -> {
       ItemRegistration.ITEMS.getEntries().forEach(entry -> {
-        if (entry.get() instanceof ItemBlueprint blueprint) {
+        if (entry.get() instanceof ControllerItem) {
           ModularMachineryReborn.MACHINES.keySet().forEach(id -> {
-            ItemStack stack = blueprint.getDefaultInstance();
-            stack.set(Registration.MACHINE_DATA, id);
-            output.accept(stack);
+            if (id.equals(DynamicMachine.DUMMY.getRegistryName())) return;
+            output.accept(ControllerItem.makeMachineItem(id));
           });
         } else
           output.accept(entry.get());

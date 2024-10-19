@@ -33,7 +33,7 @@ public class StructureCheck {
     if (entity.ticksExisted % ticks == 0) {
       checkNotNull();
       checkNull();
-      entity.set(machine, status, recipe);
+      entity.set(status, recipe);
       colorize(machine);
     }
   }

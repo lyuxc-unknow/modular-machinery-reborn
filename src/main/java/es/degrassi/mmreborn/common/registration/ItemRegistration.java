@@ -6,6 +6,7 @@ import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
 import es.degrassi.mmreborn.common.item.CasingItem;
+import es.degrassi.mmreborn.common.item.ControllerItem;
 import es.degrassi.mmreborn.common.item.EnergyHatchItem;
 import es.degrassi.mmreborn.common.item.FluidHatchItem;
 import es.degrassi.mmreborn.common.item.InputBusItem;
@@ -31,7 +32,7 @@ public class ItemRegistration {
   public static final DeferredHolder<Item, CasingItem> CASING_REINFORCED = ITEMS.register("casing_" + CasingType.REINFORCED.getSerializedName(), () -> new CasingItem(BlockRegistration.CASING_REINFORCED.get()));
   public static final DeferredHolder<Item, CasingItem> CASING_CIRCUITRY = ITEMS.register("casing_" + CasingType.CIRCUITRY.getSerializedName(), () -> new CasingItem(BlockRegistration.CASING_CIRCUITRY.get()));
 
-  public static final DeferredHolder<Item, BlockItem> CONTROLLER = ITEMS.register("controller", () -> new BlockItem(BlockRegistration.CONTROLLER.get(), new Item.Properties()));
+  public static final DeferredHolder<Item, BlockItem> CONTROLLER = ITEMS.register("controller", ControllerItem::new);
 
   public static final DeferredHolder<Item, EnergyHatchItem> ENERGY_INPUT_HATCH_TINY = ITEMS.register("energyinputhatch_" + EnergyHatchSize.TINY.getSerializedName(),
     () -> new EnergyHatchItem(BlockRegistration.ENERGY_INPUT_HATCH_TINY.get(), EnergyHatchSize.TINY));

@@ -12,7 +12,6 @@ import es.degrassi.mmreborn.common.modifier.ModifierReplacement;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.ResultChance;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -218,12 +217,11 @@ public class RecipeCraftingContext {
 
     private static final CraftingCheckResult SUCCESS = new CraftingCheckResult();
 
-    private Map<String, Integer> unlocErrorMessages = new HashMap<>();
+    private final Map<String, Integer> unlocErrorMessages = new HashMap<>();
     @Getter
     private float validity = 0F;
 
-    private CraftingCheckResult() {
-    }
+    private CraftingCheckResult() {}
 
     private void setValidity(float validity) {
       this.validity = validity;
@@ -248,7 +246,5 @@ public class RecipeCraftingContext {
     public boolean isFailure() {
       return !this.unlocErrorMessages.isEmpty();
     }
-
   }
-
 }

@@ -14,7 +14,8 @@
       "p": "modular_machinery_reborn:casing_plain",
       "e": "#modular_machinery_reborn:energyinputhatch",
       "o": "#modular_machinery_reborn:outputbus",
-      "i": "#modular_machinery_reborn:inputbus"
+      "i": "#modular_machinery_reborn:inputbus",
+      "x": "#modular_machinery_reborn:fluidinputhatch"
     }
   }
 }

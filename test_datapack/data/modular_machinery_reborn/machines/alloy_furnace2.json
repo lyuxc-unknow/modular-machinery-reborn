@@ -1,0 +1,21 @@
+{
+  "registryName": "alloy_furnace2",
+  "localizedName": "Alloy Smelter 2",
+  "color": "#ffe8721e",
+  "structure": {
+    "pattern": [
+      ["rfr", "fpf", "rfr"],
+      ["rmr", "o i", "rer"],
+      ["rfr", "fpf", "rfr"]
+    ],
+    "keys": {
+      "r": "modular_machinery_reborn:casing_reinforced",
+      "f": "modular_machinery_reborn:casing_firebox",
+      "p": "modular_machinery_reborn:casing_plain",
+      "e": "#modular_machinery_reborn:energyinputhatch",
+      "o": "#modular_machinery_reborn:outputbus",
+      "i": "#modular_machinery_reborn:inputbus",
+      "x": "#modular_machinery_reborn:fluidinputhatch"
+    }
+  }
+}

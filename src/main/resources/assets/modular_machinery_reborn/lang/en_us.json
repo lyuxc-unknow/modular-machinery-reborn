@@ -24,14 +24,14 @@
   "craftcheck.failure.gas.output.space": "Not enough space for gas output(s)!",
   "craftcheck.failure.energy.input": "Not enough energy!",
 
-  "component.missing.modular_machinery_reborn.energy.output": "No Energy Output Hatch found!",
-  "component.missing.modular_machinery_reborn.energy.input": "No Energy Input Hatch found!",
-  "component.missing.modular_machinery_reborn.fluid.output": "No Fluid Output Hatch found!",
-  "component.missing.modular_machinery_reborn.fluid.input": "No Fluid Input Hatch found!",
-  "component.missing.modular_machinery_reborn.gas.output": "No Fluid Output Hatch found!",
-  "component.missing.modular_machinery_reborn.gas.input": "No Fluid Input Hatch found!",
-  "component.missing.modular_machinery_reborn.item.output": "No Item Output found!",
-  "component.missing.modular_machinery_reborn.item.input": "No Item Input found!",
+  "component.missing.energy.output": "No Energy Output Hatch found!",
+  "component.missing.energy.input": "No Energy Input Hatch found!",
+  "component.missing.fluid.output": "No Fluid Output Hatch found!",
+  "component.missing.fluid.input": "No Fluid Input Hatch found!",
+  "component.missing.gas.output": "No Fluid Output Hatch found!",
+  "component.missing.gas.input": "No Fluid Input Hatch found!",
+  "component.missing.item.output": "No Item Output found!",
+  "component.missing.item.input": "No Item Input found!",
 
   "gui.blueprint.popout.info": "Sneak to freeze the current preview to be able to preview it in world.",
   "gui.blueprint.popout.place": "Rightclick to place preview; move away from the placed one or open another structure preview (blueprint) to remove the one in-world.",
@@ -287,6 +287,10 @@
   "text.autoconfig.modular_machinery_reborn.option.itemBus.HUGE.size": "Size",
 
   "text.autoconfig.modular_machinery_reborn.option.itemBus.LUDICROUS": "Item Bus Ludicrous",
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.LUDICROUS.size": "Size"
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.LUDICROUS.size": "Size",
+
+  "tooltip.blueprint": "Click on any machine controller to show the structure",
+
+  "config.jade.plugin_modular_machinery_reborn.machine_component_provider": "Modular Machinery Reborn provider"
 }
 

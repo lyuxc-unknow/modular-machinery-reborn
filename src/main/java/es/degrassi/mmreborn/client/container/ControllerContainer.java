@@ -2,9 +2,7 @@ package es.degrassi.mmreborn.client.container;
 
 import es.degrassi.mmreborn.client.ModularMachineryRebornClient;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
-import es.degrassi.mmreborn.common.item.ItemBlueprint;
 import es.degrassi.mmreborn.common.registration.ContainerRegistration;
-import javax.annotation.Nonnull;
 import lombok.Getter;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -15,19 +13,18 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 @Getter
 public class ControllerContainer extends AbstractContainerMenu {
   private final MachineControllerEntity entity;
   private final Player player;
-  private final Slot slotBlueprint;
 
   public static void open(ServerPlayer player, MachineControllerEntity machine) {
     player.openMenu(new MenuProvider() {
       @Override
-      public Component getDisplayName() {
+      public @NotNull Component getDisplayName() {
         return Component.translatable("modular_machinery_reborn.gui.title.controller");
       }
 
@@ -43,10 +40,11 @@ public class ControllerContainer extends AbstractContainerMenu {
     this.entity = entity;
     this.player = playerInv.player;
     addPlayerSlots();
-
-    this.slotBlueprint = addSlot(new SlotBlueprint(entity.getInventory().asGUIAccess(), MachineControllerEntity.BLUEPRINT_SLOT, 151, 8));
   }
 
+  public ControllerContainer(int id, Inventory inv, FriendlyByteBuf buffer) {
+    this(id, inv, ModularMachineryRebornClient.getClientSideMachineControllerEntity(buffer.readBlockPos()));
+  }
 
   private void addPlayerSlots() {
     for (int i = 0; i < 3; i++) {
@@ -59,10 +57,6 @@ public class ControllerContainer extends AbstractContainerMenu {
     }
   }
 
-  public ControllerContainer(int id, Inventory inv, FriendlyByteBuf buffer) {
-    this(id, inv, ModularMachineryRebornClient.getClientSideMachineControllerEntity(buffer.readBlockPos()));
-  }
-
   @Override
   public ItemStack quickMoveStack(Player player, int index) {
     ItemStack itemstack = ItemStack.EMPTY;
@@ -71,18 +65,6 @@ public class ControllerContainer extends AbstractContainerMenu {
     if (slot.hasItem()) {
       ItemStack itemstack1 = slot.getItem();
       itemstack = itemstack1.copy();
-
-      if(index >= 0 && index < 36) {
-        if(!itemstack1.isEmpty() && itemstack1.getItem() instanceof ItemBlueprint) {
-          Slot sb = this.slots.get(this.slotBlueprint.index);
-          if(!sb.hasItem()) {
-            if(!this.moveItemStackTo(itemstack1, sb.index, sb.index + 1, false)) {
-              return ItemStack.EMPTY;
-            }
-          }
-        }
-      }
-
       if (index >= 0 && index < 27) {
         if (!this.moveItemStackTo(itemstack1, 27, 36, false)) {
           return ItemStack.EMPTY;
@@ -113,10 +95,12 @@ public class ControllerContainer extends AbstractContainerMenu {
 
   @Override
   public boolean stillValid(Player player) {
-    return !this.entity.isRemoved();
+    return player.level().getBlockState(this.entity.getBlockPos()) == this.entity.getBlockState() &&
+      player.level().getBlockEntity(this.entity.getBlockPos()) == this.entity &&
+      player.position().distanceToSqr(Vec3.atCenterOf(this.entity.getBlockPos())) <= 64;
   }
 
-  public class SlotBlueprint extends SlotItemHandler {
+  /*public class SlotBlueprint extends SlotItemHandler {
 
     public SlotBlueprint(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
       super(itemHandler, index, xPosition, yPosition);
@@ -134,5 +118,5 @@ public class ControllerContainer extends AbstractContainerMenu {
       super.setChanged();
       entity.markForUpdate();
     }
-  }
+  }*/
 }

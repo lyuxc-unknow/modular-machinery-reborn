@@ -12,26 +12,20 @@
     {
       "type": "modular_machinery_reborn:item",
       "mode": "output",
-      "item": {
-        "id": "minecraft:diamond",
-        "count": 1
-      }
+      "item": "minecraft:diamond",
+      "amount": 1
     },
     {
       "type": "modular_machinery_reborn:item",
       "mode": "input",
-      "item": {
-        "id": "minecraft:coal",
-        "count": 32
-      }
+      "item": "minecraft:coal",
+      "amount": 32
     },
     {
       "type": "modular_machinery_reborn:item",
       "mode": "input",
-      "item": {
-        "id": "minecraft:tnt",
-        "count": 8
-      }
+      "item": "minecraft:tnt",
+      "amount": 8
     }
   ]
 }

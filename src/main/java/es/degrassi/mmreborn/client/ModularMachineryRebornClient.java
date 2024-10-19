@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.client.entity.renderer.ControllerRenderer;
 import es.degrassi.mmreborn.client.screen.ControllerScreen;
-import es.degrassi.mmreborn.common.block.BlockDynamicColor;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
@@ -24,7 +23,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -126,6 +124,7 @@ public class ModularMachineryRebornClient {
       BlockRegistration.FLUID_OUTPUT_HATCH_LUDICROUS.get(),
       BlockRegistration.FLUID_OUTPUT_HATCH_VACUUM.get()
     );
+    ModularMachineryReborn.MACHINES_BLOCK.values().forEach(block -> event.register(ModularMachineryRebornClient::blockColor, block));
   }
 
   @SubscribeEvent
@@ -195,6 +194,7 @@ public class ModularMachineryRebornClient {
       ItemRegistration.FLUID_OUTPUT_HATCH_LUDICROUS.get(),
       ItemRegistration.FLUID_OUTPUT_HATCH_VACUUM.get()
     );
+    ModularMachineryReborn.MACHINES_BLOCK.values().forEach(block -> event.register(ModularMachineryRebornClient::itemColor, block));
   }
 
   private static int blockColor(BlockState state, BlockAndTintGetter level, BlockPos pos, int tintIndex) {
@@ -215,14 +215,7 @@ public class ModularMachineryRebornClient {
   }
 
   private static int itemColor(ItemStack stack, int tintIndex) {
-    if (stack.getItem() instanceof BlockItem item && item.getBlock() instanceof BlockDynamicColor colorable) {
-      BlockState state = item.getBlock().defaultBlockState();
-      Level level = Minecraft.getInstance().level;
-      if(Minecraft.getInstance().player == null)
-        return Config.machineColor;
-      BlockPos pos = Minecraft.getInstance().player.blockPosition();
-      return colorable.getColorMultiplier(state, level, pos, tintIndex);
-    } else if (stack.getItem() instanceof ItemDynamicColor colorableItem) {
+    if (stack.getItem() instanceof ItemDynamicColor colorableItem) {
       return colorableItem.getColorFromItemstack(stack, tintIndex);
     }
     return Config.machineColor;
@@ -273,8 +266,8 @@ public class ModularMachineryRebornClient {
   public static MachineControllerEntity getClientSideMachineControllerEntity(BlockPos pos) {
     if(Minecraft.getInstance().level != null) {
       BlockEntity tile = Minecraft.getInstance().level.getBlockEntity(pos);
-      if(tile instanceof MachineControllerEntity)
-        return (MachineControllerEntity)tile;
+      if(tile instanceof MachineControllerEntity controller)
+        return controller;
     }
     throw new IllegalStateException("Trying to open a Custom Machine container without clicking on a Custom Machine block");
   }

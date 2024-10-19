@@ -1,25 +1,37 @@
 package es.degrassi.mmreborn.common.block;
 
+import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.client.container.ControllerContainer;
 import es.degrassi.mmreborn.client.entity.renderer.ControllerRenderer;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
+import es.degrassi.mmreborn.common.item.ControllerItem;
 import es.degrassi.mmreborn.common.item.ItemBlueprint;
+import es.degrassi.mmreborn.common.item.ItemDynamicColor;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
-import es.degrassi.mmreborn.common.registration.ItemRegistration;
+import es.degrassi.mmreborn.common.network.server.SMachineUpdatePacket;
 import es.degrassi.mmreborn.common.util.IOInventory;
+import es.degrassi.mmreborn.common.util.MMRLogger;
 import es.degrassi.mmreborn.common.util.RedstoneHelper;
 import java.util.List;
+import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SoundType;
@@ -27,13 +39,17 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("unused")
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class BlockController extends BlockMachineComponent {
   public BlockController() {
     super(
@@ -55,6 +71,36 @@ public class BlockController extends BlockMachineComponent {
   @Override
   public BlockState getStateForPlacement(BlockPlaceContext context) {
     return defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, context.getHorizontalDirection().getOpposite());
+  }
+
+  @Override
+  protected void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
+    ResourceLocation id = ModularMachineryReborn.MACHINES_BLOCK.inverse().get(this);
+    if (id != null && pLevel.getBlockEntity(pPos) instanceof MachineControllerEntity entity)
+      entity.setId(id);
+  }
+
+  //When placed by an entity
+  @Override
+  public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+    ControllerItem.getMachine(stack).ifPresent(machine -> {
+      MMRLogger.INSTANCE.info(machine.toString());
+      BlockEntity tile = level.getBlockEntity(pos);
+      if(tile instanceof MachineControllerEntity machineTile) {
+        machineTile.setId(machine.getRegistryName());
+        if(level instanceof ServerLevel serverLevel)
+          level.getServer().tell(new TickTask(1, () -> PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(pos), new SMachineUpdatePacket(machine.getRegistryName(), pos))));
+      }
+    });
+  }
+
+  @Override
+  public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+    BlockEntity tile = level.getBlockEntity(pos);
+    if (tile instanceof MachineControllerEntity entity) {
+      return ControllerItem.makeMachineItem(entity.getId());
+    }
+    return super.getCloneItemStack(state, target, level, pos, player);
   }
 
   @Override
@@ -126,7 +172,7 @@ public class BlockController extends BlockMachineComponent {
     if(te instanceof MachineControllerEntity controller) {
       if (player instanceof ServerPlayer serverPlayer) {
         if (player.getItemInHand(hand).getItem() instanceof ItemBlueprint) {
-          DynamicMachine machine = ItemBlueprint.getAssociatedMachine(player.getItemInHand(hand));
+          DynamicMachine machine = controller.getFoundMachine();
           if (machine == null) return ItemInteractionResult.FAIL;
           ControllerRenderer.add(machine, pos);
           return ItemInteractionResult.SUCCESS;

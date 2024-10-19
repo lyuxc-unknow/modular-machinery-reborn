@@ -2,6 +2,7 @@ package es.degrassi.mmreborn.api;
 
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonObject;
 import com.mojang.serialization.DataResult;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.util.Utils;
@@ -68,5 +69,10 @@ public class BlockTagIngredient implements IIngredient<PartialBlockState> {
   @Override
   public String toString() {
     return "#" + this.tag.location();
+  }
+
+  @Override
+  public JsonObject asJson() {
+    return new JsonObject();
   }
 }

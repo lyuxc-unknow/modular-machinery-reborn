@@ -1,5 +1,7 @@
 package es.degrassi.mmreborn.api;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import java.util.List;
 import net.minecraft.world.level.block.Rotation;
@@ -42,5 +44,10 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
 
   public BlockIngredient copyWithRotation(Rotation rotation) {
     return new BlockIngredient(getAll().stream().map(state -> state.copyWithRotation(rotation)).toList());
+  }
+
+  @Override
+  public JsonObject asJson() {
+    return new JsonObject();
   }
 }

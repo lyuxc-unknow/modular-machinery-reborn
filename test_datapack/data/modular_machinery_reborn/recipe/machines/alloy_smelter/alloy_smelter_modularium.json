@@ -12,10 +12,8 @@
     {
       "type": "modular_machinery_reborn:item",
       "mode": "output",
-      "item": {
-        "id": "modular_machinery_reborn:modularium",
-        "count": 4
-      }
+      "item": "modular_machinery_reborn:modularium",
+      "amount": 4
     },
     {
       "type": "modular_machinery_reborn:item",

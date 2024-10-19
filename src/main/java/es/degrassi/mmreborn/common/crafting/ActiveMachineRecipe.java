@@ -22,8 +22,8 @@ public class ActiveMachineRecipe {
   @Getter
   private final MachineRecipe recipe;
   private final Map<ResourceLocation, CompoundTag> dataMap = new HashMap<>();
-  @Getter
-  private int tick = 0;
+//  @Getter
+//  private int tick = 0;
 
   private final MachineControllerEntity entity;
 
@@ -34,17 +34,6 @@ public class ActiveMachineRecipe {
 
   public ActiveMachineRecipe(CompoundTag serialized, MachineControllerEntity entity) {
     this.entity = entity;
-//    this.recipe = MachineRecipe.RECIPES
-//      .values()
-//      .stream()
-//      .reduce(new LinkedList<>(), (acc, recipes) -> {
-//        acc.addAll(recipes);
-//        return acc;
-//      })
-//      .stream()
-//      .filter(recipe -> recipe.getId().equals(ResourceLocation.tryParse(serialized.getString("recipeName"))))
-//      .findFirst()
-//      .orElse(null);
     this.recipe = Optional
       .ofNullable(entity.getLevel())
       .flatMap(level -> level
@@ -52,10 +41,11 @@ public class ActiveMachineRecipe {
       .getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get())
       .stream()
       .map(RecipeHolder::value)
-      .filter(recipe -> recipe.getId().equals(ResourceLocation.tryParse(serialized.getString("recipeName"))))
+      .filter(recipe -> recipe.getId().equals(ResourceLocation.tryParse(serialized.getString("recipeId"))))
       .findFirst()).orElse(null);
 
-    this.tick = serialized.getInt("tick");
+    if (recipe == null) return;
+
     if (serialized.contains("data", Tag.TAG_LIST)) {
       ListTag listData = serialized.getList("data", Tag.TAG_COMPOUND);
       for (int i = 0; i < listData.size(); i++) {
@@ -70,7 +60,8 @@ public class ActiveMachineRecipe {
   }
 
   public void reset() {
-    this.tick = 0;
+    entity.setRecipeTicks(0);
+//    this.tick = 0;
   }
 
   @Nonnull
@@ -81,11 +72,11 @@ public class ActiveMachineRecipe {
     }
 
     RecipeCraftingContext.CraftingCheckResult check;
-    if (!(check = context.ioTick(tick)).isFailure()) {
-      this.tick++;
+    if (!(check = context.ioTick(entity.getRecipeTicks())).isFailure()) {
+      entity.setRecipeTicks(entity.getRecipeTicks() + 1);
       return MachineControllerEntity.CraftingStatus.working();
     } else {
-      this.tick = 0;
+      entity.setRecipeTicks(0);
       return MachineControllerEntity.CraftingStatus.failure(
         Iterables.getFirst(check.getUnlocalizedErrorMessages(), ""));
     }
@@ -105,21 +96,20 @@ public class ActiveMachineRecipe {
     int time = this.recipe.getRecipeTotalTickTime();
     //Not sure which a user will use... let's try both.
     time = Math.round(RecipeModifier.applyModifiers(context.getModifiers(RequirementTypeRegistration.DURATION.get()), RequirementTypeRegistration.DURATION.get(), null, time, false));
-    return this.tick >= time;
+    return entity.getRecipeTicks() >= time;
   }
 
   public void start(RecipeCraftingContext context) {
     context.startCrafting();
   }
 
-  public void complete(RecipeCraftingContext completionContext) {
-    completionContext.finishCrafting();
+  public void complete(RecipeCraftingContext context) {
+    context.finishCrafting();
   }
 
   public CompoundTag serialize() {
     CompoundTag tag = new CompoundTag();
-    tag.putInt("tick", this.tick);
-    tag.putString("recipeName", this.recipe.getId().toString());
+    tag.putString("recipeId", this.recipe.getId().toString());
 
     ListTag listData = new ListTag();
     for (Map.Entry<ResourceLocation, CompoundTag> dataEntry : this.dataMap.entrySet()) {

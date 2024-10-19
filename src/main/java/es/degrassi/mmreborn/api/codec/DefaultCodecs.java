@@ -18,6 +18,8 @@ import net.minecraft.ResourceLocationException;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -76,8 +78,41 @@ public class DefaultCodecs {
 
   public static final NamedCodec<Integer> HEX = NamedCodec.STRING.comapFlatMap(DefaultCodecs::decodeHexColor, DefaultCodecs::encodeHexColor, "Hex color");
 
+//  public static final NamedCodec<Either<TagKey<Item>, ItemStack>> ITEMSTACK_OR_TAG = NamedCodec.either(
+//    DefaultCodecs.ITEM_OR_STACK,
+//    DefaultCodecs.registryValueOrTag(BuiltInRegistries.ITEM)
+//  ).comapFlatMap(either -> {
+//    if (either.left().isPresent()) {
+//      return DataResult.success(Either.right(either.left().get()));
+//    } else if (either.right().isPresent()) {
+//      var e = either.right().get();
+//      if (e.left().isPresent()) {
+//        return DataResult.success(Either.left(e.left().get()));
+//      } else if(e.right().isPresent()) {
+//        return DataResult.success(Either.right(e.right().get().value().getDefaultInstance()));
+//      }
+//    }
+//    return DataResult.error(() -> "Either values can not be empty");
+//  }, either -> either.map(key -> "#" + key.location(), stack -> BuiltInRegistries.ITEM.getKey(stack.getItem()).toString()), "");
+
   public static <T> NamedCodec<TagKey<T>> tagKey(ResourceKey<Registry<T>> registry) {
     return RESOURCE_LOCATION.xmap(rl -> TagKey.create(registry, rl), TagKey::location, "Tag: " + registry.location());
+  }
+
+  public static <T> NamedCodec<TagKey<T>> registryKey(Registry<T> registry) {
+    return NamedCodec.STRING.comapFlatMap(s -> {
+      if(s.startsWith("#")) {
+        try {
+          TagKey<T> key = TagKey.create(registry.key(), ResourceLocation.parse(s.substring(1)));
+          if(MachineJsonReloadListener.context != null && MachineJsonReloadListener.context.getTag(key).isEmpty())
+            return DataResult.error(() -> "Invalid tag: " + s);
+          return DataResult.success(key);
+        } catch (ResourceLocationException e) {
+          return DataResult.error(e::getMessage);
+        }
+      }
+      return DataResult.error(() -> "Invalid tag, must start with #");
+    }, key -> "#" + key.location(), "Value or Tag: " + registry.key().location());
   }
 
   public static <T> NamedCodec<Either<TagKey<T>, Holder<T>>> registryValueOrTag(Registry<T> registry) {

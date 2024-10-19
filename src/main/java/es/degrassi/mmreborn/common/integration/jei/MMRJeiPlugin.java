@@ -4,6 +4,7 @@ import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.integration.jei.category.CategoryDynamicRecipe;
 import es.degrassi.mmreborn.common.integration.jei.category.DynamicRecipeWrapper;
+import es.degrassi.mmreborn.common.item.ControllerItem;
 import es.degrassi.mmreborn.common.item.ItemBlueprint;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IJeiHelpers;
@@ -47,12 +49,12 @@ public class MMRJeiPlugin implements IModPlugin {
 
   @Override
   public void registerItemSubtypes(ISubtypeRegistration registration) {
-    registration.registerSubtypeInterpreter(ItemRegistration.BLUEPRINT.get(), (stack, context) -> {
-      DynamicMachine machine = ItemBlueprint.getAssociatedMachine(stack);
-      if (machine == null) {
-        return IIngredientSubtypeInterpreter.NONE;
-      }
-      return machine.getRegistryName().toString();
+    registration.registerSubtypeInterpreter(ItemRegistration.CONTROLLER.get(), (stack, context) -> {
+      AtomicReference<String> toReturn = new AtomicReference<>(IIngredientSubtypeInterpreter.NONE);
+      ControllerItem.getMachine(stack).ifPresent(machine -> {
+        toReturn.set(machine.getRegistryName().toString());
+      });
+      return toReturn.get();
     });
   }
 
@@ -71,7 +73,7 @@ public class MMRJeiPlugin implements IModPlugin {
     if (jeiHelpers == null) jeiHelpers = registration.getJeiHelpers();
     for (DynamicMachine machine : ModularMachineryReborn.MACHINES.values()) {
       if (machine == null || machine == DynamicMachine.DUMMY) continue;
-      ItemStack stack = new ItemStack(ItemRegistration.BLUEPRINT.get());
+      ItemStack stack = new ItemStack(ItemRegistration.CONTROLLER.get());
       stack.set(Registration.MACHINE_DATA, machine.getRegistryName());
       registration.addRecipeCatalyst(stack, getCategory(machine).getRecipeType());
     }

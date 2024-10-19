@@ -6,7 +6,12 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -94,7 +99,7 @@ public class ItemUtils {
     return false;
   }
 
-  public static boolean consumeFromInventoryOreDict(IItemHandlerModifiable handler, String oreName, int amount, boolean simulate, @Nullable CompoundTag matchNBTTag) {
+  public static boolean consumeFromInventoryOreDict(IItemHandlerModifiable handler, ResourceLocation oreName, int amount, boolean simulate, @Nullable CompoundTag matchNBTTag) {
     Map<Integer, ItemStack> contents = findItemsIndexedInInventoryOreDict(handler, oreName, matchNBTTag);
     if (contents.isEmpty()) return false;
 
@@ -215,11 +220,13 @@ public class ItemUtils {
     return stacksOut;
   }
 
-  public static Map<Integer, ItemStack> findItemsIndexedInInventoryOreDict(IItemHandlerModifiable handler, String oreDict, @Nullable CompoundTag matchNBTTag) {
+  public static Map<Integer, ItemStack> findItemsIndexedInInventoryOreDict(IItemHandlerModifiable handler, ResourceLocation oreDict, @Nullable CompoundTag matchNBTTag) {
     Map<Integer, ItemStack> stacksOut = new HashMap<>();
     for (int j = 0; j < handler.getSlots(); j++) {
       ItemStack s = handler.getStackInSlot(j);
       if(s.isEmpty()) continue;
+      if (s.is(TagKey.create(Registries.ITEM, oreDict)))
+        stacksOut.put(j, s.copy());
 //      int[] ids = OreDictionary.getOreIDs(s);
 //      for (int id : ids) {
 //        if(OreDictionary.getOreName(id).equals(oreDict) && NBTMatchingHelper.matchNBTCompound(matchNBTTag, s.getTagCompound())) {

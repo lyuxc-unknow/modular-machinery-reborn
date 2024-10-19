@@ -11,6 +11,7 @@ import es.degrassi.mmreborn.common.entity.ItemOutputBusEntity;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.entity.base.ColorableMachineComponentEntity;
 import es.degrassi.mmreborn.common.entity.base.EnergyHatchEntity;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -36,9 +37,7 @@ public class EntityRegistration {
     "controller",
     () -> new BlockEntityType<>(
       MachineControllerEntity::new,
-      Set.of(
-        BlockRegistration.CONTROLLER.get()
-      ),
+      validMachineBlocks(),
       null)
   );
   public static final Supplier<BlockEntityType<EnergyHatchEntity>> ENERGY_INPUT_HATCH = ENTITY_TYPE.register(
@@ -138,5 +137,12 @@ public class EntityRegistration {
 
   public static void register(final IEventBus bus) {
     ENTITY_TYPE.register(bus);
+  }
+
+  private static Set<Block> validMachineBlocks() {
+    Set<Block> validBlocks = new HashSet<>();
+    validBlocks.add(BlockRegistration.CONTROLLER.get());
+    validBlocks.addAll(ModularMachineryReborn.MACHINES_BLOCK.values());
+    return validBlocks;
   }
 }

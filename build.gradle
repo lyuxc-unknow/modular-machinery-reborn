@@ -239,7 +239,6 @@ unifiedPublishing {
 //                relations {
 //                    depends "cloth-config"
 //                    optional "kubejs"
-//                    optional "crafttweaker"
 //                    optional "jei"
 //                    optional "the-one-probe"
 //                    optional "jade"
@@ -255,7 +254,6 @@ unifiedPublishing {
 //                relations {
 //                    depends "cloth-config"
 //                    optional "kubejs"
-//                    optional "crafttweaker"
 //                    optional "jei"
 //                    optional "the-one-probe"
 //                    optional "jade"

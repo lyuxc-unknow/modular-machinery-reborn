@@ -1,38 +1,35 @@
 package es.degrassi.mmreborn.common.integration.ingredient;
 
-import javax.annotation.Nullable;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public class HybridFluid {
 
-  @Nullable
   private final FluidStack underlyingFluid;
 
-  public HybridFluid(@Nullable FluidStack underlyingFluid) {
+  public HybridFluid(FluidStack underlyingFluid) {
     this.underlyingFluid = underlyingFluid;
   }
 
   public int getAmount() {
-    if (underlyingFluid == null) {
+    if (underlyingFluid == FluidStack.EMPTY) {
       return 0;
     }
     return underlyingFluid.getAmount();
   }
 
   public void setAmount(int amount) {
-    if (underlyingFluid != null) {
+    if (!underlyingFluid.isEmpty()) {
       underlyingFluid.setAmount(amount);
     }
   }
 
-  @Nullable
   public FluidStack asFluidStack() {
     return underlyingFluid;
   }
 
   public HybridFluid copy() {
-    if (underlyingFluid == null) {
-      return new HybridFluid(null);
+    if (underlyingFluid == FluidStack.EMPTY) {
+      return new HybridFluid(FluidStack.EMPTY.copy());
     }
     return new HybridFluid(this.underlyingFluid.copy());
   }

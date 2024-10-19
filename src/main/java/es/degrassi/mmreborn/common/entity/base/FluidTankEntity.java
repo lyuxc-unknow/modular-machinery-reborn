@@ -2,10 +2,8 @@ package es.degrassi.mmreborn.common.entity.base;
 
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
 import es.degrassi.mmreborn.common.machine.IOType;
-import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.util.HybridTank;
 import es.degrassi.mmreborn.common.util.Mods;
-import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
@@ -59,16 +57,5 @@ public abstract class FluidTankEntity extends ColorableMachineComponentEntity im
 //      this.writeMekGasData(tankTag);
     }
     compound.put("tank", tankTag);
-  }
-
-  @Nullable
-  @Override
-  public MachineComponent provideComponent() {
-    return new MachineComponent.FluidHatch(ioType) {
-      @Override
-      public HybridTank getContainerProvider() {
-        return FluidTankEntity.this.tank;
-      }
-    };
   }
 }
