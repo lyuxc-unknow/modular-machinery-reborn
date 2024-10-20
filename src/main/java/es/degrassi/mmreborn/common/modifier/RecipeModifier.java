@@ -75,8 +75,8 @@ public class RecipeModifier {
       .filter(mod -> ioType == null || mod.getIOTarget() == ioType)
       .filter(mod -> mod.affectsChance() == isChance)
       .toList();
-    float add = 0F;
-    float mul = 1F;
+    float add = OPERATION_ADD;
+    float mul = OPERATION_MULTIPLY;
     for (RecipeModifier mod : applicable) {
       if (mod.getOperation() == 0) {
         add += mod.getModifier();

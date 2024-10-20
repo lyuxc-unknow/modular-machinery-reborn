@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nullable;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.HolderLookup;
@@ -79,6 +80,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
 
   private final int sortId;
   private final ResourceLocation owningMachine, id;
+  @Getter(AccessLevel.NONE)
   private final int tickTime;
   private final List<ComponentRequirement<?, ?>> recipeRequirements = Lists.newArrayList();
   private final int configuredPriority;

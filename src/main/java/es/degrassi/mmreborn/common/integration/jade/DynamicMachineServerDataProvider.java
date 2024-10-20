@@ -19,7 +19,7 @@ public class DynamicMachineServerDataProvider implements IServerDataProvider<Blo
       tag.put("status", machine.getCraftingStatus().serializeNBT());
       if (machine.getActiveRecipe() != null) {
         tag.putDouble("progress", machine.getRecipeTicks());
-        tag.putInt("total", machine.getActiveRecipe().getRecipe().getTickTime());
+        tag.putInt("total", machine.getActiveRecipe().getRecipe().getRecipeTotalTickTime());
 //        tag.put("recipe", recipe);
       }
       nbt.put(ModularMachineryReborn.MODID, tag);

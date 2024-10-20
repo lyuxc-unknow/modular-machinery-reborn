@@ -97,10 +97,7 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerContaine
     offsetY += 15;
     if (entity.hasActiveRecipe()) {
       // render if the recipe of machine is not null
-      int percProgress = Mth.clamp(
-        Mth.floor(
-          (entity.getRecipeTicks() / (float) entity.getActiveRecipe().getRecipe().getTickTime()) * 100F
-        ), 0, 100);
+      int percProgress = Mth.clamp(Mth.floor(entity.getCurrentActiveRecipeProgress() * 100F), 0, 100);
       Component progressStr = Component.translatable("gui.controller.status.crafting.progress", percProgress + "%");
       guiGraphics.drawString(font, progressStr, offsetX, offsetY, 0xFFFFFF);
     }

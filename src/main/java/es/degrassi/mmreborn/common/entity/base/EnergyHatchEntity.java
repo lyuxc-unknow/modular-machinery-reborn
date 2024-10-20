@@ -81,24 +81,9 @@ public abstract class EnergyHatchEntity extends ColorableMachineComponentEntity 
     return this instanceof EnergyInputHatchEntity;
   }
 
-//    @Nullable
-//    @Override
-//    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-//        if(capability == CapabilityEnergy.ENERGY) {
-//            return (T) this;
-//        }
-//        if (Mods.GREGTECH.isPresent() &&
-//                capability == getGTEnergyCapability()) {
-//            return (T) this.energyContainer;
-//        }
-//
-//        return super.getCapability(capability, facing);
-//    }
-
-
   @Override
-  public void readCustomNBT(CompoundTag compound, HolderLookup.Provider pRegistries) {
-    super.readCustomNBT(compound, pRegistries);
+  protected void loadAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
+    super.loadAdditional(compound, pRegistries);
 
     Tag energyTag = compound.get("energy");
     if (energyTag instanceof NumericTag) {
@@ -108,8 +93,8 @@ public abstract class EnergyHatchEntity extends ColorableMachineComponentEntity 
   }
 
   @Override
-  public void writeCustomNBT(CompoundTag compound, HolderLookup.Provider pRegistries) {
-    super.writeCustomNBT(compound, pRegistries);
+  protected void saveAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
+    super.saveAdditional(compound, pRegistries);
 
     compound.putLong("energy", this.energy);
     compound.putString("hatchSize", this.size.getSerializedName());

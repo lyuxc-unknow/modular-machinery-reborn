@@ -23,15 +23,15 @@ public abstract class TileItemBus extends TileInventory {
   }
 
   @Override
-  public void readCustomNBT(CompoundTag compound, HolderLookup.Provider pRegistries) {
-    super.readCustomNBT(compound, pRegistries);
+  protected void loadAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
+    super.loadAdditional(compound, pRegistries);
 
     this.size = ItemBusSize.value(compound.getString("busSize"));
   }
 
   @Override
-  public void writeCustomNBT(CompoundTag compound, HolderLookup.Provider pRegistries) {
-    super.writeCustomNBT(compound, pRegistries);
+  protected void saveAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
+    super.saveAdditional(compound, pRegistries);
 
     compound.putString("busSize", this.size.getSerializedName());
   }

@@ -17,6 +17,7 @@ import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.network.server.SMachineUpdatePacket;
 import es.degrassi.mmreborn.common.network.server.SUpdateCraftingStatusPacket;
+import es.degrassi.mmreborn.common.network.server.SUpdateRecipePacket;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import es.degrassi.mmreborn.common.util.IOInventory;
@@ -84,10 +85,18 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
       if (this.ticksExisted % MMRConfig.get().general.checkRecipeTicks == 0) {
         searchAndUpdateRecipe();
       }
-    } else {
+    } else if (this.recipeTicks > -1){
       useRecipe();
     }
     setChanged();
+  }
+
+  public void setRecipeTicks(int recipeTicks) {
+    setRequestModelUpdate(true);
+    setChanged();
+    this.recipeTicks = recipeTicks;
+    if (getLevel() instanceof ServerLevel l && activeRecipe != null)
+      PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getBlockPos()), new SUpdateRecipePacket(activeRecipe.getRecipe().getId(), recipeTicks, getBlockPos()));
   }
 
   private void useRecipe() {
@@ -96,6 +105,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
 
     if (this.activeRecipe.getRecipe().doesCancelRecipeOnPerTickFailure() && !this.craftingStatus.isCrafting()) {
       this.activeRecipe = null;
+      setRecipeTicks(-1);
     } else if (this.activeRecipe.isCompleted(this, context) &&
       !context.canStartCrafting(req -> req.getActionType() == IOType.OUTPUT).isFailure()) {
       this.activeRecipe.complete(context);
@@ -104,6 +114,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
       RecipeCraftingContext.CraftingCheckResult result = context.canStartCrafting();
       if (result.isFailure()) {
         this.activeRecipe = null;
+        setRecipeTicks(-1);
         searchAndUpdateRecipe();
       } else {
         this.activeRecipe.start(context);
@@ -114,6 +125,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
   }
 
   private void searchAndUpdateRecipe() {
+    setChanged();
     if (getLevel() == null) return;
     List<MachineRecipe> availableRecipes =
       getLevel()
@@ -135,6 +147,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
       RecipeCraftingContext.CraftingCheckResult result = context.canStartCrafting();
       if (!result.isFailure()) {
         this.activeRecipe = aRecipe;
+        setRecipeTicks(0);
         this.activeRecipe.start(context);
         break;
       } else if (highestValidity == null ||
@@ -146,6 +159,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
     }
 
     if (this.activeRecipe == null) {
+      setRecipeTicks(-1);
       if (highestValidity != null) {
         setCraftingStatus(CraftingStatus.failure(
           Iterables.getFirst(highestValidityResult.getUnlocalizedErrorMessages(), "")));
@@ -155,12 +169,14 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
     } else {
       setCraftingStatus(CraftingStatus.working());
     }
-    setChanged();
   }
 
   public void set(CraftingStatus status, boolean recipe) {
     setCraftingStatus(status);
-    if (recipe) activeRecipe = null;
+    if (recipe) {
+      this.activeRecipe = null;
+      setRecipeTicks(-1);
+    }
     setRequestModelUpdate(true);
     setChanged();
   }
@@ -183,11 +199,12 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
   }
 
   private void checkStructure() {
-    if (ticksExisted % MMRConfig.get().general.checkStructureTicks == 0) {
+    if (this.ticksExisted % MMRConfig.get().general.checkStructureTicks == 0) {
       if (this.getFoundMachine() != null && this.getFoundMachine() != DynamicMachine.DUMMY) {
         if (!getFoundMachine().getPattern().match(getLevel(), getBlockPos(), getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING))) {
           distributeCasingColor(true);
           this.activeRecipe = null;
+          setRecipeTicks(-1);
           setCraftingStatus(CraftingStatus.MISSING_STRUCTURE);
         } else {
           distributeCasingColor(false);
@@ -234,7 +251,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
 
   private void updateComponents() {
     if (getFoundMachine() == null) return;
-    if (ticksExisted % 20 == 0) {
+    if (this.ticksExisted % 20 == 0) {
       this.foundComponents.clear();
       for (BlockPos potentialPosition : this.getFoundMachine().getPattern().getBlocks(getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).keySet()) {
         BlockPos realPos = getBlockPos().offset(potentialPosition);
@@ -247,16 +264,17 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
         }
       }
     }
+    setChanged();
   }
 
   public float getCurrentActiveRecipeProgress() {
-    if (activeRecipe == null) return 0F;
-    float maxTick = activeRecipe.getRecipe().getRecipeTotalTickTime();
-    return Mth.clamp(recipeTicks / maxTick, 0F, 1F);
+    if (this.activeRecipe == null || this.recipeTicks < 0 || this.getActiveRecipe().getRecipe() == null) return 0F;
+    float maxTick = this.activeRecipe.getRecipe().getRecipeTotalTickTime();
+    return Mth.clamp(this.recipeTicks / maxTick, 0F, 1F);
   }
 
   public boolean hasActiveRecipe() {
-    return this.activeRecipe != null;
+    return this.activeRecipe != null && this.activeRecipe.getRecipe() != null && this.recipeTicks > -1;
   }
 
   @Nullable
@@ -270,8 +288,8 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
   }
 
   @Override
-  public void readCustomNBT(CompoundTag compound, HolderLookup.Provider pRegistries) {
-    super.readCustomNBT(compound, pRegistries);
+  protected void loadAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
+    super.loadAdditional(compound, pRegistries);
 
     this.inventory = IOInventory.deserialize(this, compound.getCompound("items"), pRegistries);
     this.inventory.setStackLimit(1, BLUEPRINT_SLOT);
@@ -298,8 +316,8 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
   }
 
   @Override
-  public void writeCustomNBT(CompoundTag compound, HolderLookup.Provider pRegistries) {
-    super.writeCustomNBT(compound, pRegistries);
+  protected void saveAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
+    super.saveAdditional(compound, pRegistries);
     compound.put("items", this.inventory.writeNBT(pRegistries));
     compound.put("status", this.craftingStatus.serializeNBT());
     compound.putString("machine", id.toString());

@@ -50,7 +50,6 @@ public abstract class BlockMachineComponent extends Block implements BlockDynami
   @Nullable
   @Override
   public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level pLevel, @NotNull BlockState pState, @NotNull BlockEntityType<T> pBlockEntityType) {
-    if (pLevel.isClientSide()) return null;
     return (level, pos, state, blockEntity) -> {
       if (blockEntity.getType() == pBlockEntityType && blockEntity instanceof BlockEntitySynchronized entity) {
         entity.tick();

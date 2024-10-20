@@ -25,15 +25,15 @@ public abstract class TileInventory extends ColorableMachineComponentEntity {
   public abstract IOInventory buildInventory(TileInventory tile, int size);
 
   @Override
-  public void readCustomNBT(CompoundTag compound, HolderLookup.Provider pRegistries) {
-    super.readCustomNBT(compound, pRegistries);
+  protected void loadAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
+    super.loadAdditional(compound, pRegistries);
 
     this.inventory = IOInventory.deserialize(this, compound.getCompound("inventory"), pRegistries);
   }
 
   @Override
-  public void writeCustomNBT(CompoundTag compound, HolderLookup.Provider pRegistries) {
-    super.writeCustomNBT(compound, pRegistries);
+  protected void saveAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
+    super.saveAdditional(compound, pRegistries);
 
     compound.put("inventory", this.inventory.writeNBT(pRegistries));
   }

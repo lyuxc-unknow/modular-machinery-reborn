@@ -44,8 +44,8 @@ public class ColorableMachineComponentEntity extends BlockEntitySynchronized imp
   }
 
   @Override
-  public void readCustomNBT(CompoundTag nbt, HolderLookup.Provider pRegistries) {
-    super.readCustomNBT(nbt, pRegistries);
+  protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider pRegistries) {
+    super.loadAdditional(nbt, pRegistries);
     if (nbt.contains("casingColor")) {
       definedColor = nbt.getInt("casingColor");
       return;
@@ -54,8 +54,8 @@ public class ColorableMachineComponentEntity extends BlockEntitySynchronized imp
   }
 
   @Override
-  public void writeCustomNBT(CompoundTag nbt, HolderLookup.Provider pRegistries) {
-    super.writeCustomNBT(nbt, pRegistries);
+  protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider pRegistries) {
+    super.saveAdditional(nbt, pRegistries);
     nbt.putInt("casingColor", this.definedColor);
   }
 

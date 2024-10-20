@@ -26,26 +26,18 @@ public class BlockEntitySynchronized extends BlockEntity {
   public void tick() {
   }
 
-  public void readCustomNBT(CompoundTag nbt, HolderLookup.Provider pRegistries) {
-    requestModelUpdate = nbt.contains(REQUEST_UPDATE_KEY) && nbt.getBoolean(REQUEST_UPDATE_KEY);
-    inStructure = nbt.contains(IN_STRUCTURE_KEY) && nbt.getBoolean(IN_STRUCTURE_KEY);
-  }
-
-  public void writeCustomNBT(CompoundTag nbt, HolderLookup.Provider pRegistries) {
-    nbt.putBoolean(REQUEST_UPDATE_KEY, requestModelUpdate);
-    nbt.putBoolean(IN_STRUCTURE_KEY, inStructure);
-  }
-
   @Override
   protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider pRegistries) {
     super.loadAdditional(nbt, pRegistries);
-    readCustomNBT(nbt, pRegistries);
+    requestModelUpdate = nbt.contains(REQUEST_UPDATE_KEY) && nbt.getBoolean(REQUEST_UPDATE_KEY);
+    inStructure = nbt.contains(IN_STRUCTURE_KEY) && nbt.getBoolean(IN_STRUCTURE_KEY);
   }
 
   @Override
   protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider pRegistries) {
     super.saveAdditional(nbt, pRegistries);
-    writeCustomNBT(nbt, pRegistries);
+    nbt.putBoolean(REQUEST_UPDATE_KEY, requestModelUpdate);
+    nbt.putBoolean(IN_STRUCTURE_KEY, inStructure);
   }
 
   @Override

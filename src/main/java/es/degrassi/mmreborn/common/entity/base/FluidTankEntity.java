@@ -31,8 +31,8 @@ public abstract class FluidTankEntity extends ColorableMachineComponentEntity im
   }
 
   @Override
-  public void readCustomNBT(CompoundTag compound, HolderLookup.Provider provider) {
-    super.readCustomNBT(compound, provider);
+  protected void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+    super.loadAdditional(compound, provider);
 
     this.ioType = compound.getBoolean("input") ? IOType.INPUT : IOType.OUTPUT;
     this.hatchSize = FluidHatchSize.value(compound.getString("size"));
@@ -46,8 +46,8 @@ public abstract class FluidTankEntity extends ColorableMachineComponentEntity im
   }
 
   @Override
-  public void writeCustomNBT(CompoundTag compound, HolderLookup.Provider provider) {
-    super.writeCustomNBT(compound, provider);
+  protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
+    super.saveAdditional(compound, provider);
 
     compound.putBoolean("input", ioType == IOType.INPUT);
     compound.putString("size", this.hatchSize.getSerializedName());
