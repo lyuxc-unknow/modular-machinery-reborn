@@ -11,6 +11,7 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiItemComponent;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
@@ -72,6 +73,11 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
     return json;
   }
 
+  @Override
+  public JeiItemComponent jeiComponent() {
+    return new JeiItemComponent(this);
+  }
+
   public RequirementItem(IOType ioType, IIngredient<Item> ingredient, int amount) {
     super(RequirementTypeRegistration.ITEM.get(), ioType);
     boolean isTag = ingredient instanceof ItemTagIngredient;
@@ -111,12 +117,6 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
       item.previewDisplayTag = this.previewDisplayTag.copy();
     }
     return item;
-  }
-
-  @Override
-  public JEIComponent<ItemStack> provideJEIComponent() {
-//    return new JEIComponentItem(this);
-    return null;
   }
 
   @Override

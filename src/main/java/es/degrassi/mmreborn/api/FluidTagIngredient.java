@@ -8,7 +8,6 @@ import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.util.Utils;
 import java.util.List;
 import java.util.function.Function;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -37,7 +36,7 @@ public class FluidTagIngredient implements IIngredient<Fluid> {
   public static FluidTagIngredient create(String s) throws IllegalArgumentException {
     if(s.startsWith("#"))
       s = s.substring(1);
-    if(!Utils.isResourceNameValid(s))
+    if(Utils.isResourceNameValid(s))
       throw new IllegalArgumentException(String.format("Invalid tag id : %s", s));
     TagKey<Fluid> tag = TagKey.create(Registries.FLUID, ResourceLocation.parse(s));
     return new FluidTagIngredient(tag);

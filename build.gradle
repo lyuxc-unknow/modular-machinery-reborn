@@ -3,7 +3,7 @@ plugins {
   id 'eclipse'
   id 'idea'
   id 'maven-publish'
-  id 'net.neoforged.gradle.userdev' version '7.0.142'
+  id 'net.neoforged.gradle.userdev' version '7.0.165'
   id "me.shedaniel.unified-publishing" version "0.1.+"
   id "io.freefair.lombok" version "8.6"
 }
@@ -83,6 +83,7 @@ repositories {
     url = "https://maven.saps.dev/releases"
     content {
       includeGroup "dev.latvian.mods"
+      includeGroup "dev.latvian.apps"
     }
   }
   maven {
@@ -110,6 +111,14 @@ repositories {
     // for rf stuffs
     url = "https://maven.covers1624.net"
   }
+  //Needed for KubeJS
+  maven {
+    url 'https://jitpack.io'
+    content {
+      includeGroup "com.github.rtyley"
+    }
+  }
+  mavenCentral()
 }
 
 dependencies {
@@ -122,15 +131,14 @@ dependencies {
   api("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}")
 
   // ProbeJS
-  localRuntime("curse.maven:probejs-585406:5536459")
+  localRuntime("curse.maven:probejs-585406:5820894")
 
   // JEI
   compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
   localRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
   // KubeJS
-//  compileOnly("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
-  implementation("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
+  localRuntime compileOnly("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
 
   // Jade
   localRuntime compileOnly("curse.maven:jade-324717:${jade_version}")

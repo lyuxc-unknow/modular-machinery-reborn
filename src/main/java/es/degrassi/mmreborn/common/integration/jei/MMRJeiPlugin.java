@@ -1,25 +1,29 @@
 package es.degrassi.mmreborn.common.integration.jei;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
+import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
-import es.degrassi.mmreborn.common.integration.jei.category.CategoryDynamicRecipe;
-import es.degrassi.mmreborn.common.integration.jei.category.DynamicRecipeWrapper;
+import es.degrassi.mmreborn.common.integration.jei.category.MMRRecipeCategory;
+import es.degrassi.mmreborn.common.integration.jei.ingredient.CustomIngredientTypes;
+import es.degrassi.mmreborn.common.integration.jei.ingredient.DummyIngredientRenderer;
+import es.degrassi.mmreborn.common.integration.jei.ingredient.EnergyIngredientHelper;
 import es.degrassi.mmreborn.common.item.ControllerItem;
-import es.degrassi.mmreborn.common.item.ItemBlueprint;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import es.degrassi.mmreborn.common.registration.Registration;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IJeiHelpers;
-import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
 import mezz.jei.api.recipe.IRecipeManager;
+import mezz.jei.api.registration.IModIngredientRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
@@ -36,21 +40,28 @@ import org.jetbrains.annotations.NotNull;
 public class MMRJeiPlugin implements IModPlugin {
   public static final ResourceLocation PLUGIN_ID = ModularMachineryReborn.rl("jei_plugin");
   public static IRecipeManager recipeManager;
-  private static final Map<DynamicMachine, CategoryDynamicRecipe> recipeCategories = new HashMap<>();
+  private static final Map<DynamicMachine, MMRRecipeCategory> recipeCategories = new HashMap<>();
   public static IJeiHelpers jeiHelpers;
 
   public static String getCategoryStringFor(DynamicMachine machine) {
     return "modularmachineryreborn.recipes." + machine.getRegistryName().getPath();
   }
 
-  public static CategoryDynamicRecipe getCategory(DynamicMachine machine) {
+  public static MMRRecipeCategory getCategory(DynamicMachine machine) {
     return recipeCategories.get(machine);
   }
 
   @Override
+  public void registerIngredients(IModIngredientRegistration registration) {
+    registration.register(CustomIngredientTypes.ENERGY, new ArrayList<>(), new EnergyIngredientHelper(), new DummyIngredientRenderer<>(), NamedCodec.LONG.codec());
+//    registration.register(CustomIngredientTypes.HYBRID_FLUID, new ArrayList<>, new HybridFluidIngredientHelper(), new DummyIngredientRenderer<>(), HybridFluid);
+  }
+
+  @Override
+  @SuppressWarnings("removal")
   public void registerItemSubtypes(ISubtypeRegistration registration) {
     registration.registerSubtypeInterpreter(ItemRegistration.CONTROLLER.get(), (stack, context) -> {
-      AtomicReference<String> toReturn = new AtomicReference<>(IIngredientSubtypeInterpreter.NONE);
+      AtomicReference<String> toReturn = new AtomicReference<>(null);
       ControllerItem.getMachine(stack).ifPresent(machine -> {
         toReturn.set(machine.getRegistryName().toString());
       });
@@ -62,7 +73,7 @@ public class MMRJeiPlugin implements IModPlugin {
   public void registerCategories(IRecipeCategoryRegistration registration) {
     if (jeiHelpers == null) jeiHelpers = registration.getJeiHelpers();
     ModularMachineryReborn.MACHINES.values().forEach(machine -> {
-      CategoryDynamicRecipe recipe = new CategoryDynamicRecipe(machine);
+      MMRRecipeCategory recipe = new MMRRecipeCategory(machine);
       recipeCategories.put(machine, recipe);
       registration.addRecipeCategories(recipe);
     });
@@ -76,6 +87,7 @@ public class MMRJeiPlugin implements IModPlugin {
       ItemStack stack = new ItemStack(ItemRegistration.CONTROLLER.get());
       stack.set(Registration.MACHINE_DATA, machine.getRegistryName());
       registration.addRecipeCatalyst(stack, getCategory(machine).getRecipeType());
+      registration.addRecipeCatalyst(ItemRegistration.BLUEPRINT.get(), getCategory(machine).getRecipeType());
     }
   }
 
@@ -87,9 +99,14 @@ public class MMRJeiPlugin implements IModPlugin {
         Optional.ofNullable(Minecraft.getInstance().level)
           .map(ClientLevel::getRecipeManager)
           .map(r -> r.getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get()))
-          .map(list -> list.stream().map(RecipeHolder::value).map(DynamicRecipeWrapper::new).toList())
+          .map(list -> list
+            .stream()
+            .map(RecipeHolder::value)
+            .map(MachineRecipe::copy)
+            .filter(recipe -> Objects.requireNonNull(recipe.getOwningMachine()).getRegistryName().equals(machine.getRegistryName()))
+            .toList()
+          )
           .orElse(List.of())
-//        Optional.ofNullable(MachineRecipe.RECIPES.get(machine)).map(l -> l.stream().map(DynamicRecipeWrapper::new).toList()).orElse(List.of())
       );
     }
   }

@@ -9,6 +9,7 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiComponent;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
@@ -33,6 +34,11 @@ public class RequirementDuration extends ComponentRequirement<Integer, Requireme
     json.addProperty("type", ModularMachineryReborn.rl("duration").toString());
     json.addProperty("time", time);
     return json;
+  }
+
+  @Override
+  public <J extends JeiComponent<Integer, RequirementDuration>> J jeiComponent() {
+    return null;
   }
 
   @Override
@@ -91,11 +97,6 @@ public class RequirementDuration extends ComponentRequirement<Integer, Requireme
   @Override
   public String getMissingComponentErrorMessage(IOType ioType) {
     return "";
-  }
-
-  @Override
-  public JEIComponent<Integer> provideJEIComponent() {
-    return null;
   }
 
   @Override

@@ -6,7 +6,6 @@ import java.util.Map;
 import lombok.Getter;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-//import net.neoforged.neoforge.event.TickEvent;
 
 public class ClientScheduler {
 
@@ -21,7 +20,6 @@ public class ClientScheduler {
   @SubscribeEvent
   public void tick(ClientTickEvent.Pre event) {
     clientTick++;
-//    ModularMachineryRebornClient.renderHelper.tick();
 
     inTick = true;
     synchronized (lock) {

@@ -1,17 +1,13 @@
 package es.degrassi.mmreborn.common.util;
 
-import es.degrassi.mmreborn.common.util.nbt.NBTMatchingHelper;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -38,29 +34,7 @@ public class ItemUtils {
 
     for (int slot : contents.keySet()) {
       ItemStack inSlot = contents.get(slot);
-//      if(inSlot.getItem().hasContainerItem(inSlot)) {
-//        if(inSlot.getCount() > 1) {
-//          continue; //uh... rip. we won't consume 16 buckets at once.
-//        }
-//        ItemStack stack = ForgeHooks.getContainerItem(inSlot);
-//        fuelAmtToConsume -= TileEntityFurnace.getItemBurnTime(inSlot);
-//        if (!simulate) {
-//          handler.setStackInSlot(slot, stack.copy());
-//        }
-//        if (fuelAmtToConsume <= 0) {
-//          break;
-//        }
-//      }
-//      int fuelPer = TileEntityFurnace.getItemBurnTime(inSlot);
-//      int toConsumeDiv = fuelAmtToConsume / fuelPer;
-//      int fuelMod = fuelAmtToConsume % fuelPer;
-//
-//      int toConsume = toConsumeDiv + (fuelMod > 0 ? 1 : 0);
-//      int toRemove = toConsume > inSlot.getCount() ? inSlot.getCount() : toConsume;
-//
-//      fuelAmtToConsume -= toRemove * fuelPer;
       if (!simulate) {
-//        handler.setStackInSlot(slot, copyStackWithSize(inSlot, inSlot.getCount() - toRemove));
       }
       if (fuelAmtToConsume <= 0) {
         break;
@@ -76,19 +50,6 @@ public class ItemUtils {
     int cAmt = toConsume.getCount();
     for (int slot : contents.keySet()) {
       ItemStack inSlot = contents.get(slot);
-//      if(inSlot.getItem().hasContainerItem(inSlot)) {
-//        if(inSlot.getCount() > 1) {
-//          continue; //uh... rip. we won't consume 16 buckets at once.
-//        }
-//        ItemStack stack = ForgeHooks.getContainerItem(inSlot);
-//        cAmt--;
-//        if (!simulate) {
-//          handler.setStackInSlot(slot, stack.copy());
-//        }
-//        if (cAmt <= 0) {
-//          break;
-//        }
-//      }
       int toRemove = Math.min(cAmt, inSlot.getCount());
       cAmt -= toRemove;
       if (!simulate) {
@@ -106,19 +67,6 @@ public class ItemUtils {
     int cAmt = amount;
     for (int slot : contents.keySet()) {
       ItemStack inSlot = contents.get(slot);
-//      if(inSlot.getItem().hasContainerItem(inSlot)) {
-//        if(inSlot.getCount() > 1) {
-//          continue; //uh... rip. we won't consume 16 buckets at once.
-//        }
-//        ItemStack stack = ForgeHooks.getContainerItem(inSlot);
-//        cAmt--;
-//        if (!simulate) {
-//          handler.setStackInSlot(slot, stack.copy());
-//        }
-//        if (cAmt <= 0) {
-//          break;
-//        }
-//      }
       int toRemove = Math.min(cAmt, inSlot.getCount());
       cAmt -= toRemove;
       if (!simulate) {
@@ -213,9 +161,6 @@ public class ItemUtils {
     Map<Integer, ItemStack> stacksOut = new HashMap<>();
     for (int j = 0; j < handler.getSlots(); j++) {
       ItemStack s = handler.getStackInSlot(j);
-//      if (TileEntityFurnace.getItemBurnTime(s) > 0 && NBTMatchingHelper.matchNBTCompound(matchNBTTag, s.getTagCompound())) {
-//        stacksOut.put(j, s.copy());
-//      }
     }
     return stacksOut;
   }
@@ -227,12 +172,6 @@ public class ItemUtils {
       if(s.isEmpty()) continue;
       if (s.is(TagKey.create(Registries.ITEM, oreDict)))
         stacksOut.put(j, s.copy());
-//      int[] ids = OreDictionary.getOreIDs(s);
-//      for (int id : ids) {
-//        if(OreDictionary.getOreName(id).equals(oreDict) && NBTMatchingHelper.matchNBTCompound(matchNBTTag, s.getTagCompound())) {
-//          stacksOut.put(j, s.copy());
-//        }
-//      }
     }
     return stacksOut;
   }
@@ -255,7 +194,6 @@ public class ItemUtils {
 
   public static boolean matchStackLoosely(@Nonnull ItemStack stack, @Nonnull  ItemStack other) {
     if (stack.isEmpty()) return other.isEmpty();
-//    return OreDictionary.itemMatches(other, stack, false);
     return ItemStack.isSameItem(stack, other);
   }
 }

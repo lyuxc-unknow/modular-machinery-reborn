@@ -48,7 +48,6 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerContaine
   protected void renderLabels(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
     guiGraphics.pose().pushPose();
     float scale = 0.72f;
-//    guiGraphics.pose().translate(leftPos, topPos, 0);
     guiGraphics.pose().scale(scale, scale, scale);
     int offsetX = 12;
     int offsetY = 12;

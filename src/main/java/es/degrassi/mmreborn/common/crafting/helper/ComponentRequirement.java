@@ -5,11 +5,10 @@ import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.codec.NamedMapCodec;
 import es.degrassi.mmreborn.api.codec.RegistrarCodec;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
-import es.degrassi.mmreborn.common.integration.jei.category.RecipeLayoutPart;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiComponent;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.util.ResultChance;
-import java.awt.Point;
 import java.util.List;
 import javax.annotation.Nonnull;
 
@@ -104,29 +103,14 @@ public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, 
   //Be sure, that if you specify a new object here as type that you register that along with a helper and renderer
   //in the JEI Integration! Otherwise JEI will complain about not having proper handling for this
   //Also, be sure that this generic T is the *only one* with that type otherwise internally stuff might break...
-  public abstract JEIComponent<T> provideJEIComponent();
 
   public JsonObject asJson() {
     JsonObject json = new JsonObject();
-    json.addProperty("ioType", actionType.name().toLowerCase());
+    json.addProperty("actionType", actionType.name());
     return json;
   }
 
-  public static abstract class JEIComponent<T> {
-
-    public abstract Class<T> getJEIRequirementClass();
-
-    public abstract List<T> getJEIIORequirements();
-
-    public abstract RecipeLayoutPart<T> getLayoutPart(Point offset);
-
-    public RecipeLayoutPart<T> getTemplateLayout() {
-      return this.getLayoutPart(new Point(0, 0));
-    }
-
-    public abstract void onJEIHoverTooltip(int slotIndex, boolean input, T ingredient, List<String> tooltip);
-
-  }
+  public abstract <J extends JeiComponent<T, V>> J jeiComponent();
 
   public interface PerTick {
     //Multiplier is passed into this to adjust 'production' or 'consumption' accordingly if the recipe has a longer or shorter duration

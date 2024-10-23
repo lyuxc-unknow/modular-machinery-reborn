@@ -99,24 +99,4 @@ public class ControllerContainer extends AbstractContainerMenu {
       player.level().getBlockEntity(this.entity.getBlockPos()) == this.entity &&
       player.position().distanceToSqr(Vec3.atCenterOf(this.entity.getBlockPos())) <= 64;
   }
-
-  /*public class SlotBlueprint extends SlotItemHandler {
-
-    public SlotBlueprint(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
-      super(itemHandler, index, xPosition, yPosition);
-    }
-
-    public boolean isItemValid(@Nonnull ItemStack stack) {
-      if(!(stack.getItem() instanceof ItemBlueprint)) {
-        return false;
-      }
-      return getItem().is(stack.getItem()) && this.getMaxStackSize() <= this.getItem().getCount() + stack.getCount();
-    }
-
-    @Override
-    public void setChanged() {
-      super.setChanged();
-      entity.markForUpdate();
-    }
-  }*/
 }

@@ -31,23 +31,6 @@ public class ControllerRenderer implements BlockEntityRenderer<MachineController
         renderers.remove(machineControllerEntity.getBlockPos());
       }
     }
-
-//    if (machineControllerEntity.getCraftingStatus().getStatus() == MachineControllerEntity.Type.MISSING_STRUCTURE) {
-//      if (!renderers.containsKey(machineControllerEntity.getBlockPos())) {
-//        if (machineControllerEntity.getBlueprintMachine() != null && machineControllerEntity.getBlueprintMachine().getPattern() != null) {
-//          BlockArrayRenderHelper renderer = new BlockArrayRenderHelper(machineControllerEntity.getBlueprintMachine().getPattern());
-//          renderers.put(machineControllerEntity.getBlockPos(), renderer);
-//          renderer.render(poseStack, multiBufferSource, machineControllerEntity);
-//        }
-//      } else {
-//        BlockArrayRenderHelper renderer = renderers.get(machineControllerEntity.getBlockPos());
-//        if (renderer.shouldRender()) {
-//          renderer.render(poseStack, multiBufferSource, machineControllerEntity);
-//        } else {
-//          renderers.remove(machineControllerEntity.getBlockPos());
-//        }
-//      }
-//    }
   }
 
   public static void add(DynamicMachine machine, BlockPos controllerPos) {

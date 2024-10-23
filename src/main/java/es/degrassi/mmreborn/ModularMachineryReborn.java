@@ -148,7 +148,6 @@ public class ModularMachineryReborn {
       EnergyDisplayUtil.loadFromConfig();
       if (event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayer player) {
         MMRCommand.reloadMachines(player.server, player);
-//        MMRCommand.reloadRecipes(player.server, player);
       }
     }
   }

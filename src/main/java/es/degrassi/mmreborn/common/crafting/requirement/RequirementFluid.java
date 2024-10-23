@@ -10,6 +10,7 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiFluidComponent;
 import es.degrassi.mmreborn.common.integration.ingredient.HybridFluid;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
@@ -28,7 +29,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
-public class RequirementFluid extends ComponentRequirement<HybridFluid, RequirementFluid> implements ComponentRequirement.ChancedRequirement {
+public class RequirementFluid extends ComponentRequirement<FluidStack, RequirementFluid> implements ComponentRequirement.ChancedRequirement {
   public static final NamedMapCodec<RequirementFluid> CODEC = NamedCodec.record(instance -> instance.group(
     FluidIngredient.CODEC.fieldOf("fluid").forGetter(req -> req.ingredient),
     NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(ComponentRequirement::getActionType),
@@ -66,6 +67,11 @@ public class RequirementFluid extends ComponentRequirement<HybridFluid, Requirem
     return json;
   }
 
+  @Override
+  public JeiFluidComponent jeiComponent() {
+    return new JeiFluidComponent(this);
+  }
+
   public RequirementFluid(IOType ioType, FluidIngredient fluid, int amount) {
     this(RequirementTypeRegistration.FLUID.get(), ioType, fluid, amount);
   }
@@ -81,7 +87,6 @@ public class RequirementFluid extends ComponentRequirement<HybridFluid, Requirem
 //        return new RequirementFluid(type, ioType, new HybridFluidGas(gasStack));
 //    }
 
-  @Override
   public int getSortingWeight() {
     return PRIORITY_WEIGHT_FLUID;
   }
@@ -104,12 +109,6 @@ public class RequirementFluid extends ComponentRequirement<HybridFluid, Requirem
     fluid.tagMatch = getTagMatch();
     fluid.tagDisplay = getTagDisplay();
     return fluid;
-  }
-
-  @Override
-  public JEIComponent<HybridFluid> provideJEIComponent() {
-//        return new JEIComponentHybridFluid(this);
-    return null;
   }
 
   public void setMatchNBTTag(@Nullable CompoundTag tag) {
@@ -426,11 +425,7 @@ public class RequirementFluid extends ComponentRequirement<HybridFluid, Requirem
 
   @Override
   public String toString() {
-    return "RequirementFluid{" +
-      "fluid=" + Objects.requireNonNull(required.asFluidStack()).getHoverName() +
-      ", actionType=" + getActionType() +
-      ", requirementType=" + getRequirementType() +
-      '}';
+    return asJson().toString();
   }
 
 }

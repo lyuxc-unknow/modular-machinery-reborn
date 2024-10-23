@@ -74,8 +74,6 @@ public class MachineJsonReloadListener extends CustomJsonReloadListener {
       String packName = res.sourcePackId();
       if(packName.equals(MAIN_PACKNAME))
         return MachineLocation.fromDefault(id, packName);
-//            else if(packName.contains("KubeJS") && ModList.get().isLoaded("kubejs"))
-//                return KubeJSIntegration.getMachineLocation(res, packName, id);
       else {
         try(PackResources pack = res.source()) {
           if(pack instanceof FilePackResources)

@@ -1,5 +1,7 @@
 package es.degrassi.mmreborn.common.integration.kubejs;
 
+import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
@@ -14,9 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
 public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilder,
@@ -24,8 +24,6 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
 {
 
   public static final Map<ResourceLocation, Map<ResourceLocation, Integer>> IDS = new HashMap<>();
-
-  private final ResourceLocation typeID = RecipeRegistration.RECIPE_TYPE.getId();
 
   public MachineRecipeBuilderJS(ResourceLocation machine, int time) {
     setValue(ModularMachineryRebornRecipeSchemas.MACHINE_ID, machine);
@@ -42,19 +40,16 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
       throw new KubeRuntimeException("Invalid machine id: " + getValue(ModularMachineryRebornRecipeSchemas.MACHINE_ID));
 
     if(this.newRecipe) {
-      int uniqueID = IDS.computeIfAbsent(this.typeID, id -> new HashMap<>()).computeIfAbsent(machine, m -> 0);
-      IDS.get(this.typeID).put(machine, uniqueID + 1);
-      this.id = ResourceLocation.fromNamespaceAndPath("kubejs", this.typeID.getPath() + "/" + machine.getNamespace() + "/" + machine.getPath() + "/" + uniqueID);
+      int uniqueID = IDS.computeIfAbsent(RecipeRegistration.RECIPE_TYPE.getId(), id -> new HashMap<>()).computeIfAbsent(machine, m -> 0);
+      IDS.get(RecipeRegistration.RECIPE_TYPE.getId()).put(machine, uniqueID + 1);
+      this.id = ResourceLocation.fromNamespaceAndPath("kubejs", RecipeRegistration.RECIPE_TYPE.getId().getPath() + "/" + machine.getNamespace() + "/" + machine.getPath() + "/" + uniqueID);
     }
   }
 
   @Override
-  public @Nullable RecipeHolder<?> createRecipe() {
-    if(this.removed)
-      return null;
-
+  public @Nullable KubeRecipe serializeChanges() {
     if(!this.newRecipe)
-      return super.createRecipe();
+      return super.serializeChanges();
 
     MachineRecipe.MachineRecipeBuilder builder = new MachineRecipe.MachineRecipeBuilder(getValue(ModularMachineryRebornRecipeSchemas.MACHINE_ID), (int) getValue(ModularMachineryRebornRecipeSchemas.TIME).ticks());
 
@@ -64,12 +59,17 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
     builder.withPriority(getValue(ModularMachineryRebornRecipeSchemas.PRIORITY));
     builder.shouldVoidOnFailure(getValue(ModularMachineryRebornRecipeSchemas.VOID));
 
-    ResourceLocation id = getOrCreateId();
-    if (getValue(ModularMachineryRebornRecipeSchemas.RECIPE_ID) != null)
-      id = getValue(ModularMachineryRebornRecipeSchemas.RECIPE_ID);
+    this.id = getOrCreateId();
 
-    MachineRecipe recipe = builder.build(id);
-    return new RecipeHolder<>(id, recipe);
+    if (getValue(ModularMachineryRebornRecipeSchemas.RECIPE_ID) != null)
+      this.id = getValue(ModularMachineryRebornRecipeSchemas.RECIPE_ID);
+
+    builder.withId(this.id);
+
+    this.json = (JsonObject) MachineRecipe.CODEC.encodeStart(JsonOps.INSTANCE, builder).result().orElse(null);
+    if (this.json != null)
+      this.json.addProperty("type", RecipeRegistration.RECIPE_TYPE.getId().toString());
+    return this;
   }
 
   public MachineRecipeBuilderJS voidOnFailure(boolean v) {
@@ -80,11 +80,6 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
   public MachineRecipeBuilderJS priority(int priority) {
     setValue(ModularMachineryRebornRecipeSchemas.PRIORITY, priority);
     return this;
-  }
-
-  @Override
-  public String getFromToString() {
-    return Objects.requireNonNull(createRecipe()).toString();
   }
 
   @Override

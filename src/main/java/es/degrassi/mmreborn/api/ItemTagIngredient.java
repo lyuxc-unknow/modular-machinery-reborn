@@ -21,7 +21,7 @@ public class ItemTagIngredient implements IIngredient<Item> {
   public static ItemTagIngredient create(String s) throws IllegalArgumentException {
     if(s.startsWith("#"))
       s = s.substring(1);
-    if(!Utils.isResourceNameValid(s))
+    if(Utils.isResourceNameValid(s))
       throw new IllegalArgumentException(String.format("Invalid tag id : %s", s));
     TagKey<Item> tag = TagKey.create(Registries.ITEM, ResourceLocation.parse(s));
     return new ItemTagIngredient(tag);

@@ -10,6 +10,7 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiEnergyComponent;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
@@ -36,6 +37,11 @@ public class RequirementEnergy extends ComponentRequirement<Long, RequirementEne
     json.addProperty("amount", requirementPerTick);
     json.addProperty("activeIO", activeIO);
     return json;
+  }
+
+  @Override
+  public JeiEnergyComponent jeiComponent() {
+    return new JeiEnergyComponent(this);
   }
 
   public RequirementEnergy(IOType ioType, long requirementPerTick) {
@@ -80,12 +86,6 @@ public class RequirementEnergy extends ComponentRequirement<Long, RequirementEne
 
   public long getRequiredEnergyPerTick() {
     return requirementPerTick;
-  }
-
-  @Override
-  public JEIComponent<Long> provideJEIComponent() {
-//        return new JEIComponentEnergy(this);
-    return null;
   }
 
   @Override
@@ -168,10 +168,6 @@ public class RequirementEnergy extends ComponentRequirement<Long, RequirementEne
 
   @Override
   public String toString() {
-    return "RequirementEnergy{" +
-      "energy=" + requirementPerTick +
-      ", actionType=" + getActionType() +
-      ", requirementType=" + getRequirementType() +
-      '}';
+    return asJson().toString();
   }
 }

@@ -15,4 +15,8 @@ public enum IOType {
     }
     return null;
   }
+
+  public boolean isInput() {
+    return this == INPUT;
+  }
 }

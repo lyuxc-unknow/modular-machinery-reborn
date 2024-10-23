@@ -1,6 +1,5 @@
 package es.degrassi.mmreborn.api;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import java.util.List;

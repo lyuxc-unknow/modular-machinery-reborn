@@ -133,7 +133,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
   }
 
   public MachineRecipe copy() {
-    return new MachineRecipe(id, owningMachine, tickTime, configuredPriority, voidPerTickFailure, true);
+    return copy((rl) -> id, owningMachine, List.of());
   }
 
   public MachineRecipe copy(Function<ResourceLocation, ResourceLocation> registryNameChange, ResourceLocation newOwningMachineIdentifier, List<RecipeModifier> modifiers) {
@@ -200,6 +200,10 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
       this.requirements = new LinkedList<>();
       this.machine = machine;
       this.time = time;
+    }
+
+    public void withId(ResourceLocation id) {
+      this.id = id;
     }
 
     public void withPriority(int prio) {

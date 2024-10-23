@@ -291,6 +291,15 @@
 
   "tooltip.blueprint": "Click on any machine controller to show the structure",
 
-  "config.jade.plugin_modular_machinery_reborn.machine_component_provider": "Modular Machinery Reborn provider"
+  "config.jade.plugin_modular_machinery_reborn.machine_component_provider": "Modular Machinery Reborn provider",
+
+  "modular_machinery_reborn.jei.ingredient.energy.input": "Require: %s RF/t",
+  "modular_machinery_reborn.jei.ingredient.energy.output": "Produce: %s RF/t",
+
+  "modular_machinery_reborn.jei.ingredient.fluid.input": "Require %s\n %s mB",
+  "modular_machinery_reborn.jei.ingredient.fluid.output": "Produce %s\n %s mB",
+
+  "modular_machinery_reborn.jei.ingredient.item.input": "Require",
+  "modular_machinery_reborn.jei.ingredient.item.output": "Produce"
 }
 
