@@ -84,7 +84,6 @@ public class BlockController extends BlockMachineComponent {
   @Override
   public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
     ControllerItem.getMachine(stack).ifPresent(machine -> {
-      MMRLogger.INSTANCE.info(machine.toString());
       BlockEntity tile = level.getBlockEntity(pos);
       if(tile instanceof MachineControllerEntity machineTile) {
         machineTile.setId(machine.getRegistryName());

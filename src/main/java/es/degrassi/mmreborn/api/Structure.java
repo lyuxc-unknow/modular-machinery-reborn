@@ -3,9 +3,12 @@ package es.degrassi.mmreborn.api;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
+import es.degrassi.mmreborn.common.util.MMRLogger;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,17 +22,18 @@ public class Structure {
   public static final NamedCodec<Structure> CODEC = NamedCodec.record(structure -> structure.group(
     NamedCodec.STRING.listOf().listOf().fieldOf("pattern").forGetter(s -> s.pattern.asList()),
     NamedCodec.unboundedMap(DefaultCodecs.CHARACTER, IIngredient.BLOCK, "Map<Character, Block>").fieldOf("keys").forGetter(s -> s.pattern.asMap())
-  ).apply(structure, (pattern, keys) -> {
+  ).apply(structure, Structure::makeStructure), "Structure");
+
+  public static final Structure EMPTY = new Structure(Map.of(), List.of(List.of("m")), Map.of());
+
+  private static Structure makeStructure(List<List<String>> pattern, Map<Character, IIngredient<PartialBlockState>> keys) {
     Structure.Builder builder = Structure.Builder.start();
-    //TODO: iterate list in inverse order in 1.18 to make the pattern from top to bottom instead of from bottom to top (current)
     for (List<String> levels : pattern)
       builder.aisle(levels.toArray(new String[0]));
     for (Map.Entry<Character, IIngredient<PartialBlockState>> key : keys.entrySet())
       builder.where(key.getKey(), key.getValue());
     return builder.build(pattern, keys);
-  }), "Structure");
-
-  public static final Structure EMPTY = new Structure(Map.of(), List.of(List.of("m")), Map.of());
+  }
 
   private final Pattern pattern;
 
@@ -156,6 +160,28 @@ public class Structure {
       if (!list.isEmpty()) {
         throw new IllegalStateException("Blocks for character(s) " + COMMA_JOIN.join(list) + " are missing");
       }
+    }
+
+    public JsonObject asJson() {
+      JsonObject json = new JsonObject();
+      json.addProperty("aisleHeight", aisleHeight);
+      json.addProperty("rowWidth", rowWidth);
+      JsonArray depth = new JsonArray();
+      this.depth.forEach(array -> {
+        JsonArray newOne = new JsonArray();
+        Arrays.asList(array).forEach(newOne::add);
+        depth.add(newOne);
+      });
+      json.add("depth", depth);
+      JsonObject symbols = new JsonObject();
+      this.symbolMap.forEach((key, value) -> symbols.add(String.valueOf(key), value.asJson()));
+      json.add("symbolMap", symbols);
+      return json;
+    }
+
+    @Override
+    public String toString() {
+      return asJson().toString();
     }
   }
 }

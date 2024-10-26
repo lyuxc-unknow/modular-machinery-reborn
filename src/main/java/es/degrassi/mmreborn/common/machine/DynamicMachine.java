@@ -26,13 +26,11 @@ public class DynamicMachine {
     DefaultCodecs.RESOURCE_LOCATION.fieldOf("registryName").forGetter(DynamicMachine::getRegistryName),
     NamedCodec.STRING.fieldOf("localizedName").forGetter(machine -> machine.localizedName),
     Structure.CODEC.fieldOf("structure").forGetter(machine -> machine.pattern),
-    NamedCodec.BOOL.optionalFieldOf("requiresBlueprint", true).forGetter(machine -> machine.requiresBlueprint),
     DefaultCodecs.HEX.optionalFieldOf("color", Config.machineColor).forGetter(machine -> machine.definedColor)
-  ).apply(instance, (registryName, localizedName, pattern, requiresBlueprint, color) -> {
+  ).apply(instance, (registryName, localizedName, pattern, color) -> {
     DynamicMachine machine = new DynamicMachine(registryName);
     machine.setPattern(pattern);
     machine.setLocalizedName(localizedName);
-    machine.setRequiresBlueprint(requiresBlueprint);
     machine.setDefinedColor(color);
     return machine;
   }), "Dynamic Machine");
@@ -45,18 +43,8 @@ public class DynamicMachine {
   private Structure pattern = Structure.EMPTY;
   private int definedColor = Config.machineColor;
 
-  private boolean requiresBlueprint = false;
-
   public DynamicMachine(@Nonnull ResourceLocation registryName) {
     this.registryName = registryName;
-  }
-
-  public void setRequiresBlueprint() {
-    this.requiresBlueprint = true;
-  }
-
-  public boolean requiresBlueprint() {
-    return requiresBlueprint;
   }
 
   @OnlyIn(Dist.CLIENT)
@@ -93,7 +81,6 @@ public class DynamicMachine {
     json.addProperty("localizedName", localizedName);
     json.add("pattern", pattern.asJson());
     json.addProperty("definedColor", definedColor);
-    json.addProperty("requiresBlueprint", requiresBlueprint);
     return json;
   }
 

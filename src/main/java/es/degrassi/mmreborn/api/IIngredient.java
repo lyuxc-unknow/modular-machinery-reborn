@@ -1,6 +1,5 @@
 package es.degrassi.mmreborn.api;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;

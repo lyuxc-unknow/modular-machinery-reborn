@@ -52,7 +52,7 @@ runs {
   }
 
   data {
-    programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+    arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
   }
 }
 
@@ -135,7 +135,7 @@ dependencies {
 
   // JEI
   compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
-  localRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+  compileOnly localRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
   // KubeJS
   localRuntime compileOnly("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
@@ -166,8 +166,8 @@ tasks.withType(ProcessResources).configureEach {
   ]
   inputs.properties replaceProperties
 
-  filesMatching(['META-INF/neoforge.mods.toml', 'META-INF/mods.toml', 'pack.mcmeta']) {
-    expand replaceProperties + [project: project]
+  filesMatching(['META-INF/neoforge.mods.toml']) {
+    expand replaceProperties
   }
 }
 
@@ -234,7 +234,7 @@ unifiedPublishing {
     if(rootProject.file("CHANGELOG.md").exists()) {
       changelog = rootProject.file("CHANGELOG.md").text
     }
-    gameVersions = ["${minecraft_version}"]
+    gameVersions = ["${minecraft_version}", "1.21"]
     gameLoaders = ["neoforge"]
     mainPublication jar
 

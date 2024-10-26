@@ -5,6 +5,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.data.MMRConfig;
+import es.degrassi.mmreborn.common.integration.kubejs.KubeJSIntegration;
 import es.degrassi.mmreborn.common.util.CustomJsonReloadListener;
 import es.degrassi.mmreborn.common.util.MMRLogger;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.conditions.ICondition.IContext;
 
 public class MachineJsonReloadListener extends CustomJsonReloadListener {
@@ -53,12 +55,12 @@ public class MachineJsonReloadListener extends CustomJsonReloadListener {
       }
 
       //Read the file as a CustomMachine
-      DataResult<DynamicMachine> result = DynamicMachine.CODEC.read(JsonOps.INSTANCE, json);/*MachineLoader.GSON.fromJson(jsonObject, DynamicMachine.class);*/
+      DataResult<DynamicMachine> result = DynamicMachine.CODEC.read(JsonOps.INSTANCE, json);
       if (result.result().isPresent()) {
         DynamicMachine machine = result.result().get();
-        machine.setRegistryName(location.getId());
-        ModularMachineryReborn.MACHINES.put(id, machine);
-        MMRLogger.INSTANCE.info("Successfully parsed machine json: {}", id);
+        machine.setRegistryName(id);
+        ModularMachineryReborn.MACHINES.put(machine.getRegistryName(), machine);
+        MMRLogger.INSTANCE.info("Successfully parsed machine json: {}", machine.getRegistryName());
       } else if(result.error().isPresent())
         MMRLogger.INSTANCE.error("Error while parsing machine json: {}, skipping...\n{}", id, result.error().get().message());
     });
@@ -74,6 +76,8 @@ public class MachineJsonReloadListener extends CustomJsonReloadListener {
       String packName = res.sourcePackId();
       if(packName.equals(MAIN_PACKNAME))
         return MachineLocation.fromDefault(id, packName);
+      else if(packName.contains("KubeJS") && ModList.get().isLoaded("kubejs"))
+        return KubeJSIntegration.getMachineLocation(res, packName, id);
       else {
         try(PackResources pack = res.source()) {
           if(pack instanceof FilePackResources)

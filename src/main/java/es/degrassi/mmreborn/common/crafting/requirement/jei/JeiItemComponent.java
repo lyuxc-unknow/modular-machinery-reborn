@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class JeiItemComponent extends JeiComponent<ItemStack, RequirementItem> {
   public JeiItemComponent(RequirementItem requirement) {
-    super(requirement, 66, 0);
+    super(requirement, 36, 0);
   }
 
   @Override

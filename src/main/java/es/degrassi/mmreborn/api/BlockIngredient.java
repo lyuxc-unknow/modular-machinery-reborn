@@ -33,7 +33,7 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
 
   @Override
   public boolean test(PartialBlockState partialBlockState) {
-    return this.partialBlockStates.stream().anyMatch(state -> state.getBlockState().equals(partialBlockState.getBlockState()));
+    return this.partialBlockStates.stream().anyMatch(state -> state.getBlockState() == partialBlockState.getBlockState());
   }
 
   @Override

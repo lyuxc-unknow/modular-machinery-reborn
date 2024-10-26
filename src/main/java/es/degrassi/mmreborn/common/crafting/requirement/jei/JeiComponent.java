@@ -29,7 +29,7 @@ public abstract class JeiComponent<C, T extends ComponentRequirement<C, T>> impl
   public abstract int getWidth();
   public abstract int getHeight();
 
-  protected ResourceLocation texture() {
+  public ResourceLocation texture() {
     return LOCATION_JEI_ICONS;
   }
 

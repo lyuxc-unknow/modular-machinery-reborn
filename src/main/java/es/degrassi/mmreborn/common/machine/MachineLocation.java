@@ -102,7 +102,7 @@ public class MachineLocation {
     }
 
     public MutableComponent getTranslatedName() {
-      return Component.translatable("custommachinery.machine.loader." + this.name().toLowerCase(Locale.ROOT)).withStyle(this.color);
+      return Component.translatable("modular_machinery_reborn.machine.loader." + this.name().toLowerCase(Locale.ROOT)).withStyle(this.color);
     }
   }
 }

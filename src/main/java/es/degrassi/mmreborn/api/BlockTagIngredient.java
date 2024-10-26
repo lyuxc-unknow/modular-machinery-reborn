@@ -50,7 +50,7 @@ public class BlockTagIngredient implements IIngredient<PartialBlockState> {
   public static BlockTagIngredient create(String s) throws IllegalArgumentException {
     if(s.startsWith("#"))
       s = s.substring(1);
-    if(Utils.isResourceNameValid(s))
+    if(!Utils.isResourceNameValid(s))
       throw new IllegalArgumentException(String.format("Invalid tag id : %s", s));
     TagKey<Block> tag = TagKey.create(Registries.BLOCK, ResourceLocation.parse(s));
     return new BlockTagIngredient(tag);

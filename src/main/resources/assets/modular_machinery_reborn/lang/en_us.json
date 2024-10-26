@@ -295,11 +295,17 @@
 
   "modular_machinery_reborn.jei.ingredient.energy.input": "Require: %s RF/t",
   "modular_machinery_reborn.jei.ingredient.energy.output": "Produce: %s RF/t",
+  "modular_machinery_reborn.jei.ingredient.energy.total.input": "Require: %s RF @ %s RF/t",
+  "modular_machinery_reborn.jei.ingredient.energy.total.output": "Produce: %s RF @ %s RF/t",
 
-  "modular_machinery_reborn.jei.ingredient.fluid.input": "Require %s\n %s mB",
-  "modular_machinery_reborn.jei.ingredient.fluid.output": "Produce %s\n %s mB",
+  "modular_machinery_reborn.jei.ingredient.fluid.input": "Require %s %s mB",
+  "modular_machinery_reborn.jei.ingredient.fluid.output": "Produce %s %s mB",
+
+  "modular_machinery_reborn.jei.ingredient.duration": "Process time: %s ticks",
 
   "modular_machinery_reborn.jei.ingredient.item.input": "Require",
-  "modular_machinery_reborn.jei.ingredient.item.output": "Produce"
+  "modular_machinery_reborn.jei.ingredient.item.output": "Produce",
+
+  "modular_machinery_reborn.controller.tooltip": "Click in placed controller with blueprint \nto show the structure around the controller."
 }
 

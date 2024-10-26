@@ -16,12 +16,12 @@ public class JeiFluidComponent extends JeiComponent<FluidStack, RequirementFluid
 
   @Override
   public int getWidth() {
-    return 22;
+    return 16;
   }
 
   @Override
   public int getHeight() {
-    return 63;
+    return 61;
   }
 
   @Override

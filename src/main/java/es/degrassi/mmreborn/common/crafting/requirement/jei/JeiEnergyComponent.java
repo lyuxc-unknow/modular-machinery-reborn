@@ -9,10 +9,10 @@ import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
 
 public class JeiEnergyComponent extends JeiComponent<Long, RequirementEnergy> {
-  private int width = 20;
+  private int width = 16;
   private int height = 61;
   public JeiEnergyComponent(RequirementEnergy requirement) {
-    super(requirement, 22, 0);
+    super(requirement, 18, 0);
   }
 
   @Override
