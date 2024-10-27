@@ -4,6 +4,7 @@ import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
 import es.degrassi.mmreborn.common.entity.ItemInputBusEntity;
 import es.degrassi.mmreborn.common.entity.ItemOutputBusEntity;
 import es.degrassi.mmreborn.common.entity.base.TileInventory;
+import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import es.degrassi.mmreborn.common.util.IOInventory;
 import java.util.List;
 import net.minecraft.core.BlockPos;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +36,21 @@ public class BlockOutputBus extends BlockMachineComponent {
         .sound(SoundType.METAL)
     );
     this.size = size;
+  }
+
+  @Override
+  protected @NotNull List<ItemStack> getDrops(@NotNull BlockState state, LootParams.@NotNull Builder builder) {
+    List<ItemStack> drops = super.getDrops(state, builder);
+    switch (size) {
+      case TINY ->        drops.add(ItemRegistration.ITEM_OUTPUT_BUS_TINY.get().getDefaultInstance());
+      case SMALL ->       drops.add(ItemRegistration.ITEM_OUTPUT_BUS_SMALL.get().getDefaultInstance());
+      case NORMAL ->      drops.add(ItemRegistration.ITEM_OUTPUT_BUS_NORMAL.get().getDefaultInstance());
+      case REINFORCED ->  drops.add(ItemRegistration.ITEM_OUTPUT_BUS_REINFORCED.get().getDefaultInstance());
+      case BIG ->         drops.add(ItemRegistration.ITEM_OUTPUT_BUS_BIG.get().getDefaultInstance());
+      case HUGE ->        drops.add(ItemRegistration.ITEM_OUTPUT_BUS_HUGE.get().getDefaultInstance());
+      case LUDICROUS ->   drops.add(ItemRegistration.ITEM_OUTPUT_BUS_LUDICROUS.get().getDefaultInstance());
+    }
+    return drops;
   }
 
   @Override

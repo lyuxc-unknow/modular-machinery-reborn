@@ -6,14 +6,15 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.DataResult;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.util.Utils;
-import java.util.List;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
+
+import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class BlockTagIngredient implements IIngredient<PartialBlockState> {
 
@@ -74,5 +75,9 @@ public class BlockTagIngredient implements IIngredient<PartialBlockState> {
   @Override
   public JsonObject asJson() {
     return new JsonObject();
+  }
+
+  public static BlockTagIngredient of(Object o) {
+    return (BlockTagIngredient) o;
   }
 }

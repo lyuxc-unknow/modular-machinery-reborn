@@ -23,7 +23,7 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 
-public class BlockFluidHatch extends BlockMachineComponent{
+public class BlockFluidHatch extends BlockMachineComponent {
   protected final FluidHatchSize size;
   public BlockFluidHatch(FluidHatchSize size) {
     super(

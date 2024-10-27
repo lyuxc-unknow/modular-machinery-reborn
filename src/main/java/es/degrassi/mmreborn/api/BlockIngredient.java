@@ -2,8 +2,9 @@ package es.degrassi.mmreborn.api;
 
 import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
-import java.util.List;
 import net.minecraft.world.level.block.Rotation;
+
+import java.util.List;
 
 public class BlockIngredient implements IIngredient<PartialBlockState> {
 
@@ -48,5 +49,9 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
   @Override
   public JsonObject asJson() {
     return new JsonObject();
+  }
+
+  public static BlockIngredient of(Object o) {
+    return (BlockIngredient) o;
   }
 }

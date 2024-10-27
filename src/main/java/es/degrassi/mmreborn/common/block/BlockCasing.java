@@ -1,30 +1,19 @@
 package es.degrassi.mmreborn.common.block;
 
-import es.degrassi.mmreborn.common.entity.base.ColorableMachineComponentEntity;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
+import es.degrassi.mmreborn.common.registration.BlockRegistration;
+import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.storage.loot.LootParams;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Locale;
 
 public class BlockCasing extends BlockMachineComponent {
-//  public static final EnumProperty<CasingType> CASING = EnumProperty.create("casing", CasingType.class);
-//  private String identifier;
-//  private final CasingType type;
-  public BlockCasing(/*CasingType type*/) {
+  public BlockCasing() {
     super(
       Properties.of()
         .strength(2F, 10F)
@@ -33,19 +22,19 @@ public class BlockCasing extends BlockMachineComponent {
         .dynamicShape()
         .noOcclusion()
     );
-//    this.type = type;
   }
 
-//  @Override
-//  public @NotNull MutableComponent getName() {
-//    return Component.translatable(super.getDescriptionId() + "." + type.getSerializedName());
-//  }
-
-  //  @Override
-//  protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-//    super.createBlockStateDefinition(builder);
-//    builder.add(CASING);
-//  }
+  @Override
+  protected @NotNull List<ItemStack> getDrops(@NotNull BlockState state, LootParams.@NotNull Builder builder) {
+    List<ItemStack> drops = super.getDrops(state, builder);
+    if (this == BlockRegistration.CASING_PLAIN.get())       drops.add(ItemRegistration.CASING_PLAIN.get().getDefaultInstance());
+    if (this == BlockRegistration.CASING_VENT.get())        drops.add(ItemRegistration.CASING_VENT.get().getDefaultInstance());
+    if (this == BlockRegistration.CASING_FIREBOX.get())     drops.add(ItemRegistration.CASING_FIREBOX.get().getDefaultInstance());
+    if (this == BlockRegistration.CASING_GEARBOX.get())     drops.add(ItemRegistration.CASING_GEARBOX.get().getDefaultInstance());
+    if (this == BlockRegistration.CASING_REINFORCED.get())  drops.add(ItemRegistration.CASING_REINFORCED.get().getDefaultInstance());
+    if (this == BlockRegistration.CASING_CIRCUITRY.get())   drops.add(ItemRegistration.CASING_CIRCUITRY.get().getDefaultInstance());
+    return drops;
+  }
 
   public enum CasingType implements StringRepresentable {
     PLAIN,

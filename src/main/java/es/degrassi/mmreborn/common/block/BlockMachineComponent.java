@@ -1,10 +1,14 @@
 package es.degrassi.mmreborn.common.block;
 
 import es.degrassi.mmreborn.common.data.Config;
+import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.entity.base.BlockEntitySynchronized;
 import es.degrassi.mmreborn.common.entity.base.ColorableMachineComponentEntity;
 import es.degrassi.mmreborn.common.entity.base.ColorableMachineEntity;
+import es.degrassi.mmreborn.common.entity.base.TileInventory;
+import es.degrassi.mmreborn.common.util.IOInventory;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -13,8 +17,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public abstract class BlockMachineComponent extends Block implements BlockDynamicColor, EntityBlock {
   public BlockMachineComponent(Properties properties) {
@@ -35,7 +43,7 @@ public abstract class BlockMachineComponent extends Block implements BlockDynami
 
   @Override
   @SuppressWarnings("deprecation")
-  protected boolean triggerEvent(BlockState pState, Level pLevel, BlockPos pPos, int pId, int pParam) {
+  protected boolean triggerEvent(@NotNull BlockState pState, @NotNull Level pLevel, @NotNull BlockPos pPos, int pId, int pParam) {
     super.triggerEvent(pState, pLevel, pPos, pId, pParam);
     final BlockEntity be = pLevel.getBlockEntity(pPos);
     return be != null && be.triggerEvent(pId, pParam);
@@ -55,5 +63,29 @@ public abstract class BlockMachineComponent extends Block implements BlockDynami
         entity.tick();
       }
     };
+  }
+
+  @Override
+  protected @NotNull List<ItemStack> getDrops(@NotNull BlockState state, LootParams.@NotNull Builder builder) {
+    List<ItemStack> drops = super.getDrops(state, builder);
+    if (builder.getParameter(LootContextParams.BLOCK_ENTITY) instanceof MachineControllerEntity entity) {
+      IOInventory inv = entity.getInventory();
+      for (int i = 0; i < inv.getSlots(); i++) {
+        ItemStack stack = inv.getStackInSlot(i);
+        if(!stack.isEmpty()) {
+          drops.add(stack);
+        }
+      }
+    }
+    if (builder.getParameter(LootContextParams.BLOCK_ENTITY) instanceof TileInventory entity) {
+      IOInventory inv = entity.getInventory();
+      for (int i = 0; i < inv.getSlots(); i++) {
+        ItemStack stack = inv.getStackInSlot(i);
+        if(!stack.isEmpty()) {
+          drops.add(stack);
+        }
+      }
+    }
+    return drops;
   }
 }

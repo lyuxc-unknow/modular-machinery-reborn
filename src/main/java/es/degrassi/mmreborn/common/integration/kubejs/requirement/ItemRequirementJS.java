@@ -1,4 +1,4 @@
-package es.degrassi.mmreborn.common.integration.kubejs.requirements;
+package es.degrassi.mmreborn.common.integration.kubejs.requirement;
 
 import es.degrassi.mmreborn.api.ItemIngredient;
 import es.degrassi.mmreborn.api.ItemTagIngredient;

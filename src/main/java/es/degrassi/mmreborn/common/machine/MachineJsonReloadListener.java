@@ -9,6 +9,7 @@ import es.degrassi.mmreborn.common.integration.kubejs.KubeJSIntegration;
 import es.degrassi.mmreborn.common.util.CustomJsonReloadListener;
 import es.degrassi.mmreborn.common.util.MMRLogger;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.FilePackResources;
@@ -64,6 +65,16 @@ public class MachineJsonReloadListener extends CustomJsonReloadListener {
       } else if(result.error().isPresent())
         MMRLogger.INSTANCE.error("Error while parsing machine json: {}, skipping...\n{}", id, result.error().get().message());
     });
+
+    if(ModList.get().isLoaded("kubejs")) {
+      MMRLogger.INSTANCE.info("Collecting machines with kubeJS.");
+      Map<ResourceLocation, DynamicMachine> kubejsMachines = KubeJSIntegration.collectMachines();
+      if(!kubejsMachines.isEmpty())
+        MMRLogger.INSTANCE.info("Successfully added {} machines with kubejs", kubejsMachines.size());
+      else
+        MMRLogger.INSTANCE.info("No machines found with kubejs");
+      ModularMachineryReborn.MACHINES.putAll(kubejsMachines);
+    }
     context = null;
 
     MMRLogger.INSTANCE.info("Finished creating {} modular machines.", ModularMachineryReborn.MACHINES.keySet().size());
