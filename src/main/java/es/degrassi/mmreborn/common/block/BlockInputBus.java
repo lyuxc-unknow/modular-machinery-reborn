@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.block;
 
+import es.degrassi.mmreborn.client.container.ItemBusContainer;
 import es.degrassi.mmreborn.client.entity.renderer.ControllerRenderer;
 import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
 import es.degrassi.mmreborn.common.entity.ItemInputBusEntity;
@@ -14,6 +15,7 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -101,8 +103,9 @@ public class BlockInputBus extends BlockMachineComponent {
   protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
     if(level.isClientSide()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     BlockEntity te = level.getBlockEntity(pos);
-    if(te instanceof ItemInputBusEntity) {
-//            playerIn.openGui(ModularMachinery.MODID, CommonProxy.GuiType.ITEM_INVENTORY.ordinal(), worldIn, pos.getX(), pos.getY(), pos.getZ());
+    if(te instanceof ItemInputBusEntity entity) {
+      if (player instanceof ServerPlayer serverPlayer)
+        ItemBusContainer.open(serverPlayer, entity);
       return ItemInteractionResult.SUCCESS;
     }
     return super.useItemOn(stack, state, level, pos, player, hand, hitResult);

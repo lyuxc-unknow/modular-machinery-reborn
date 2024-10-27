@@ -4,10 +4,16 @@ import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.client.entity.renderer.ControllerRenderer;
 import es.degrassi.mmreborn.client.screen.ControllerScreen;
+import es.degrassi.mmreborn.client.screen.EnergyHatchScreen;
+import es.degrassi.mmreborn.client.screen.FluidHatchScreen;
+import es.degrassi.mmreborn.client.screen.ItemBusScreen;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.entity.base.ColorableMachineComponentEntity;
+import es.degrassi.mmreborn.common.entity.base.EnergyHatchEntity;
+import es.degrassi.mmreborn.common.entity.base.FluidTankEntity;
+import es.degrassi.mmreborn.common.entity.base.TileItemBus;
 import es.degrassi.mmreborn.common.item.ItemDynamicColor;
 import es.degrassi.mmreborn.common.registration.BlockRegistration;
 import es.degrassi.mmreborn.common.registration.ContainerRegistration;
@@ -260,6 +266,9 @@ public class ModularMachineryRebornClient {
   @SubscribeEvent
   public void registerMenuScreens(final RegisterMenuScreensEvent event) {
     event.register(ContainerRegistration.CONTROLLER.get(), ControllerScreen::new);
+    event.register(ContainerRegistration.ENERGY_HATCH.get(), EnergyHatchScreen::new);
+    event.register(ContainerRegistration.FLUID_HATCH.get(), FluidHatchScreen::new);
+    event.register(ContainerRegistration.ITEM_BUS.get(), ItemBusScreen::new);
   }
 
   @NotNull
@@ -269,6 +278,33 @@ public class ModularMachineryRebornClient {
       if(tile instanceof MachineControllerEntity controller)
         return controller;
     }
-    throw new IllegalStateException("Trying to open a Custom Machine container without clicking on a Custom Machine block");
+    throw new IllegalStateException("Trying to open a Controller container without clicking on a Custom Machine block");
+  }
+
+  public static EnergyHatchEntity getClientSideEnergyHatchEntity(BlockPos pos) {
+    if(Minecraft.getInstance().level != null) {
+      BlockEntity tile = Minecraft.getInstance().level.getBlockEntity(pos);
+      if(tile instanceof EnergyHatchEntity controller)
+        return controller;
+    }
+    throw new IllegalStateException("Trying to open a Energy Hatch container without clicking on a Custom Machine block");
+  }
+
+  public static FluidTankEntity getClientSideFluidHatchEntity(BlockPos pos) {
+    if(Minecraft.getInstance().level != null) {
+      BlockEntity tile = Minecraft.getInstance().level.getBlockEntity(pos);
+      if(tile instanceof FluidTankEntity controller)
+        return controller;
+    }
+    throw new IllegalStateException("Trying to open a Fluid Hatch container without clicking on a Custom Machine block");
+  }
+
+  public static TileItemBus getClientSideItemBusEntity(BlockPos pos) {
+    if(Minecraft.getInstance().level != null) {
+      BlockEntity tile = Minecraft.getInstance().level.getBlockEntity(pos);
+      if(tile instanceof TileItemBus controller)
+        return controller;
+    }
+    throw new IllegalStateException("Trying to open a Item Bus container without clicking on a Custom Machine block");
   }
 }

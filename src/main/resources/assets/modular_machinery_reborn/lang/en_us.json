@@ -4,6 +4,9 @@
   "modular_machinery_reborn.command.reload.recipes": "Successfully reloaded modular machinery recipes !",
 
   "modular_machinery_reborn.gui.title.controller": "Controller",
+  "modular_machinery_reborn.gui.title.energy_hatch": "Energy Hatch",
+  "modular_machinery_reborn.gui.title.fluid_hatch": "Fluid Hatch",
+  "modular_machinery_reborn.gui.title.item_bus": "Item Bus",
 
   "gui.controller.blueprint": "Blueprint Found: %s",
   "gui.controller.blueprint.none": "None",

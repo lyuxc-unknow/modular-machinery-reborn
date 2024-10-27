@@ -1,5 +1,7 @@
 package es.degrassi.mmreborn.common.block;
 
+import es.degrassi.mmreborn.client.container.FluidHatchContainer;
+import es.degrassi.mmreborn.client.screen.FluidHatchScreen;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
 import es.degrassi.mmreborn.common.entity.base.FluidTankEntity;
 import es.degrassi.mmreborn.common.util.Mods;
@@ -8,6 +10,7 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -56,7 +59,9 @@ public class BlockFluidHatch extends BlockMachineComponent {
         FluidUtil.interactWithFluidHandler(player, hand, ft);
         return ItemInteractionResult.SUCCESS;
       }
-      // open gui
+      if (player instanceof ServerPlayer serverPlayer) {
+        FluidHatchContainer.open(serverPlayer, fluidTank);
+      }
       return ItemInteractionResult.SUCCESS;
     }
     return super.useItemOn(stack, state, level, pos, player, hand, hitResult);

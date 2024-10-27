@@ -81,18 +81,6 @@ public class BlockEnergyOutputHatch extends BlockEnergyHatch {
 //            }
   }
 
-
-  @Override
-  public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-    if(level.isClientSide()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-    BlockEntity te = level.getBlockEntity(pos);
-    if(te instanceof EnergyHatchEntity) {
-//                playerIn.openGui(ModularMachinery.MODID, CommonProxy.GuiType.ENERGY_INVENTORY.ordinal(), worldIn, pos.getX(), pos.getY(), pos.getZ());
-      return ItemInteractionResult.SUCCESS;
-    }
-    return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
-  }
-
   @Nullable
   @Override
   public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
