@@ -6,22 +6,18 @@ import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
-import io.netty.buffer.ByteBuf;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import javax.annotation.Nonnull;
+import es.degrassi.mmreborn.common.util.MMRLogger;
 import lombok.Getter;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+
+import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class ActiveMachineRecipe {
   @Getter
@@ -44,9 +40,9 @@ public class ActiveMachineRecipe {
         .getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get())
         .stream()
         .map(RecipeHolder::value)
+        .filter(recipe -> recipe.getOwningMachineIdentifier().equals(entity.getId()))
         .filter(recipe -> recipe.getId().equals(ResourceLocation.tryParse(serialized.getString("recipeId"))))
-        .findFirst()
-      )
+        .findFirst())
       .orElse(null);
 
     if (recipe == null) return;
@@ -71,9 +67,9 @@ public class ActiveMachineRecipe {
   @Nonnull
   public MachineControllerEntity.CraftingStatus tick(MachineControllerEntity ctrl, RecipeCraftingContext context) {
     //Skip per-tick logic until controller can finish the recipe
-    if (this.isCompleted(ctrl, context)) {
-      return MachineControllerEntity.CraftingStatus.working();
-    }
+//    if (this.isCompleted(ctrl, context)) {
+//      return MachineControllerEntity.CraftingStatus.working();
+//    }
 
     RecipeCraftingContext.CraftingCheckResult check;
     if (!(check = context.ioTick(entity.getRecipeTicks())).isFailure()) {

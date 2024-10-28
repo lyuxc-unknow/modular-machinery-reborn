@@ -182,20 +182,20 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
   }
 
   public void setCraftingStatus(CraftingStatus status) {
-    setRequestModelUpdate(true);
-    setChanged();
     this.craftingStatus = status;
     if (getLevel() instanceof ServerLevel l)
       PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getBlockPos()), new SUpdateCraftingStatusPacket(status, getBlockPos()));
+    setRequestModelUpdate(true);
+    setChanged();
   }
 
   public void setMachine(ResourceLocation machine) {
-    setRequestModelUpdate(true);
-    setChanged();
     this.id = machine;
     distributeCasingColor(false, getBlockPos());
     if (getLevel() instanceof ServerLevel l)
       PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getBlockPos()), new SMachineUpdatePacket(id, getBlockPos()));
+    setRequestModelUpdate(true);
+    setChanged();
   }
 
   private void checkStructure() {

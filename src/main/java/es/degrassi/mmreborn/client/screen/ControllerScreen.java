@@ -67,7 +67,7 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerContaine
     if(machine != DynamicMachine.DUMMY) {
       // render if the structure of machine is not null
       Component drawnHead = Component.translatable("gui.controller.structure", "");
-      List<FormattedCharSequence>out = font.split(Component.literal(machine.getLocalizedName()), Mth.floor(135 * (1 / scale)));
+      List<FormattedCharSequence> out = font.split(Component.literal(machine.getLocalizedName()), Mth.floor(135 * (1 / scale)));
       guiGraphics.drawString(font, drawnHead, offsetX, offsetY, 0xFFFFFF);
       for (FormattedCharSequence draw : out) {
         offsetY += 10;
