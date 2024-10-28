@@ -4,9 +4,7 @@ import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.client.container.ControllerContainer;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
-import es.degrassi.mmreborn.common.util.MMRLogger;
 import es.degrassi.mmreborn.common.util.RedstoneHelper;
-import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -15,6 +13,8 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class ControllerScreen extends AbstractContainerScreen<ControllerContainer> {
   private final MachineControllerEntity entity;
@@ -42,11 +42,8 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerContaine
     int j = (this.height - this.imageHeight) / 2;
     guiGraphics.blit(TEXTURES_CONTROLLER, i, j, 0, 0, imageWidth, imageHeight);
     guiGraphics.pose().popPose();
-  }
-
-  @Override
-  protected void renderLabels(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
     guiGraphics.pose().pushPose();
+    guiGraphics.pose().translate(i, j, 0);
     float scale = 0.72f;
     guiGraphics.pose().scale(scale, scale, scale);
     int offsetX = 12;
@@ -88,7 +85,7 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerContaine
     guiGraphics.drawString(font, status, offsetX, offsetY, 0xFFFFFF);
     String statusKey = entity.getCraftingStatus().getUnlocMessage();
 
-    List<FormattedCharSequence>out = font.split(Component.translatable(statusKey), Mth.floor(135 * (1 / scale)));
+    List<FormattedCharSequence> out = font.split(Component.translatable(statusKey), Mth.floor(135 * (1 / scale)));
     for (FormattedCharSequence draw : out) {
       offsetY += 10;
       guiGraphics.drawString(font, draw, offsetX, offsetY, 0xFFFFFF);
@@ -103,4 +100,7 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerContaine
 
     guiGraphics.pose().popPose();
   }
+
+  @Override
+  protected void renderLabels(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {}
 }

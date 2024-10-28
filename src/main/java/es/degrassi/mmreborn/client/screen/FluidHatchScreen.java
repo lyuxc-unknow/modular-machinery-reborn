@@ -2,25 +2,16 @@ package es.degrassi.mmreborn.client.screen;
 
 import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.ModularMachineryReborn;
-import es.degrassi.mmreborn.client.container.EnergyHatchContainer;
 import es.degrassi.mmreborn.client.container.FluidHatchContainer;
-import es.degrassi.mmreborn.client.util.EnergyDisplayUtil;
 import es.degrassi.mmreborn.client.util.FluidRenderer;
-import es.degrassi.mmreborn.common.entity.base.EnergyHatchEntity;
 import es.degrassi.mmreborn.common.entity.base.FluidTankEntity;
-import es.degrassi.mmreborn.common.util.Mods;
-import es.degrassi.mmreborn.common.util.TextureSizeHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.fml.ModList;
-import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 

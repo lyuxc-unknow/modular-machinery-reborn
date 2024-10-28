@@ -2,7 +2,6 @@ package es.degrassi.mmreborn.client.container;
 
 import es.degrassi.mmreborn.client.ModularMachineryRebornClient;
 import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
-import es.degrassi.mmreborn.common.entity.base.FluidTankEntity;
 import es.degrassi.mmreborn.common.entity.base.TileItemBus;
 import es.degrassi.mmreborn.common.registration.ContainerRegistration;
 import net.minecraft.network.FriendlyByteBuf;

@@ -219,7 +219,10 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
   public void distributeCasingColor(boolean default_, BlockPos... poss) {
     int color = default_ ? Config.machineColor : getFoundMachine().getMachineColor();
     for (BlockPos pos : poss) {
-      tryColorize(this.getBlockPos().offset(pos), color);
+      if (getLevel().getBlockEntity(pos) instanceof MachineControllerEntity entity)
+        tryColorize(pos, entity.getFoundMachine().getMachineColor());
+      else
+        tryColorize(this.getBlockPos().offset(pos), color);
     }
     tryColorize(getBlockPos(), getFoundMachine().getMachineColor());
   }
@@ -393,7 +396,8 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
       return switch (value.toLowerCase(Locale.ROOT)) {
         case "missing_structure" -> MISSING_STRUCTURE;
         case "crafting" -> CRAFTING;
-        default -> NO_RECIPE;
+        case "no_recipe" -> NO_RECIPE;
+        default -> null;
       };
     }
 

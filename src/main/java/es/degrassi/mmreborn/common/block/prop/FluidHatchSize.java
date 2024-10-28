@@ -2,10 +2,16 @@ package es.degrassi.mmreborn.common.block.prop;
 
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.entity.base.BlockEntitySynchronized;
+import es.degrassi.mmreborn.common.network.server.component.SUpdateFluidComponentPacket;
+import es.degrassi.mmreborn.common.network.server.component.SUpdateItemComponentPacket;
 import es.degrassi.mmreborn.common.util.HybridTank;
 import java.util.Locale;
 import lombok.Getter;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.ChunkPos;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public enum FluidHatchSize implements StringRepresentable {
   TINY(100),
@@ -57,6 +63,43 @@ public enum FluidHatchSize implements StringRepresentable {
       protected void onContentsChanged() {
         super.onContentsChanged();
         tileEntity.markForUpdate();
+      }
+
+      @Override
+      public void setFluid(FluidStack stack) {
+        super.setFluid(stack);
+
+        if (tileEntity.getLevel() instanceof ServerLevel l)
+          PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(tileEntity.getBlockPos()), new SUpdateFluidComponentPacket(getFluid(), tileEntity.getBlockPos()));
+      }
+
+      @Override
+      public FluidStack drain(int maxDrain, FluidAction action) {
+        FluidStack stack = super.drain(maxDrain, action);
+
+        if (tileEntity.getLevel() instanceof ServerLevel l)
+          PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(tileEntity.getBlockPos()), new SUpdateFluidComponentPacket(getFluid(), tileEntity.getBlockPos()));
+        return stack;
+      }
+
+      @Override
+      public FluidStack drain(FluidStack resource, FluidAction action) {
+        FluidStack stack = super.drain(resource, action);
+
+        if (tileEntity.getLevel() instanceof ServerLevel l)
+          PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(tileEntity.getBlockPos()), new SUpdateFluidComponentPacket(getFluid(), tileEntity.getBlockPos()));
+
+        return stack;
+      }
+
+      @Override
+      public int fill(FluidStack resource, FluidAction action) {
+        int fill = super.fill(resource, action);
+
+        if (tileEntity.getLevel() instanceof ServerLevel l)
+          PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(tileEntity.getBlockPos()), new SUpdateFluidComponentPacket(getFluid(), tileEntity.getBlockPos()));
+
+        return fill;
       }
     };
   }

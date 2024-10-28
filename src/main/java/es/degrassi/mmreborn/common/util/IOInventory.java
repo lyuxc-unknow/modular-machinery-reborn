@@ -7,15 +7,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
+
+import es.degrassi.mmreborn.common.network.server.SMachineUpdatePacket;
+import es.degrassi.mmreborn.common.network.server.component.SUpdateItemComponentPacket;
 import lombok.Getter;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class IOInventory implements IItemHandlerModifiable {
 
@@ -83,6 +89,8 @@ public class IOInventory implements IItemHandlerModifiable {
       if(listener != null) {
         listener.onChange();
       }
+      if (getOwner().getLevel() instanceof ServerLevel l)
+        PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getOwner().getBlockPos()), new SUpdateItemComponentPacket(slot, stack, getOwner().getBlockPos()));
     }
   }
 
@@ -134,6 +142,8 @@ public class IOInventory implements IItemHandlerModifiable {
         if(listener != null) {
           listener.onChange();
         }
+        if (getOwner().getLevel() instanceof ServerLevel l)
+          PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getOwner().getBlockPos()), new SUpdateItemComponentPacket(slot, holder.itemStack, getOwner().getBlockPos()));
       }
       if (movable >= stack.getCount()) {
         return ItemStack.EMPTY;
@@ -151,6 +161,8 @@ public class IOInventory implements IItemHandlerModifiable {
           if(listener != null) {
             listener.onChange();
           }
+          if (getOwner().getLevel() instanceof ServerLevel l)
+            PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getOwner().getBlockPos()), new SUpdateItemComponentPacket(slot, holder.itemStack, getOwner().getBlockPos()));
         }
         return ItemStack.EMPTY;
       } else {
@@ -162,6 +174,8 @@ public class IOInventory implements IItemHandlerModifiable {
           if(listener != null) {
             listener.onChange();
           }
+          if (getOwner().getLevel() instanceof ServerLevel l)
+            PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getOwner().getBlockPos()), new SUpdateItemComponentPacket(slot, holder.itemStack, getOwner().getBlockPos()));
         }
         copy = stack.copy();
         copy.shrink(max);

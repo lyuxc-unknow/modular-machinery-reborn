@@ -1,7 +1,6 @@
 package es.degrassi.mmreborn.client.container;
 
 import es.degrassi.mmreborn.client.ModularMachineryRebornClient;
-import es.degrassi.mmreborn.common.entity.base.EnergyHatchEntity;
 import es.degrassi.mmreborn.common.entity.base.FluidTankEntity;
 import es.degrassi.mmreborn.common.registration.ContainerRegistration;
 import net.minecraft.network.FriendlyByteBuf;
