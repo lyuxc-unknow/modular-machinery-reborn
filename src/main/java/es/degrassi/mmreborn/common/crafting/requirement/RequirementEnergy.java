@@ -21,6 +21,7 @@ import es.degrassi.mmreborn.common.util.ResultChance;
 import java.util.List;
 import javax.annotation.Nonnull;
 
+@SuppressWarnings("unchecked")
 public class RequirementEnergy extends ComponentRequirement<Long, RequirementEnergy> implements ComponentRequirement.PerTick {
   public static final NamedMapCodec<RequirementEnergy> CODEC = NamedCodec.record(instance -> instance.group(
     NamedCodec.longRange(0, Long.MAX_VALUE).fieldOf("amount").forGetter(req -> req.requirementPerTick),
@@ -100,16 +101,19 @@ public class RequirementEnergy extends ComponentRequirement<Long, RequirementEne
   @Override
   public CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context, List<ComponentOutputRestrictor> restrictions) {
     IEnergyHandler handler = (IEnergyHandler) component.providedComponent();
-    switch (getActionType()) {
-      case INPUT:
+    return switch (getActionType()) {
+      case INPUT -> {
         if (handler.getCurrentEnergy() >= RecipeModifier.applyModifiers(context, this, this.requirementPerTick, false)) {
-          return CraftCheck.success();
+          yield CraftCheck.success();
         }
-        break;
-      case OUTPUT:
-        return CraftCheck.success();
-    }
-    return CraftCheck.failure("craftcheck.failure.energy.input");
+        yield CraftCheck.failure("craftcheck.failure.energy.input");
+      }
+      case OUTPUT -> {
+        if (handler.getCurrentEnergy() + RecipeModifier.applyModifiers(context, this, this.requirementPerTick, false) <= handler.getMaxEnergy())
+          yield CraftCheck.success();
+        yield CraftCheck.failure("craftcheck.failure.energy.output");
+      }
+    };
   }
 
   @Override

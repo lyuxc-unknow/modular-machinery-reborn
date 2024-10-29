@@ -31,6 +31,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+@SuppressWarnings("unchecked")
 public class RequirementItem extends ComponentRequirement<ItemStack, RequirementItem> implements ComponentRequirement.ChancedRequirement {
   public static final NamedCodec<RequirementItem> CODEC =
     NamedCodec.record(instance -> instance.group(

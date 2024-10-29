@@ -29,6 +29,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
+@SuppressWarnings("unchecked")
 public class RequirementFluid extends ComponentRequirement<FluidStack, RequirementFluid> implements ComponentRequirement.ChancedRequirement {
   public static final NamedMapCodec<RequirementFluid> CODEC = NamedCodec.record(instance -> instance.group(
     FluidIngredient.CODEC.fieldOf("fluid").forGetter(req -> req.ingredient),

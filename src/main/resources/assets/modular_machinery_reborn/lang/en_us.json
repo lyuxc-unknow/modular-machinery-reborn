@@ -26,6 +26,7 @@
   "craftcheck.failure.gas.input": "Missing gas input!",
   "craftcheck.failure.gas.output.space": "Not enough space for gas output(s)!",
   "craftcheck.failure.energy.input": "Not enough energy!",
+  "craftcheck.failure.energy.output": "Not enough space for energy output!",
 
   "component.missing.energy.output": "No Energy Output Hatch found!",
   "component.missing.energy.input": "No Energy Input Hatch found!",
