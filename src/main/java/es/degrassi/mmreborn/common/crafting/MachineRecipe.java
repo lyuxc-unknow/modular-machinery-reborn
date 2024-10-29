@@ -10,16 +10,10 @@ import es.degrassi.mmreborn.api.codec.NamedMapCodec;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
-import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.MMRLogger;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.Function;
-import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,6 +26,12 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Function;
 
 @Getter
 @Setter
@@ -76,9 +76,6 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
     return RecipeRegistration.RECIPE_TYPE.get();
   }
 
-  private static int counter = 0;
-
-  private final int sortId;
   private final ResourceLocation owningMachine, id;
   @Getter(AccessLevel.NONE)
   private final int tickTime;
@@ -88,12 +85,10 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
 
   public MachineRecipe(ResourceLocation id, ResourceLocation owningMachine, int tickTime, int configuredPriority, boolean voidPerTickFailure) {
     this(id, owningMachine, tickTime, configuredPriority, voidPerTickFailure, false);
-    counter++;
   }
 
   public MachineRecipe(ResourceLocation id, ResourceLocation owningMachine, int tickTime, int configuredPriority, boolean voidPerTickFailure, boolean copy) {
     this.id = id;
-    this.sortId = counter;
     this.owningMachine = owningMachine;
     this.tickTime = tickTime;
     this.configuredPriority = configuredPriority;
@@ -158,19 +153,11 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
   }
 
   private int buildWeight() {
-    int weightOut = sortId;
-    for (ComponentRequirement<?, ?> req : this.recipeRequirements) {
-      if (req.getActionType() == IOType.OUTPUT) {
-        continue;
-      }
-      weightOut -= req.getSortingWeight();
-    }
-    return weightOut;
+    return configuredPriority;
   }
 
   public JsonObject asJson() {
     JsonObject json = new JsonObject();
-    json.addProperty("sortId", sortId);
     json.addProperty("owningMachine", owningMachine.toString());
     json.addProperty("id", id.toString());
     json.addProperty("tickTime", tickTime);

@@ -6,25 +6,25 @@ import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
-import es.degrassi.mmreborn.common.util.MMRLogger;
 import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class ActiveMachineRecipe {
   @Getter
-  private final MachineRecipe recipe;
+  private MachineRecipe recipe;
   private final Map<ResourceLocation, CompoundTag> dataMap = new HashMap<>();
+  private ResourceLocation futureRecipeId;
 
   private final MachineControllerEntity entity;
+  @Getter
+  private boolean initialized = false;
 
   public ActiveMachineRecipe(MachineRecipe recipe, MachineControllerEntity entity) {
     this.recipe = recipe;
@@ -33,43 +33,49 @@ public class ActiveMachineRecipe {
 
   public ActiveMachineRecipe(CompoundTag serialized, MachineControllerEntity entity) {
     this.entity = entity;
-    this.recipe = Optional
-      .ofNullable(entity.getLevel())
-      .flatMap(level -> level
-        .getRecipeManager()
-        .getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get())
-        .stream()
-        .map(RecipeHolder::value)
-        .filter(recipe -> recipe.getOwningMachineIdentifier().equals(entity.getId()))
-        .filter(recipe -> recipe.getId().equals(ResourceLocation.tryParse(serialized.getString("recipeId"))))
-        .findFirst())
+    this.futureRecipeId = ResourceLocation.tryParse(serialized.getString("id"));
+  }
+
+  public void init() {
+    if (this.futureRecipeId == null || this.entity.getLevel() == null) return;
+    this.initialized = true;
+    this.recipe = entity
+      .getLevel()
+      .getRecipeManager()
+      .getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get())
+      .stream()
+      .map(RecipeHolder::value)
+      .filter(recipe -> recipe.getOwningMachineIdentifier() != null)
+      .filter(recipe -> recipe.getOwningMachineIdentifier().equals(entity.getId()))
+      .filter(recipe -> recipe.getId().equals(futureRecipeId))
+      .findFirst()
       .orElse(null);
 
-    if (recipe == null) return;
-
-    if (serialized.contains("data", Tag.TAG_LIST)) {
-      ListTag listData = serialized.getList("data", Tag.TAG_COMPOUND);
-      for (int i = 0; i < listData.size(); i++) {
-        CompoundTag tag = listData.getCompound(i);
-        String key = tag.getString("key");
-        CompoundTag data = tag.getCompound("data");
-        if (!key.isEmpty()) {
-          dataMap.put(ResourceLocation.parse(key), data);
-        }
-      }
-    }
+//    if (serialized.contains("data", Tag.TAG_LIST)) {
+//      ListTag listData = serialized.getList("data", Tag.TAG_COMPOUND);
+//      for (int i = 0; i < listData.size(); i++) {
+//        CompoundTag tag = listData.getCompound(i);
+//        String key = tag.getString("key");
+//        CompoundTag data = tag.getCompound("data");
+//        if (!key.isEmpty()) {
+//          dataMap.put(ResourceLocation.parse(key), data);
+//        }
+//      }
+//    }
   }
 
   public void reset() {
     entity.setRecipeTicks(-1);
+    entity.setCraftingStatus(MachineControllerEntity.CraftingStatus.NO_RECIPE);
   }
 
   @Nonnull
-  public MachineControllerEntity.CraftingStatus tick(MachineControllerEntity ctrl, RecipeCraftingContext context) {
+  public MachineControllerEntity.CraftingStatus tick(RecipeCraftingContext context) {
+    if (!initialized) init();
     //Skip per-tick logic until controller can finish the recipe
-//    if (this.isCompleted(ctrl, context)) {
-//      return MachineControllerEntity.CraftingStatus.working();
-//    }
+    if (this.isCompleted(context)) {
+      return MachineControllerEntity.CraftingStatus.working();
+    }
 
     RecipeCraftingContext.CraftingCheckResult check;
     if (!(check = context.ioTick(entity.getRecipeTicks())).isFailure()) {
@@ -92,7 +98,7 @@ public class ActiveMachineRecipe {
     return dataMap.computeIfAbsent(key, k -> new CompoundTag());
   }
 
-  public boolean isCompleted(MachineControllerEntity controller, RecipeCraftingContext context) {
+  public boolean isCompleted(RecipeCraftingContext context) {
     int time = this.recipe.getRecipeTotalTickTime();
     //Not sure which a user will use... let's try both.
     time = Math.round(RecipeModifier.applyModifiers(context.getModifiers(RequirementTypeRegistration.DURATION.get()), RequirementTypeRegistration.DURATION.get(), null, time, false));
@@ -101,6 +107,7 @@ public class ActiveMachineRecipe {
 
   public void start(RecipeCraftingContext context) {
     entity.setRecipeTicks(0);
+    entity.setCraftingStatus(MachineControllerEntity.CraftingStatus.working());
     context.startCrafting();
   }
 
@@ -111,7 +118,7 @@ public class ActiveMachineRecipe {
   public CompoundTag serialize() {
     CompoundTag tag = new CompoundTag();
     if (this.recipe != null)
-      tag.putString("recipeId", this.recipe.getId().toString());
+      tag.putString("id", this.recipe.getId().toString());
 
     ListTag listData = new ListTag();
     for (Map.Entry<ResourceLocation, CompoundTag> dataEntry : this.dataMap.entrySet()) {

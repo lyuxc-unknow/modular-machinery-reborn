@@ -12,6 +12,10 @@ import es.degrassi.mmreborn.common.modifier.ModifierReplacement;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.ResultChance;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,9 +23,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
-import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 @Setter
@@ -62,9 +63,9 @@ public class RecipeCraftingContext {
     this.currentRestrictions.add(restrictor);
   }
 
-  public Iterable<ProcessingComponent<?>> getComponentsFor(ComponentRequirement<?, ?> requirement) {
+  public List<ProcessingComponent<?>> getComponentsFor(ComponentRequirement<?, ?> requirement) {
     return this.typeComponents.stream()
-      .filter(comp -> requirement.isValidComponent(comp, this))
+      .filter(processingComponent -> requirement.isValidComponent(processingComponent, this))
       .toList();
   }
 
@@ -152,7 +153,11 @@ public class RecipeCraftingContext {
   }
 
   public CraftingCheckResult canStartCrafting() {
-    return this.canStartCrafting(req -> true);
+    return this.canStartCrafting(req -> {
+      List<ProcessingComponent<?>> reqs = getComponentsFor(req);
+      if (reqs.isEmpty()) return false;
+      return req.isValidComponent(reqs.get(0), this);
+    });
   }
 
   public CraftingCheckResult canStartCrafting(Predicate<ComponentRequirement<?, ?>> requirementFilter) {

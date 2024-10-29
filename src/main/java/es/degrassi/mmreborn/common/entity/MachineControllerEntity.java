@@ -21,10 +21,6 @@ import es.degrassi.mmreborn.common.network.server.SUpdateRecipePacket;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import es.degrassi.mmreborn.common.util.IOInventory;
-import es.degrassi.mmreborn.common.util.MMRLogger;
-import java.util.List;
-import java.util.Locale;
-import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
@@ -42,6 +38,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Locale;
 
 @Getter
 @Setter
@@ -85,7 +85,15 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
       if (this.ticksExisted % MMRConfig.get().general.checkRecipeTicks == 0) {
         searchAndUpdateRecipe();
       }
-    } else if (this.recipeTicks > -1){
+    } else if (this.recipeTicks > -1) {
+      if (!this.activeRecipe.isInitialized()) this.activeRecipe.init();
+      if (this.activeRecipe.getRecipe() == null) {
+        this.setActiveRecipe(null);
+        this.setRecipeTicks(-1);
+        this.setCraftingStatus(MachineControllerEntity.CraftingStatus.NO_RECIPE);
+        setChanged();
+        return;
+      }
       useRecipe();
     }
     setChanged();
@@ -101,12 +109,12 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
 
   private void useRecipe() {
     RecipeCraftingContext context = this.getFoundMachine().createContext(this.activeRecipe, this, this.foundComponents);
-    this.craftingStatus = this.activeRecipe.tick(this, context); //handle energy IO and tick progression
+    this.craftingStatus = this.activeRecipe.tick(context); //handle energy IO and tick progression
 
     if (this.activeRecipe.getRecipe().doesCancelRecipeOnPerTickFailure() && !this.craftingStatus.isCrafting()) {
       this.activeRecipe = null;
       setRecipeTicks(-1);
-    } else if (this.activeRecipe.isCompleted(this, context) &&
+    } else if (this.activeRecipe.isCompleted(context) &&
       !context.canStartCrafting(req -> req.getActionType() == IOType.OUTPUT).isFailure()) {
       this.activeRecipe.complete(context);
       this.activeRecipe.reset();
@@ -118,7 +126,6 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
         searchAndUpdateRecipe();
       } else {
         this.activeRecipe.start(context);
-        setCraftingStatus(CraftingStatus.working());
       }
     }
     setChanged();
@@ -133,8 +140,8 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
         .getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get())
         .stream()
         .map(RecipeHolder::value)
-        .filter(recipe -> recipe.getOwningMachine() != null)
-        .filter(recipe -> recipe.getOwningMachine().equals(this.getFoundMachine()))
+        .filter(recipe -> recipe.getOwningMachineIdentifier() != null)
+        .filter(recipe -> recipe.getOwningMachineIdentifier().equals(this.getId()))
         .toList();
 
     MachineRecipe highestValidity = null;
@@ -306,13 +313,12 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
 
     if (compound.contains("recipe")) {
       CompoundTag tag = compound.getCompound("recipe");
-      ActiveMachineRecipe recipe = new ActiveMachineRecipe(tag, this);
-      if (recipe.getRecipe() == null) {
-        MMRLogger.INSTANCE.info("Couldn't find recipe named {} for controller at {}", tag.getString("recipeId"), getBlockPos());
-        this.activeRecipe = null;
-      } else {
-        this.activeRecipe = recipe;
-      }
+      //      if (recipe.getRecipe() == null) {
+//        MMRLogger.INSTANCE.info("Couldn't find recipe named {} for controller at {}", tag.getString("id"), getBlockPos());
+//        this.activeRecipe = null;
+//      } else {
+        this.activeRecipe = new ActiveMachineRecipe(tag, this);
+//      }
     } else {
       this.activeRecipe = null;
     }
