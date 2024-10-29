@@ -8,30 +8,17 @@ import es.degrassi.mmreborn.common.entity.base.FluidTankEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class FluidHatchScreen extends AbstractContainerScreen<FluidHatchContainer> {
-  private final FluidTankEntity entity;
-
-  public static final ResourceLocation TEXTURES_FLUID_HATCH = ResourceLocation.fromNamespaceAndPath(ModularMachineryReborn.MODID, "textures/gui/guibar.png");
+public class FluidHatchScreen extends BaseScreen<FluidHatchContainer, FluidTankEntity> {
 
   public FluidHatchScreen(FluidHatchContainer pMenu, Inventory pPlayerInventory, Component pTitle) {
     super(pMenu, pPlayerInventory, pTitle);
-    this.entity = pMenu.getEntity();
-  }
-
-  @Override
-  public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float pPartialTick) {
-    // Neo: replicate the super method's implementation to insert the event between background and widgets
-    super.render(guiGraphics, mouseX, mouseY, pPartialTick);
-    renderTooltip(guiGraphics, mouseX, mouseY);
   }
 
   @Override
@@ -40,18 +27,17 @@ public class FluidHatchScreen extends AbstractContainerScreen<FluidHatchContaine
   }
 
   @Override
+  public ResourceLocation getTexture() {
+    return ResourceLocation.fromNamespaceAndPath(ModularMachineryReborn.MODID, "textures/gui/guibar.png");
+  }
+
+  @Override
   protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
     // render image background:
-    guiGraphics.pose().pushPose();
-    guiGraphics.setColor(1f, 1f, 1f, 1f);
-    int i = (this.width - this.imageWidth) / 2;
-    int j = (this.height - this.imageHeight) / 2;
-    guiGraphics.blit(TEXTURES_FLUID_HATCH, i, j, 0, 0, imageWidth, imageHeight);
-    guiGraphics.pose().popPose();
-
+    super.renderBg(guiGraphics, partialTick, mouseX, mouseY);
     FluidStack content = entity.getTank().getFluid();
     guiGraphics.pose().pushPose();
-    FluidRenderer.renderFluid(guiGraphics.pose(), i + 15, j + 10, 20, 61, content, entity.getTank().getCapacity());
+    FluidRenderer.renderFluid(guiGraphics.pose(), leftPos + 15, topPos + 10, 20, 61, content, entity.getTank().getCapacity());
     guiGraphics.pose().popPose();
 //    if (content.getAmount() > 0) {
 //      drawTexturedModalRect(15, 10 + 61 - pxFilled, tas, 20, pxFilled);

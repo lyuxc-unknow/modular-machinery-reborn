@@ -6,7 +6,6 @@ import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.util.RedstoneHelper;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -16,34 +15,23 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ControllerScreen extends AbstractContainerScreen<ControllerContainer> {
-  private final MachineControllerEntity entity;
-
-  public static final ResourceLocation TEXTURES_CONTROLLER = ResourceLocation.fromNamespaceAndPath(ModularMachineryReborn.MODID, "textures/gui/guicontroller.png");
+public class ControllerScreen extends BaseScreen<ControllerContainer, MachineControllerEntity> {
 
   public ControllerScreen(ControllerContainer pMenu, Inventory pPlayerInventory, Component pTitle) {
     super(pMenu, pPlayerInventory, pTitle);
-    this.entity = pMenu.getEntity();
   }
 
   @Override
-  public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float pPartialTick) {
-    // Neo: replicate the super method's implementation to insert the event between background and widgets
-    super.render(guiGraphics, mouseX, mouseY, pPartialTick);
-    renderTooltip(guiGraphics, mouseX, mouseY);
+  public ResourceLocation getTexture() {
+    return ResourceLocation.fromNamespaceAndPath(ModularMachineryReborn.MODID, "textures/gui/guicontroller.png");
   }
 
   @Override
   protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-    // render image background:
+    // render image background
+    super.renderBg(guiGraphics, partialTick, mouseX, mouseY);
     guiGraphics.pose().pushPose();
-    guiGraphics.setColor(1f, 1f, 1f, 1f);
-    int i = (this.width - this.imageWidth) / 2;
-    int j = (this.height - this.imageHeight) / 2;
-    guiGraphics.blit(TEXTURES_CONTROLLER, i, j, 0, 0, imageWidth, imageHeight);
-    guiGraphics.pose().popPose();
-    guiGraphics.pose().pushPose();
-    guiGraphics.pose().translate(i, j, 0);
+    guiGraphics.pose().translate(this.leftPos, this.topPos, 0);
     float scale = 0.72f;
     guiGraphics.pose().scale(scale, scale, scale);
     int offsetX = 12;
@@ -66,13 +54,14 @@ public class ControllerScreen extends AbstractContainerScreen<ControllerContaine
     DynamicMachine machine = entity.getFoundMachine();
     if(machine != DynamicMachine.DUMMY) {
       // render if the structure of machine is not null
-      Component drawnHead = Component.translatable("gui.controller.structure", "");
+//      Component drawnHead = Component.translatable("gui.controller.structure", "");
       List<FormattedCharSequence> out = font.split(Component.literal(machine.getLocalizedName()), Mth.floor(135 * (1 / scale)));
-      guiGraphics.drawString(font, drawnHead, offsetX, offsetY, 0xFFFFFF);
+//      guiGraphics.drawString(font, drawnHead, offsetX, offsetY, 0xFFFFFF);
       for (FormattedCharSequence draw : out) {
-        offsetY += 10;
         guiGraphics.drawString(font, draw, offsetX, offsetY, 0xFFFFFF);
+        offsetY += 10;
       }
+      offsetY -= 10;
     } else {
       // render if the structure of machine is null
       Component drawnHead = Component.translatable("gui.controller.structure", Component.translatable("gui.controller.structure.none"));

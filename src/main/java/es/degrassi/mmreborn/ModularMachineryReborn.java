@@ -20,8 +20,6 @@ import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.registration.Registration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.MMRLogger;
-import java.util.HashMap;
-import java.util.Map;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
@@ -83,11 +81,6 @@ public class ModularMachineryReborn {
   }
 
   private void registerCapabilities(final RegisterCapabilitiesEvent event) {
-    event.registerBlockEntity(
-      Capabilities.ItemHandler.BLOCK,
-      EntityRegistration.CONTROLLER.get(),
-      (be, side) -> be.getInventory()
-    );
     event.registerBlockEntity(
       Capabilities.ItemHandler.BLOCK,
       EntityRegistration.ITEM_INPUT_BUS.get(),

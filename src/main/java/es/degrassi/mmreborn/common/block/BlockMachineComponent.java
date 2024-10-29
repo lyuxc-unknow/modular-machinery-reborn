@@ -68,15 +68,6 @@ public abstract class BlockMachineComponent extends Block implements BlockDynami
   @Override
   protected @NotNull List<ItemStack> getDrops(@NotNull BlockState state, LootParams.@NotNull Builder builder) {
     List<ItemStack> drops = super.getDrops(state, builder);
-    if (builder.getParameter(LootContextParams.BLOCK_ENTITY) instanceof MachineControllerEntity entity) {
-      IOInventory inv = entity.getInventory();
-      for (int i = 0; i < inv.getSlots(); i++) {
-        ItemStack stack = inv.getStackInSlot(i);
-        if(!stack.isEmpty()) {
-          drops.add(stack);
-        }
-      }
-    }
     if (builder.getParameter(LootContextParams.BLOCK_ENTITY) instanceof TileInventory entity) {
       IOInventory inv = entity.getInventory();
       for (int i = 0; i < inv.getSlots(); i++) {

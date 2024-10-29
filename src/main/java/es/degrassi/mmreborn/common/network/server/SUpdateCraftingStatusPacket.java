@@ -22,17 +22,7 @@ public record SUpdateCraftingStatusPacket(MachineControllerEntity.CraftingStatus
   }
 
   public static final StreamCodec<RegistryFriendlyByteBuf, SUpdateCraftingStatusPacket> CODEC = StreamCodec.composite(
-    StreamCodec.composite(
-      StreamCodec.composite(
-        ByteBufCodecs.STRING_UTF8,
-        StringRepresentable::getSerializedName,
-        MachineControllerEntity.Type::fromString
-      ),
-      MachineControllerEntity.CraftingStatus::getStatus,
-      ByteBufCodecs.STRING_UTF8,
-      MachineControllerEntity.CraftingStatus::getUnlocMessage,
-      MachineControllerEntity.CraftingStatus::of
-    ),
+    MachineControllerEntity.CraftingStatus.STREAM_CODEC,
     SUpdateCraftingStatusPacket::status,
     BlockPos.STREAM_CODEC,
     SUpdateCraftingStatusPacket::pos,

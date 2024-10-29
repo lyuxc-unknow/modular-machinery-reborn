@@ -20,13 +20,15 @@ import es.degrassi.mmreborn.common.network.server.SUpdateCraftingStatusPacket;
 import es.degrassi.mmreborn.common.network.server.SUpdateRecipePacket;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
-import es.degrassi.mmreborn.common.util.IOInventory;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -46,13 +48,9 @@ import java.util.Locale;
 @Getter
 @Setter
 public class MachineControllerEntity extends BlockEntityRestrictedTick {
-  public static final int BLUEPRINT_SLOT = 0;
-  public static final int ACCELERATOR_SLOT = 1;
-
   private CraftingStatus craftingStatus = CraftingStatus.MISSING_STRUCTURE;
 
   private ResourceLocation id = DynamicMachine.DUMMY.getRegistryName();
-  private IOInventory inventory;
   private ActiveMachineRecipe activeRecipe = null;
 
   private int recipeTicks = 0;
@@ -61,15 +59,6 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
 
   public MachineControllerEntity(BlockPos pos, BlockState state) {
     super(EntityRegistration.CONTROLLER.get(), pos, state);
-    this.inventory = buildInventory();
-    this.inventory.setStackLimit(1, BLUEPRINT_SLOT);
-  }
-
-  private IOInventory buildInventory() {
-    return new IOInventory(this,
-      new int[]{ },
-      new int[]{ }
-    );//.setMiscSlots(BLUEPRINT_SLOT, ACCELERATOR_SLOT);
   }
 
   @Override
@@ -109,7 +98,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
 
   private void useRecipe() {
     RecipeCraftingContext context = this.getFoundMachine().createContext(this.activeRecipe, this, this.foundComponents);
-    this.craftingStatus = this.activeRecipe.tick(context); //handle energy IO and tick progression
+    this.setCraftingStatus(this.activeRecipe.tick(context)); //handle energy IO and tick progression
 
     if (this.activeRecipe.getRecipe().doesCancelRecipeOnPerTickFailure() && !this.craftingStatus.isCrafting()) {
       this.activeRecipe = null;
@@ -301,9 +290,6 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
   protected void loadAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
     super.loadAdditional(compound, pRegistries);
 
-    this.inventory = IOInventory.deserialize(this, compound.getCompound("items"), pRegistries);
-    this.inventory.setStackLimit(1, BLUEPRINT_SLOT);
-
     this.craftingStatus = CraftingStatus.deserialize(compound.getCompound("status"));
 
     this.id = ResourceLocation.parse(compound.getString("machine"));
@@ -313,12 +299,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
 
     if (compound.contains("recipe")) {
       CompoundTag tag = compound.getCompound("recipe");
-      //      if (recipe.getRecipe() == null) {
-//        MMRLogger.INSTANCE.info("Couldn't find recipe named {} for controller at {}", tag.getString("id"), getBlockPos());
-//        this.activeRecipe = null;
-//      } else {
-        this.activeRecipe = new ActiveMachineRecipe(tag, this);
-//      }
+      this.activeRecipe = new ActiveMachineRecipe(tag, this);
     } else {
       this.activeRecipe = null;
     }
@@ -327,7 +308,6 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
   @Override
   protected void saveAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
     super.saveAdditional(compound, pRegistries);
-    compound.put("items", this.inventory.writeNBT(pRegistries));
     compound.put("status", this.craftingStatus.serializeNBT());
     compound.putString("machine", id.toString());
     compound.putInt("tick", this.recipeTicks);
@@ -345,6 +325,22 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
     public static final CraftingStatus SUCCESS = new CraftingStatus(Type.CRAFTING, "");
     public static final CraftingStatus MISSING_STRUCTURE = new CraftingStatus(Type.MISSING_STRUCTURE, "");
     public static final CraftingStatus NO_RECIPE = new CraftingStatus(Type.NO_RECIPE, "");
+
+    @MethodsReturnNonnullByDefault
+    public static final StreamCodec<RegistryFriendlyByteBuf, CraftingStatus> STREAM_CODEC = new StreamCodec<>() {
+      @Override
+      public CraftingStatus decode(RegistryFriendlyByteBuf buffer) {
+        Type type = buffer.readEnum(Type.class);
+        String unlocalizedMessage = buffer.readUtf();
+        return new CraftingStatus(type, unlocalizedMessage);
+      }
+
+      @Override
+      public void encode(RegistryFriendlyByteBuf buffer, CraftingStatus value) {
+        buffer.writeEnum(value.status);
+        buffer.writeUtf(value.unlocMessage);
+      }
+    };
 
     @Getter
     private final Type status;

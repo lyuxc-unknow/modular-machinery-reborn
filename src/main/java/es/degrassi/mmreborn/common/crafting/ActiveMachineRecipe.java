@@ -50,6 +50,7 @@ public class ActiveMachineRecipe {
       .filter(recipe -> recipe.getId().equals(futureRecipeId))
       .findFirst()
       .orElse(null);
+    this.futureRecipeId = null;
 
 //    if (serialized.contains("data", Tag.TAG_LIST)) {
 //      ListTag listData = serialized.getList("data", Tag.TAG_COMPOUND);

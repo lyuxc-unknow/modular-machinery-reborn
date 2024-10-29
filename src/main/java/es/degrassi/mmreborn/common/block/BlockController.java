@@ -6,14 +6,9 @@ import es.degrassi.mmreborn.client.entity.renderer.ControllerRenderer;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.item.ControllerItem;
 import es.degrassi.mmreborn.common.item.ItemBlueprint;
-import es.degrassi.mmreborn.common.item.ItemDynamicColor;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.network.server.SMachineUpdatePacket;
-import es.degrassi.mmreborn.common.util.IOInventory;
-import es.degrassi.mmreborn.common.util.MMRLogger;
 import es.degrassi.mmreborn.common.util.RedstoneHelper;
-import java.util.List;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,7 +22,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -46,6 +40,9 @@ import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 @SuppressWarnings("unused")
 @ParametersAreNonnullByDefault
@@ -112,14 +109,6 @@ public class BlockController extends BlockMachineComponent {
     BlockEntity te = level.getBlockEntity(pos);
     if(te instanceof MachineControllerEntity entity) {
       ControllerRenderer.renderers.remove(entity.getBlockPos());
-      IOInventory inv = entity.getInventory();
-      for (int i = 0; i < inv.getSlots(); i++) {
-        ItemStack stack = inv.getStackInSlot(i);
-        if(!stack.isEmpty()) {
-          popResource(level, pos, stack);
-          inv.setStackInSlot(i, ItemStack.EMPTY);
-        }
-      }
     }
     super.playerDestroy(level, player, pos, state, blockEntity, tool);
   }
@@ -128,14 +117,6 @@ public class BlockController extends BlockMachineComponent {
   public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
     if(player.getAbilities().instabuild && level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof MachineControllerEntity entity) {
       ControllerRenderer.renderers.remove(entity.getBlockPos());
-      IOInventory inv = entity.getInventory();
-      for (int i = 0; i < inv.getSlots(); i++) {
-        ItemStack stack = inv.getStackInSlot(i);
-        if(!stack.isEmpty()) {
-          popResource(level, pos, stack);
-          inv.setStackInSlot(i, ItemStack.EMPTY);
-        }
-      }
     }
     return super.playerWillDestroy(level, pos, state, player);
   }
