@@ -58,6 +58,26 @@ public class MMRBlockTagProvider extends BlockTagsProvider {
       BlockRegistration.FLUID_OUTPUT_HATCH_LUDICROUS.get(),
       BlockRegistration.FLUID_OUTPUT_HATCH_VACUUM.get()
     );
+    tag(MMRTags.Blocks.CHEMICAL_INPUT).add(
+      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_INPUT_HATCH_TINY.get(),
+      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_INPUT_HATCH_SMALL.get(),
+      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_INPUT_HATCH_NORMAL.get(),
+      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_INPUT_HATCH_REINFORCED.get(),
+      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_INPUT_HATCH_BIG.get(),
+      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_INPUT_HATCH_HUGE.get(),
+      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_INPUT_HATCH_LUDICROUS.get(),
+      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_INPUT_HATCH_VACUUM.get()
+    );
+    tag(MMRTags.Blocks.CHEMICAL_OUTPUT).add(
+      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_OUTPUT_HATCH_TINY.get(),
+      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_OUTPUT_HATCH_SMALL.get(),
+      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_OUTPUT_HATCH_NORMAL.get(),
+      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_OUTPUT_HATCH_REINFORCED.get(),
+      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_OUTPUT_HATCH_BIG.get(),
+      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_OUTPUT_HATCH_HUGE.get(),
+      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_OUTPUT_HATCH_LUDICROUS.get(),
+      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_OUTPUT_HATCH_VACUUM.get()
+    );
     tag(MMRTags.Blocks.INPUT_BUS).add(
       BlockRegistration.ITEM_INPUT_BUS_TINY.get(),
       BlockRegistration.ITEM_INPUT_BUS_SMALL.get(),

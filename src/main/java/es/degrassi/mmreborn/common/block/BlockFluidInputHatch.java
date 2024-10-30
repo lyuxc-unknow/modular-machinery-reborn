@@ -34,6 +34,7 @@ public class BlockFluidInputHatch extends BlockFluidHatch {
       case BIG ->         drops.add(ItemRegistration.FLUID_INPUT_HATCH_BIG.get().getDefaultInstance());
       case HUGE ->        drops.add(ItemRegistration.FLUID_INPUT_HATCH_HUGE.get().getDefaultInstance());
       case LUDICROUS ->   drops.add(ItemRegistration.FLUID_INPUT_HATCH_LUDICROUS.get().getDefaultInstance());
+      case VACUUM ->      drops.add(ItemRegistration.FLUID_INPUT_HATCH_VACUUM.get().getDefaultInstance());
     }
     return drops;
   }

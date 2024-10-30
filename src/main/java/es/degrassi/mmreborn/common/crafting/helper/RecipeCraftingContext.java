@@ -153,11 +153,7 @@ public class RecipeCraftingContext {
   }
 
   public CraftingCheckResult canStartCrafting() {
-    return this.canStartCrafting(req -> {
-      List<ProcessingComponent<?>> reqs = getComponentsFor(req);
-      if (reqs.isEmpty()) return false;
-      return req.isValidComponent(reqs.get(0), this);
-    });
+    return this.canStartCrafting(req -> true);
   }
 
   public CraftingCheckResult canStartCrafting(Predicate<ComponentRequirement<?, ?>> requirementFilter) {

@@ -29,35 +29,6 @@ public class MMRItemBusConfig implements ConfigData {
   @ConfigEntry.Gui.CollapsibleObject
   public Tier LUDICROUS = new Tier(ItemBusSize.LUDICROUS);
 
-//  @ConfigEntry.Category("Size")
-//  @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)
-//  @Comment("Slot number of the item bus, default: 1]")
-//  public int TINY_E = 1;
-//  @ConfigEntry.Category("Size")
-//  @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)
-//  @Comment("Slot number of the item bus, default: 4]")
-//  public int SMALL_E = 4;
-//  @ConfigEntry.Category("Size")
-//  @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)
-//  @Comment("Slot number of the item bus, default: 6]")
-//  public int NORMAL_E = 6;
-//  @ConfigEntry.Category("Size")
-//  @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)
-//  @Comment("Slot number of the item bus, default: 9]")
-//  public int REINFORCED_E = 9;
-//  @ConfigEntry.Category("Size")
-//  @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)
-//  @Comment("Slot number of the item bus, default: 12]")
-//  public int BIG_E = 12;
-//  @ConfigEntry.Category("Size")
-//  @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)
-//  @Comment("Slot number of the item bus, default: 16]")
-//  public int HUGE_E = 16;
-//  @ConfigEntry.Category("Size")
-//  @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)
-//  @Comment("Slot number of the item bus, default: 32]")
-//  public int LUDICROUS_E = 32;
-
   public static class Tier {
     @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)
     @Comment("Slot number of the item bus")

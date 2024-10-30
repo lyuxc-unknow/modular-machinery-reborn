@@ -32,39 +32,6 @@ public class MMRFluidHatchConfig implements ConfigData {
   @ConfigEntry.Gui.CollapsibleObject
   public Tier VACUUM = new Tier(FluidHatchSize.VACUUM);
 
-//  @ConfigEntry.Category("Size")
-//  @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)
-//  @Comment("Defines the tank size for the size-type of fluid hatch, default: 100")
-//  public int TINY_E = 100;
-//  @ConfigEntry.Category("Size")
-//  @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)
-//  @Comment("Defines the tank size for the size-type of fluid hatch, default: 400")
-//  public int SMALL_E = 400;
-//  @ConfigEntry.Category("Size")
-//  @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)
-//  @Comment("Defines the tank size for the size-type of fluid hatch, default: 1000")
-//  public int NORMAL_E = 1000;
-//  @ConfigEntry.Category("Size")
-//  @ConfigEntry.BoundedDiscrete( max = Integer.MAX_VALUE)
-//  @Comment("Defines the tank size for the size-type of fluid hatch, default: 2000")
-//  public int REINFORCED_E = 2000;
-//  @ConfigEntry.Category("Size")
-//  @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)
-//  @Comment("Defines the tank size for the size-type of fluid hatch, default: 4500")
-//  public int BIG_E = 4500;
-//  @ConfigEntry.Category("Size")
-//  @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)
-//  @Comment("Defines the tank size for the size-type of fluid hatch, default: 8000")
-//  public int HUGE_E = 8000;
-//  @ConfigEntry.Category("Size")
-//  @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)
-//  @Comment("Defines the tank size for the size-type of fluid hatch, default: 16000")
-//  public int LUDICROUS_E = 16000;
-//  @ConfigEntry.Category("Size")
-//  @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)
-//  @Comment("Defines the tank size for the size-type of fluid hatch, default: 32000")
-//  public int VACUUM_E = 32000;
-
   public static class Tier {
     @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)
     @Comment("Defines the tank size of fluid hatch in mB")

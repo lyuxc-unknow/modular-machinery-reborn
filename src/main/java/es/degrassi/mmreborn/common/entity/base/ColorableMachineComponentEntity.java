@@ -34,8 +34,6 @@ public class ColorableMachineComponentEntity extends BlockEntitySynchronized imp
     this.definedColor = newColor;
     setRequestModelUpdate(true);
     triggerEvent(1, 0);
-//    getLevel().updateNeighbourForOutputSignal(getBlockPos(), getBlockState().getBlock());
-//    getLevel().setBlockAndUpdate(getBlockPos(), getBlockState());
     this.markForUpdate();
     if (getLevel() instanceof ServerLevel l) {
       PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getBlockPos()),

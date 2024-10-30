@@ -17,6 +17,7 @@ public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, 
 
   public static final int PRIORITY_WEIGHT_ENERGY = 50_000_000;
   public static final int PRIORITY_WEIGHT_FLUID  = 100;
+  public static final int PRIORITY_WEIGHT_CHEMICAL  = 1_000;
   public static final int PRIORITY_WEIGHT_ITEM   = 50_000;
 
   private final IOType actionType;

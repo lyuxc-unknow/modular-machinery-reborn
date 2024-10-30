@@ -3,6 +3,7 @@ package es.degrassi.mmreborn.common.integration.jei.category;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
+import es.degrassi.mmreborn.common.crafting.requirement.RequirementChemical;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementFluid;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementItem;
@@ -12,6 +13,9 @@ import es.degrassi.mmreborn.common.integration.jei.ingredient.CustomIngredientTy
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import es.degrassi.mmreborn.common.registration.Registration;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.client.recipe_viewer.jei.ChemicalStackRenderer;
+import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -153,6 +157,26 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
         y.getAndAdd(component.getHeight() + gapY);
       }
     });
+    inputRequirements.stream().filter(req -> req instanceof RequirementChemical).map(req -> (RequirementChemical) req).map(RequirementChemical::jeiComponent).forEach(component -> {
+      updateByProcessed(x, y, processedInputComponents, component.getWidth(), component.getHeight());
+      builder
+          .addInputSlot(x.get() + 1, y.get() + 1)
+          .setOverlay(
+              MMRJeiPlugin.jeiHelpers.getGuiHelper().createDrawable(component.texture(), component.getUOffset(), component.getVOffset(), component.getWidth() + 2, component.getHeight() + 2),
+              -1,
+              -1
+          )
+          .setCustomRenderer(MekanismJEI.TYPE_CHEMICAL, new ChemicalStackRenderer(component.getRequirement().amount, component.getWidth(), component.getHeight()))
+          .addIngredient(MekanismJEI.TYPE_CHEMICAL, new ChemicalStack(component.getRequirement().required.getChemical(), component.getRequirement().amount));
+      x.getAndAdd(gapX);
+      x.getAndAdd(component.getWidth());
+      textsToRender.add(Component.translatable("modular_machinery_reborn.jei.ingredient.chemical.input", component.ingredients().get(0).getTextComponent(), component.ingredients().get(0).getAmount()));
+      if (y.get() + component.getHeight() > maxHeight.get()) maxHeight.set(y.get() + component.getHeight() + gapY);
+      if (x.get() >= (getMaxWidth() / 2 - gapX)) {
+        x.set(initialX);
+        y.getAndAdd(component.getHeight() + gapY);
+      }
+    });
     final AtomicReference<MMRRecipeCategory.ComponentValue> firstItem = new AtomicReference<>(null);
     x.getAndIncrement();
     y.getAndIncrement();
@@ -196,11 +220,27 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
               -1,
               -1
           )
-          .setFluidRenderer(component.getRequirement().amount, true, component.getWidth(), component.getHeight())
+          .setFluidRenderer(component.getRequirement().amount, false, component.getWidth(), component.getHeight())
           .addFluidStack(component.getRequirement().required.asFluidStack().getFluid(), component.getRequirement().amount);
       x.getAndAdd(gapX);
       x.getAndAdd(component.getWidth());
       textsToRender.add(Component.translatable("modular_machinery_reborn.jei.ingredient.fluid.output", component.ingredients().get(0).getHoverName(), component.ingredients().get(0).getAmount()));
+      updateMaxHeight(gapX, gapY, initialX, x, y, maxHeight, component.getHeight());
+    });
+    outputRequirements.stream().filter(req -> req instanceof RequirementChemical).map(req -> (RequirementChemical) req).map(RequirementChemical::jeiComponent).forEach(component -> {
+      updateByProcessed(x, y, processedOutputComponents, component.getWidth(), component.getHeight());
+      builder
+          .addInputSlot(x.get() + 1, y.get() + 1)
+          .setOverlay(
+              MMRJeiPlugin.jeiHelpers.getGuiHelper().createDrawable(component.texture(), component.getUOffset(), component.getVOffset(), component.getWidth() + 2, component.getHeight() + 2),
+              -1,
+              -1
+          )
+          .setCustomRenderer(MekanismJEI.TYPE_CHEMICAL, new ChemicalStackRenderer(component.getRequirement().amount, component.getWidth(), component.getHeight()))
+          .addIngredient(MekanismJEI.TYPE_CHEMICAL, new ChemicalStack(component.getRequirement().required.getChemical(), component.getRequirement().amount));
+      x.getAndAdd(gapX);
+      x.getAndAdd(component.getWidth());
+      textsToRender.add(Component.translatable("modular_machinery_reborn.jei.ingredient.chemical.output", component.ingredients().get(0).getTextComponent(), component.ingredients().get(0).getAmount()));
       updateMaxHeight(gapX, gapY, initialX, x, y, maxHeight, component.getHeight());
     });
     firstItem.set(null);
@@ -231,26 +271,6 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
               0
           );
       maxHeight.getAndAdd(font.wordWrapHeight(component, getMaxWidth() - 16) + 2);
-//      font.split(FormattedText.of(component), getMaxWidth() - 16).forEach(string -> {
-//        builder.addDrawable(
-//          new DrawableText(string, font.width(string), font.lineHeight, FastColor.ABGR32.color(1, 0, 0, 0)) {
-//            @Override
-//            public void draw(GuiGraphics guiGraphics, int xOffset, int yOffset) {
-//              super.draw(guiGraphics, xOffset, yOffset);
-//            }
-//          },
-//          8,
-//          maxHeight.get()
-//          MMRJeiPlugin.jeiHelpers.getGuiHelper().createBlankDrawable() {
-//
-//          }
-//        );
-//          .drawString(font, string, 8, maxHeight.get(), FastColor.ABGR32.color(1, 0, 0, 0));
-//        maxHeight.getAndAdd(font.lineHeight + 3);
-//      });
-//      builder.addText(component, getMaxWidth() - 16, 256 - maxHeight.get())
-//        .setPosition(8, maxHeight.get());
-//      maxHeight.getAndAdd(Minecraft.getInstance().font.wordWrapHeight(component, getMaxWidth() - 16));
     });
   }
 

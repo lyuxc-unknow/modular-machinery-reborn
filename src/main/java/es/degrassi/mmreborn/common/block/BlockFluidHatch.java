@@ -1,12 +1,9 @@
 package es.degrassi.mmreborn.common.block;
 
 import es.degrassi.mmreborn.client.container.FluidHatchContainer;
-import es.degrassi.mmreborn.client.screen.FluidHatchScreen;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
 import es.degrassi.mmreborn.common.entity.base.FluidTankEntity;
-import es.degrassi.mmreborn.common.util.Mods;
 import es.degrassi.mmreborn.common.util.RedstoneHelper;
-import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -26,6 +23,8 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class BlockFluidHatch extends BlockMachineComponent {
   protected final FluidHatchSize size;
   public BlockFluidHatch(FluidHatchSize size) {
@@ -44,9 +43,6 @@ public class BlockFluidHatch extends BlockMachineComponent {
     tooltip.add(
       Component.translatable("tooltip.fluidhatch.tank.info", size.getSize()).withStyle(ChatFormatting.GRAY)
     );
-    if (Mods.MEKANISM.isPresent()) {
-      tooltip.add(Component.translatable("tooltip.fluidhatch.tank.mek").withStyle(ChatFormatting.GRAY));
-    }
   }
 
   @Override

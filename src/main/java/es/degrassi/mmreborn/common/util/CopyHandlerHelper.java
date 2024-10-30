@@ -1,48 +1,31 @@
 package es.degrassi.mmreborn.common.util;
 
+import mekanism.api.chemical.BasicChemicalTank;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.IMekanismChemicalHandler;
+import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.tile.TileEntityChemicalTank;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 public class CopyHandlerHelper {
 
-    public static HybridTank copyTank(HybridTank tank, HolderLookup.Provider provider) {
-        CompoundTag cmp = new CompoundTag();
-        tank.writeToNBT(provider, cmp);
-//        if(Mods.MEKANISM.isPresent()) {
-//            writeGasTag(tank, cmp);
-//        }
-        HybridTank newTank = new HybridTank(tank.getCapacity());
-//        if(Mods.MEKANISM.isPresent()) {
-//            newTank = buildMekGasTank(tank.getCapacity());
-//        }
-        newTank.readFromNBT(provider, cmp);
-//        if(Mods.MEKANISM.isPresent()) {
-//            readGasTag(newTank, cmp);
-//        }
+    public static BasicChemicalTank copyTank(BasicChemicalTank tank, HolderLookup.Provider provider) {
+        CompoundTag cmp = tank.serializeNBT(provider);
+        BasicChemicalTank newTank = (BasicChemicalTank) BasicChemicalTank.create(0, tank);
+        newTank.deserializeNBT(provider, cmp);
         return newTank;
     }
 
-//    @Optional.Method(modid = "mekanism")
-//    private static HybridTank buildMekGasTank(int capacity) {
-//        return new HybridGasTank(capacity);
-//    }
-
-//    @Optional.Method(modid = "mekanism")
-//    private static void writeGasTag(HybridTank tank, NBTTagCompound compound) {
-//        if(tank instanceof HybridGasTank) {
-//            ((HybridGasTank) tank).writeGasToNBT(compound);
-//        }
-//    }
-//
-//    @Optional.Method(modid = "mekanism")
-//    private static void readGasTag(HybridTank tank, NBTTagCompound compound) {
-//        if(tank instanceof HybridGasTank) {
-//            ((HybridGasTank) tank).readGasFromNBT(compound);
-//        }
-//    }
+    public static HybridTank copyTank(HybridTank tank, HolderLookup.Provider provider) {
+        CompoundTag cmp = new CompoundTag();
+        tank.writeToNBT(provider, cmp);
+        HybridTank newTank = new HybridTank(tank.getCapacity());
+        newTank.readFromNBT(provider, cmp);
+        return newTank;
+    }
 
     public static IOInventory copyInventory(IOInventory inventory, HolderLookup.Provider pRegistries) {
         return IOInventory.deserialize(inventory.getOwner(), inventory.writeNBT(pRegistries), pRegistries);
     }
-
 }

@@ -38,10 +38,10 @@ public class DynamicMachineComponentProvider implements IBlockComponentProvider 
       }
       if (nbt.contains("progress", Tag.TAG_DOUBLE) && nbt.contains("total", Tag.TAG_INT)) {
         double ticks = nbt.getDouble("progress");
-        int total = nbt.getInt("total");
+        float total = nbt.getInt("total");
         float progress = (float) (ticks / total);
-        String ticksTotal = (int) ticks + " / " + total;
-        if (ticks >= 20 && total >= 20) {
+        String ticksTotal = ticks + " / " + total;
+        if (total >= 20) {
           ticksTotal = Utils.decimalFormat(ticks / 20) + " / " + Utils.decimalFormat(total / 20) + "s";
         }
         Component component = Component

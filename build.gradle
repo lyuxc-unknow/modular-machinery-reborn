@@ -144,7 +144,7 @@ dependencies {
   localRuntime compileOnly("curse.maven:jade-324717:${jade_version}")
 
   // Mekanism
-  localRuntime("mekanism:Mekanism:${mekanism_version}")
+  compileOnly localRuntime("mekanism:Mekanism:${mekanism_version}")
 }
 
 tasks.withType(ProcessResources).configureEach {

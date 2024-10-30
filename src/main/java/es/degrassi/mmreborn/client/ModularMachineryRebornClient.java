@@ -10,6 +10,7 @@ import es.degrassi.mmreborn.client.screen.ItemBusScreen;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
+import es.degrassi.mmreborn.common.entity.base.ChemicalTankEntity;
 import es.degrassi.mmreborn.common.entity.base.ColorableMachineComponentEntity;
 import es.degrassi.mmreborn.common.entity.base.EnergyHatchEntity;
 import es.degrassi.mmreborn.common.entity.base.FluidTankEntity;
@@ -203,7 +204,7 @@ public class ModularMachineryRebornClient {
     ModularMachineryReborn.MACHINES_BLOCK.values().forEach(block -> event.register(ModularMachineryRebornClient::itemColor, block));
   }
 
-  private static int blockColor(BlockState state, BlockAndTintGetter level, BlockPos pos, int tintIndex) {
+  public static int blockColor(BlockState state, BlockAndTintGetter level, BlockPos pos, int tintIndex) {
     if(level == null || pos == null)
       return 0;
     switch (tintIndex) {
@@ -220,7 +221,7 @@ public class ModularMachineryRebornClient {
     return Config.machineColor;
   }
 
-  private static int itemColor(ItemStack stack, int tintIndex) {
+  public static int itemColor(ItemStack stack, int tintIndex) {
     if (stack.getItem() instanceof ItemDynamicColor colorableItem) {
       return colorableItem.getColorFromItemstack(stack, tintIndex);
     }

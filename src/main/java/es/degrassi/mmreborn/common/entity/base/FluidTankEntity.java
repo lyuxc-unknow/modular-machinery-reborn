@@ -15,7 +15,6 @@ import net.minecraft.world.level.block.state.BlockState;
 @Getter
 @Setter
 public abstract class FluidTankEntity extends ColorableMachineComponentEntity implements MachineComponentEntity {
-
   private HybridTank tank;
   private IOType ioType;
   private FluidHatchSize hatchSize;
@@ -33,29 +32,21 @@ public abstract class FluidTankEntity extends ColorableMachineComponentEntity im
   @Override
   protected void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
     super.loadAdditional(compound, provider);
-
     this.ioType = compound.getBoolean("input") ? IOType.INPUT : IOType.OUTPUT;
     this.hatchSize = FluidHatchSize.value(compound.getString("size"));
     HybridTank newTank = hatchSize.buildTank(this, ioType == IOType.INPUT, ioType == IOType.OUTPUT);
     CompoundTag tankTag = compound.getCompound("tank");
     newTank.readFromNBT(provider, tankTag);
     this.tank = newTank;
-    if(Mods.MEKANISM.isPresent()) {
-//      this.readMekGasData(tankTag);
-    }
   }
 
   @Override
   protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
     super.saveAdditional(compound, provider);
-
     compound.putBoolean("input", ioType == IOType.INPUT);
     compound.putString("size", this.hatchSize.getSerializedName());
     CompoundTag tankTag = new CompoundTag();
     this.tank.writeToNBT(provider, tankTag);
-    if(Mods.MEKANISM.isPresent()) {
-//      this.writeMekGasData(tankTag);
-    }
     compound.put("tank", tankTag);
   }
 }

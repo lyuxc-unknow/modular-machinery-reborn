@@ -32,8 +32,10 @@ public class MMRTags {
     public static final TagKey<Block> ENERGY_INPUT = new Blocks(false, "energyinputhatch").get();
     public static final TagKey<Block> INPUT_BUS = new Blocks(false, "inputbus").get();
     public static final TagKey<Block> FLUID_INPUT = new Blocks(false, "fluidinputhatch").get();
+    public static final TagKey<Block> CHEMICAL_INPUT = new Blocks(false, "chemicalinputhatch").get();
     public static final TagKey<Block> ENERGY_OUTPUT = new Blocks(false, "energyoutputhatch").get();
-    public static final TagKey<Block> FLUID_OUTPUT = new Blocks(false, "fluidoutputhatch").get();
+    public static final TagKey<Block> FLUID_OUTPUT = new Blocks(false, "chemicaloutputhatch").get();
+    public static final TagKey<Block> CHEMICAL_OUTPUT = new Blocks(false, "fluidoutputhatch").get();
     public static final TagKey<Block> OUTPUT_BUS = new Blocks(false, "outputbus").get();
     public static final TagKey<Block> CASINGS = new Blocks(false, "casing").get();
     public static final TagKey<Block> ALL_CASINGS = new Blocks(false, "all_casing").get();

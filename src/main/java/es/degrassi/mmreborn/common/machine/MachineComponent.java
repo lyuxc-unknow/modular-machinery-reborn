@@ -6,6 +6,7 @@ import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.util.HybridTank;
 import es.degrassi.mmreborn.common.util.IEnergyHandler;
 import es.degrassi.mmreborn.common.util.IOInventory;
+import mekanism.api.chemical.BasicChemicalTank;
 
 public abstract class MachineComponent<T> {
   private final IOType ioType;
@@ -45,6 +46,17 @@ public abstract class MachineComponent<T> {
       return ComponentRegistration.COMPONENT_FLUID.get();
     }
 
+  }
+
+  public static abstract class ChemicalHatch extends MachineComponent<BasicChemicalTank> {
+    public ChemicalHatch(IOType ioType) {
+      super(ioType);
+    }
+
+    @Override
+    public ComponentType getComponentType() {
+      return es.degrassi.mmreborn.common.integration.mekanism.ComponentRegistration.COMPONENT_CHEMICAL.get();
+    }
   }
 
   public static abstract class EnergyHatch extends MachineComponent<IEnergyHandler> {

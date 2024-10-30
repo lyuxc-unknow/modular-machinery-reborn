@@ -5,6 +5,7 @@ ServerEvents.recipes(event => {
         .requireItem("2x modular_machinery_reborn:casing_plain")
         .produceItem('1x modular_machinery_reborn:modularium')
         .produceFluid('10000x minecraft:lava')
+        .produceChemical('10x mekanism:sulfuric_acid')
 })
 
 MMREvents.machines(event => {
@@ -38,7 +39,7 @@ MMREvents.machines(event => {
                     [
                         ["rfr", "fpf", "rir"],
                         ["rmr", "i i", "rer"],
-                        ["rfr", "fpf", "rfr"]
+                        ["rfr", "fpf", "rir"]
                     ]
                 )
                 /**
@@ -56,6 +57,10 @@ MMREvents.machines(event => {
                  * #modular_machinery_reborn:fluidoutputhatch
                  * #modular_machinery_reborn:inputbus
                  * #modular_machinery_reborn:outputbus
+                 *
+                 * Only if mekanism available
+                 * #modular_machinery_reborn:chemicalinputhatch
+                 * #modular_machinery_reborn:chemicaloutputhatch
                  */
                 .keys(
                     {
@@ -88,6 +93,14 @@ MMREvents.machines(event => {
                             "modular_machinery_reborn:fluidoutputhatch_huge",
                             "modular_machinery_reborn:fluidoutputhatch_ludicrous",
                             "modular_machinery_reborn:fluidoutputhatch_vacuum",
+                            "modular_machinery_reborn:chemicaloutputhatch_tiny",
+                            "modular_machinery_reborn:chemicaloutputhatch_small",
+                            "modular_machinery_reborn:chemicaloutputhatch_normal",
+                            "modular_machinery_reborn:chemicaloutputhatch_reinforced",
+                            "modular_machinery_reborn:chemicaloutputhatch_big",
+                            "modular_machinery_reborn:chemicaloutputhatch_huge",
+                            "modular_machinery_reborn:chemicaloutputhatch_ludicrous",
+                            "modular_machinery_reborn:chemicaloutputhatch_vacuum",
                             "modular_machinery_reborn:outputbus_tiny",
                             "modular_machinery_reborn:outputbus_small",
                             "modular_machinery_reborn:outputbus_normal",

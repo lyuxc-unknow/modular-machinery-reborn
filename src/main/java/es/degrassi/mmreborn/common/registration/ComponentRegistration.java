@@ -4,12 +4,12 @@ import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.crafting.component.ComponentEnergy;
 import es.degrassi.mmreborn.common.crafting.component.ComponentFluid;
-import es.degrassi.mmreborn.common.crafting.component.ComponentGas;
 import es.degrassi.mmreborn.common.crafting.component.ComponentItem;
-import java.util.function.Supplier;
 import net.minecraft.core.Registry;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.function.Supplier;
 
 public class ComponentRegistration {
 
@@ -19,7 +19,6 @@ public class ComponentRegistration {
   public static final Supplier<ComponentType> COMPONENT_ITEM = MACHINE_COMPONENTS.register("item", ComponentItem::new);
   public static final Supplier<ComponentType> COMPONENT_FLUID = MACHINE_COMPONENTS.register("fluid", ComponentFluid::new);
   public static final Supplier<ComponentType> COMPONENT_ENERGY = MACHINE_COMPONENTS.register("energy", ComponentEnergy::new);
-  public static final Supplier<ComponentType> COMPONENT_GAS = MACHINE_COMPONENTS.register("gas", ComponentGas::new);
 
   public static void register(final IEventBus bus) {
     MACHINE_COMPONENTS.register(bus);

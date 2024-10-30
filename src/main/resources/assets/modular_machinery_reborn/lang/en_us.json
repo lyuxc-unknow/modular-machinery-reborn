@@ -1,10 +1,12 @@
 {
   "itemGroup.modular_machinery_reborn.group": "Modular Machinery Reborn",
+  "itemGroup.modular_machinery_reborn_mekanism.group": "Modular Machinery Reborn Mekanism",
   "modular_machinery_reborn.command.reload.machines": "Successfully reloaded modular machinery machines !",
   "modular_machinery_reborn.command.reload.recipes": "Successfully reloaded modular machinery recipes !",
 
   "modular_machinery_reborn.gui.title.controller": "Controller",
   "modular_machinery_reborn.gui.title.energy_hatch": "Energy Hatch",
+  "modular_machinery_reborn.gui.title.chemical_hatch": "Chemical Hatch",
   "modular_machinery_reborn.gui.title.fluid_hatch": "Fluid Hatch",
   "modular_machinery_reborn.gui.title.item_bus": "Item Bus",
 
@@ -23,8 +25,9 @@
   "craftcheck.failure.item.output.space": "Not enough inventory space for item output(s)!",
   "craftcheck.failure.fluid.input": "Missing fluid input!",
   "craftcheck.failure.fluid.output.space": "Not enough tank space for fluid output(s)!",
-  "craftcheck.failure.gas.input": "Missing gas input!",
-  "craftcheck.failure.gas.output.space": "Not enough space for gas output(s)!",
+  "craftcheck.failure.chemical.input.type_missmatch": "Missing chemical input! Chemical is not the same",
+  "craftcheck.failure.chemical.input.handler_empty": "Missing chemical input! No Chemical provided",
+  "craftcheck.failure.chemical.output.space": "Not enough space for chemical output(s)!",
   "craftcheck.failure.energy.input": "Not enough energy!",
   "craftcheck.failure.energy.output": "Not enough space for energy output!",
 
@@ -32,8 +35,8 @@
   "component.missing.energy.input": "No Energy Input Hatch found!",
   "component.missing.fluid.output": "No Fluid Output Hatch found!",
   "component.missing.fluid.input": "No Fluid Input Hatch found!",
-  "component.missing.gas.output": "No Fluid Output Hatch found!",
-  "component.missing.gas.input": "No Fluid Input Hatch found!",
+  "component.missing.chemical.output": "No Chemical Output Hatch found!",
+  "component.missing.chemical.input": "No Chemical Input Hatch found!",
   "component.missing.item.output": "No Item Output found!",
   "component.missing.item.input": "No Item Input found!",
 
@@ -88,7 +91,12 @@
   "tooltip.fluidhatch.tank": "%smb / %smb",
   "tooltip.fluidhatch.tank.gas": "%s / %s",
   "tooltip.fluidhatch.tank.info": "Can hold %s mb",
-  "tooltip.fluidhatch.tank.mek": "Accepts Mekanism Gas",
+
+  "tooltip.chemicalhatch.empty": "Empty",
+  "tooltip.chemicalhatch.chemical": "[Chemical]",
+  "tooltip.chemicalhatch.tank": "%smb / %smb",
+  "tooltip.chemicalhatch.tank.chemical": "%s / %s",
+  "tooltip.chemicalhatch.tank.info": "Can hold %s mb",
 
   "tooltip.energyhatch.charge": "%s / %s %s",
   "tooltip.energyhatch.storage": "Stores %s FE",
@@ -123,7 +131,6 @@
 
   "item.modular_machinery_reborn.blueprint": "Machine Blueprint",
   "item.modular_machinery_reborn.modularium": "Modularium",
-  "item.modular_machinery_reborn.constructtool": "Construct Selection Tool",
 
   "block.modular_machinery_reborn.controller": "Machine Controller",
 
@@ -167,6 +174,24 @@
   "block.modular_machinery_reborn.fluidoutputhatch_huge": "Huge Fluid Output Hatch",
   "block.modular_machinery_reborn.fluidoutputhatch_ludicrous": "Ludicrous Fluid Output Hatch",
   "block.modular_machinery_reborn.fluidoutputhatch_vacuum": "Vacuum Fluid Output Hatch",
+
+  "block.modular_machinery_reborn.chemicalinputhatch_tiny": "Tiny Chemical Input Hatch",
+  "block.modular_machinery_reborn.chemicalinputhatch_small": "Small Chemical Input Hatch",
+  "block.modular_machinery_reborn.chemicalinputhatch_normal": "Normal Chemical Input Hatch",
+  "block.modular_machinery_reborn.chemicalinputhatch_reinforced": "Reinforced Chemical Input Hatch",
+  "block.modular_machinery_reborn.chemicalinputhatch_big": "Big Chemical Input Hatch",
+  "block.modular_machinery_reborn.chemicalinputhatch_huge": "Huge Chemical Input Hatch",
+  "block.modular_machinery_reborn.chemicalinputhatch_ludicrous": "Ludicrous Chemical Input Hatch",
+  "block.modular_machinery_reborn.chemicalinputhatch_vacuum": "Vacuum Chemical Input Hatch",
+
+  "block.modular_machinery_reborn.chemicaloutputhatch_tiny": "Tiny Chemical Output Hatch",
+  "block.modular_machinery_reborn.chemicaloutputhatch_small": "Small Chemical Output Hatch",
+  "block.modular_machinery_reborn.chemicaloutputhatch_normal": "Normal Chemical Output Hatch",
+  "block.modular_machinery_reborn.chemicaloutputhatch_reinforced": "Reinforced Chemical Output Hatch",
+  "block.modular_machinery_reborn.chemicaloutputhatch_big": "Big Chemical Output Hatch",
+  "block.modular_machinery_reborn.chemicaloutputhatch_huge": "Huge Chemical Output Hatch",
+  "block.modular_machinery_reborn.chemicaloutputhatch_ludicrous": "Ludicrous Chemical Output Hatch",
+  "block.modular_machinery_reborn.chemicaloutputhatch_vacuum": "Vacuum Chemical Output Hatch",
 
   "block.modular_machinery_reborn.energyinputhatch_tiny": "Tiny Energy Input Hatch",
   "block.modular_machinery_reborn.energyinputhatch_small": "Small Energy Input Hatch",
@@ -270,6 +295,32 @@
   "text.autoconfig.modular_machinery_reborn.option.fluidHatch.VACUUM": "Fluid Hatch Vacuum",
   "text.autoconfig.modular_machinery_reborn.option.fluidHatch.VACUUM.size": "Size",
 
+  "text.autoconfig.modular_machinery_reborn.category.chemical_hatch": "Chemical Hatch",
+
+  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.TINY": "Chemical Hatch Tiny",
+  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.TINY.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.SMALL": "Chemical Hatch Small",
+  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.SMALL.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.NORMAL": "Chemical Hatch Normal",
+  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.NORMAL.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.REINFORCED": "Chemical Hatch Reinforced",
+  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.REINFORCED.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.BIG": "Chemical Hatch Big",
+  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.BIG.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.HUGE": "Chemical Hatch Huge",
+  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.HUGE.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.LUDICROUS": "Chemical Hatch Ludicrous",
+  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.LUDICROUS.size": "Size",
+
+  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.VACUUM": "Chemical Hatch Vacuum",
+  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.VACUUM.size": "Size",
+
   "text.autoconfig.modular_machinery_reborn.category.item_bus": "Item Bus",
 
   "text.autoconfig.modular_machinery_reborn.option.itemBus.TINY": "Item Bus Tiny",
@@ -304,6 +355,9 @@
 
   "modular_machinery_reborn.jei.ingredient.fluid.input": "Require %s %s mB",
   "modular_machinery_reborn.jei.ingredient.fluid.output": "Produce %s %s mB",
+
+  "modular_machinery_reborn.jei.ingredient.chemical.input": "Require %s %s mB",
+  "modular_machinery_reborn.jei.ingredient.chemical.output": "Produce %s %s mB",
 
   "modular_machinery_reborn.jei.ingredient.duration": "Process time: %s ticks",
 

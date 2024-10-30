@@ -5,6 +5,7 @@ import com.google.common.collect.HashBiMap;
 import es.degrassi.mmreborn.client.ModularMachineryRebornClient;
 import es.degrassi.mmreborn.client.util.EnergyDisplayUtil;
 import es.degrassi.mmreborn.common.block.BlockController;
+import es.degrassi.mmreborn.common.block.prop.ChemicalHatchSize;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
@@ -13,6 +14,9 @@ import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.data.MMRConfig;
+import es.degrassi.mmreborn.common.entity.base.ChemicalTankEntity;
+import es.degrassi.mmreborn.common.integration.mekanism.MekanismClient;
+import es.degrassi.mmreborn.common.integration.registration.IntegrationRegistration;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.machine.MachineJsonReloadListener;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
@@ -20,10 +24,13 @@ import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.registration.Registration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.MMRLogger;
+import es.degrassi.mmreborn.common.util.Mods;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
+import mekanism.api.chemical.IChemicalHandler;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,6 +38,7 @@ import net.minecraft.world.InteractionResult;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
@@ -40,6 +48,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Mod(ModularMachineryReborn.MODID)
 public class ModularMachineryReborn {
@@ -57,6 +66,7 @@ public class ModularMachineryReborn {
       Config.load();
       EnergyHatchSize.loadFromConfig();
       FluidHatchSize.loadFromConfig();
+      ChemicalHatchSize.loadFromConfig();
       ItemBusSize.loadFromConfig();
       EnergyDisplayUtil.loadFromConfig();
       return InteractionResult.SUCCESS;
@@ -65,8 +75,11 @@ public class ModularMachineryReborn {
     MMRLogger.init();
 
     Registration.register(MOD_BUS);
+    IntegrationRegistration.register(MOD_BUS);
 
     MOD_BUS.register(new ModularMachineryRebornClient());
+    if (Mods.MEKANISM.isPresent())
+      MOD_BUS.register(new MekanismClient());
     MOD_BUS.addListener(this::registerCapabilities);
 
     final IEventBus GAME_BUS = NeoForge.EVENT_BUS;
@@ -75,6 +88,7 @@ public class ModularMachineryReborn {
     GAME_BUS.addListener(this::onReloadStart);
 
     EnergyHatchSize.loadFromConfig();
+    ChemicalHatchSize.loadFromConfig();
     FluidHatchSize.loadFromConfig();
     ItemBusSize.loadFromConfig();
     EnergyDisplayUtil.loadFromConfig();
@@ -111,6 +125,18 @@ public class ModularMachineryReborn {
       EntityRegistration.ENERGY_OUTPUT_HATCH.get(),
       (be, side) -> be
     );
+    if (Mods.MEKANISM.isPresent()) {
+      event.registerBlockEntity(
+        mekanism.common.capabilities.Capabilities.CHEMICAL.block(),
+        es.degrassi.mmreborn.common.integration.mekanism.EntityRegistration.CHEMICAL_INPUT_HATCH.get(),
+        (be, side) -> be.getTank()
+      );
+      event.registerBlockEntity(
+        mekanism.common.capabilities.Capabilities.CHEMICAL.block(),
+        es.degrassi.mmreborn.common.integration.mekanism.EntityRegistration.CHEMICAL_OUTPUT_HATCH.get(),
+        (be, side) -> be.getTank()
+      );
+    }
   }
 
   private void registerReloadListener(final AddReloadListenerEvent event) {
@@ -136,6 +162,7 @@ public class ModularMachineryReborn {
       MMRLogger.reset();
       Config.load();
       EnergyHatchSize.loadFromConfig();
+      ChemicalHatchSize.loadFromConfig();
       FluidHatchSize.loadFromConfig();
       ItemBusSize.loadFromConfig();
       EnergyDisplayUtil.loadFromConfig();
