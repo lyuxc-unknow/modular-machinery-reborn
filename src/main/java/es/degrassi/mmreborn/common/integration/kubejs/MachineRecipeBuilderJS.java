@@ -61,11 +61,6 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
 
     this.id = getOrCreateId();
 
-    if (getValue(ModularMachineryRebornRecipeSchemas.RECIPE_ID) != null)
-      this.id = getValue(ModularMachineryRebornRecipeSchemas.RECIPE_ID);
-
-    builder.withId(this.id);
-
     this.json = (JsonObject) MachineRecipe.CODEC.encodeStart(JsonOps.INSTANCE, builder).result().orElse(null);
     if (this.json != null)
       this.json.addProperty("type", RecipeRegistration.RECIPE_TYPE.getId().toString());

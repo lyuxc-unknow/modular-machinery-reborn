@@ -4,7 +4,6 @@ import com.google.common.collect.Iterables;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
-import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
@@ -17,8 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ActiveMachineRecipe {
-  @Getter
-  private MachineRecipe recipe;
+  private RecipeHolder<MachineRecipe> recipe;
   private final Map<ResourceLocation, CompoundTag> dataMap = new HashMap<>();
   private ResourceLocation futureRecipeId;
 
@@ -26,7 +24,7 @@ public class ActiveMachineRecipe {
   @Getter
   private boolean initialized = false;
 
-  public ActiveMachineRecipe(MachineRecipe recipe, MachineControllerEntity entity) {
+  public ActiveMachineRecipe(RecipeHolder<MachineRecipe> recipe, MachineControllerEntity entity) {
     this.recipe = recipe;
     this.entity = entity;
   }
@@ -36,20 +34,28 @@ public class ActiveMachineRecipe {
     this.futureRecipeId = ResourceLocation.tryParse(serialized.getString("id"));
   }
 
+  public RecipeHolder<MachineRecipe> getHolder() {
+    return recipe;
+  }
+
+  public MachineRecipe getRecipe() {
+    return recipe.value();
+  }
+
+  @SuppressWarnings("unchecked")
   public void init() {
     if (this.futureRecipeId == null || this.entity.getLevel() == null) return;
     this.initialized = true;
-    this.recipe = entity
+    this.recipe = (RecipeHolder<MachineRecipe>) entity
       .getLevel()
       .getRecipeManager()
-      .getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get())
-      .stream()
-      .map(RecipeHolder::value)
-      .filter(recipe -> recipe.getOwningMachineIdentifier() != null)
-      .filter(recipe -> recipe.getOwningMachineIdentifier().equals(entity.getId()))
-      .filter(recipe -> recipe.getId().equals(futureRecipeId))
-      .findFirst()
+      .byKey(futureRecipeId)
       .orElse(null);
+//      .getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get())
+//      .stream()
+//      .filter(holder -> holder.id().equals(futureRecipeId))
+//      .findFirst()
+//      .orElse(null);
     this.futureRecipeId = null;
 
 //    if (serialized.contains("data", Tag.TAG_LIST)) {
@@ -100,7 +106,7 @@ public class ActiveMachineRecipe {
   }
 
   public boolean isCompleted(RecipeCraftingContext context) {
-    int time = this.recipe.getRecipeTotalTickTime();
+    int time = this.recipe.value().getRecipeTotalTickTime();
     //Not sure which a user will use... let's try both.
     time = Math.round(RecipeModifier.applyModifiers(context.getModifiers(RequirementTypeRegistration.DURATION.get()), RequirementTypeRegistration.DURATION.get(), null, time, false));
     return entity.getRecipeTicks() >= time;
@@ -119,7 +125,7 @@ public class ActiveMachineRecipe {
   public CompoundTag serialize() {
     CompoundTag tag = new CompoundTag();
     if (this.recipe != null)
-      tag.putString("id", this.recipe.getId().toString());
+      tag.putString("id", this.recipe.id().toString());
 
     ListTag listData = new ListTag();
     for (Map.Entry<ResourceLocation, CompoundTag> dataEntry : this.dataMap.entrySet()) {

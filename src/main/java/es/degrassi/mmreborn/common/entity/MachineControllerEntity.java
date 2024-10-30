@@ -76,7 +76,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
       }
     } else if (this.recipeTicks > -1) {
       if (!this.activeRecipe.isInitialized()) this.activeRecipe.init();
-      if (this.activeRecipe.getRecipe() == null) {
+      if (this.activeRecipe.getHolder() == null) {
         this.setActiveRecipe(null);
         this.setRecipeTicks(-1);
         this.setCraftingStatus(MachineControllerEntity.CraftingStatus.NO_RECIPE);
@@ -93,7 +93,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
     setChanged();
     this.recipeTicks = recipeTicks;
     if (getLevel() instanceof ServerLevel l && activeRecipe != null)
-      PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getBlockPos()), new SUpdateRecipePacket(activeRecipe.getRecipe().getId(), recipeTicks, getBlockPos()));
+      PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getBlockPos()), new SUpdateRecipePacket(activeRecipe.getHolder().id(), recipeTicks, getBlockPos()));
   }
 
   private void useRecipe() {
@@ -123,21 +123,20 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
   private void searchAndUpdateRecipe() {
     setChanged();
     if (getLevel() == null) return;
-    List<MachineRecipe> availableRecipes =
+    List<RecipeHolder<MachineRecipe>> availableRecipes =
       getLevel()
         .getRecipeManager()
         .getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get())
         .stream()
-        .map(RecipeHolder::value)
-        .filter(recipe -> recipe.getOwningMachineIdentifier() != null)
-        .filter(recipe -> recipe.getOwningMachineIdentifier().equals(this.getId()))
+        .filter(recipe -> recipe.value().getOwningMachineIdentifier() != null)
+        .filter(recipe -> recipe.value().getOwningMachineIdentifier().equals(this.getId()))
         .toList();
 
-    MachineRecipe highestValidity = null;
+    RecipeHolder<MachineRecipe> highestValidity = null;
     RecipeCraftingContext.CraftingCheckResult highestValidityResult = null;
     float validity = 0F;
 
-    for (MachineRecipe recipe : availableRecipes) {
+    for (RecipeHolder<MachineRecipe> recipe : availableRecipes) {
       ActiveMachineRecipe aRecipe = new ActiveMachineRecipe(recipe, this);
       RecipeCraftingContext context = this.getFoundMachine().createContext(aRecipe, this, this.foundComponents);
       RecipeCraftingContext.CraftingCheckResult result = context.canStartCrafting();

@@ -35,11 +35,12 @@ public record SUpdateRecipePacket(ResourceLocation recipe, Integer ticks, BlockP
     SUpdateRecipePacket::new
   );
 
+  @SuppressWarnings("unchecked")
   public static void handle(SUpdateRecipePacket packet, IPayloadContext context) {
     if (context.flow().isClientbound())
       context.enqueueWork(() -> {
         if (context.player().level().getBlockEntity(packet.pos) instanceof MachineControllerEntity entity) {
-          MachineRecipe recipe = (MachineRecipe) context.player().level().getRecipeManager().byKey(packet.recipe).map(RecipeHolder::value).orElse(null);
+          RecipeHolder<MachineRecipe> recipe = (RecipeHolder<MachineRecipe>) context.player().level().getRecipeManager().byKey(packet.recipe).orElse(null);
           entity.setActiveRecipe(new ActiveMachineRecipe(recipe, entity));
           entity.setRecipeTicks(packet.ticks);
           if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.containerMenu instanceof ControllerContainer menu &&

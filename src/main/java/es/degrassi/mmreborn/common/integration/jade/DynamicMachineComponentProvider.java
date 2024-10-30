@@ -2,6 +2,7 @@ package es.degrassi.mmreborn.common.integration.jade;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
+import es.degrassi.mmreborn.common.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -39,7 +40,13 @@ public class DynamicMachineComponentProvider implements IBlockComponentProvider 
         double ticks = nbt.getDouble("progress");
         int total = nbt.getInt("total");
         float progress = (float) (ticks / total);
-        Component component = Component.literal((int) ticks + " / " + total).withStyle(ChatFormatting.WHITE);
+        String ticksTotal = (int) ticks + " / " + total;
+        if (ticks >= 20 && total >= 20) {
+          ticksTotal = Utils.decimalFormat(ticks / 20) + " / " + Utils.decimalFormat(total / 20) + "s";
+        }
+        Component component = Component
+            .literal(ticksTotal + " (" + Utils.decimalFormatWithPercentage(progress * 100) + ")")
+            .withStyle(ChatFormatting.WHITE);
         IElementHelper helper = IElementHelper.get();
         tooltip.add(helper.progress(progress, component, helper.progressStyle(), BoxStyle.getNestedBox(), true));
       }

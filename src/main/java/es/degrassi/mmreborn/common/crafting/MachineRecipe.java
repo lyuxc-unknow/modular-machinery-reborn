@@ -38,7 +38,6 @@ import java.util.function.Function;
 public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeInput> {
 
   public static final NamedMapCodec<MachineRecipeBuilder> CODEC = NamedCodec.record(instance -> instance.group(
-    DefaultCodecs.RESOURCE_LOCATION.fieldOf("id").forGetter(MachineRecipeBuilder::getId),
     DefaultCodecs.RESOURCE_LOCATION.fieldOf("machine").forGetter(MachineRecipeBuilder::getMachine),
     NamedCodec.intRange(1, Integer.MAX_VALUE).fieldOf("time").forGetter(MachineRecipeBuilder::getTime),
     ComponentRequirement.CODEC.listOf().fieldOf("requirements").forGetter(MachineRecipeBuilder::getRequirements),
@@ -76,19 +75,18 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
     return RecipeRegistration.RECIPE_TYPE.get();
   }
 
-  private final ResourceLocation owningMachine, id;
+  private final ResourceLocation owningMachine;
   @Getter(AccessLevel.NONE)
   private final int tickTime;
   private final List<ComponentRequirement<?, ?>> recipeRequirements = Lists.newArrayList();
   private final int configuredPriority;
   private final boolean voidPerTickFailure;
 
-  public MachineRecipe(ResourceLocation id, ResourceLocation owningMachine, int tickTime, int configuredPriority, boolean voidPerTickFailure) {
-    this(id, owningMachine, tickTime, configuredPriority, voidPerTickFailure, false);
+  public MachineRecipe(ResourceLocation owningMachine, int tickTime, int configuredPriority, boolean voidPerTickFailure) {
+    this(owningMachine, tickTime, configuredPriority, voidPerTickFailure, false);
   }
 
-  public MachineRecipe(ResourceLocation id, ResourceLocation owningMachine, int tickTime, int configuredPriority, boolean voidPerTickFailure, boolean copy) {
-    this.id = id;
+  public MachineRecipe( ResourceLocation owningMachine, int tickTime, int configuredPriority, boolean voidPerTickFailure, boolean copy) {
     this.owningMachine = owningMachine;
     this.tickTime = tickTime;
     this.configuredPriority = configuredPriority;
@@ -128,12 +126,11 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
   }
 
   public MachineRecipe copy() {
-    return copy((rl) -> id, owningMachine, List.of());
+    return copy(owningMachine, List.of());
   }
 
-  public MachineRecipe copy(Function<ResourceLocation, ResourceLocation> registryNameChange, ResourceLocation newOwningMachineIdentifier, List<RecipeModifier> modifiers) {
+  public MachineRecipe copy(ResourceLocation newOwningMachineIdentifier, List<RecipeModifier> modifiers) {
     MachineRecipe copy = new MachineRecipe(
-      registryNameChange.apply(getId()),
       newOwningMachineIdentifier,
       Math.round(RecipeModifier.applyModifiers(modifiers, RequirementTypeRegistration.DURATION.get(), null, this.getRecipeTotalTickTime(), false)),
       this.getConfiguredPriority(),
@@ -159,7 +156,6 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
   public JsonObject asJson() {
     JsonObject json = new JsonObject();
     json.addProperty("owningMachine", owningMachine.toString());
-    json.addProperty("id", id.toString());
     json.addProperty("tickTime", tickTime);
     JsonArray recipeRequirements = new JsonArray();
     this.recipeRequirements.forEach(req -> recipeRequirements.add(req.asJson()));
@@ -176,7 +172,6 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
 
   @Getter
   public static class MachineRecipeBuilder {
-    private ResourceLocation id;
     private final ResourceLocation machine;
     private final int time;
     private int prio;
@@ -187,10 +182,6 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
       this.requirements = new LinkedList<>();
       this.machine = machine;
       this.time = time;
-    }
-
-    public void withId(ResourceLocation id) {
-      this.id = id;
     }
 
     public void withPriority(int prio) {
@@ -205,8 +196,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
       requirements.add(requirement);
     }
 
-    public MachineRecipeBuilder(ResourceLocation id, ResourceLocation machine, int time, List<ComponentRequirement<?, ?>> requirements, int prio, boolean voidF) {
-      this.id = id;
+    public MachineRecipeBuilder(ResourceLocation machine, int time, List<ComponentRequirement<?, ?>> requirements, int prio, boolean voidF) {
       this.machine = machine;
       this.time = time;
       this.requirements = requirements;
@@ -215,22 +205,12 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
     }
 
     public MachineRecipeBuilder(MachineRecipe recipe) {
-      this(recipe.getId(), recipe.getOwningMachineIdentifier(), recipe.tickTime, recipe.recipeRequirements, recipe.configuredPriority, recipe.voidPerTickFailure);
+      this(recipe.getOwningMachineIdentifier(), recipe.tickTime, recipe.recipeRequirements, recipe.configuredPriority, recipe.voidPerTickFailure);
     }
 
     public MachineRecipe build() {
       try {
-        MachineRecipe recipe = new MachineRecipe(id, machine, time, prio, voidF);
-        requirements.forEach(recipe::addRequirement);
-        logBuild(recipe);
-        return recipe;
-      } catch(Exception ignored){}
-      return  null;
-    }
-
-    public MachineRecipe build(ResourceLocation id) {
-      try {
-        MachineRecipe recipe = new MachineRecipe(id, machine, time, prio, voidF);
+        MachineRecipe recipe = new MachineRecipe(machine, time, prio, voidF);
         requirements.forEach(recipe::addRequirement);
         logBuild(recipe);
         return recipe;
@@ -239,7 +219,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
     }
 
     private static void logBuild(MachineRecipe recipe) {
-      MMRLogger.INSTANCE.info("Building recipe...\n{}\nFinished building recipe with id: {}", recipe, recipe.getId());
+      MMRLogger.INSTANCE.info("Building recipe...\n{}\nFinished building recipe", recipe);
     }
   }
 }

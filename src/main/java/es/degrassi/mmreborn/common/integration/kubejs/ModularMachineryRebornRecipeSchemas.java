@@ -44,10 +44,9 @@ public interface ModularMachineryRebornRecipeSchemas {
   RecipeComponent<List<ComponentRequirement<?, ?>>> REQUIREMENT_LIST = REQUIREMENT_COMPONENT.asList();
 
   RecipeKey<ResourceLocation> MACHINE_ID = RESOURCE_LOCATION.key("machine", ComponentRole.OTHER);
-  RecipeKey<ResourceLocation> RECIPE_ID = RESOURCE_LOCATION.key("id", ComponentRole.OTHER).optional(type -> null).alwaysWrite().exclude();
   RecipeKey<TickDuration> TIME = TimeComponent.TICKS.key("time", ComponentRole.OTHER);
   RecipeKey<Boolean> VOID = BooleanComponent.BOOLEAN.key("voidOnFailure", ComponentRole.OTHER).optional(true).alwaysWrite().exclude();
   RecipeKey<List<ComponentRequirement<?, ?>>> REQUIREMENTS = REQUIREMENT_LIST.key("requirements", ComponentRole.OTHER).optional(List.of()).allowEmpty().alwaysWrite().exclude();
   RecipeKey<Integer> PRIORITY = NumberComponent.INT.key("priority", ComponentRole.OTHER).optional(0).alwaysWrite().exclude();
-  RecipeSchema CUSTOM_MACHINE = new RecipeSchema(MACHINE_ID, RECIPE_ID, TIME, REQUIREMENTS, PRIORITY, VOID).factory(new KubeRecipeFactory(ModularMachineryReborn.rl("recipe"), TypeInfo.of(MachineRecipeBuilderJS.class), MachineRecipeBuilderJS::new));
+  RecipeSchema CUSTOM_MACHINE = new RecipeSchema(MACHINE_ID, TIME, REQUIREMENTS, PRIORITY, VOID).factory(new KubeRecipeFactory(ModularMachineryReborn.rl("recipe"), TypeInfo.of(MachineRecipeBuilderJS.class), MachineRecipeBuilderJS::new));
 }

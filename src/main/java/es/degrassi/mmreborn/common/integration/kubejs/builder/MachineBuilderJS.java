@@ -64,14 +64,10 @@ public class MachineBuilderJS {
   public static class MachineKubeEvent implements KubeEvent {
     private final List<MachineBuilderJS> builders = new LinkedList<>();
 
-    public MachineBuilderJS create(String id) {
-      try {
-        ResourceLocation machineId = ResourceLocation.parse(id);
-        MachineBuilderJS builder = new MachineBuilderJS(machineId);
-        builders.add(builder);
-        return builder;
-      } catch (Exception ignored) {}
-      throw new IllegalArgumentException("Invalid machine id");
+    public MachineBuilderJS create(ResourceLocation id) {
+      MachineBuilderJS builder = new MachineBuilderJS(id);
+      builders.add(builder);
+      return builder;
     }
 
     public List<MachineBuilderJS> getBuilders() {

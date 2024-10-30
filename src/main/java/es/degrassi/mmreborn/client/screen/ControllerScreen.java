@@ -5,6 +5,7 @@ import es.degrassi.mmreborn.client.container.ControllerContainer;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.util.RedstoneHelper;
+import es.degrassi.mmreborn.common.util.Utils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -82,8 +83,8 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
     offsetY += 15;
     if (entity.hasActiveRecipe()) {
       // render if the recipe of machine is not null
-      int percProgress = Mth.clamp(Mth.floor(entity.getCurrentActiveRecipeProgress() * 100F), 0, 100);
-      Component progressStr = Component.translatable("gui.controller.status.crafting.progress", percProgress + "%");
+      String percProgress = Utils.decimalFormatWithPercentage(Mth.clamp(entity.getCurrentActiveRecipeProgress() * 100F, 0, 100));
+      Component progressStr = Component.translatable("gui.controller.status.crafting.progress", percProgress);
       guiGraphics.drawString(font, progressStr, offsetX, offsetY, 0xFFFFFF);
     }
 
