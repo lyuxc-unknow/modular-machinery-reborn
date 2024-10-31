@@ -5,6 +5,7 @@ ServerEvents.recipes(event => {
         .requireItem("2x modular_machinery_reborn:casing_plain")
         .produceItem('1x modular_machinery_reborn:modularium')
         .produceFluid('10000x minecraft:lava')
+        // only if mekanism addon available
         .produceChemical('10x mekanism:sulfuric_acid')
 })
 
@@ -58,7 +59,7 @@ MMREvents.machines(event => {
                  * #modular_machinery_reborn:inputbus
                  * #modular_machinery_reborn:outputbus
                  *
-                 * Only if mekanism available
+                 * Only if mekanism addon available
                  * #modular_machinery_reborn:chemicalinputhatch
                  * #modular_machinery_reborn:chemicaloutputhatch
                  */

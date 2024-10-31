@@ -238,35 +238,19 @@ unifiedPublishing {
     gameLoaders = ["neoforge"]
     mainPublication jar
 
-//        var CURSE_API_KEY = System.getenv("CURSEFORGE")
-//        if (CURSE_API_KEY != null) {
-//            curseforge {
-//                token = CURSE_API_KEY
-//                id = "457017"
-//                gameVersions.addAll "Java 21"
-//                relations {
-//                    depends "cloth-config"
-//                    optional "kubejs"
-//                    optional "jei"
-//                    optional "the-one-probe"
-//                    optional "jade"
-//                }
-//            }
-//        }
-
-//        var MODRINTH_TOKEN = System.getenv("MODRINTH")
-//        if (MODRINTH_TOKEN != null) {
-//            modrinth {
-//                token = MODRINTH_TOKEN
-//                id = "OrB5XFtI"
-//                relations {
-//                    depends "cloth-config"
-//                    optional "kubejs"
-//                    optional "jei"
-//                    optional "the-one-probe"
-//                    optional "jade"
-//                }
-//            }
-//        }
+    var CURSE_API_KEY = System.getenv("CURSEFORGE")
+    if (CURSE_API_KEY != null) {
+        curseforge {
+            token = CURSE_API_KEY
+            id = "1083840"
+            gameVersions.addAll "Java 21"
+            relations {
+                depends "cloth-config"
+                optional "kubejs"
+                optional "jei"
+                optional "jade"
+            }
+        }
+    }
   }
 }
