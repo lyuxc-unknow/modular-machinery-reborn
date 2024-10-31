@@ -9,16 +9,17 @@ import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiComponent;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.util.ResultChance;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import javax.annotation.Nonnull;
 
-public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, V>> {
+public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, V>> implements Comparable<ComponentRequirement<?, ?>> {
   public static final NamedMapCodec<ComponentRequirement<?, ?>> CODEC = RegistrarCodec.REQUIREMENT.dispatch(type -> type.requirementType, RequirementType::getCodec, "Requirement");
 
-  public static final int PRIORITY_WEIGHT_ENERGY = 50_000_000;
-  public static final int PRIORITY_WEIGHT_FLUID  = 100;
-  public static final int PRIORITY_WEIGHT_CHEMICAL  = 1_000;
-  public static final int PRIORITY_WEIGHT_ITEM   = 50_000;
+  public static final int PRIORITY_WEIGHT_ENERGY = 500_000_000;
+  public static final int PRIORITY_WEIGHT_FLUID  = 100_000_000;
+  public static final int PRIORITY_WEIGHT_ITEM   = 500_000;
 
   private final IOType actionType;
   private final RequirementType<V> requirementType;
@@ -112,6 +113,11 @@ public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, 
   }
 
   public abstract <J extends JeiComponent<T, V>> J jeiComponent();
+
+  @Override
+  public int compareTo(@NotNull ComponentRequirement<?, ?> o) {
+    return Integer.compare(o.getSortingWeight(), this.getSortingWeight());
+  }
 
   public interface PerTick {
     //Multiplier is passed into this to adjust 'production' or 'consumption' accordingly if the recipe has a longer or shorter duration

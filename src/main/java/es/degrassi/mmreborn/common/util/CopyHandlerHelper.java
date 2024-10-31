@@ -10,13 +10,6 @@ import net.minecraft.nbt.CompoundTag;
 
 public class CopyHandlerHelper {
 
-    public static BasicChemicalTank copyTank(BasicChemicalTank tank, HolderLookup.Provider provider) {
-        CompoundTag cmp = tank.serializeNBT(provider);
-        BasicChemicalTank newTank = (BasicChemicalTank) BasicChemicalTank.create(0, tank);
-        newTank.deserializeNBT(provider, cmp);
-        return newTank;
-    }
-
     public static HybridTank copyTank(HybridTank tank, HolderLookup.Provider provider) {
         CompoundTag cmp = new CompoundTag();
         tank.writeToNBT(provider, cmp);

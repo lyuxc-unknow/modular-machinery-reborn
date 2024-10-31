@@ -1,8 +1,14 @@
 package es.degrassi.mmreborn.common.crafting.requirement.jei;
 
 import com.google.common.collect.Lists;
+import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementFluid;
 import java.util.List;
+
+import es.degrassi.mmreborn.common.integration.jei.MMRJeiPlugin;
+import es.degrassi.mmreborn.common.integration.jei.category.MMRRecipeCategory;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.recipe.IFocusGroup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.TooltipFlag;
@@ -51,5 +57,41 @@ public class JeiFluidComponent extends JeiComponent<FluidStack, RequirementFluid
       }
     }
     return tooltip;
+  }
+
+  @Override
+  public void setRecipeInput(MMRRecipeCategory category, IRecipeLayoutBuilder builder, MachineRecipe recipe, IFocusGroup focuses) {
+    category.updateByProcessed(category.processedInputComponents, getWidth(), getHeight(), true);
+    builder
+      .addInputSlot(category.x.get() + 1, category.y.get() + 1)
+      .setOverlay(
+        MMRJeiPlugin.jeiHelpers.getGuiHelper().createDrawable(texture(), getUOffset(), getVOffset(), getWidth() + 2, getHeight() + 2),
+        -1,
+        -1
+      )
+      .setFluidRenderer(getRequirement().amount, false, getWidth(), getHeight())
+      .addFluidStack(getRequirement().required.asFluidStack().getFluid(), getRequirement().amount);
+    category.x.getAndAdd(category.gapX);
+    category.x.getAndAdd(getWidth());
+    category.textsToRender.add(Component.translatable("modular_machinery_reborn.jei.ingredient.fluid.input", ingredients().get(0).getHoverName(), ingredients().get(0).getAmount()));
+    category.updateMaxHeightInput(this, true);
+  }
+
+  @Override
+  public void setRecipeOutput(MMRRecipeCategory category, IRecipeLayoutBuilder builder, MachineRecipe recipe, IFocusGroup focuses) {
+    category.updateByProcessed(category.processedOutputComponents, getWidth(), getHeight(), true);
+    builder
+      .addOutputSlot(category.x.get() + 1, category.y.get() + 1)
+      .setOverlay(
+        MMRJeiPlugin.jeiHelpers.getGuiHelper().createDrawable(texture(), getUOffset(), getVOffset(), getWidth() + 2, getHeight() + 2),
+        -1,
+        -1
+      )
+      .setFluidRenderer(getRequirement().amount, false, getWidth(), getHeight())
+      .addFluidStack(getRequirement().required.asFluidStack().getFluid(), getRequirement().amount);
+    category.x.getAndAdd(category.gapX);
+    category.x.getAndAdd(getWidth());
+    category.textsToRender.add(Component.translatable("modular_machinery_reborn.jei.ingredient.fluid.output", ingredients().get(0).getHoverName(), ingredients().get(0).getAmount()));
+    category.updateMaxHeightOutput(this, true);
   }
 }

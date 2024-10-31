@@ -1,8 +1,16 @@
 package es.degrassi.mmreborn.common.crafting.requirement.jei;
 
 import com.google.common.collect.Lists;
+import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import es.degrassi.mmreborn.common.integration.jei.category.MMRRecipeCategory;
+import es.degrassi.mmreborn.common.integration.jei.ingredient.CustomIngredientTypes;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
@@ -46,5 +54,41 @@ public class JeiEnergyComponent extends JeiComponent<Long, RequirementEnergy> {
     String mode = requirement.getActionType().isInput() ? "input" : "output";
     tooltip.add(Component.translatable("modular_machinery_reborn.jei.ingredient.energy." + mode, ingredient));
     return tooltip;
+  }
+
+  @Override
+  public void setRecipeInput(MMRRecipeCategory category, IRecipeLayoutBuilder builder, MachineRecipe recipe, IFocusGroup focuses) {
+    addEnergyComponent(category, builder, category.processedInputComponents);
+    category.textsToRender.add(
+      Component.translatable(
+        "modular_machinery_reborn.jei.ingredient.energy.total.input",
+        ingredients().get(0) * recipe.getRecipeTotalTickTime(),
+        ingredients().get(0)
+      )
+    );
+    category.updateMaxHeightInput(this, true);
+  }
+
+  @Override
+  public void setRecipeOutput(MMRRecipeCategory category, IRecipeLayoutBuilder builder, MachineRecipe recipe, IFocusGroup focuses) {
+    addEnergyComponent(category, builder, category.processedOutputComponents);
+    category.textsToRender.add(
+      Component.translatable(
+        "modular_machinery_reborn.jei.ingredient.energy.total.output",
+        ingredients().get(0) * recipe.getRecipeTotalTickTime(),
+        ingredients().get(0)
+      )
+    );
+    category.updateMaxHeightOutput(this, true);
+  }
+
+  private void addEnergyComponent(MMRRecipeCategory category, @NotNull IRecipeLayoutBuilder builder, List<MMRRecipeCategory.ComponentValue> processedComponents) {
+    category.updateByProcessed(processedComponents, getWidth(), getHeight(), true);
+    builder
+      .addSlot(RecipeIngredientRole.RENDER_ONLY, category.x.get() + 1, category.y.get() + 1)
+      .setCustomRenderer(CustomIngredientTypes.ENERGY, this)
+      .addIngredients(CustomIngredientTypes.ENERGY, ingredients());
+    category.x.getAndAdd(category.gapX);
+    category.x.getAndAdd(getWidth());
   }
 }

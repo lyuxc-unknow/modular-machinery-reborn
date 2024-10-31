@@ -3,6 +3,8 @@ package es.degrassi.mmreborn.data;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.registration.BlockRegistration;
 import java.util.concurrent.CompletableFuture;
+
+import es.degrassi.mmreborn.common.util.Mods;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
@@ -57,26 +59,6 @@ public class MMRBlockTagProvider extends BlockTagsProvider {
       BlockRegistration.FLUID_OUTPUT_HATCH_HUGE.get(),
       BlockRegistration.FLUID_OUTPUT_HATCH_LUDICROUS.get(),
       BlockRegistration.FLUID_OUTPUT_HATCH_VACUUM.get()
-    );
-    tag(MMRTags.Blocks.CHEMICAL_INPUT).add(
-      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_INPUT_HATCH_TINY.get(),
-      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_INPUT_HATCH_SMALL.get(),
-      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_INPUT_HATCH_NORMAL.get(),
-      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_INPUT_HATCH_REINFORCED.get(),
-      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_INPUT_HATCH_BIG.get(),
-      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_INPUT_HATCH_HUGE.get(),
-      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_INPUT_HATCH_LUDICROUS.get(),
-      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_INPUT_HATCH_VACUUM.get()
-    );
-    tag(MMRTags.Blocks.CHEMICAL_OUTPUT).add(
-      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_OUTPUT_HATCH_TINY.get(),
-      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_OUTPUT_HATCH_SMALL.get(),
-      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_OUTPUT_HATCH_NORMAL.get(),
-      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_OUTPUT_HATCH_REINFORCED.get(),
-      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_OUTPUT_HATCH_BIG.get(),
-      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_OUTPUT_HATCH_HUGE.get(),
-      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_OUTPUT_HATCH_LUDICROUS.get(),
-      es.degrassi.mmreborn.common.integration.mekanism.BlockRegistration.CHEMICAL_OUTPUT_HATCH_VACUUM.get()
     );
     tag(MMRTags.Blocks.INPUT_BUS).add(
       BlockRegistration.ITEM_INPUT_BUS_TINY.get(),

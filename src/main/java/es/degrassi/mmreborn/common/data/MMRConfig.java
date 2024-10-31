@@ -1,7 +1,6 @@
 package es.degrassi.mmreborn.common.data;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
-import es.degrassi.mmreborn.common.data.config.MMRChemicalHatchConfig;
 import es.degrassi.mmreborn.common.data.config.MMREnergyHatchConfig;
 import es.degrassi.mmreborn.common.data.config.MMRFluidHatchConfig;
 import es.degrassi.mmreborn.common.data.config.MMRGeneralConfig;
@@ -24,10 +23,6 @@ public class MMRConfig extends PartitioningSerializer.GlobalData {
   @ConfigEntry.Category("fluid_hatch")
   @ConfigEntry.Gui.TransitiveObject
   public MMRFluidHatchConfig fluidHatch = new MMRFluidHatchConfig();
-
-  @ConfigEntry.Category("chemical_hatch")
-  @ConfigEntry.Gui.TransitiveObject
-  public MMRChemicalHatchConfig chemicalHatch = new MMRChemicalHatchConfig();
 
   @ConfigEntry.Category("item_bus")
   @ConfigEntry.Gui.TransitiveObject
