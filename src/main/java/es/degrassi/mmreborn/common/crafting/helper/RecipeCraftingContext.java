@@ -159,8 +159,10 @@ public class RecipeCraftingContext {
   public CraftingCheckResult canStartCrafting(Predicate<ComponentRequirement<?, ?>> requirementFilter) {
     currentRestrictions.clear();
     CraftingCheckResult result = new CraftingCheckResult();
-    float successfulRequirements = 0;
-    List<ComponentRequirement<?, ?>> requirements = this.getParentRecipe().getCraftingRequirements().stream()
+    int successfulRequirements = 0;
+    List<ComponentRequirement<?, ?>> requirements = getParentRecipe()
+      .getCraftingRequirements()
+      .stream()
       .filter(requirementFilter)
       .toList();
 
@@ -170,22 +172,19 @@ public class RecipeCraftingContext {
 
       Iterable<ProcessingComponent<?>> components = getComponentsFor(requirement);
       if (!Iterables.isEmpty(components)) {
-
-        List<String> errorMessages = Lists.newArrayList();
         for (ProcessingComponent<?> component : components) {
           CraftCheck check = requirement.canStartCrafting(component, this, this.currentRestrictions);
 
           if (check.isSuccess()) {
             requirement.endRequirementCheck();
-            successfulRequirements += 1;
+            successfulRequirements++;
             continue lblRequirements;
           }
 
           if (!check.isInvalid() && !check.getUnlocalizedMessage().isEmpty()) {
-            errorMessages.add(check.getUnlocalizedMessage());
+            result.addError(check.getUnlocalizedMessage());
           }
         }
-        errorMessages.forEach(result::addError);
       } else {
         // No component found that would apply for the given requirement
         result.addError(requirement.getMissingComponentErrorMessage(requirement.getActionType()));
@@ -193,7 +192,7 @@ public class RecipeCraftingContext {
 
       requirement.endRequirementCheck();
     }
-    result.setValidity(successfulRequirements / requirements.size());
+    result.setValidity(successfulRequirements / (requirements.size() * 1F));
 
     currentRestrictions.clear();
     return result;
@@ -216,13 +215,17 @@ public class RecipeCraftingContext {
 
   public static class CraftingCheckResult {
 
-    private static final CraftingCheckResult SUCCESS = new CraftingCheckResult();
+    private static final CraftingCheckResult SUCCESS = new CraftingCheckResult(1);
 
     private final Map<String, Integer> unlocErrorMessages = new HashMap<>();
     @Getter
     private float validity = 0F;
 
     private CraftingCheckResult() {}
+
+    private CraftingCheckResult(float validity) {
+      this.validity = validity;
+    }
 
     private void setValidity(float validity) {
       this.validity = validity;
@@ -245,7 +248,7 @@ public class RecipeCraftingContext {
     }
 
     public boolean isFailure() {
-      return !this.unlocErrorMessages.isEmpty();
+      return !this.unlocErrorMessages.isEmpty() && validity != 1;
     }
   }
 }

@@ -51,11 +51,6 @@ public class ActiveMachineRecipe {
       .getRecipeManager()
       .byKey(futureRecipeId)
       .orElse(null);
-//      .getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get())
-//      .stream()
-//      .filter(holder -> holder.id().equals(futureRecipeId))
-//      .findFirst()
-//      .orElse(null);
     this.futureRecipeId = null;
 
 //    if (serialized.contains("data", Tag.TAG_LIST)) {

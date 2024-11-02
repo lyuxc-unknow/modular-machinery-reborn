@@ -33,8 +33,8 @@ public class MMRGeneralConfig implements ConfigData {
 
   @ConfigEntry.Category("General")
   @ConfigEntry.BoundedDiscrete(min = 1, max = Integer.MAX_VALUE)
-  @Comment("Defines the time in ticks that the machine should check for a recipe update.\n20 ticks = 1 second. Default: 20")
-  public int checkRecipeTicks = 20;
+  @Comment("Defines the time in ticks that the machine should check for a recipe update.\n20 ticks = 1 second. Default: 80")
+  public int checkRecipeTicks = 80;
 
   @ConfigEntry.Category("Rendering")
   @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)

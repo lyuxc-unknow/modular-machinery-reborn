@@ -13,15 +13,15 @@ import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 
 public class Pattern {
   private final List<List<String>> strings;
-  private final Map<Character, IIngredient<PartialBlockState>> keys;
+  private final Map<Character, BlockIngredient> keys;
 
-  private final Map<BlockPos, IIngredient<PartialBlockState>> pattern;
-  private final Map<BlockPos, IIngredient<PartialBlockState>> pattern_north;
-  private final Map<BlockPos, IIngredient<PartialBlockState>> pattern_south;
-  private final Map<BlockPos, IIngredient<PartialBlockState>> pattern_east;
-  private final Map<BlockPos, IIngredient<PartialBlockState>> pattern_west;
+  private final Map<BlockPos, BlockIngredient> pattern;
+  private final Map<BlockPos, BlockIngredient> pattern_north;
+  private final Map<BlockPos, BlockIngredient> pattern_south;
+  private final Map<BlockPos, BlockIngredient> pattern_east;
+  private final Map<BlockPos, BlockIngredient> pattern_west;
 
-  public Pattern(Map<BlockPos, IIngredient<PartialBlockState>> pattern, List<List<String>> strings, Map<Character, IIngredient<PartialBlockState>> keys) {
+  public Pattern(Map<BlockPos, BlockIngredient> pattern, List<List<String>> strings, Map<Character, BlockIngredient> keys) {
     this.pattern = pattern;
     this.strings = strings;
     this.keys = keys;
@@ -31,7 +31,7 @@ public class Pattern {
     this.pattern_east = rotate(Rotation.CLOCKWISE_90);
   }
 
-  public Map<BlockPos, IIngredient<PartialBlockState>> get(Direction direction) {
+  public Map<BlockPos, BlockIngredient> get(Direction direction) {
     return switch (direction) {
       case WEST -> pattern_west;
       case EAST -> pattern_east;
@@ -40,7 +40,7 @@ public class Pattern {
     };
   }
 
-  private Map<BlockPos, IIngredient<PartialBlockState>> rotate(Rotation rotation) {
+  private Map<BlockPos, BlockIngredient> rotate(Rotation rotation) {
 //    Map<BlockPos, IIngredient<PartialBlockState>> newPattern = new HashMap<>();
 //    pattern.forEach((pos, ingredient) -> {
 ////      newPattern.put(pos.rotate(rotation), ingredient.copyWithRotation(rotation));
@@ -52,7 +52,7 @@ public class Pattern {
 //    });
 //    return newPattern;
 
-    Map<BlockPos, IIngredient<PartialBlockState>> rotated = new HashMap<>();
+    Map<BlockPos, BlockIngredient> rotated = new HashMap<>();
     pattern.forEach((pos, ingredient) -> {
       if (ingredient instanceof BlockIngredient)
         rotated.put(pos.rotate(rotation), new BlockIngredient(ingredient.getAll().stream().map(ing -> ing.rotate(rotation)).toList()));
@@ -66,12 +66,12 @@ public class Pattern {
     return strings;
   }
 
-  public Map<Character, IIngredient<PartialBlockState>> asMap() {
+  public Map<Character, BlockIngredient> asMap() {
     return keys;
   }
 
   public boolean match(LevelReader world, BlockPos machinePos, Direction machineFacing) {
-    Map<BlockPos, IIngredient<PartialBlockState>> blocks = get(machineFacing);
+    Map<BlockPos, BlockIngredient> blocks = get(machineFacing);
     BlockPos.MutableBlockPos worldPos = new BlockPos.MutableBlockPos();
     for (BlockPos pos : blocks.keySet()) {
       IIngredient<PartialBlockState> ingredient = blocks.get(pos);

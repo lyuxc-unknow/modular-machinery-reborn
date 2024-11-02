@@ -2,6 +2,7 @@ package es.degrassi.mmreborn.common.integration.kubejs.builder;
 
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
+import es.degrassi.mmreborn.api.BlockIngredient;
 import es.degrassi.mmreborn.api.IIngredient;
 import es.degrassi.mmreborn.api.PartialBlockState;
 import es.degrassi.mmreborn.api.Structure;
@@ -13,7 +14,7 @@ import java.util.Map;
 public class StructureBuilderJS {
   private final Structure.Builder builder = Structure.Builder.start();
   private List<List<String>> pattern;
-  private Map<Character, IIngredient<PartialBlockState>> keys;
+  private Map<Character, BlockIngredient> keys;
 
   public static StructureBuilderJS create() {
     return new StructureBuilderJS();
@@ -26,14 +27,14 @@ public class StructureBuilderJS {
 
   public StructureBuilderJS keys(Map<Character, JsonElement> keys) {
     this.keys = new HashMap<>();
-    keys.forEach((character, s) -> this.keys.put(character, IIngredient.BLOCK.read(JsonOps.INSTANCE, s).getOrThrow()));
+    keys.forEach((character, s) -> this.keys.put(character, BlockIngredient.CODEC.read(JsonOps.INSTANCE, s).getOrThrow()));
     return this;
   }
 
   public Structure build() {
     for (List<String> levels : pattern)
       builder.aisle(levels.toArray(new String[0]));
-    for (Map.Entry<Character, IIngredient<PartialBlockState>> key : keys.entrySet())
+    for (Map.Entry<Character, BlockIngredient> key : keys.entrySet())
       builder.where(key.getKey(), key.getValue());
     return builder.build(pattern, keys);
   }

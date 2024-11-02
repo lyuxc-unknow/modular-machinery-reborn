@@ -53,7 +53,8 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
   private ResourceLocation id = DynamicMachine.DUMMY.getRegistryName();
   private ActiveMachineRecipe activeRecipe = null;
 
-  private int recipeTicks = 0;
+  private int recipeTicks = -1;
+  private int ticksToUpdateComponent = -1;
 
   private final List<MachineComponent<?>> foundComponents = Lists.newArrayList();
 
@@ -68,23 +69,31 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
     }
 
     checkStructure();
+
+    if (craftingStatus.isMissingStructure()) return;
+
     updateComponents();
 
     if (this.activeRecipe == null) {
-      if (this.ticksExisted % MMRConfig.get().general.checkRecipeTicks == 0) {
+      if (craftingStatus.isFailure() && ticksToUpdateComponent % MMRConfig.get().general.checkRecipeTicks == 0) {
+        setCraftingStatus(CraftingStatus.NO_RECIPE);
+        ticksToUpdateComponent = 1;
+      }
+      if (level.getGameTime() % MMRConfig.get().general.checkRecipeTicks == 0) {
         searchAndUpdateRecipe();
       }
     } else if (this.recipeTicks > -1) {
       if (!this.activeRecipe.isInitialized()) this.activeRecipe.init();
-      if (this.activeRecipe.getHolder() == null) {
+      if (this.activeRecipe.getHolder() == null && !this.craftingStatus.isCrafting() && !this.craftingStatus.isFailure()) {
         this.setActiveRecipe(null);
         this.setRecipeTicks(-1);
-        this.setCraftingStatus(MachineControllerEntity.CraftingStatus.NO_RECIPE);
+        this.setCraftingStatus(CraftingStatus.NO_RECIPE);
         setChanged();
-        return;
+      } else if (this.activeRecipe.getHolder() != null) {
+        useRecipe();
       }
-      useRecipe();
     }
+    this.ticksToUpdateComponent++;
     setChanged();
   }
 
@@ -100,19 +109,19 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
     RecipeCraftingContext context = this.getFoundMachine().createContext(this.activeRecipe, this, this.foundComponents);
     this.setCraftingStatus(this.activeRecipe.tick(context)); //handle energy IO and tick progression
 
-    if (this.activeRecipe.getRecipe().doesCancelRecipeOnPerTickFailure() && !this.craftingStatus.isCrafting()) {
+    if (this.activeRecipe.getRecipe().doesCancelRecipeOnPerTickFailure() && this.craftingStatus.isFailure()) {
       this.activeRecipe = null;
       setRecipeTicks(-1);
     } else if (this.activeRecipe.isCompleted(context) &&
       !context.canStartCrafting(req -> req.getActionType() == IOType.OUTPUT).isFailure()) {
       this.activeRecipe.complete(context);
-      this.activeRecipe.reset();
+      setRecipeTicks(-1);
+      setCraftingStatus(CraftingStatus.NO_RECIPE);
       context = this.getFoundMachine().createContext(this.activeRecipe, this, this.foundComponents);
       RecipeCraftingContext.CraftingCheckResult result = context.canStartCrafting();
       if (result.isFailure()) {
         this.activeRecipe = null;
-        setRecipeTicks(-1);
-        searchAndUpdateRecipe();
+        setCraftingStatus(CraftingStatus.failure(Iterables.getFirst(result.getUnlocalizedErrorMessages(), "")));
       } else {
         this.activeRecipe.start(context);
       }
@@ -158,22 +167,10 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
       if (highestValidity != null) {
         setCraftingStatus(CraftingStatus.failure(
           Iterables.getFirst(highestValidityResult.getUnlocalizedErrorMessages(), "")));
-      } else {
-        setCraftingStatus(CraftingStatus.NO_RECIPE);
       }
     } else {
       setCraftingStatus(CraftingStatus.working());
     }
-  }
-
-  public void set(CraftingStatus status, boolean recipe) {
-    setCraftingStatus(status);
-    if (recipe) {
-      this.activeRecipe = null;
-      setRecipeTicks(-1);
-    }
-    setRequestModelUpdate(true);
-    setChanged();
   }
 
   public void setCraftingStatus(CraftingStatus status) {
@@ -194,7 +191,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
   }
 
   private void checkStructure() {
-    if (this.ticksExisted % MMRConfig.get().general.checkStructureTicks == 0) {
+    if (level.getGameTime() % MMRConfig.get().general.checkStructureTicks == 0) {
       if (this.getFoundMachine() != null && this.getFoundMachine() != DynamicMachine.DUMMY) {
         if (!getFoundMachine().getPattern().match(getLevel(), getBlockPos(), getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING))) {
           distributeCasingColor(true);
@@ -203,7 +200,9 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
           setCraftingStatus(CraftingStatus.MISSING_STRUCTURE);
         } else {
           distributeCasingColor(false);
-          setCraftingStatus(CraftingStatus.NO_RECIPE);
+          if (!craftingStatus.isFailure() && !craftingStatus.isCrafting() && !craftingStatus.isMissingStructure())
+            setCraftingStatus(CraftingStatus.NO_RECIPE);
+          else setCraftingStatus(craftingStatus);
         }
         setRequestModelUpdate(true);
         setChanged();
@@ -249,7 +248,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
 
   private void updateComponents() {
     if (getFoundMachine() == null) return;
-    if (this.ticksExisted % 20 == 0) {
+    if (level.getGameTime() % 20 == 0) {
       this.foundComponents.clear();
       for (BlockPos potentialPosition : this.getFoundMachine().getPattern().getBlocks(getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).keySet()) {
         BlockPos realPos = getBlockPos().offset(potentialPosition);
@@ -320,7 +319,6 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
   }
 
   public static class CraftingStatus {
-
     public static final CraftingStatus SUCCESS = new CraftingStatus(Type.CRAFTING, "");
     public static final CraftingStatus MISSING_STRUCTURE = new CraftingStatus(Type.MISSING_STRUCTURE, "");
     public static final CraftingStatus NO_RECIPE = new CraftingStatus(Type.NO_RECIPE, "");
@@ -358,12 +356,20 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
       return this.status == Type.CRAFTING;
     }
 
+    public boolean isFailure() {
+      return this.status == Type.FAILURE;
+    }
+
+    public boolean isMissingStructure() {
+      return this.status == Type.MISSING_STRUCTURE;
+    }
+
     public static CraftingStatus working() {
       return SUCCESS;
     }
 
     public static CraftingStatus failure(String unlocMessage) {
-      return new CraftingStatus(Type.NO_RECIPE, unlocMessage);
+      return new CraftingStatus(Type.FAILURE, unlocMessage);
     }
 
     public CompoundTag serializeNBT() {
@@ -391,6 +397,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
   public enum Type implements StringRepresentable {
     MISSING_STRUCTURE,
     NO_RECIPE,
+    FAILURE,
     CRAFTING;
 
     public static Type fromString(String value) {
@@ -398,8 +405,13 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
         case "missing_structure" -> MISSING_STRUCTURE;
         case "crafting" -> CRAFTING;
         case "no_recipe" -> NO_RECIPE;
+        case "failure" -> FAILURE;
         default -> null;
       };
+    }
+
+    public boolean isFailure() {
+      return this == FAILURE;
     }
 
     public String getUnlocalizedDescription() {

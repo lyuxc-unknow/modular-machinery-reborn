@@ -44,7 +44,7 @@ runs {
 
   server {
     systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
-    programArgument '--nogui'
+    argument '--nogui'
   }
 
   gameTestServer {
@@ -144,7 +144,7 @@ dependencies {
   localRuntime compileOnly("curse.maven:jade-324717:${jade_version}")
 
   // Mekanism
-  compileOnly /*localRuntime*/("mekanism:Mekanism:${mekanism_version}")
+  compileOnly localRuntime("mekanism:Mekanism:${mekanism_version}")
 }
 
 tasks.withType(ProcessResources).configureEach {

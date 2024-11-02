@@ -32,7 +32,7 @@ public class DynamicMachineComponentProvider implements IBlockComponentProvider 
         switch (status.getStatus()) {
           case CRAFTING -> message.withStyle(ChatFormatting.GREEN);
           case NO_RECIPE -> message.withStyle(ChatFormatting.GOLD);
-          case MISSING_STRUCTURE -> message.withStyle(ChatFormatting.RED);
+          case MISSING_STRUCTURE, FAILURE -> message.withStyle(ChatFormatting.RED);
         }
         tooltip.add(message);
       }

@@ -21,17 +21,6 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.material.Fluid;
 
 public interface IIngredient<O> extends Predicate<O> {
-  NamedCodec<IIngredient<PartialBlockState>> BLOCK = NamedCodec.either(BlockIngredient.CODEC, BlockTagIngredient.CODEC, "Block Ingredient").flatComapMap(
-    either -> either.map(Function.identity(), Function.identity()),
-    ingredient -> {
-      if(ingredient instanceof BlockIngredient ing)
-        return DataResult.success(Either.left(ing));
-      else if(ingredient instanceof BlockTagIngredient ing)
-        return DataResult.success(Either.right(ing));
-      return DataResult.error(() -> String.format("Block Ingredient : %s is not a block nor a tag !", ingredient));
-    },
-    "Block ingredient"
-  );
 
   NamedCodec<IIngredient<Item>> ITEM = new NamedCodec<>() {
     @Override
@@ -80,18 +69,6 @@ public interface IIngredient<O> extends Predicate<O> {
       return "Item ingredient";
     }
   };
-
-  NamedCodec<IIngredient<Fluid>> FLUID = NamedCodec.either(FluidIngredient.CODEC, FluidTagIngredient.CODEC, "Fluid Ingredient").flatComapMap(
-    either -> either.map(Function.identity(), Function.identity()),
-    ingredient -> {
-      if(ingredient instanceof FluidIngredient)
-        return DataResult.success(Either.left((FluidIngredient)ingredient));
-      else if(ingredient instanceof FluidTagIngredient)
-        return DataResult.success(Either.right((FluidTagIngredient)ingredient));
-      return DataResult.error(() -> String.format("Fluid Ingredient : %s is not a fluid nor a tag !", ingredient));
-    },
-    "Fluid ingredient"
-  );
 
   List<O> getAll();
 

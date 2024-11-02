@@ -21,27 +21,27 @@ import org.apache.commons.lang3.StringUtils;
 public class Structure {
   public static final NamedCodec<Structure> CODEC = NamedCodec.record(structure -> structure.group(
     NamedCodec.STRING.listOf().listOf().fieldOf("pattern").forGetter(s -> s.pattern.asList()),
-    NamedCodec.unboundedMap(DefaultCodecs.CHARACTER, IIngredient.BLOCK, "Map<Character, Block>").fieldOf("keys").forGetter(s -> s.pattern.asMap())
+    NamedCodec.unboundedMap(DefaultCodecs.CHARACTER, BlockIngredient.CODEC, "Map<Character, Block>").fieldOf("keys").forGetter(s -> s.pattern.asMap())
   ).apply(structure, Structure::makeStructure), "Structure");
 
   public static final Structure EMPTY = new Structure(Map.of(), List.of(List.of("m")), Map.of());
 
-  private static Structure makeStructure(List<List<String>> pattern, Map<Character, IIngredient<PartialBlockState>> keys) {
+  private static Structure makeStructure(List<List<String>> pattern, Map<Character, BlockIngredient> keys) {
     Structure.Builder builder = Structure.Builder.start();
     for (List<String> levels : pattern)
       builder.aisle(levels.toArray(new String[0]));
-    for (Map.Entry<Character, IIngredient<PartialBlockState>> key : keys.entrySet())
+    for (Map.Entry<Character, BlockIngredient> key : keys.entrySet())
       builder.where(key.getKey(), key.getValue());
     return builder.build(pattern, keys);
   }
 
   private final Pattern pattern;
 
-  public Structure(Map<BlockPos, IIngredient<PartialBlockState>> blocks, List<List<String>> pattern, Map<Character, IIngredient<PartialBlockState>> keys) {
+  public Structure(Map<BlockPos, BlockIngredient> blocks, List<List<String>> pattern, Map<Character, BlockIngredient> keys) {
     this.pattern = new Pattern(blocks, pattern, keys);
   }
 
-  public Map<BlockPos, IIngredient<PartialBlockState>> getBlocks(Direction direction) {
+  public Map<BlockPos, BlockIngredient> getBlocks(Direction direction) {
     return pattern.get(direction);
   }
 
@@ -64,7 +64,7 @@ public class Structure {
 
     private static final Joiner COMMA_JOIN = Joiner.on(",");
     private final List<String[]> depth = Lists.newArrayList();
-    private final Map<Character, IIngredient<PartialBlockState>> symbolMap = Maps.newHashMap();
+    private final Map<Character, BlockIngredient> symbolMap = Maps.newHashMap();
     private int aisleHeight;
     private int rowWidth;
 
@@ -111,15 +111,15 @@ public class Structure {
       return new Builder();
     }
 
-    public Builder where(char symbol, IIngredient<PartialBlockState> blockMatcher) {
+    public Builder where(char symbol, BlockIngredient blockMatcher) {
       this.symbolMap.put(symbol, blockMatcher);
       return this;
     }
 
-    public Structure build(List<List<String>> pattern, Map<Character, IIngredient<PartialBlockState>> keys) {
+    public Structure build(List<List<String>> pattern, Map<Character, BlockIngredient> keys) {
       this.checkMissingPredicates();
       BlockPos machinePos = this.getMachinePos();
-      Map<BlockPos, IIngredient<PartialBlockState>> blocks = new HashMap<>();
+      Map<BlockPos, BlockIngredient> blocks = new HashMap<>();
       for (int i = 0; i < this.depth.size(); ++i) {
         for (int j = 0; j < this.aisleHeight; ++j) {
           for (int k = 0; k < this.rowWidth; ++k) {
@@ -151,7 +151,7 @@ public class Structure {
     private void checkMissingPredicates() {
       List<Character> list = Lists.newArrayList();
 
-      for (Map.Entry<Character, IIngredient<PartialBlockState>> entry : this.symbolMap.entrySet()) {
+      for (Map.Entry<Character, BlockIngredient> entry : this.symbolMap.entrySet()) {
         if (entry.getValue() == null) {
           list.add(entry.getKey());
         }

@@ -6,7 +6,6 @@
 
   "modular_machinery_reborn.gui.title.controller": "Controller",
   "modular_machinery_reborn.gui.title.energy_hatch": "Energy Hatch",
-  "modular_machinery_reborn.gui.title.chemical_hatch": "Chemical Hatch",
   "modular_machinery_reborn.gui.title.fluid_hatch": "Fluid Hatch",
   "modular_machinery_reborn.gui.title.item_bus": "Item Bus",
 
@@ -18,6 +17,7 @@
   "gui.controller.status.redstone_stopped": "Machine stopped by incoming redstone signal",
   "gui.controller.status.missing_structure": "Missing structure",
   "gui.controller.status.no_recipe": "No matching recipe found",
+  "gui.controller.status.failure": "",
   "gui.controller.status.crafting": "Processing...",
   "gui.controller.status.crafting.progress": "Progress: %s",
 
@@ -25,9 +25,6 @@
   "craftcheck.failure.item.output.space": "Not enough inventory space for item output(s)!",
   "craftcheck.failure.fluid.input": "Missing fluid input!",
   "craftcheck.failure.fluid.output.space": "Not enough tank space for fluid output(s)!",
-  "craftcheck.failure.chemical.input.type_missmatch": "Missing chemical input! Chemical is not the same",
-  "craftcheck.failure.chemical.input.handler_empty": "Missing chemical input! No Chemical provided",
-  "craftcheck.failure.chemical.output.space": "Not enough space for chemical output(s)!",
   "craftcheck.failure.energy.input": "Not enough energy!",
   "craftcheck.failure.energy.output": "Not enough space for energy output!",
 
@@ -35,8 +32,6 @@
   "component.missing.energy.input": "No Energy Input Hatch found!",
   "component.missing.fluid.output": "No Fluid Output Hatch found!",
   "component.missing.fluid.input": "No Fluid Input Hatch found!",
-  "component.missing.chemical.output": "No Chemical Output Hatch found!",
-  "component.missing.chemical.input": "No Chemical Input Hatch found!",
   "component.missing.item.output": "No Item Output found!",
   "component.missing.item.input": "No Item Input found!",
 
@@ -184,15 +179,6 @@
   "block.modular_machinery_reborn.chemicalinputhatch_ludicrous": "Ludicrous Chemical Input Hatch",
   "block.modular_machinery_reborn.chemicalinputhatch_vacuum": "Vacuum Chemical Input Hatch",
 
-  "block.modular_machinery_reborn.chemicaloutputhatch_tiny": "Tiny Chemical Output Hatch",
-  "block.modular_machinery_reborn.chemicaloutputhatch_small": "Small Chemical Output Hatch",
-  "block.modular_machinery_reborn.chemicaloutputhatch_normal": "Normal Chemical Output Hatch",
-  "block.modular_machinery_reborn.chemicaloutputhatch_reinforced": "Reinforced Chemical Output Hatch",
-  "block.modular_machinery_reborn.chemicaloutputhatch_big": "Big Chemical Output Hatch",
-  "block.modular_machinery_reborn.chemicaloutputhatch_huge": "Huge Chemical Output Hatch",
-  "block.modular_machinery_reborn.chemicaloutputhatch_ludicrous": "Ludicrous Chemical Output Hatch",
-  "block.modular_machinery_reborn.chemicaloutputhatch_vacuum": "Vacuum Chemical Output Hatch",
-
   "block.modular_machinery_reborn.energyinputhatch_tiny": "Tiny Energy Input Hatch",
   "block.modular_machinery_reborn.energyinputhatch_small": "Small Energy Input Hatch",
   "block.modular_machinery_reborn.energyinputhatch_normal": "Normal Energy Input Hatch",
@@ -295,32 +281,6 @@
   "text.autoconfig.modular_machinery_reborn.option.fluidHatch.VACUUM": "Fluid Hatch Vacuum",
   "text.autoconfig.modular_machinery_reborn.option.fluidHatch.VACUUM.size": "Size",
 
-  "text.autoconfig.modular_machinery_reborn.category.chemical_hatch": "Chemical Hatch",
-
-  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.TINY": "Chemical Hatch Tiny",
-  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.TINY.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.SMALL": "Chemical Hatch Small",
-  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.SMALL.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.NORMAL": "Chemical Hatch Normal",
-  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.NORMAL.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.REINFORCED": "Chemical Hatch Reinforced",
-  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.REINFORCED.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.BIG": "Chemical Hatch Big",
-  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.BIG.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.HUGE": "Chemical Hatch Huge",
-  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.HUGE.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.LUDICROUS": "Chemical Hatch Ludicrous",
-  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.LUDICROUS.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.VACUUM": "Chemical Hatch Vacuum",
-  "text.autoconfig.modular_machinery_reborn.option.chemicalHatch.VACUUM.size": "Size",
-
   "text.autoconfig.modular_machinery_reborn.category.item_bus": "Item Bus",
 
   "text.autoconfig.modular_machinery_reborn.option.itemBus.TINY": "Item Bus Tiny",
@@ -366,4 +326,3 @@
 
   "modular_machinery_reborn.controller.tooltip": "Click in placed controller with blueprint \nto show the structure around the controller."
 }
-

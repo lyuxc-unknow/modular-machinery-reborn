@@ -29,15 +29,15 @@ public class StructureRenderer {
 
   private final int time;
   private final long start;
-  private final Function<Direction, Map<BlockPos, IIngredient<PartialBlockState>>> blocksGetter;
+  private final Function<Direction, Map<BlockPos, BlockIngredient>> blocksGetter;
   private final CycleTimer timer;
 
-  public StructureRenderer(int time, Function<Direction, Map<BlockPos, IIngredient<PartialBlockState>>> blocksGetter) {
+  public StructureRenderer(int time, Function<Direction, Map<BlockPos, BlockIngredient>> blocksGetter) {
     this.time = time;
     this.start = System.currentTimeMillis();
     this.blocksGetter = blocksGetter;
     AtomicInteger minCycleTime = new AtomicInteger(time);
-    Map<BlockPos, IIngredient<PartialBlockState>> map = blocksGetter.apply(Direction.NORTH);
+    Map<BlockPos, BlockIngredient> map = blocksGetter.apply(Direction.NORTH);
     map.forEach((block, ingredient) -> {
       int cycleTime = time / ingredient.getAll().size();
       minCycleTime.set(Math.min(cycleTime, minCycleTime.get()));
@@ -46,7 +46,7 @@ public class StructureRenderer {
   }
 
   public void render(PoseStack matrix, MultiBufferSource buffer, Direction direction, Level world, BlockPos machinePos) {
-    Map<BlockPos, IIngredient<PartialBlockState>> blocks = this.blocksGetter.apply(direction);
+    Map<BlockPos, BlockIngredient> blocks = this.blocksGetter.apply(direction);
     this.timer.onDraw();
     blocks.forEach((pos, ingredient) -> {
       matrix.pushPose();
