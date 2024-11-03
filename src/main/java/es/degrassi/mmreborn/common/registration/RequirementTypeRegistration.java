@@ -2,6 +2,7 @@ package es.degrassi.mmreborn.common.registration;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
+import es.degrassi.mmreborn.common.crafting.requirement.RequirementDimension;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementDuration;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementFluid;
@@ -21,6 +22,7 @@ public class RequirementTypeRegistration {
   public static final Supplier<RequirementType<RequirementFluid>> FLUID = MACHINE_REQUIREMENTS.register("fluid", () -> RequirementType.create(RequirementFluid.CODEC));
   public static final Supplier<RequirementType<RequirementEnergy>> ENERGY = MACHINE_REQUIREMENTS.register("energy", () -> RequirementType.create(RequirementEnergy.CODEC));
   public static final Supplier<RequirementType<RequirementDuration>> DURATION = MACHINE_REQUIREMENTS.register("duration", () -> RequirementType.create(RequirementDuration.CODEC));
+  public static final Supplier<RequirementType<RequirementDimension>> DIMENSION = MACHINE_REQUIREMENTS.register("dimension", () -> RequirementType.create(RequirementDimension.CODEC));
 
   public static void register(IEventBus bus) {
     MACHINE_REQUIREMENTS.register(bus);

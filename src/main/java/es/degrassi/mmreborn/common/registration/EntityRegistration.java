@@ -2,6 +2,7 @@ package es.degrassi.mmreborn.common.registration;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.block.BlockDynamicColor;
+import es.degrassi.mmreborn.common.entity.DimensionalDetectorEntity;
 import es.degrassi.mmreborn.common.entity.EnergyInputHatchEntity;
 import es.degrassi.mmreborn.common.entity.EnergyOutputHatchEntity;
 import es.degrassi.mmreborn.common.entity.FluidInputHatchEntity;
@@ -33,6 +34,7 @@ public class EntityRegistration {
       ),
       null)
   );
+
   public static final Supplier<BlockEntityType<MachineControllerEntity>> CONTROLLER = ENTITY_TYPE.register(
     "controller",
     () -> new BlockEntityType<>(
@@ -40,6 +42,7 @@ public class EntityRegistration {
       validMachineBlocks(),
       null)
   );
+
   public static final Supplier<BlockEntityType<EnergyHatchEntity>> ENERGY_INPUT_HATCH = ENTITY_TYPE.register(
     "energy_hatch_input",
     () -> new BlockEntityType<>(
@@ -133,6 +136,16 @@ public class EntityRegistration {
         BlockRegistration.FLUID_OUTPUT_HATCH_VACUUM.get()
       ),
       null)
+  );
+
+  public static final Supplier<BlockEntityType<DimensionalDetectorEntity>> DIMENSIONAL_DETECTOR = ENTITY_TYPE.register(
+      "dimensional_detector",
+      () -> new BlockEntityType<>(
+          DimensionalDetectorEntity::new,
+         Set.of(
+             BlockRegistration.DIMENSIONAL_DETECTOR.get()
+         ),
+          null)
   );
 
   public static void register(final IEventBus bus) {

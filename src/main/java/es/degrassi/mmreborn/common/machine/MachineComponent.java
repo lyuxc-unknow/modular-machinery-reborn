@@ -5,7 +5,6 @@ import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.util.HybridTank;
 import es.degrassi.mmreborn.common.util.IEnergyHandler;
 import es.degrassi.mmreborn.common.util.IOInventory;
-import mekanism.api.chemical.BasicChemicalTank;
 
 public abstract class MachineComponent<T> {
   private final IOType ioType;

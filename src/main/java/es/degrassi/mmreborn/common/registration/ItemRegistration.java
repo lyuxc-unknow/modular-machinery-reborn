@@ -7,6 +7,7 @@ import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
 import es.degrassi.mmreborn.common.item.CasingItem;
 import es.degrassi.mmreborn.common.item.ControllerItem;
+import es.degrassi.mmreborn.common.item.DimensionalDetectorItem;
 import es.degrassi.mmreborn.common.item.EnergyHatchItem;
 import es.degrassi.mmreborn.common.item.FluidHatchItem;
 import es.degrassi.mmreborn.common.item.InputBusItem;
@@ -134,6 +135,9 @@ public class ItemRegistration {
     () -> new FluidHatchItem(BlockRegistration.FLUID_OUTPUT_HATCH_LUDICROUS.get(), FluidHatchSize.LUDICROUS));
   public static final DeferredItem<FluidHatchItem> FLUID_OUTPUT_HATCH_VACUUM = ITEMS.register("fluidoutputhatch_" + FluidHatchSize.VACUUM.getSerializedName(),
     () -> new FluidHatchItem(BlockRegistration.FLUID_OUTPUT_HATCH_VACUUM.get(), FluidHatchSize.VACUUM));
+
+  public static final DeferredItem<DimensionalDetectorItem> DIMENSIONAL_DETECTOR = ITEMS.register("dimensional_detector",
+    () -> new DimensionalDetectorItem(BlockRegistration.DIMENSIONAL_DETECTOR.get()));
 
 
   public static void register(final IEventBus bus) {
