@@ -1,6 +1,7 @@
 package es.degrassi.mmreborn.common.registration;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
+import es.degrassi.mmreborn.common.block.BlockBiomeReader;
 import es.degrassi.mmreborn.common.block.BlockCasing;
 import es.degrassi.mmreborn.common.block.BlockCasing.CasingType;
 import es.degrassi.mmreborn.common.block.BlockController;
@@ -131,6 +132,7 @@ public class BlockRegistration {
       () -> new BlockFluidOutputHatch(FluidHatchSize.VACUUM));
 
   public static final DeferredBlock<BlockDimensionDetector> DIMENSIONAL_DETECTOR = BLOCKS.register("dimensional_detector", BlockDimensionDetector::new);
+  public static final DeferredBlock<BlockBiomeReader> BIOME_READER = BLOCKS.register("biome_reader", BlockBiomeReader::new);
 
   public static void register(final IEventBus bus) {
     BLOCKS.register(bus);

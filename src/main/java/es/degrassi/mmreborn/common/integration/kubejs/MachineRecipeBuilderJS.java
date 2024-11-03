@@ -8,6 +8,7 @@ import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.util.TickDuration;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
+import es.degrassi.mmreborn.common.integration.kubejs.requirement.BiomeRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.DimensionRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.EnergyRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.FluidRequirementJS;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilder,
-  EnergyRequirementJS, ItemRequirementJS, FluidRequirementJS, DimensionRequirementJS
+  EnergyRequirementJS, ItemRequirementJS, FluidRequirementJS, DimensionRequirementJS, BiomeRequirementJS
 {
 
   public static final Map<ResourceLocation, Map<ResourceLocation, Integer>> IDS = new HashMap<>();

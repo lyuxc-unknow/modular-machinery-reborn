@@ -5,6 +5,7 @@ import es.degrassi.mmreborn.common.block.BlockCasing.CasingType;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
+import es.degrassi.mmreborn.common.item.BiomeReaderItem;
 import es.degrassi.mmreborn.common.item.CasingItem;
 import es.degrassi.mmreborn.common.item.ControllerItem;
 import es.degrassi.mmreborn.common.item.DimensionalDetectorItem;
@@ -138,6 +139,8 @@ public class ItemRegistration {
 
   public static final DeferredItem<DimensionalDetectorItem> DIMENSIONAL_DETECTOR = ITEMS.register("dimensional_detector",
     () -> new DimensionalDetectorItem(BlockRegistration.DIMENSIONAL_DETECTOR.get()));
+  public static final DeferredItem<BiomeReaderItem> BIOME_READER = ITEMS.register("biome_reader",
+    () -> new BiomeReaderItem(BlockRegistration.BIOME_READER.get()));
 
 
   public static void register(final IEventBus bus) {

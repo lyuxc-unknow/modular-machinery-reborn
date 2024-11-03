@@ -2,6 +2,7 @@ package es.degrassi.mmreborn.common.registration;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.block.BlockDynamicColor;
+import es.degrassi.mmreborn.common.entity.BiomeReaderEntity;
 import es.degrassi.mmreborn.common.entity.DimensionalDetectorEntity;
 import es.degrassi.mmreborn.common.entity.EnergyInputHatchEntity;
 import es.degrassi.mmreborn.common.entity.EnergyOutputHatchEntity;
@@ -144,6 +145,16 @@ public class EntityRegistration {
           DimensionalDetectorEntity::new,
          Set.of(
              BlockRegistration.DIMENSIONAL_DETECTOR.get()
+         ),
+          null)
+  );
+
+  public static final Supplier<BlockEntityType<BiomeReaderEntity>> BIOME_READER = ENTITY_TYPE.register(
+      "biome_reader",
+      () -> new BlockEntityType<>(
+          BiomeReaderEntity::new,
+         Set.of(
+             BlockRegistration.BIOME_READER.get()
          ),
           null)
   );

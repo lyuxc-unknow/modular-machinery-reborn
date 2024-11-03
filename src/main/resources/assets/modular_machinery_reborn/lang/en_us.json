@@ -37,6 +37,8 @@
   "craftcheck.failure.energy.output": "Not enough space for energy output!",
   "craftcheck.failure.dimension.false": "Not in the correct dimension, expected to be: %s, found: %s",
   "craftcheck.failure.dimension.true": "Not in the correct dimension, expected to not be: %s, found: %s",
+  "craftcheck.failure.biome.false": "Not in the correct biome, expected to be: %s, found: %s",
+  "craftcheck.failure.biome.true": "Not in the correct biome, expected to not be: %s, found: %s",
 
   "component.missing.energy.output": "No Energy Output Hatch found!",
   "component.missing.energy.input": "No Energy Input Hatch found!",
@@ -208,6 +210,7 @@
   "block.modular_machinery_reborn.energyoutputhatch_ultimate": "Ultimate Energy Output Hatch",
 
   "block.modular_machinery_reborn.dimensional_detector": "Dimensional Detector",
+  "block.modular_machinery_reborn.biome_reader": "Biome Reader",
 
   "text.autoconfig.modular_machinery_reborn.category.general": "General",
 
@@ -336,8 +339,11 @@
   "modular_machinery_reborn.jei.ingredient.item.input": "Require",
   "modular_machinery_reborn.jei.ingredient.item.output": "Produce",
 
-  "modular_machinery_reborn.jei.ingredient.dimension.true": "Must not be in one of: %s",
-  "modular_machinery_reborn.jei.ingredient.dimension.false": "Must be in one of: %s",
+  "modular_machinery_reborn.jei.ingredient.dimension.true": "Must not be in one of: %s dimensions",
+  "modular_machinery_reborn.jei.ingredient.dimension.false": "Must be in one of: %s dimensions",
+
+  "modular_machinery_reborn.jei.ingredient.biome.true": "Must not be in one of: %s biomes",
+  "modular_machinery_reborn.jei.ingredient.biome.false": "Must be in one of: %s biomes",
 
   "modular_machinery_reborn.controller.tooltip": "Click in placed controller with blueprint \nto show the structure around the controller."
 }
