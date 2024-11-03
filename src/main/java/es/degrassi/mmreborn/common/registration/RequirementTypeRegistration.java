@@ -10,6 +10,8 @@ import es.degrassi.mmreborn.common.crafting.requirement.RequirementFluid;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementItem;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
 import java.util.function.Supplier;
+
+import es.degrassi.mmreborn.common.crafting.requirement.RequirementWeather;
 import net.minecraft.core.Registry;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -25,6 +27,7 @@ public class RequirementTypeRegistration {
   public static final Supplier<RequirementType<RequirementDuration>> DURATION = MACHINE_REQUIREMENTS.register("duration", () -> RequirementType.create(RequirementDuration.CODEC));
   public static final Supplier<RequirementType<RequirementDimension>> DIMENSION = MACHINE_REQUIREMENTS.register("dimension", () -> RequirementType.create(RequirementDimension.CODEC));
   public static final Supplier<RequirementType<RequirementBiome>> BIOME = MACHINE_REQUIREMENTS.register("biome", () -> RequirementType.create(RequirementBiome.CODEC));
+  public static final Supplier<RequirementType<RequirementWeather>> WEATHER = MACHINE_REQUIREMENTS.register("weather", () -> RequirementType.create(RequirementWeather.CODEC));
 
   public static void register(IEventBus bus) {
     MACHINE_REQUIREMENTS.register(bus);

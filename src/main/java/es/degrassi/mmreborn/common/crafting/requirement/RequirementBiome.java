@@ -31,7 +31,7 @@ public class RequirementBiome extends ComponentRequirement<ResourceLocation, Req
   public static final NamedCodec<RequirementBiome> CODEC = NamedCodec.record(instance -> instance.group(
       DefaultCodecs.RESOURCE_LOCATION.listOf().fieldOf("filter").forGetter(RequirementBiome::filter),
       NamedCodec.BOOL.optionalFieldOf("blacklist", false).forGetter(RequirementBiome::blacklist)
-  ).apply(instance, RequirementBiome::new), "");
+  ).apply(instance, RequirementBiome::new), "Biome Requirement");
 
   private final List<ResourceLocation> filter;
   private final boolean blacklist;

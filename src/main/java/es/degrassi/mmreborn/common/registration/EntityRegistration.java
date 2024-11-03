@@ -11,6 +11,7 @@ import es.degrassi.mmreborn.common.entity.FluidOutputHatchEntity;
 import es.degrassi.mmreborn.common.entity.ItemInputBusEntity;
 import es.degrassi.mmreborn.common.entity.ItemOutputBusEntity;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
+import es.degrassi.mmreborn.common.entity.WeatherSensorEntity;
 import es.degrassi.mmreborn.common.entity.base.ColorableMachineComponentEntity;
 import es.degrassi.mmreborn.common.entity.base.EnergyHatchEntity;
 import java.util.HashSet;
@@ -155,6 +156,16 @@ public class EntityRegistration {
           BiomeReaderEntity::new,
          Set.of(
              BlockRegistration.BIOME_READER.get()
+         ),
+          null)
+  );
+
+  public static final Supplier<BlockEntityType<WeatherSensorEntity>> WEATHER_SENSOR = ENTITY_TYPE.register(
+      "weather_sensor",
+      () -> new BlockEntityType<>(
+          WeatherSensorEntity::new,
+         Set.of(
+             BlockRegistration.WEATHER_SENSOR.get()
          ),
           null)
   );

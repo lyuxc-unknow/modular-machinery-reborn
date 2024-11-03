@@ -28,7 +28,7 @@ public class RequirementDimension extends ComponentRequirement<ResourceLocation,
   public static final NamedCodec<RequirementDimension> CODEC = NamedCodec.record(instance -> instance.group(
       DefaultCodecs.RESOURCE_LOCATION.listOf().fieldOf("filter").forGetter(RequirementDimension::filter),
       NamedCodec.BOOL.optionalFieldOf("blacklist", false).forGetter(RequirementDimension::blacklist)
-  ).apply(instance, RequirementDimension::new), "");
+  ).apply(instance, RequirementDimension::new), "Dimension Requirement");
 
   private final List<ResourceLocation> filter;
   private final boolean blacklist;

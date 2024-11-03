@@ -19,7 +19,9 @@ import es.degrassi.mmreborn.common.registration.BlockRegistration;
 import es.degrassi.mmreborn.common.registration.ContainerRegistration;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
+
 import java.util.List;
+
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
@@ -68,67 +70,71 @@ public class ModularMachineryRebornClient {
   @SubscribeEvent
   public void registerBlockColors(final RegisterColorHandlersEvent.Block event) {
     event.register(
-      ModularMachineryRebornClient::blockColor,
-      BlockRegistration.CONTROLLER.get(),
+        ModularMachineryRebornClient::blockColor,
+        BlockRegistration.CONTROLLER.get(),
 
-      BlockRegistration.CASING_PLAIN.get(),
-      BlockRegistration.CASING_VENT.get(),
-      BlockRegistration.CASING_FIREBOX.get(),
-      BlockRegistration.CASING_GEARBOX.get(),
-      BlockRegistration.CASING_REINFORCED.get(),
-      BlockRegistration.CASING_CIRCUITRY.get(),
+        BlockRegistration.CASING_PLAIN.get(),
+        BlockRegistration.CASING_VENT.get(),
+        BlockRegistration.CASING_FIREBOX.get(),
+        BlockRegistration.CASING_GEARBOX.get(),
+        BlockRegistration.CASING_REINFORCED.get(),
+        BlockRegistration.CASING_CIRCUITRY.get(),
 
-      BlockRegistration.ENERGY_INPUT_HATCH_TINY.get(),
-      BlockRegistration.ENERGY_INPUT_HATCH_SMALL.get(),
-      BlockRegistration.ENERGY_INPUT_HATCH_NORMAL.get(),
-      BlockRegistration.ENERGY_INPUT_HATCH_REINFORCED.get(),
-      BlockRegistration.ENERGY_INPUT_HATCH_BIG.get(),
-      BlockRegistration.ENERGY_INPUT_HATCH_HUGE.get(),
-      BlockRegistration.ENERGY_INPUT_HATCH_LUDICROUS.get(),
-      BlockRegistration.ENERGY_INPUT_HATCH_ULTIMATE.get(),
+        BlockRegistration.ENERGY_INPUT_HATCH_TINY.get(),
+        BlockRegistration.ENERGY_INPUT_HATCH_SMALL.get(),
+        BlockRegistration.ENERGY_INPUT_HATCH_NORMAL.get(),
+        BlockRegistration.ENERGY_INPUT_HATCH_REINFORCED.get(),
+        BlockRegistration.ENERGY_INPUT_HATCH_BIG.get(),
+        BlockRegistration.ENERGY_INPUT_HATCH_HUGE.get(),
+        BlockRegistration.ENERGY_INPUT_HATCH_LUDICROUS.get(),
+        BlockRegistration.ENERGY_INPUT_HATCH_ULTIMATE.get(),
 
-      BlockRegistration.ENERGY_OUTPUT_HATCH_TINY.get(),
-      BlockRegistration.ENERGY_OUTPUT_HATCH_SMALL.get(),
-      BlockRegistration.ENERGY_OUTPUT_HATCH_NORMAL.get(),
-      BlockRegistration.ENERGY_OUTPUT_HATCH_REINFORCED.get(),
-      BlockRegistration.ENERGY_OUTPUT_HATCH_BIG.get(),
-      BlockRegistration.ENERGY_OUTPUT_HATCH_HUGE.get(),
-      BlockRegistration.ENERGY_OUTPUT_HATCH_LUDICROUS.get(),
-      BlockRegistration.ENERGY_OUTPUT_HATCH_ULTIMATE.get(),
+        BlockRegistration.ENERGY_OUTPUT_HATCH_TINY.get(),
+        BlockRegistration.ENERGY_OUTPUT_HATCH_SMALL.get(),
+        BlockRegistration.ENERGY_OUTPUT_HATCH_NORMAL.get(),
+        BlockRegistration.ENERGY_OUTPUT_HATCH_REINFORCED.get(),
+        BlockRegistration.ENERGY_OUTPUT_HATCH_BIG.get(),
+        BlockRegistration.ENERGY_OUTPUT_HATCH_HUGE.get(),
+        BlockRegistration.ENERGY_OUTPUT_HATCH_LUDICROUS.get(),
+        BlockRegistration.ENERGY_OUTPUT_HATCH_ULTIMATE.get(),
 
-      BlockRegistration.ITEM_INPUT_BUS_TINY.get(),
-      BlockRegistration.ITEM_INPUT_BUS_SMALL.get(),
-      BlockRegistration.ITEM_INPUT_BUS_NORMAL.get(),
-      BlockRegistration.ITEM_INPUT_BUS_REINFORCED.get(),
-      BlockRegistration.ITEM_INPUT_BUS_BIG.get(),
-      BlockRegistration.ITEM_INPUT_BUS_HUGE.get(),
-      BlockRegistration.ITEM_INPUT_BUS_LUDICROUS.get(),
+        BlockRegistration.ITEM_INPUT_BUS_TINY.get(),
+        BlockRegistration.ITEM_INPUT_BUS_SMALL.get(),
+        BlockRegistration.ITEM_INPUT_BUS_NORMAL.get(),
+        BlockRegistration.ITEM_INPUT_BUS_REINFORCED.get(),
+        BlockRegistration.ITEM_INPUT_BUS_BIG.get(),
+        BlockRegistration.ITEM_INPUT_BUS_HUGE.get(),
+        BlockRegistration.ITEM_INPUT_BUS_LUDICROUS.get(),
 
-      BlockRegistration.ITEM_OUTPUT_BUS_TINY.get(),
-      BlockRegistration.ITEM_OUTPUT_BUS_SMALL.get(),
-      BlockRegistration.ITEM_OUTPUT_BUS_NORMAL.get(),
-      BlockRegistration.ITEM_OUTPUT_BUS_REINFORCED.get(),
-      BlockRegistration.ITEM_OUTPUT_BUS_BIG.get(),
-      BlockRegistration.ITEM_OUTPUT_BUS_HUGE.get(),
-      BlockRegistration.ITEM_OUTPUT_BUS_LUDICROUS.get(),
+        BlockRegistration.ITEM_OUTPUT_BUS_TINY.get(),
+        BlockRegistration.ITEM_OUTPUT_BUS_SMALL.get(),
+        BlockRegistration.ITEM_OUTPUT_BUS_NORMAL.get(),
+        BlockRegistration.ITEM_OUTPUT_BUS_REINFORCED.get(),
+        BlockRegistration.ITEM_OUTPUT_BUS_BIG.get(),
+        BlockRegistration.ITEM_OUTPUT_BUS_HUGE.get(),
+        BlockRegistration.ITEM_OUTPUT_BUS_LUDICROUS.get(),
 
-      BlockRegistration.FLUID_INPUT_HATCH_TINY.get(),
-      BlockRegistration.FLUID_INPUT_HATCH_SMALL.get(),
-      BlockRegistration.FLUID_INPUT_HATCH_NORMAL.get(),
-      BlockRegistration.FLUID_INPUT_HATCH_REINFORCED.get(),
-      BlockRegistration.FLUID_INPUT_HATCH_BIG.get(),
-      BlockRegistration.FLUID_INPUT_HATCH_HUGE.get(),
-      BlockRegistration.FLUID_INPUT_HATCH_LUDICROUS.get(),
-      BlockRegistration.FLUID_INPUT_HATCH_VACUUM.get(),
+        BlockRegistration.FLUID_INPUT_HATCH_TINY.get(),
+        BlockRegistration.FLUID_INPUT_HATCH_SMALL.get(),
+        BlockRegistration.FLUID_INPUT_HATCH_NORMAL.get(),
+        BlockRegistration.FLUID_INPUT_HATCH_REINFORCED.get(),
+        BlockRegistration.FLUID_INPUT_HATCH_BIG.get(),
+        BlockRegistration.FLUID_INPUT_HATCH_HUGE.get(),
+        BlockRegistration.FLUID_INPUT_HATCH_LUDICROUS.get(),
+        BlockRegistration.FLUID_INPUT_HATCH_VACUUM.get(),
 
-      BlockRegistration.FLUID_OUTPUT_HATCH_TINY.get(),
-      BlockRegistration.FLUID_OUTPUT_HATCH_SMALL.get(),
-      BlockRegistration.FLUID_OUTPUT_HATCH_NORMAL.get(),
-      BlockRegistration.FLUID_OUTPUT_HATCH_REINFORCED.get(),
-      BlockRegistration.FLUID_OUTPUT_HATCH_BIG.get(),
-      BlockRegistration.FLUID_OUTPUT_HATCH_HUGE.get(),
-      BlockRegistration.FLUID_OUTPUT_HATCH_LUDICROUS.get(),
-      BlockRegistration.FLUID_OUTPUT_HATCH_VACUUM.get()
+        BlockRegistration.FLUID_OUTPUT_HATCH_TINY.get(),
+        BlockRegistration.FLUID_OUTPUT_HATCH_SMALL.get(),
+        BlockRegistration.FLUID_OUTPUT_HATCH_NORMAL.get(),
+        BlockRegistration.FLUID_OUTPUT_HATCH_REINFORCED.get(),
+        BlockRegistration.FLUID_OUTPUT_HATCH_BIG.get(),
+        BlockRegistration.FLUID_OUTPUT_HATCH_HUGE.get(),
+        BlockRegistration.FLUID_OUTPUT_HATCH_LUDICROUS.get(),
+        BlockRegistration.FLUID_OUTPUT_HATCH_VACUUM.get(),
+
+        BlockRegistration.DIMENSIONAL_DETECTOR.get(),
+        BlockRegistration.BIOME_READER.get(),
+        BlockRegistration.WEATHER_SENSOR.get()
     );
     ModularMachineryReborn.MACHINES_BLOCK.values().forEach(block -> event.register(ModularMachineryRebornClient::blockColor, block));
   }
@@ -136,75 +142,79 @@ public class ModularMachineryRebornClient {
   @SubscribeEvent
   public void registerItemColors(final RegisterColorHandlersEvent.Item event) {
     event.register(
-      ModularMachineryRebornClient::itemColor,
-      ItemRegistration.MODULARIUM.get(),
+        ModularMachineryRebornClient::itemColor,
+        ItemRegistration.MODULARIUM.get(),
 
-      ItemRegistration.CONTROLLER.get(),
+        ItemRegistration.CONTROLLER.get(),
 
-      ItemRegistration.CASING_PLAIN.get(),
-      ItemRegistration.CASING_VENT.get(),
-      ItemRegistration.CASING_FIREBOX.get(),
-      ItemRegistration.CASING_GEARBOX.get(),
-      ItemRegistration.CASING_REINFORCED.get(),
-      ItemRegistration.CASING_CIRCUITRY.get(),
+        ItemRegistration.CASING_PLAIN.get(),
+        ItemRegistration.CASING_VENT.get(),
+        ItemRegistration.CASING_FIREBOX.get(),
+        ItemRegistration.CASING_GEARBOX.get(),
+        ItemRegistration.CASING_REINFORCED.get(),
+        ItemRegistration.CASING_CIRCUITRY.get(),
 
-      ItemRegistration.ENERGY_INPUT_HATCH_TINY.get(),
-      ItemRegistration.ENERGY_INPUT_HATCH_SMALL.get(),
-      ItemRegistration.ENERGY_INPUT_HATCH_NORMAL.get(),
-      ItemRegistration.ENERGY_INPUT_HATCH_REINFORCED.get(),
-      ItemRegistration.ENERGY_INPUT_HATCH_BIG.get(),
-      ItemRegistration.ENERGY_INPUT_HATCH_HUGE.get(),
-      ItemRegistration.ENERGY_INPUT_HATCH_LUDICROUS.get(),
-      ItemRegistration.ENERGY_INPUT_HATCH_ULTIMATE.get(),
+        ItemRegistration.ENERGY_INPUT_HATCH_TINY.get(),
+        ItemRegistration.ENERGY_INPUT_HATCH_SMALL.get(),
+        ItemRegistration.ENERGY_INPUT_HATCH_NORMAL.get(),
+        ItemRegistration.ENERGY_INPUT_HATCH_REINFORCED.get(),
+        ItemRegistration.ENERGY_INPUT_HATCH_BIG.get(),
+        ItemRegistration.ENERGY_INPUT_HATCH_HUGE.get(),
+        ItemRegistration.ENERGY_INPUT_HATCH_LUDICROUS.get(),
+        ItemRegistration.ENERGY_INPUT_HATCH_ULTIMATE.get(),
 
-      ItemRegistration.ENERGY_OUTPUT_HATCH_TINY.get(),
-      ItemRegistration.ENERGY_OUTPUT_HATCH_SMALL.get(),
-      ItemRegistration.ENERGY_OUTPUT_HATCH_NORMAL.get(),
-      ItemRegistration.ENERGY_OUTPUT_HATCH_REINFORCED.get(),
-      ItemRegistration.ENERGY_OUTPUT_HATCH_BIG.get(),
-      ItemRegistration.ENERGY_OUTPUT_HATCH_HUGE.get(),
-      ItemRegistration.ENERGY_OUTPUT_HATCH_LUDICROUS.get(),
-      ItemRegistration.ENERGY_OUTPUT_HATCH_ULTIMATE.get(),
+        ItemRegistration.ENERGY_OUTPUT_HATCH_TINY.get(),
+        ItemRegistration.ENERGY_OUTPUT_HATCH_SMALL.get(),
+        ItemRegistration.ENERGY_OUTPUT_HATCH_NORMAL.get(),
+        ItemRegistration.ENERGY_OUTPUT_HATCH_REINFORCED.get(),
+        ItemRegistration.ENERGY_OUTPUT_HATCH_BIG.get(),
+        ItemRegistration.ENERGY_OUTPUT_HATCH_HUGE.get(),
+        ItemRegistration.ENERGY_OUTPUT_HATCH_LUDICROUS.get(),
+        ItemRegistration.ENERGY_OUTPUT_HATCH_ULTIMATE.get(),
 
-      ItemRegistration.ITEM_INPUT_BUS_TINY.get(),
-      ItemRegistration.ITEM_INPUT_BUS_SMALL.get(),
-      ItemRegistration.ITEM_INPUT_BUS_NORMAL.get(),
-      ItemRegistration.ITEM_INPUT_BUS_REINFORCED.get(),
-      ItemRegistration.ITEM_INPUT_BUS_BIG.get(),
-      ItemRegistration.ITEM_INPUT_BUS_HUGE.get(),
-      ItemRegistration.ITEM_INPUT_BUS_LUDICROUS.get(),
+        ItemRegistration.ITEM_INPUT_BUS_TINY.get(),
+        ItemRegistration.ITEM_INPUT_BUS_SMALL.get(),
+        ItemRegistration.ITEM_INPUT_BUS_NORMAL.get(),
+        ItemRegistration.ITEM_INPUT_BUS_REINFORCED.get(),
+        ItemRegistration.ITEM_INPUT_BUS_BIG.get(),
+        ItemRegistration.ITEM_INPUT_BUS_HUGE.get(),
+        ItemRegistration.ITEM_INPUT_BUS_LUDICROUS.get(),
 
-      ItemRegistration.ITEM_OUTPUT_BUS_TINY.get(),
-      ItemRegistration.ITEM_OUTPUT_BUS_SMALL.get(),
-      ItemRegistration.ITEM_OUTPUT_BUS_NORMAL.get(),
-      ItemRegistration.ITEM_OUTPUT_BUS_REINFORCED.get(),
-      ItemRegistration.ITEM_OUTPUT_BUS_BIG.get(),
-      ItemRegistration.ITEM_OUTPUT_BUS_HUGE.get(),
-      ItemRegistration.ITEM_OUTPUT_BUS_LUDICROUS.get(),
+        ItemRegistration.ITEM_OUTPUT_BUS_TINY.get(),
+        ItemRegistration.ITEM_OUTPUT_BUS_SMALL.get(),
+        ItemRegistration.ITEM_OUTPUT_BUS_NORMAL.get(),
+        ItemRegistration.ITEM_OUTPUT_BUS_REINFORCED.get(),
+        ItemRegistration.ITEM_OUTPUT_BUS_BIG.get(),
+        ItemRegistration.ITEM_OUTPUT_BUS_HUGE.get(),
+        ItemRegistration.ITEM_OUTPUT_BUS_LUDICROUS.get(),
 
-      ItemRegistration.FLUID_INPUT_HATCH_TINY.get(),
-      ItemRegistration.FLUID_INPUT_HATCH_SMALL.get(),
-      ItemRegistration.FLUID_INPUT_HATCH_NORMAL.get(),
-      ItemRegistration.FLUID_INPUT_HATCH_REINFORCED.get(),
-      ItemRegistration.FLUID_INPUT_HATCH_BIG.get(),
-      ItemRegistration.FLUID_INPUT_HATCH_HUGE.get(),
-      ItemRegistration.FLUID_INPUT_HATCH_LUDICROUS.get(),
-      ItemRegistration.FLUID_INPUT_HATCH_VACUUM.get(),
+        ItemRegistration.FLUID_INPUT_HATCH_TINY.get(),
+        ItemRegistration.FLUID_INPUT_HATCH_SMALL.get(),
+        ItemRegistration.FLUID_INPUT_HATCH_NORMAL.get(),
+        ItemRegistration.FLUID_INPUT_HATCH_REINFORCED.get(),
+        ItemRegistration.FLUID_INPUT_HATCH_BIG.get(),
+        ItemRegistration.FLUID_INPUT_HATCH_HUGE.get(),
+        ItemRegistration.FLUID_INPUT_HATCH_LUDICROUS.get(),
+        ItemRegistration.FLUID_INPUT_HATCH_VACUUM.get(),
 
-      ItemRegistration.FLUID_OUTPUT_HATCH_TINY.get(),
-      ItemRegistration.FLUID_OUTPUT_HATCH_SMALL.get(),
-      ItemRegistration.FLUID_OUTPUT_HATCH_NORMAL.get(),
-      ItemRegistration.FLUID_OUTPUT_HATCH_REINFORCED.get(),
-      ItemRegistration.FLUID_OUTPUT_HATCH_BIG.get(),
-      ItemRegistration.FLUID_OUTPUT_HATCH_HUGE.get(),
-      ItemRegistration.FLUID_OUTPUT_HATCH_LUDICROUS.get(),
-      ItemRegistration.FLUID_OUTPUT_HATCH_VACUUM.get()
+        ItemRegistration.FLUID_OUTPUT_HATCH_TINY.get(),
+        ItemRegistration.FLUID_OUTPUT_HATCH_SMALL.get(),
+        ItemRegistration.FLUID_OUTPUT_HATCH_NORMAL.get(),
+        ItemRegistration.FLUID_OUTPUT_HATCH_REINFORCED.get(),
+        ItemRegistration.FLUID_OUTPUT_HATCH_BIG.get(),
+        ItemRegistration.FLUID_OUTPUT_HATCH_HUGE.get(),
+        ItemRegistration.FLUID_OUTPUT_HATCH_LUDICROUS.get(),
+        ItemRegistration.FLUID_OUTPUT_HATCH_VACUUM.get(),
+
+        ItemRegistration.DIMENSIONAL_DETECTOR.get(),
+        ItemRegistration.BIOME_READER.get(),
+        ItemRegistration.WEATHER_SENSOR.get()
     );
     ModularMachineryReborn.MACHINES_BLOCK.values().forEach(block -> event.register(ModularMachineryRebornClient::itemColor, block));
   }
 
   public static int blockColor(BlockState state, BlockAndTintGetter level, BlockPos pos, int tintIndex) {
-    if(level == null || pos == null)
+    if (level == null || pos == null)
       return 0;
     switch (tintIndex) {
       case 1 -> level.getBlockTint(pos, BiomeColors.WATER_COLOR_RESOLVER);
@@ -212,7 +222,7 @@ public class ModularMachineryRebornClient {
       case 3 -> level.getBlockTint(pos, BiomeColors.FOLIAGE_COLOR_RESOLVER);
       case 4 -> {
         BlockEntity tile = level.getBlockEntity(pos);
-        if(tile instanceof ColorableMachineComponentEntity machineTile) {
+        if (tile instanceof ColorableMachineComponentEntity machineTile) {
           return machineTile.getMachineColor();
         }
       }
@@ -236,7 +246,7 @@ public class ModularMachineryRebornClient {
     }
     for (Item item : itemModelsToRegister) {
       String name = item.getClass().getSimpleName().toLowerCase();
-      if(item instanceof BlockItem) {
+      if (item instanceof BlockItem) {
         name = ((BlockItem) item).getBlock().getClass().getSimpleName().toLowerCase();
       }
       event.register(new ModelResourceLocation(ModularMachineryReborn.rl(name), "inventory"));
@@ -246,11 +256,11 @@ public class ModularMachineryRebornClient {
   @SubscribeEvent
   @OnlyIn(Dist.CLIENT)
   public void clientSetup(final FMLClientSetupEvent event) {
-    if(ModList.get().isLoaded("cloth_config")) {
+    if (ModList.get().isLoaded("cloth_config")) {
       ModLoadingContext.get().registerExtensionPoint(
-        IConfigScreenFactory.class,
-        () -> (minecraft, parent) ->
-            AutoConfig.getConfigScreen(MMRConfig.class, parent).get()
+          IConfigScreenFactory.class,
+          () -> (minecraft, parent) ->
+              AutoConfig.getConfigScreen(MMRConfig.class, parent).get()
       );
     }
   }
@@ -273,36 +283,36 @@ public class ModularMachineryRebornClient {
 
   @NotNull
   public static MachineControllerEntity getClientSideMachineControllerEntity(BlockPos pos) {
-    if(Minecraft.getInstance().level != null) {
+    if (Minecraft.getInstance().level != null) {
       BlockEntity tile = Minecraft.getInstance().level.getBlockEntity(pos);
-      if(tile instanceof MachineControllerEntity controller)
+      if (tile instanceof MachineControllerEntity controller)
         return controller;
     }
     throw new IllegalStateException("Trying to open a Controller container without clicking on a Custom Machine block");
   }
 
   public static EnergyHatchEntity getClientSideEnergyHatchEntity(BlockPos pos) {
-    if(Minecraft.getInstance().level != null) {
+    if (Minecraft.getInstance().level != null) {
       BlockEntity tile = Minecraft.getInstance().level.getBlockEntity(pos);
-      if(tile instanceof EnergyHatchEntity controller)
+      if (tile instanceof EnergyHatchEntity controller)
         return controller;
     }
     throw new IllegalStateException("Trying to open a Energy Hatch container without clicking on a Custom Machine block");
   }
 
   public static FluidTankEntity getClientSideFluidHatchEntity(BlockPos pos) {
-    if(Minecraft.getInstance().level != null) {
+    if (Minecraft.getInstance().level != null) {
       BlockEntity tile = Minecraft.getInstance().level.getBlockEntity(pos);
-      if(tile instanceof FluidTankEntity controller)
+      if (tile instanceof FluidTankEntity controller)
         return controller;
     }
     throw new IllegalStateException("Trying to open a Fluid Hatch container without clicking on a Custom Machine block");
   }
 
   public static TileItemBus getClientSideItemBusEntity(BlockPos pos) {
-    if(Minecraft.getInstance().level != null) {
+    if (Minecraft.getInstance().level != null) {
       BlockEntity tile = Minecraft.getInstance().level.getBlockEntity(pos);
-      if(tile instanceof TileItemBus controller)
+      if (tile instanceof TileItemBus controller)
         return controller;
     }
     throw new IllegalStateException("Trying to open a Item Bus container without clicking on a Custom Machine block");

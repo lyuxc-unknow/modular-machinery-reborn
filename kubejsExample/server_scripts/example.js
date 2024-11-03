@@ -12,8 +12,14 @@ ServerEvents.recipes(event => {
         .requireFluid('minecraft:lava')
         // list of dimensions, blacklist
         .dimensions(['minecraft:overworld'], true)
+        // default blacklist: false
+        .dimensions(['minecraft:overworld'])
         // list of biomes, blacklist
         .biomes(['minecraft:plains'], true)
+        // default blacklist: false
+        .biomes(['minecraft:plains'])
+        // weather time: rain, clear, snow, thunder
+        .weather('clear')
         // only if mekanism addon available
         .produceChemical('10x mekanism:sulfuric_acid')
         .requireChemical('10x mekanism:sulfuric_acid')
@@ -96,36 +102,12 @@ MMREvents.machines(event => {
                          * Exact blocks that can be in that position
                          */
                         "i": [
-                            "modular_machinery_reborn:inputbus_tiny",
-                            "modular_machinery_reborn:inputbus_small",
-                            "modular_machinery_reborn:inputbus_normal",
-                            "modular_machinery_reborn:inputbus_reinforced",
-                            "modular_machinery_reborn:inputbus_big",
-                            "modular_machinery_reborn:inputbus_huge",
-                            "modular_machinery_reborn:inputbus_ludicrous",
-                            "modular_machinery_reborn:fluidoutputhatch_tiny",
-                            "modular_machinery_reborn:fluidoutputhatch_small",
-                            "modular_machinery_reborn:fluidoutputhatch_normal",
-                            "modular_machinery_reborn:fluidoutputhatch_reinforced",
-                            "modular_machinery_reborn:fluidoutputhatch_big",
-                            "modular_machinery_reborn:fluidoutputhatch_huge",
-                            "modular_machinery_reborn:fluidoutputhatch_ludicrous",
-                            "modular_machinery_reborn:fluidoutputhatch_vacuum",
-                            "modular_machinery_reborn:chemicaloutputhatch_tiny",
-                            "modular_machinery_reborn:chemicaloutputhatch_small",
-                            "modular_machinery_reborn:chemicaloutputhatch_normal",
-                            "modular_machinery_reborn:chemicaloutputhatch_reinforced",
-                            "modular_machinery_reborn:chemicaloutputhatch_big",
-                            "modular_machinery_reborn:chemicaloutputhatch_huge",
-                            "modular_machinery_reborn:chemicaloutputhatch_ludicrous",
-                            "modular_machinery_reborn:chemicaloutputhatch_vacuum",
-                            "modular_machinery_reborn:outputbus_tiny",
-                            "modular_machinery_reborn:outputbus_small",
-                            "modular_machinery_reborn:outputbus_normal",
-                            "modular_machinery_reborn:outputbus_reinforced",
-                            "modular_machinery_reborn:outputbus_big",
-                            "modular_machinery_reborn:outputbus_huge",
-                            "modular_machinery_reborn:outputbus_ludicrous"
+                            "#modular_machinery_reborn:inputbus",
+                            "#modular_machinery_reborn:fluidoutputhatch",
+                            "#modular_machinery_reborn_mekanism:chemicaloutputhatch",
+                            "#modular_machinery_reborn:outputbus",
+                            "modular_machinery_reborn:biome_reader",
+                            "modular_machinery_reborn:dimensional_detector"
                         ]
                     }
                 )

@@ -16,6 +16,7 @@ import es.degrassi.mmreborn.common.item.ItemBlueprint;
 import es.degrassi.mmreborn.common.item.ItemModularium;
 import es.degrassi.mmreborn.common.item.OutputBusItem;
 import es.degrassi.mmreborn.common.item.StructureCreatorItem;
+import es.degrassi.mmreborn.common.item.WeatherSensorItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
@@ -141,6 +142,8 @@ public class ItemRegistration {
     () -> new DimensionalDetectorItem(BlockRegistration.DIMENSIONAL_DETECTOR.get()));
   public static final DeferredItem<BiomeReaderItem> BIOME_READER = ITEMS.register("biome_reader",
     () -> new BiomeReaderItem(BlockRegistration.BIOME_READER.get()));
+  public static final DeferredItem<WeatherSensorItem> WEATHER_SENSOR = ITEMS.register("weather_sensor",
+    () -> new WeatherSensorItem(BlockRegistration.WEATHER_SENSOR.get()));
 
 
   public static void register(final IEventBus bus) {

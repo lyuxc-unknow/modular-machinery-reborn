@@ -13,6 +13,7 @@ import es.degrassi.mmreborn.common.integration.kubejs.requirement.DimensionRequi
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.EnergyRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.FluidRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.ItemRequirementJS;
+import es.degrassi.mmreborn.common.integration.kubejs.requirement.WeatherRequirementJS;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilder,
-  EnergyRequirementJS, ItemRequirementJS, FluidRequirementJS, DimensionRequirementJS, BiomeRequirementJS
+  EnergyRequirementJS, ItemRequirementJS, FluidRequirementJS, DimensionRequirementJS, BiomeRequirementJS,
+  WeatherRequirementJS
 {
 
   public static final Map<ResourceLocation, Map<ResourceLocation, Integer>> IDS = new HashMap<>();
