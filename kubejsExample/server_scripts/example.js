@@ -2,11 +2,24 @@
 ServerEvents.recipes(event => {
     event.recipes.modular_machinery_reborn.machine_recipe("mmr:testing", 150)
         .requireEnergy(100000)
+        .produceEnergy(100)
         .requireItem("2x modular_machinery_reborn:casing_plain")
+        .requireItemTag('<item tag>', amount)
+        // default amount is 1
+        .requireItemTag('<item tag>')
         .produceItem('1x modular_machinery_reborn:modularium')
         .produceFluid('10000x minecraft:lava')
+        .requireFluid('minecraft:lava')
+        // list of dimensions, blacklist
+        .dimensions(['minecraft:overworld'], true)
+        // list of biomes, blacklist
+        .biomes(['minecraft:plains'], true)
         // only if mekanism addon available
         .produceChemical('10x mekanism:sulfuric_acid')
+        .requireChemical('10x mekanism:sulfuric_acid')
+        // only if ars addon available
+        .produceSource(100)
+        .requireSource(100)
 })
 
 MMREvents.machines(event => {
@@ -60,8 +73,12 @@ MMREvents.machines(event => {
                  * #modular_machinery_reborn:outputbus
                  *
                  * Only if mekanism addon available
-                 * #modular_machinery_reborn:chemicalinputhatch
-                 * #modular_machinery_reborn:chemicaloutputhatch
+                 * #modular_machinery_reborn_mekanism:chemicalinputhatch
+                 * #modular_machinery_reborn_mekanism:chemicaloutputhatchç
+                 *
+                 * Only if ars addon available
+                 * #modular_machinery_reborn_ars:sourceinputhatch
+                 * #modular_machinery_reborn_ars:sourceputputhatch
                  */
                 .keys(
                     {

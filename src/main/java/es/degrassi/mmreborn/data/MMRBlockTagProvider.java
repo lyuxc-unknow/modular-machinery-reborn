@@ -93,7 +93,9 @@ public class MMRBlockTagProvider extends BlockTagsProvider {
       .addTag(MMRTags.Blocks.ENERGY_INPUT)
       .addTag(MMRTags.Blocks.ENERGY_OUTPUT)
       .addTag(MMRTags.Blocks.FLUID_INPUT)
-      .addTag(MMRTags.Blocks.FLUID_OUTPUT);
+      .addTag(MMRTags.Blocks.FLUID_OUTPUT)
+      .add(BlockRegistration.BIOME_READER.get())
+      .add(BlockRegistration.DIMENSIONAL_DETECTOR.get());
 
     tag(BlockTags.MINEABLE_WITH_PICKAXE)
       .addTag(MMRTags.Blocks.ALL_CASINGS)
