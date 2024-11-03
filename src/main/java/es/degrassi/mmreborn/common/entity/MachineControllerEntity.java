@@ -54,7 +54,8 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
   private ActiveMachineRecipe activeRecipe = null;
 
   private int recipeTicks = -1;
-  private int ticksToUpdateComponent = -1;
+  private int ticksToUpdateComponent = 0;
+  private boolean structureChecked = false;
 
   private final List<MachineComponent<?>> foundComponents = Lists.newArrayList();
 
@@ -75,10 +76,6 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
     updateComponents();
 
     if (this.activeRecipe == null) {
-      if (craftingStatus.isFailure() && ticksToUpdateComponent % MMRConfig.get().general.checkRecipeTicks == 0) {
-        setCraftingStatus(CraftingStatus.NO_RECIPE);
-        ticksToUpdateComponent = 1;
-      }
       if (level.getGameTime() % MMRConfig.get().general.checkRecipeTicks == 0) {
         searchAndUpdateRecipe();
       }
@@ -93,7 +90,6 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
         useRecipe();
       }
     }
-    this.ticksToUpdateComponent++;
     setChanged();
   }
 
@@ -164,7 +160,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
 
     if (this.activeRecipe == null) {
       setRecipeTicks(-1);
-      if (highestValidity != null) {
+      if (highestValidity != null && validity >= .5) {
         setCraftingStatus(CraftingStatus.failure(
           Iterables.getFirst(highestValidityResult.getUnlocalizedErrorMessages(), "")));
       }
@@ -191,6 +187,10 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
   }
 
   private void checkStructure() {
+    if (ticksToUpdateComponent % MMRConfig.get().general.checkRecipeTicks == 0) {
+      setCraftingStatus(CraftingStatus.NO_RECIPE);
+      ticksToUpdateComponent = 1;
+    }
     if (level.getGameTime() % MMRConfig.get().general.checkStructureTicks == 0) {
       if (this.getFoundMachine() != null && this.getFoundMachine() != DynamicMachine.DUMMY) {
         if (!getFoundMachine().getPattern().match(getLevel(), getBlockPos(), getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING))) {
@@ -198,16 +198,15 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
           this.activeRecipe = null;
           setRecipeTicks(-1);
           setCraftingStatus(CraftingStatus.MISSING_STRUCTURE);
+          structureChecked = false;
         } else {
           distributeCasingColor(false);
-          if (!craftingStatus.isFailure() && !craftingStatus.isCrafting() && !craftingStatus.isMissingStructure())
-            setCraftingStatus(CraftingStatus.NO_RECIPE);
-          else setCraftingStatus(craftingStatus);
         }
         setRequestModelUpdate(true);
         setChanged();
       }
     }
+    ticksToUpdateComponent++;
   }
 
   public void distributeCasingColor(boolean default_, BlockPos... poss) {

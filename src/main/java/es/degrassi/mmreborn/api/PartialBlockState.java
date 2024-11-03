@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
+
+import es.degrassi.mmreborn.common.registration.BlockRegistration;
 import lombok.Getter;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.Direction;
@@ -44,7 +46,7 @@ public class PartialBlockState implements Predicate<BlockInWorld> {
     }
   };
 
-  public static final PartialBlockState MACHINE = new PartialBlockState(Blocks.AIR.defaultBlockState(), Collections.emptyList(), null) {
+  public static final PartialBlockState MACHINE = new PartialBlockState(BlockRegistration.CONTROLLER.get().defaultBlockState(), Collections.emptyList(), null) {
     @Override
     public boolean test(BlockInWorld cachedBlockInfo) {
       return cachedBlockInfo.getState().getBlock() instanceof BlockController || cachedBlockInfo.getEntity() instanceof MachineControllerEntity;

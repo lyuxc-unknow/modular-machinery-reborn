@@ -3,8 +3,6 @@ package es.degrassi.mmreborn.common.integration.kubejs.builder;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import es.degrassi.mmreborn.api.BlockIngredient;
-import es.degrassi.mmreborn.api.IIngredient;
-import es.degrassi.mmreborn.api.PartialBlockState;
 import es.degrassi.mmreborn.api.Structure;
 
 import java.util.HashMap;

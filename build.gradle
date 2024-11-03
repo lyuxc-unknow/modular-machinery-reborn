@@ -230,7 +230,7 @@ idea {
 unifiedPublishing {
   project {
     displayName = "[NeoForge]ModularMachineyReborn-${minecraft_version}-${mod_version}"
-    releaseType = "beta"
+    releaseType = "release"
     if(rootProject.file("CHANGELOG.md").exists()) {
       changelog = rootProject.file("CHANGELOG.md").text
     }

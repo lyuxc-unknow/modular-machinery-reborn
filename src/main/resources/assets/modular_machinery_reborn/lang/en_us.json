@@ -1,8 +1,16 @@
 {
   "itemGroup.modular_machinery_reborn.group": "Modular Machinery Reborn",
   "itemGroup.modular_machinery_reborn_mekanism.group": "Modular Machinery Reborn Mekanism",
+  "item.modular_machinery_reborn.structure_creator": "Structure Creator",
   "modular_machinery_reborn.command.reload.machines": "Successfully reloaded modular machinery machines !",
   "modular_machinery_reborn.command.reload.recipes": "Successfully reloaded modular machinery recipes !",
+
+  "modular_machinery_reborn.structure_creator.no_blocks": "No blocks are selected",
+  "modular_machinery_reborn.structure_creator.amount": "%s blocks selected",
+  "modular_machinery_reborn.structure_creator.select": "Right click a block to add or remove it. If block has GUI shift click to add or remove it.",
+  "modular_machinery_reborn.structure_creator.finish": "Shift click in any machine controller to get the structure",
+  "modular_machinery_reborn.structure_creator.message": "Structure generated, click to copy : %s %s %s",
+  "modular_machinery_reborn.structure_creator.reset": "Right click in the air while crouching to reset",
 
   "modular_machinery_reborn.gui.title.controller": "Controller",
   "modular_machinery_reborn.gui.title.energy_hatch": "Energy Hatch",
