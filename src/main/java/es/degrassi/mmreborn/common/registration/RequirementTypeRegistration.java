@@ -8,6 +8,7 @@ import es.degrassi.mmreborn.common.crafting.requirement.RequirementDuration;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementFluid;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementItem;
+import es.degrassi.mmreborn.common.crafting.requirement.RequirementTime;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
 import java.util.function.Supplier;
 
@@ -28,6 +29,7 @@ public class RequirementTypeRegistration {
   public static final Supplier<RequirementType<RequirementDimension>> DIMENSION = MACHINE_REQUIREMENTS.register("dimension", () -> RequirementType.create(RequirementDimension.CODEC));
   public static final Supplier<RequirementType<RequirementBiome>> BIOME = MACHINE_REQUIREMENTS.register("biome", () -> RequirementType.create(RequirementBiome.CODEC));
   public static final Supplier<RequirementType<RequirementWeather>> WEATHER = MACHINE_REQUIREMENTS.register("weather", () -> RequirementType.create(RequirementWeather.CODEC));
+  public static final Supplier<RequirementType<RequirementTime>> TIME = MACHINE_REQUIREMENTS.register("time", () -> RequirementType.create(RequirementTime.CODEC));
 
   public static void register(IEventBus bus) {
     MACHINE_REQUIREMENTS.register(bus);

@@ -16,6 +16,7 @@ import es.degrassi.mmreborn.common.item.ItemBlueprint;
 import es.degrassi.mmreborn.common.item.ItemModularium;
 import es.degrassi.mmreborn.common.item.OutputBusItem;
 import es.degrassi.mmreborn.common.item.StructureCreatorItem;
+import es.degrassi.mmreborn.common.item.TimeCounterItem;
 import es.degrassi.mmreborn.common.item.WeatherSensorItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -144,6 +145,8 @@ public class ItemRegistration {
     () -> new BiomeReaderItem(BlockRegistration.BIOME_READER.get()));
   public static final DeferredItem<WeatherSensorItem> WEATHER_SENSOR = ITEMS.register("weather_sensor",
     () -> new WeatherSensorItem(BlockRegistration.WEATHER_SENSOR.get()));
+  public static final DeferredItem<TimeCounterItem> TIME_COUNTER = ITEMS.register("time_counter",
+    () -> new TimeCounterItem(BlockRegistration.TIME_COUNTER.get()));
 
 
   public static void register(final IEventBus bus) {

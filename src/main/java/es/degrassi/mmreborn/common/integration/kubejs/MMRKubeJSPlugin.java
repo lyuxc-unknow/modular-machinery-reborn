@@ -7,9 +7,11 @@ import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
 import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.ScriptManager;
+import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
 import es.degrassi.mmreborn.common.integration.kubejs.builder.MachineBuilderJS.MachineKubeEvent;
 import es.degrassi.mmreborn.common.integration.kubejs.builder.StructureBuilderJS;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
+import es.degrassi.mmreborn.common.util.IntRange;
 
 public class MMRKubeJSPlugin implements KubeJSPlugin {
   public static final EventGroup MMR_EVENTS = EventGroup.of("MMREvents");
@@ -33,5 +35,10 @@ public class MMRKubeJSPlugin implements KubeJSPlugin {
   @Override
   public void registerEvents(EventGroupRegistry registry) {
     registry.register(MMR_EVENTS);
+  }
+
+  @Override
+  public void registerTypeWrappers(TypeWrapperRegistry registry) {
+    registry.register(IntRange.class, IntRange::of);
   }
 }

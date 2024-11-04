@@ -134,7 +134,8 @@ public class ModularMachineryRebornClient {
 
         BlockRegistration.DIMENSIONAL_DETECTOR.get(),
         BlockRegistration.BIOME_READER.get(),
-        BlockRegistration.WEATHER_SENSOR.get()
+        BlockRegistration.WEATHER_SENSOR.get(),
+        BlockRegistration.TIME_COUNTER.get()
     );
     ModularMachineryReborn.MACHINES_BLOCK.values().forEach(block -> event.register(ModularMachineryRebornClient::blockColor, block));
   }
@@ -208,7 +209,8 @@ public class ModularMachineryRebornClient {
 
         ItemRegistration.DIMENSIONAL_DETECTOR.get(),
         ItemRegistration.BIOME_READER.get(),
-        ItemRegistration.WEATHER_SENSOR.get()
+        ItemRegistration.WEATHER_SENSOR.get(),
+        ItemRegistration.TIME_COUNTER.get()
     );
     ModularMachineryReborn.MACHINES_BLOCK.values().forEach(block -> event.register(ModularMachineryRebornClient::itemColor, block));
   }

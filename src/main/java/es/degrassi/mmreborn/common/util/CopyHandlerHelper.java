@@ -1,10 +1,5 @@
 package es.degrassi.mmreborn.common.util;
 
-import mekanism.api.chemical.BasicChemicalTank;
-import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.IMekanismChemicalHandler;
-import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
-import mekanism.common.tile.TileEntityChemicalTank;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 

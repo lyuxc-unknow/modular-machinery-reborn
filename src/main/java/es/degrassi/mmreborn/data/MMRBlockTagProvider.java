@@ -104,7 +104,8 @@ public class MMRBlockTagProvider extends BlockTagsProvider {
         .addTag(MMRTags.Blocks.FLUID_OUTPUT)
         .add(BlockRegistration.BIOME_READER.get())
         .add(BlockRegistration.DIMENSIONAL_DETECTOR.get())
-        .add(BlockRegistration.WEATHER_SENSOR.get());
+        .add(BlockRegistration.WEATHER_SENSOR.get())
+        .add(BlockRegistration.TIME_COUNTER.get());
 
     tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .addTag(MMRTags.Blocks.ALL_CASINGS)

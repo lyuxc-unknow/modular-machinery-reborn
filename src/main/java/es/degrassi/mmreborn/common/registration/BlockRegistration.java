@@ -14,6 +14,7 @@ import es.degrassi.mmreborn.common.block.BlockFluidInputHatch;
 import es.degrassi.mmreborn.common.block.BlockFluidOutputHatch;
 import es.degrassi.mmreborn.common.block.BlockInputBus;
 import es.degrassi.mmreborn.common.block.BlockOutputBus;
+import es.degrassi.mmreborn.common.block.BlockTimeCounter;
 import es.degrassi.mmreborn.common.block.BlockWeatherSensor;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
@@ -135,6 +136,7 @@ public class BlockRegistration {
   public static final DeferredBlock<BlockDimensionDetector> DIMENSIONAL_DETECTOR = BLOCKS.register("dimensional_detector", BlockDimensionDetector::new);
   public static final DeferredBlock<BlockBiomeReader> BIOME_READER = BLOCKS.register("biome_reader", BlockBiomeReader::new);
   public static final DeferredBlock<BlockWeatherSensor> WEATHER_SENSOR = BLOCKS.register("weather_sensor", BlockWeatherSensor::new);
+  public static final DeferredBlock<BlockTimeCounter> TIME_COUNTER = BLOCKS.register("time_counter", BlockTimeCounter::new);
 
   public static void register(final IEventBus bus) {
     BLOCKS.register(bus);

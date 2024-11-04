@@ -20,6 +20,8 @@ ServerEvents.recipes(event => {
         .biomes(['minecraft:plains'])
         // weather time: rain, clear, snow, thunder
         .weather('clear')
+        //time
+        .time('[0,24000]')
         // only if mekanism addon available
         .produceChemical('10x mekanism:sulfuric_acid')
         .requireChemical('10x mekanism:sulfuric_acid')

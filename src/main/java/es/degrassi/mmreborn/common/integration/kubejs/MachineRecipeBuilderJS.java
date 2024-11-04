@@ -13,10 +13,12 @@ import es.degrassi.mmreborn.common.integration.kubejs.requirement.DimensionRequi
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.EnergyRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.FluidRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.ItemRequirementJS;
+import es.degrassi.mmreborn.common.integration.kubejs.requirement.TimeRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.WeatherRequirementJS;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.helpers.MessageFormatter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +27,7 @@ import java.util.Map;
 
 public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilder,
   EnergyRequirementJS, ItemRequirementJS, FluidRequirementJS, DimensionRequirementJS, BiomeRequirementJS,
-  WeatherRequirementJS
+  WeatherRequirementJS, TimeRequirementJS
 {
 
   public static final Map<ResourceLocation, Map<ResourceLocation, Integer>> IDS = new HashMap<>();
@@ -94,5 +96,10 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
     if (values != null) list.addAll(values);
     list.add(element);
     return list;
+  }
+
+  @Override
+  public MachineRecipeBuilderJS error(String error, Object... args) {
+    throw new KubeRuntimeException(MessageFormatter.arrayFormat(error, args).getMessage());
   }
 }
