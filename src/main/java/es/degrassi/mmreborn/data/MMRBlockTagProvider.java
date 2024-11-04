@@ -2,10 +2,6 @@ package es.degrassi.mmreborn.data;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.registration.BlockRegistration;
-
-import java.util.concurrent.CompletableFuture;
-
-import es.degrassi.mmreborn.common.util.Mods;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
@@ -13,6 +9,8 @@ import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.concurrent.CompletableFuture;
 
 public class MMRBlockTagProvider extends BlockTagsProvider {
   public MMRBlockTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
@@ -105,7 +103,8 @@ public class MMRBlockTagProvider extends BlockTagsProvider {
         .add(BlockRegistration.BIOME_READER.get())
         .add(BlockRegistration.DIMENSIONAL_DETECTOR.get())
         .add(BlockRegistration.WEATHER_SENSOR.get())
-        .add(BlockRegistration.TIME_COUNTER.get());
+        .add(BlockRegistration.TIME_COUNTER.get())
+        .add(BlockRegistration.CHUNKLOADER.get());
 
     tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .addTag(MMRTags.Blocks.ALL_CASINGS)

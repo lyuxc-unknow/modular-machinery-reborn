@@ -7,6 +7,7 @@ import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
 import es.degrassi.mmreborn.common.item.BiomeReaderItem;
 import es.degrassi.mmreborn.common.item.CasingItem;
+import es.degrassi.mmreborn.common.item.ChunkloaderItem;
 import es.degrassi.mmreborn.common.item.ControllerItem;
 import es.degrassi.mmreborn.common.item.DimensionalDetectorItem;
 import es.degrassi.mmreborn.common.item.EnergyHatchItem;
@@ -147,6 +148,8 @@ public class ItemRegistration {
     () -> new WeatherSensorItem(BlockRegistration.WEATHER_SENSOR.get()));
   public static final DeferredItem<TimeCounterItem> TIME_COUNTER = ITEMS.register("time_counter",
     () -> new TimeCounterItem(BlockRegistration.TIME_COUNTER.get()));
+  public static final DeferredItem<ChunkloaderItem> CHUNKLOADER = ITEMS.register("chunkloader",
+    () -> new ChunkloaderItem(BlockRegistration.CHUNKLOADER.get()));
 
 
   public static void register(final IEventBus bus) {

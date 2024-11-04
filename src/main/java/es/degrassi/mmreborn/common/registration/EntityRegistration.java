@@ -3,6 +3,7 @@ package es.degrassi.mmreborn.common.registration;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.block.BlockDynamicColor;
 import es.degrassi.mmreborn.common.entity.BiomeReaderEntity;
+import es.degrassi.mmreborn.common.entity.ChunkloaderEntity;
 import es.degrassi.mmreborn.common.entity.DimensionalDetectorEntity;
 import es.degrassi.mmreborn.common.entity.EnergyInputHatchEntity;
 import es.degrassi.mmreborn.common.entity.EnergyOutputHatchEntity;
@@ -178,6 +179,16 @@ public class EntityRegistration {
           TimeCounterEntity::new,
           Set.of(
               BlockRegistration.TIME_COUNTER.get()
+          ),
+          null)
+  );
+
+  public static final Supplier<BlockEntityType<ChunkloaderEntity>> CHUNKLOADER = ENTITY_TYPE.register(
+      "chunkloader",
+      () -> new BlockEntityType<>(
+          ChunkloaderEntity::new,
+          Set.of(
+              BlockRegistration.CHUNKLOADER.get()
           ),
           null)
   );

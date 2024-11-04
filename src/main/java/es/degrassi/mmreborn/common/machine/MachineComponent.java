@@ -2,6 +2,7 @@ package es.degrassi.mmreborn.common.machine;
 
 import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
+import es.degrassi.mmreborn.common.util.Chunkloader;
 import es.degrassi.mmreborn.common.util.HybridTank;
 import es.degrassi.mmreborn.common.util.IEnergyHandler;
 import es.degrassi.mmreborn.common.util.IOInventory;
@@ -56,5 +57,16 @@ public abstract class MachineComponent<T> {
       return ComponentRegistration.COMPONENT_ENERGY.get();
     }
 
+  }
+
+  public static abstract class Chunkload extends MachineComponent<Chunkloader> {
+    public Chunkload() {
+      super(IOType.OUTPUT);
+    }
+
+    @Override
+    public ComponentType getComponentType() {
+      return ComponentRegistration.COMPONENT_CHUNKLOAD.get();
+    }
   }
 }

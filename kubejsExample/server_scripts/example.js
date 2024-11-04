@@ -20,8 +20,10 @@ ServerEvents.recipes(event => {
         .biomes(['minecraft:plains'])
         // weather time: rain, clear, snow, thunder
         .weather('clear')
-        //time
+        // time
         .time('[0,24000]')
+        // chunkload
+        .chunkload(3)
         // only if mekanism addon available
         .produceChemical('10x mekanism:sulfuric_acid')
         .requireChemical('10x mekanism:sulfuric_acid')
@@ -109,7 +111,10 @@ MMREvents.machines(event => {
                             "#modular_machinery_reborn_mekanism:chemicaloutputhatch",
                             "#modular_machinery_reborn:outputbus",
                             "modular_machinery_reborn:biome_reader",
-                            "modular_machinery_reborn:dimensional_detector"
+                            "modular_machinery_reborn:dimensional_detector",
+                            "modular_machinery_reborn:weather_sensor",
+                            "modular_machinery_reborn:time_counter",
+                            "modular_machinery_reborn:chunkloader"
                         ]
                     }
                 )

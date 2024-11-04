@@ -10,6 +10,7 @@
     "modular_machinery_reborn:biome_reader",
     "modular_machinery_reborn:dimensional_detector",
     "modular_machinery_reborn:weather_sensor",
-    "modular_machinery_reborn:time_counter"
+    "modular_machinery_reborn:time_counter",
+    "modular_machinery_reborn:chunkloader"
   ]
 }

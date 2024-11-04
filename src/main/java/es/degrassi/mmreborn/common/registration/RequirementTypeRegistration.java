@@ -3,6 +3,7 @@ package es.degrassi.mmreborn.common.registration;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementBiome;
+import es.degrassi.mmreborn.common.crafting.requirement.RequirementChunkload;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementDimension;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementDuration;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
@@ -30,6 +31,7 @@ public class RequirementTypeRegistration {
   public static final Supplier<RequirementType<RequirementBiome>> BIOME = MACHINE_REQUIREMENTS.register("biome", () -> RequirementType.create(RequirementBiome.CODEC));
   public static final Supplier<RequirementType<RequirementWeather>> WEATHER = MACHINE_REQUIREMENTS.register("weather", () -> RequirementType.create(RequirementWeather.CODEC));
   public static final Supplier<RequirementType<RequirementTime>> TIME = MACHINE_REQUIREMENTS.register("time", () -> RequirementType.create(RequirementTime.CODEC));
+  public static final Supplier<RequirementType<RequirementChunkload>> CHUNKLOAD = MACHINE_REQUIREMENTS.register("chunkload", () -> RequirementType.create(RequirementChunkload.CODEC));
 
   public static void register(IEventBus bus) {
     MACHINE_REQUIREMENTS.register(bus);

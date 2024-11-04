@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import es.degrassi.mmreborn.common.integration.jei.category.MMRRecipeCategory;
 import es.degrassi.mmreborn.common.integration.jei.ingredient.CustomIngredientTypes;
+import es.degrassi.mmreborn.common.util.Utils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 public class JeiEnergyComponent extends JeiComponent<Long, RequirementEnergy> {
   private int width = 16;
   private int height = 61;
+  private int recipeTime;
   public JeiEnergyComponent(RequirementEnergy requirement) {
     super(requirement, 18, 0);
   }
@@ -52,33 +54,27 @@ public class JeiEnergyComponent extends JeiComponent<Long, RequirementEnergy> {
   public @NotNull List<Component> getTooltip(@NotNull Long ingredient, @NotNull TooltipFlag tooltipFlag) {
     List<Component> tooltip = super.getTooltip(ingredient, tooltipFlag);
     String mode = requirement.getActionType().isInput() ? "input" : "output";
-    tooltip.add(Component.translatable("modular_machinery_reborn.jei.ingredient.energy." + mode, ingredient));
+    tooltip.add(
+        Component.translatable(
+            "modular_machinery_reborn.jei.ingredient.energy.total." + mode,
+            Utils.format(ingredient * recipeTime),
+            Utils.format(ingredient)
+        )
+    );
     return tooltip;
   }
 
   @Override
   public void setRecipeInput(MMRRecipeCategory category, IRecipeLayoutBuilder builder, MachineRecipe recipe, IFocusGroup focuses) {
     addEnergyComponent(category, builder, category.processedInputComponents);
-    category.textsToRender.add(
-      Component.translatable(
-        "modular_machinery_reborn.jei.ingredient.energy.total.input",
-        ingredients().get(0) * recipe.getRecipeTotalTickTime(),
-        ingredients().get(0)
-      )
-    );
+    recipeTime = recipe.getRecipeTotalTickTime();
     category.updateMaxHeightInput(this, true);
   }
 
   @Override
   public void setRecipeOutput(MMRRecipeCategory category, IRecipeLayoutBuilder builder, MachineRecipe recipe, IFocusGroup focuses) {
     addEnergyComponent(category, builder, category.processedOutputComponents);
-    category.textsToRender.add(
-      Component.translatable(
-        "modular_machinery_reborn.jei.ingredient.energy.total.output",
-        ingredients().get(0) * recipe.getRecipeTotalTickTime(),
-        ingredients().get(0)
-      )
-    );
+    recipeTime = recipe.getRecipeTotalTickTime();
     category.updateMaxHeightOutput(this, true);
   }
 

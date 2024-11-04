@@ -73,7 +73,6 @@ public class JeiFluidComponent extends JeiComponent<FluidStack, RequirementFluid
       .addFluidStack(getRequirement().required.asFluidStack().getFluid(), getRequirement().amount);
     category.x.getAndAdd(category.gapX);
     category.x.getAndAdd(getWidth());
-    category.textsToRender.add(Component.translatable("modular_machinery_reborn.jei.ingredient.fluid.input", ingredients().get(0).getHoverName(), ingredients().get(0).getAmount()));
     category.updateMaxHeightInput(this, true);
   }
 
@@ -91,7 +90,6 @@ public class JeiFluidComponent extends JeiComponent<FluidStack, RequirementFluid
       .addFluidStack(getRequirement().required.asFluidStack().getFluid(), getRequirement().amount);
     category.x.getAndAdd(category.gapX);
     category.x.getAndAdd(getWidth());
-    category.textsToRender.add(Component.translatable("modular_machinery_reborn.jei.ingredient.fluid.output", ingredients().get(0).getHoverName(), ingredients().get(0).getAmount()));
     category.updateMaxHeightOutput(this, true);
   }
 }

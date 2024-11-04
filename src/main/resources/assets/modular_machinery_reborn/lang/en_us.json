@@ -52,6 +52,7 @@
   "component.missing.weather": "No Weather Sensor found!",
   "component.missing.biome": "No Biome Reader found!",
   "component.missing.time": "No Time Counter found!",
+  "component.missing.chunkload": "No Chunkloader found!",
 
   "gui.blueprint.popout.info": "Sneak to freeze the current preview to be able to preview it in world.",
   "gui.blueprint.popout.place": "Rightclick to place preview; move away from the placed one or open another structure preview (blueprint) to remove the one in-world.",
@@ -217,6 +218,7 @@
   "block.modular_machinery_reborn.biome_reader": "Biome Reader",
   "block.modular_machinery_reborn.weather_sensor": "Weather Sensor",
   "block.modular_machinery_reborn.time_counter": "Time Counter",
+  "block.modular_machinery_reborn.chunkloader": "Chunkloader",
 
   "text.autoconfig.modular_machinery_reborn.category.general": "General",
 
@@ -345,15 +347,16 @@
   "modular_machinery_reborn.jei.ingredient.item.input": "Require",
   "modular_machinery_reborn.jei.ingredient.item.output": "Produce",
 
-  "modular_machinery_reborn.jei.ingredient.dimension.true": "Dimension blacklist: %s dimensions",
-  "modular_machinery_reborn.jei.ingredient.dimension.false": "Dimension whitelist: %s dimensions",
+  "modular_machinery_reborn.jei.ingredient.dimension.true": "Dimension blacklist: %s",
+  "modular_machinery_reborn.jei.ingredient.dimension.false": "Dimension whitelist: %s",
 
   "modular_machinery_reborn.jei.ingredient.biome.true": "Biome blacklist: %s",
-  "modular_machinery_reborn.jei.ingredient.biome.false": "Biome Whitelist: %s biomes",
+  "modular_machinery_reborn.jei.ingredient.biome.false": "Biome Whitelist: %s",
 
   "modular_machinery_reborn.jei.ingredient.weather": "Weather time: %s",
 
   "modular_machinery_reborn.jei.ingredient.time": "Time: %s",
+  "modular_machinery_reborn.jei.ingredient.chunkload": "Chunkload radius: %s",
 
   "modular_machinery_reborn.controller.tooltip": "Click in placed controller with blueprint \nto show the structure around the controller."
 }

@@ -4,6 +4,7 @@ import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.block.BlockBiomeReader;
 import es.degrassi.mmreborn.common.block.BlockCasing;
 import es.degrassi.mmreborn.common.block.BlockCasing.CasingType;
+import es.degrassi.mmreborn.common.block.BlockChunkloader;
 import es.degrassi.mmreborn.common.block.BlockController;
 import es.degrassi.mmreborn.common.block.BlockDimensionDetector;
 import es.degrassi.mmreborn.common.block.BlockEnergyHatch;
@@ -137,6 +138,7 @@ public class BlockRegistration {
   public static final DeferredBlock<BlockBiomeReader> BIOME_READER = BLOCKS.register("biome_reader", BlockBiomeReader::new);
   public static final DeferredBlock<BlockWeatherSensor> WEATHER_SENSOR = BLOCKS.register("weather_sensor", BlockWeatherSensor::new);
   public static final DeferredBlock<BlockTimeCounter> TIME_COUNTER = BLOCKS.register("time_counter", BlockTimeCounter::new);
+  public static final DeferredBlock<BlockChunkloader> CHUNKLOADER = BLOCKS.register("chunkloader", BlockChunkloader::new);
 
   public static void register(final IEventBus bus) {
     BLOCKS.register(bus);
