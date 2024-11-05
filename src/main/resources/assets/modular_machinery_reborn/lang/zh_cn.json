@@ -1,0 +1,362 @@
+{
+  "itemGroup.modular_machinery_reborn.group": "模块化机械:重制",
+  "itemGroup.modular_machinery_reborn_mekanism.group": "模块化机械:重置 通用机械附属",
+  "item.modular_machinery_reborn.structure_creator": "结构创建器",
+  "modular_machinery_reborn.command.reload.machines": "成功重载模块化机械！",
+  "modular_machinery_reborn.command.reload.recipes": "成功重载模块化机械的配方",
+
+  "modular_machinery_reborn.structure_creator.no_blocks": "没有方块被选择",
+  "modular_machinery_reborn.structure_creator.amount": "%s 个方块被选择",
+  "modular_machinery_reborn.structure_creator.select": "右键方块来进行添加或者移除。如果被选择的方块拥有GUI界面则需要Shift+右键",
+  "modular_machinery_reborn.structure_creator.finish": "Shift+右键任何模块化机械控制器来获取结构",
+  "modular_machinery_reborn.structure_creator.message": "结构已生成。点击以复制 : %s %s %s",
+  "modular_machinery_reborn.structure_creator.reset": "右键空气以清空被选择的方块",
+
+  "modular_machinery_reborn.gui.title.controller": "控制器",
+  "modular_machinery_reborn.gui.title.energy_hatch": "能量仓",
+  "modular_machinery_reborn.gui.title.fluid_hatch": "流体仓",
+  "modular_machinery_reborn.gui.title.item_bus": "物品仓",
+
+  "gui.controller.blueprint": "已找到蓝图: %s",
+  "gui.controller.blueprint.none": "无",
+  "gui.controller.structure": "已找到结构: %s",
+  "gui.controller.structure.none": "无",
+  "gui.controller.status": "当前状态:",
+  "gui.controller.status.redstone_stopped": "机器因红石信号停止工作",
+  "gui.controller.status.missing_structure": "结构不完整",
+  "gui.controller.status.no_recipe": "没有相匹配的配方",
+  "gui.controller.status.failure": "",
+  "gui.controller.status.crafting": "工作中……",
+  "gui.controller.status.crafting.progress": "进度：%s",
+
+  "craftcheck.failure.item.input": "缺少物品输入!",
+  "craftcheck.failure.item.output.space": "没有足够的库存空间用于物品输出！",
+  "craftcheck.failure.fluid.input": "缺少液体输入！",
+  "craftcheck.failure.fluid.output.space": "没有足够的库存空间用于流体输出！",
+  
+  "craftcheck.failure.energy.input": "缺少能量输入！",
+  "craftcheck.failure.energy.output": "能源仓已满！",
+  "craftcheck.failure.dimension.false": "未在指定的维度中, 应为: %s, 当前为: %s",
+  "craftcheck.failure.dimension.true": "未在指定的维度中, 不能为: %s, 当前为: %s",
+  "craftcheck.failure.biome.false": "未在指定的群系中, 应为: %s, 当前为: %s",
+  "craftcheck.failure.biome.true": "未在指定的群系中, 不能为: %s, 当前为: %s",
+  "craftcheck.failure.weather": "错误的天气时间, 应为: %s",
+  "craftcheck.failure.time": "错误的时间, 应为: %s, 但找到: %s",
+
+  "component.missing.energy.output": "没有找到能量输出口！",
+  "component.missing.energy.input": "没有找到能量输入口！",
+  "component.missing.fluid.output": "没有找到流体输出口",
+  "component.missing.fluid.input": "没有找到流体输入口！",
+  "component.missing.item.output": "没有找到物品输出口！",
+  "component.missing.item.input": "没有找到物品输入口！",
+  "component.missing.dimension": "未找到维度检测器！",
+  "component.missing.weather": "未找到天气传感器！",
+  "component.missing.biome": "未找到群系读取器！",
+  "component.missing.time": "未找到时间计数器！",
+  "component.missing.chunkload": "未找到区块加载器！",
+
+  "gui.blueprint.popout.info": "潜行以将当前预览锁定在当前世界中。",
+  "gui.blueprint.popout.place": "右击以显示预览；远离或放置其他结构预览（蓝图）将会清除此前世界中的结构预览；视角面对控制器时可以根据其朝向自动旋转。",
+
+  "message.structurebuild.confirmrotation": "控制器面朝 %s",
+  "message.structurebuild.confirmrotation.rotating": "保存时将结构旋转 %s 度……",
+  "message.structurebuild.empty": "你没有选中任何东西。",
+  "message.structurebuild.warndedicated": "你现在是在服务器上保存机器配置！请不要忘记从服务器上下载对应文件！",
+  "message.structurebuild.save": "机器配置已保存在机器文件夹下的 '%s' 中！",
+  "message.structurebuild.fail": "机器配置保存失败！请查阅日志文件获取详细信息！",
+
+  "tooltip.machinery.empty": "空",
+
+  "tooltip.machinery.fuel": "接受任意燃料。",
+  "tooltip.machinery.fuel.item": "燃烧时间：%s",
+  "tooltip.machinery.fuel.in": "合计需要的燃料燃烧时间：",
+  "tooltip.machinery.fuel.in.total": "%s tick。",
+
+  "tooltip.machinery.blueprint.required": "需要蓝图 \",",
+  "tooltip.machinery.blueprint.upgrades": "升级 \",",
+
+  "tooltip.machinery.duration": "加工时间：%s ticks",
+
+  "tooltip.machinery.chance.in": "有 %s 概率被消耗",
+  "tooltip.machinery.chance.out": "有 %s 概率产出",
+  "tooltip.machinery.chance.in.never": "不被消耗",
+  "tooltip.machinery.chance.out.never": "不产出",
+
+  "tooltip.machinery.energy.in": "能量消耗：",
+  "tooltip.machinery.energy.in.tick": "每Tick消耗: %s %s/t",
+  "tooltip.machinery.energy.in.total": "总计: %s %s",
+  "tooltip.machinery.energy.out": "能量产出:",
+  "tooltip.machinery.energy.out.tick": "每Tick产出: %s %s/t",
+  "tooltip.machinery.energy.out.total": "总计: %s %s",
+
+  "tooltip.energy.type.fe": "FE",
+  "tooltip.energy.type.ic2_eu": "EU",
+  "tooltip.energy.type.gt_eu": "EU",
+
+  "tooltip.constructtool.creative": "创造模式用机械结构到 JSON 转换工具",
+
+  "tooltip.itembus.slot": "1 格",
+  "tooltip.itembus.slots": "%s 格",
+
+  "tooltip.fluidhatch.empty": "空",
+  "tooltip.fluidhatch.fluid": "[流体]",
+  "tooltip.fluidhatch.gas": "[气体]",
+  "tooltip.fluidhatch.tank": "%smb / %smb",
+  "tooltip.fluidhatch.tank.gas": "%s / %s",
+  "tooltip.fluidhatch.tank.info": "容积： %s mb",
+
+  "tooltip.chemicalhatch.empty": "空",
+  "tooltip.chemicalhatch.chemical": "[化学元素]",
+  "tooltip.chemicalhatch.tank": "%smb / %smb",
+  "tooltip.chemicalhatch.tank.chemical": "%s / %s",
+  "tooltip.chemicalhatch.tank.info": "容积： %s mb",
+
+  "tooltip.energyhatch.charge": "%s / %s %s",
+  "tooltip.energyhatch.storage": "最大存储 %s FE",
+  "tooltip.energyhatch.out.transfer": "最大传输  %s FE/t",
+  "tooltip.energyhatch.in.accept": "最大输入 %s FE/t",
+
+  "tooltip.energyhatch.ic2.powerrate": "EU/t",
+  "tooltip.energyhatch.ic2.any": "任意",
+  "tooltip.energyhatch.ic2.out.voltage": "输出电压：%s",
+  "tooltip.energyhatch.ic2.out.transfer": "输出功率：%s %s",
+  "tooltip.energyhatch.ic2.in.voltage": "输入电压：%s",
+  "tooltip.energyhatch.ic2.in.transfer": "输入功率：%s %s",
+
+  "tooltip.energyhatch.gregtech.voltage.in": "Voltage IN: §a%s §7(§a%s§7)",
+  "tooltip.energyhatch.gregtech.voltage.out": "Voltage OUT: §a%s §7(§a%s§7)",
+  "tooltip.energyhatch.gregtech.amperage": "Amperage: §e%s",
+  "tooltip.energyhatch.gregtech.storage": "Internal Energy Capacity: §9%s",
+
+  "tooltip.ic2.powertier.0.name": "ULV",
+  "tooltip.ic2.powertier.1.name": "LV",
+  "tooltip.ic2.powertier.2.name": "MV",
+  "tooltip.ic2.powertier.3.name": "HV",
+  "tooltip.ic2.powertier.4.name": "EV",
+  "tooltip.ic2.powertier.5.name": "IV",
+  "tooltip.ic2.powertier.6.name": "LuV",
+  "tooltip.ic2.powertier.7.name": "ZPM",
+  "tooltip.ic2.powertier.8.name": "UV",
+  "tooltip.ic2.powertier.9.name": "UHV",
+  "tooltip.ic2.powertier.10.name": "UEV",
+  "tooltip.ic2.powertier.11.name": "UIV",
+  "tooltip.ic2.powertier.12.name": "UXV",
+
+  "item.modular_machinery_reborn.blueprint": "机械蓝图",
+  "item.modular_machinery_reborn.modularium": "模块化合金",
+
+  "block.modular_machinery_reborn.controller": "模块化机械控制器",
+
+  "block.modular_machinery_reborn.casing_plain": "机械外壳",
+  "block.modular_machinery_reborn.casing_vent": "机械通风口",
+  "block.modular_machinery_reborn.casing_firebox": "燃烧室外壳",
+  "block.modular_machinery_reborn.casing_gearbox": "机械齿轮箱",
+  "block.modular_machinery_reborn.casing_reinforced": "强化机械外壳",
+  "block.modular_machinery_reborn.casing_circuitry": "机械电路板",
+
+  "block.modular_machinery_reborn.inputbus_tiny": "微型物品输入仓",
+  "block.modular_machinery_reborn.inputbus_small": "小型物品输入仓",
+  "block.modular_machinery_reborn.inputbus_normal": "中型物品输入仓",
+  "block.modular_machinery_reborn.inputbus_reinforced": "强化物品输入仓",
+  "block.modular_machinery_reborn.inputbus_big": "大型物品输入仓",
+  "block.modular_machinery_reborn.inputbus_huge": "巨型物品输入仓",
+  "block.modular_machinery_reborn.inputbus_ludicrous": "超级物品输入仓",
+
+  "block.modular_machinery_reborn.outputbus_tiny": "微型物品输出仓",
+  "block.modular_machinery_reborn.outputbus_small": "小型物品输出仓",
+  "block.modular_machinery_reborn.outputbus_normal": "中型物品输出仓",
+  "block.modular_machinery_reborn.outputbus_reinforced": "强化物品输出仓",
+  "block.modular_machinery_reborn.outputbus_big": "大型物品输出仓",
+  "block.modular_machinery_reborn.outputbus_huge": "巨型物品输出仓",
+  "block.modular_machinery_reborn.outputbus_ludicrous": "超级物品输出仓",
+
+  "block.modular_machinery_reborn.fluidinputhatch_tiny": "微型流体输入仓",
+  "block.modular_machinery_reborn.fluidinputhatch_small": "小型流体输入仓",
+  "block.modular_machinery_reborn.fluidinputhatch_normal": "中型流体输入仓",
+  "block.modular_machinery_reborn.fluidinputhatch_reinforced": "强化流体输入仓",
+  "block.modular_machinery_reborn.fluidinputhatch_big": "大型流体输入仓",
+  "block.modular_machinery_reborn.fluidinputhatch_huge": "巨型流体输入仓",
+  "block.modular_machinery_reborn.fluidinputhatch_ludicrous": "超级流体输入仓",
+  "block.modular_machinery_reborn.fluidinputhatch_vacuum": "真空流体输入仓",
+
+  "block.modular_machinery_reborn.fluidoutputhatch_tiny": "微型流体输出仓",
+  "block.modular_machinery_reborn.fluidoutputhatch_small": "小型流体输出仓",
+  "block.modular_machinery_reborn.fluidoutputhatch_normal": "中型流体输出仓",
+  "block.modular_machinery_reborn.fluidoutputhatch_reinforced": "强化流体输出仓",
+  "block.modular_machinery_reborn.fluidoutputhatch_big": "大型流体输出仓",
+  "block.modular_machinery_reborn.fluidoutputhatch_huge": "巨型流体输出仓",
+  "block.modular_machinery_reborn.fluidoutputhatch_ludicrous": "超级流体输出仓",
+  "block.modular_machinery_reborn.fluidoutputhatch_vacuum": "真空流体输出仓",
+
+  "block.modular_machinery_reborn.chemicalinputhatch_tiny": "微型化学品输入仓",
+  "block.modular_machinery_reborn.chemicalinputhatch_small": "小型化学品输入仓",
+  "block.modular_machinery_reborn.chemicalinputhatch_normal": "中型化学品输入仓",
+  "block.modular_machinery_reborn.chemicalinputhatch_reinforced": "强化化学品输入仓",
+  "block.modular_machinery_reborn.chemicalinputhatch_big": "大型化学品输入仓",
+  "block.modular_machinery_reborn.chemicalinputhatch_huge": "巨型化学品输入仓",
+  "block.modular_machinery_reborn.chemicalinputhatch_ludicrous": "超级化学品输入仓",
+  "block.modular_machinery_reborn.chemicalinputhatch_vacuum": "真空化学品输入仓",
+
+  "block.modular_machinery_reborn.energyinputhatch_tiny": "微型能源输入仓",
+  "block.modular_machinery_reborn.energyinputhatch_small": "小型能源输入仓",
+  "block.modular_machinery_reborn.energyinputhatch_normal": "中型能源输入仓",
+  "block.modular_machinery_reborn.energyinputhatch_reinforced": "强化能源输入仓",
+  "block.modular_machinery_reborn.energyinputhatch_big": "大型能源输入仓",
+  "block.modular_machinery_reborn.energyinputhatch_huge": "巨型能源输入仓",
+  "block.modular_machinery_reborn.energyinputhatch_ludicrous": "超级能源输入仓",
+  "block.modular_machinery_reborn.energyinputhatch_ultimate": "终极能源输入仓",
+
+  "block.modular_machinery_reborn.energyoutputhatch_tiny": "微型能源输出仓",
+  "block.modular_machinery_reborn.energyoutputhatch_small": "小型能源输出仓",
+  "block.modular_machinery_reborn.energyoutputhatch_normal": "中型能源输出仓",
+  "block.modular_machinery_reborn.energyoutputhatch_reinforced": "强化能源输出仓",
+  "block.modular_machinery_reborn.energyoutputhatch_big": "大型能源输出仓",
+  "block.modular_machinery_reborn.energyoutputhatch_huge": "巨型能源输出仓",
+  "block.modular_machinery_reborn.energyoutputhatch_ludicrous": "超级能源输出仓",
+  "block.modular_machinery_reborn.energyoutputhatch_ultimate": "终极能源输出仓",
+
+  "block.modular_machinery_reborn.dimensional_detector": "维度检测器",
+  "block.modular_machinery_reborn.biome_reader": "群系读取器",
+  "block.modular_machinery_reborn.weather_sensor": "天气传感器",
+  "block.modular_machinery_reborn.time_counter": "时间计数器",
+  "block.modular_machinery_reborn.chunkloader": "区块加载器",
+
+  "text.autoconfig.modular_machinery_reborn.category.general": "常规",
+
+  "text.autoconfig.modular_machinery_reborn.option.general.debugLevel": "日志调试等级",
+  "text.autoconfig.modular_machinery_reborn.option.general.logMissingOptional": "日志记录缺失的可选项",
+  "text.autoconfig.modular_machinery_reborn.option.general.logFirstEitherError": "日志首次记录错误",
+  "text.autoconfig.modular_machinery_reborn.option.general.general_casing_color": "默认机械外壳颜色",
+  "text.autoconfig.modular_machinery_reborn.option.general.structureRenderTime": "结构渲染时间",
+  "text.autoconfig.modular_machinery_reborn.option.general.blockTagCycleTime": "方块标签检查时间",
+  "text.autoconfig.modular_machinery_reborn.option.general.checkStructureTicks": "结构检查时间",
+  "text.autoconfig.modular_machinery_reborn.option.general.checkRecipeTicks": "配方检查时间",
+  "text.autoconfig.modular_machinery_reborn.option.general.machineDirectory": "存放机器文件夹",
+
+  "text.autoconfig.modular_machinery_reborn.category.energy_hatch": "能源仓",
+
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.TINY": "微型能源仓",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.TINY.size": "微型能源仓最大容量",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.TINY.transferRate": "微型能源仓最大能量传输速率",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.TINY.ic2_tier": "微型能源仓的IC2电压等级",
+
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.SMALL": "小型能源仓",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.SMALL.size": "小型能源仓最大容量",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.SMALL.transferRate": "小型能源仓最大能量传输速率",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.SMALL.ic2_tier": "小型能源仓的IC2电压等级",
+
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.NORMAL": "中型能源仓",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.NORMAL.size": "中型能源仓最大容量",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.NORMAL.transferRate": "中型能源仓最大能量传输速率",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.NORMAL.ic2_tier": "中型能源仓的IC2电压等级",
+
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.REINFORCED": "强化能源仓",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.REINFORCED.size": "强化能源仓最大容量",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.REINFORCED.transferRate": "强化能源仓最大能量传输速率",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.REINFORCED.ic2_tier": "强化能源仓的IC2电压等级",
+
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.BIG": "大型能源仓",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.BIG.size": "大型能源仓最大容量",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.BIG.transferRate": "大型能源仓最大能量传输速率",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.BIG.ic2_tier": "大型能源仓的IC2电压等级",
+
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.HUGE": "巨型能源仓",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.HUGE.size": "巨型能源仓最大容量",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.HUGE.transferRate": "巨型能源仓最大能量传输速率",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.HUGE.ic2_tier": "巨型能源仓的IC2电压等级",
+
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.LUDICROUS": "超级能源仓",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.LUDICROUS.size": "超级能源仓最大容量",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.LUDICROUS.transferRate": "超级能源仓最大能量传输速率",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.LUDICROUS.ic2_tier": "超级能源仓的IC2电压等级",
+
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.ULTIMATE": "终极能源仓",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.ULTIMATE.size": "终极能源仓最大容量",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.ULTIMATE.transferRate": "终极能源仓最大能量传输速率",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.ULTIMATE.ic2_tier": "终极能源仓的IC2电压等级",
+
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.displayFETooltip": "最大容量以及最大传输速率提示",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.displayIC2EUTooltip": "IC2 EU等级提示",
+  "text.autoconfig.modular_machinery_reborn.option.energyHatch.type": "预览配方时能量单位",
+
+  "text.autoconfig.modular_machinery_reborn.category.fluid_hatch": "流体仓",
+
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.TINY": "微型流体仓",
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.TINY.size": "最大容量",
+
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.SMALL": "小型流体仓",
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.SMALL.size": "最大容量",
+
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.NORMAL": "中型流体仓",
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.NORMAL.size": "最大容量",
+
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.REINFORCED": "强化流体仓",
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.REINFORCED.size": "最大容量",
+
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.BIG": "大型流体仓",
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.BIG.size": "最大容量",
+
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.HUGE": "巨型流体仓",
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.HUGE.size": "最大容量",
+
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.LUDICROUS": "超级流体仓",
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.LUDICROUS.size": "最大容量",
+
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.VACUUM": "真空流体仓",
+  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.VACUUM.size": "最大容量",
+
+  "text.autoconfig.modular_machinery_reborn.category.item_bus": "物品仓",
+
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.TINY": "微型物品仓",
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.TINY.size": "最大槽位",
+
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.SMALL": "小型物品仓",
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.SMALL.size": "最大槽位",
+
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.NORMAL": "中型物品仓",
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.NORMAL.size": "最大槽位",
+
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.REINFORCED": "强化物品仓",
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.REINFORCED.size": "最大槽位",
+
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.BIG": "大型物品仓",
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.BIG.size": "最大槽位",
+
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.HUGE": "巨型物品仓",
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.HUGE.size": "最大槽位",
+
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.LUDICROUS": "超级物品仓",
+  "text.autoconfig.modular_machinery_reborn.option.itemBus.LUDICROUS.size": "最大槽位",
+
+  "tooltip.blueprint": "右键任意机器控制器以显示结构",
+
+  "config.jade.plugin_modular_machinery_reborn.machine_component_provider": "模块化机械:重置",
+
+  "modular_machinery_reborn.jei.ingredient.energy.input": "需要: %s RF/t",
+  "modular_machinery_reborn.jei.ingredient.energy.output": "产出: %s RF/t",
+  "modular_machinery_reborn.jei.ingredient.energy.total.input": "需要: %s RF @ %s RF/t",
+  "modular_machinery_reborn.jei.ingredient.energy.total.output": "产出: %s RF @ %s RF/t",
+
+  "modular_machinery_reborn.jei.ingredient.fluid.input": "需要 %s %s mB",
+  "modular_machinery_reborn.jei.ingredient.fluid.output": "产出 %s %s mB",
+  "modular_machinery_reborn.jei.ingredient.chemical.input": "需要 %s %s mB",
+  "modular_machinery_reborn.jei.ingredient.chemical.output": "产出 %s %s mB",
+
+  "modular_machinery_reborn.jei.ingredient.duration": "加工时间: %s ticks",
+
+  "modular_machinery_reborn.jei.ingredient.item.input": "需要",
+  "modular_machinery_reborn.jei.ingredient.item.output": "产出",
+
+  "modular_machinery_reborn.jei.ingredient.dimension.true": "维度黑名单: %s",
+  "modular_machinery_reborn.jei.ingredient.dimension.false": "维度白名单: %s",
+
+  "modular_machinery_reborn.jei.ingredient.biome.true": "群系黑名单: %s",
+  "modular_machinery_reborn.jei.ingredient.biome.false": "群系白名单: %s",
+
+  "modular_machinery_reborn.jei.ingredient.weather": "天气时间: %s",
+
+  "modular_machinery_reborn.jei.ingredient.time": "时间: %s",
+  "modular_machinery_reborn.jei.ingredient.chunkload": "区块加载器半径: %s",
+
+  "modular_machinery_reborn.controller.tooltip": "潜行时右击控制器以投影其机器的蓝图至世界。"
+}
