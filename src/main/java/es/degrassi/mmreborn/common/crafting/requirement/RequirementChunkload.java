@@ -9,6 +9,7 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiChunkloadRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiTimeRequirement;
 import es.degrassi.mmreborn.common.machine.IOType;
@@ -27,13 +28,14 @@ import java.util.List;
 
 public class RequirementChunkload extends ComponentRequirement<Integer, RequirementChunkload> implements ComponentRequirement.PerTick{
   public static final NamedCodec<RequirementChunkload> CODEC = NamedCodec.record(instance -> instance.group(
-      NamedCodec.intRange(1, 32).optionalFieldOf("radius", 1).forGetter(RequirementChunkload::radius)
+      NamedCodec.intRange(1, 32).optionalFieldOf("radius", 1).forGetter(RequirementChunkload::radius),
+      IJeiRequirement.POSITION_CODEC.fieldOf("position").forGetter(ComponentRequirement::getPosition)
   ).apply(instance, RequirementChunkload::new), "Chunkload Requirement");
 
   private final Integer radius;
 
-  public RequirementChunkload(Integer radius) {
-    super(RequirementTypeRegistration.CHUNKLOAD.get(), IOType.OUTPUT);
+  public RequirementChunkload(Integer radius, IJeiRequirement.JeiPositionedRequirement position) {
+    super(RequirementTypeRegistration.CHUNKLOAD.get(), IOType.OUTPUT, position);
     this.radius = radius;
   }
 
@@ -67,12 +69,12 @@ public class RequirementChunkload extends ComponentRequirement<Integer, Requirem
 
   @Override
   public ComponentRequirement<Integer, RequirementChunkload> deepCopy() {
-    return new RequirementChunkload(radius);
+    return new RequirementChunkload(radius, getPosition());
   }
 
   @Override
   public ComponentRequirement<Integer, RequirementChunkload> deepCopyModified(List<RecipeModifier> modifiers) {
-    return new RequirementChunkload(radius);
+    return new RequirementChunkload(radius, getPosition());
   }
 
   @Override

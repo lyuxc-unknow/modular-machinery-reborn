@@ -12,10 +12,6 @@ tasks.named('wrapper', Wrapper).configure {
   distributionType = Wrapper.DistributionType.BIN
 }
 
-repositories {
-  mavenLocal()
-}
-
 base {
   archivesName = archives_base_name
   version = "${minecraft_version}-${mod_version}"
@@ -64,11 +60,16 @@ configurations {
 }
 
 repositories {
+  mavenLocal()
+  mavenCentral()
+  maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
   maven {
     name = "Jared's maven"
     url = "https://maven.blamejared.com/"
     content {
       includeGroup "mezz.jei"
+      includeGroup "com.hollingsworth.ars_nouveau"
+      includeGroup "vazkii.patchouli"
     }
   }
   maven {
@@ -107,6 +108,17 @@ repositories {
     }
   }
   maven {
+    name = "OctoStudios"
+    url = uri("https://maven.octo-studios.com/releases")
+  }
+  maven {
+    name = 'GeckoLib'
+    url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+    content {
+      includeGroup("software.bernie.geckolib")
+    }
+  }
+  maven {
     name = "Covers"
     // for rf stuffs
     url = "https://maven.covers1624.net"
@@ -118,7 +130,6 @@ repositories {
       includeGroup "com.github.rtyley"
     }
   }
-  mavenCentral()
 }
 
 dependencies {

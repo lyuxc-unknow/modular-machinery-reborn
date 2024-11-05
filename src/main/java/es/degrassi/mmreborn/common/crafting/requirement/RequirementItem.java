@@ -11,6 +11,7 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiItemComponent;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
@@ -40,9 +41,10 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
       NamedCodec.INT.optionalFieldOf("amount").forGetter(req -> Optional.of(req.amount)),
       NamedCodec.floatRange(0, 1).optionalFieldOf("chance", 1f).forGetter(req -> req.chance),
       NamedCodec.of(CompoundTag.CODEC).optionalFieldOf("nbt", new CompoundTag()).forGetter(req -> req.tag),
-      NamedCodec.of(CompoundTag.CODEC).optionalFieldOf("nbt-display", new CompoundTag()).forGetter(req -> req.previewDisplayTag)
-    ).apply(instance, (item, mode, amount, chance, nbt, nbt_display) -> {
-      RequirementItem requirementItem = new RequirementItem(mode, item, amount.orElse(1));
+      NamedCodec.of(CompoundTag.CODEC).optionalFieldOf("nbt-display", new CompoundTag()).forGetter(req -> req.previewDisplayTag),
+      IJeiRequirement.POSITION_CODEC.fieldOf("position").forGetter(ComponentRequirement::getPosition)
+    ).apply(instance, (item, mode, amount, chance, nbt, nbt_display, position) -> {
+      RequirementItem requirementItem = new RequirementItem(mode, item, amount.orElse(1), position);
       requirementItem.setChance(chance);
       requirementItem.tag = nbt;
       requirementItem.previewDisplayTag = nbt_display;
@@ -79,8 +81,8 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
     return new JeiItemComponent(this);
   }
 
-  public RequirementItem(IOType ioType, IIngredient<Item> ingredient, int amount) {
-    super(RequirementTypeRegistration.ITEM.get(), ioType);
+  public RequirementItem(IOType ioType, IIngredient<Item> ingredient, int amount, IJeiRequirement.JeiPositionedRequirement position) {
+    super(RequirementTypeRegistration.ITEM.get(), ioType, position);
     boolean isTag = ingredient instanceof ItemTagIngredient;
     if (ioType == IOType.OUTPUT && isTag) throw new IllegalArgumentException("Output item can not be a tag");
     this.ingredient = ingredient;
@@ -94,7 +96,7 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
 
   @Override
   public ComponentRequirement<ItemStack, RequirementItem> deepCopy() {
-    RequirementItem item = new RequirementItem(getActionType(), getIngredient(), getAmount());
+    RequirementItem item = new RequirementItem(getActionType(), getIngredient(), getAmount(), getPosition());
     item.chance = this.chance;
     if (this.tag != null) {
       item.tag = this.tag.copy();
@@ -108,7 +110,7 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
   @Override
   public ComponentRequirement<ItemStack, RequirementItem> deepCopyModified(List<RecipeModifier> modifiers) {
     int inAmt = Math.round(RecipeModifier.applyModifiers(modifiers, this.getRequirementType(), getActionType(), getAmount(), false));
-    RequirementItem item = new RequirementItem(getActionType(), getIngredient(), inAmt);
+    RequirementItem item = new RequirementItem(getActionType(), getIngredient(), inAmt, getPosition());
 
     item.chance = RecipeModifier.applyModifiers(modifiers, this, this.chance, true);
     if (this.tag != null) {

@@ -3,8 +3,6 @@ package es.degrassi.mmreborn.common.crafting.requirement.jei;
 import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementFluid;
-import java.util.List;
-
 import es.degrassi.mmreborn.common.integration.jei.MMRJeiPlugin;
 import es.degrassi.mmreborn.common.integration.jei.category.MMRRecipeCategory;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -14,6 +12,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class JeiFluidComponent extends JeiComponent<FluidStack, RequirementFluid> {
   public JeiFluidComponent(RequirementFluid requirement) {
@@ -60,10 +60,9 @@ public class JeiFluidComponent extends JeiComponent<FluidStack, RequirementFluid
   }
 
   @Override
-  public void setRecipeInput(MMRRecipeCategory category, IRecipeLayoutBuilder builder, MachineRecipe recipe, IFocusGroup focuses) {
-    category.updateByProcessed(category.processedInputComponents, getWidth(), getHeight(), true);
+  public void setRecipe(MMRRecipeCategory category, IRecipeLayoutBuilder builder, MachineRecipe recipe, IFocusGroup focuses) {
     builder
-      .addInputSlot(category.x.get() + 1, category.y.get() + 1)
+      .addSlot(role(), getPosition().x(), getPosition().y())
       .setOverlay(
         MMRJeiPlugin.jeiHelpers.getGuiHelper().createDrawable(texture(), getUOffset(), getVOffset(), getWidth() + 2, getHeight() + 2),
         -1,
@@ -71,25 +70,5 @@ public class JeiFluidComponent extends JeiComponent<FluidStack, RequirementFluid
       )
       .setFluidRenderer(getRequirement().amount, false, getWidth(), getHeight())
       .addFluidStack(getRequirement().required.asFluidStack().getFluid(), getRequirement().amount);
-    category.x.getAndAdd(category.gapX);
-    category.x.getAndAdd(getWidth());
-    category.updateMaxHeightInput(this, true);
-  }
-
-  @Override
-  public void setRecipeOutput(MMRRecipeCategory category, IRecipeLayoutBuilder builder, MachineRecipe recipe, IFocusGroup focuses) {
-    category.updateByProcessed(category.processedOutputComponents, getWidth(), getHeight(), true);
-    builder
-      .addOutputSlot(category.x.get() + 1, category.y.get() + 1)
-      .setOverlay(
-        MMRJeiPlugin.jeiHelpers.getGuiHelper().createDrawable(texture(), getUOffset(), getVOffset(), getWidth() + 2, getHeight() + 2),
-        -1,
-        -1
-      )
-      .setFluidRenderer(getRequirement().amount, false, getWidth(), getHeight())
-      .addFluidStack(getRequirement().required.asFluidStack().getFluid(), getRequirement().amount);
-    category.x.getAndAdd(category.gapX);
-    category.x.getAndAdd(getWidth());
-    category.updateMaxHeightOutput(this, true);
   }
 }

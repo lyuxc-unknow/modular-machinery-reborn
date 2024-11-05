@@ -10,6 +10,7 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiFluidComponent;
 import es.degrassi.mmreborn.common.integration.ingredient.HybridFluid;
 import es.degrassi.mmreborn.common.machine.IOType;
@@ -37,9 +38,10 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
     NamedCodec.INT.optionalFieldOf("amount").forGetter(req -> Optional.of(req.amount)),
     NamedCodec.floatRange(0, 1).optionalFieldOf("chance", 1f).forGetter(req -> req.chance),
     NamedCodec.of(CompoundTag.CODEC).optionalFieldOf("nbt", new CompoundTag()).forGetter(RequirementFluid::getTagMatch),
-    NamedCodec.of(CompoundTag.CODEC).optionalFieldOf("nbt-display").forGetter(req -> Optional.ofNullable(req.getTagDisplay()))
-  ).apply(instance, (fluid, mode, amount, chance, nbt, nbt_display) -> {
-    RequirementFluid requirementFluid = new RequirementFluid(mode, fluid, amount.orElse(1000));
+    NamedCodec.of(CompoundTag.CODEC).optionalFieldOf("nbt-display").forGetter(req -> Optional.ofNullable(req.getTagDisplay())),
+      IJeiRequirement.POSITION_CODEC.fieldOf("position").forGetter(ComponentRequirement::getPosition)
+  ).apply(instance, (fluid, mode, amount, chance, nbt, nbt_display, position) -> {
+    RequirementFluid requirementFluid = new RequirementFluid(mode, fluid, amount.orElse(1000), position);
     requirementFluid.setChance(chance);
     requirementFluid.setMatchNBTTag(nbt);
     requirementFluid.setDisplayNBTTag(nbt_display.orElse(nbt));
@@ -73,12 +75,12 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
     return new JeiFluidComponent(this);
   }
 
-  public RequirementFluid(IOType ioType, FluidIngredient fluid, int amount) {
-    this(RequirementTypeRegistration.FLUID.get(), ioType, fluid, amount);
+  public RequirementFluid(IOType ioType, FluidIngredient fluid, int amount, IJeiRequirement.JeiPositionedRequirement position) {
+    this(RequirementTypeRegistration.FLUID.get(), ioType, fluid, amount, position);
   }
 
-  private RequirementFluid(RequirementType<RequirementFluid> type, IOType ioType, FluidIngredient fluid, int amount) {
-    super(type, ioType);
+  private RequirementFluid(RequirementType<RequirementFluid> type, IOType ioType, FluidIngredient fluid, int amount, IJeiRequirement.JeiPositionedRequirement position) {
+    super(type, ioType, position);
     this.ingredient = fluid;
     this.required = new HybridFluid(new FluidStack(fluid.getAll().getFirst(), amount));
     this.amount = amount;
@@ -90,7 +92,7 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
 
   @Override
   public RequirementFluid deepCopy() {
-    RequirementFluid fluid = new RequirementFluid(this.getActionType(), new FluidIngredient(ingredient.getAll().getFirst()), amount);
+    RequirementFluid fluid = new RequirementFluid(this.getActionType(), new FluidIngredient(ingredient.getAll().getFirst()), amount, getPosition());
     fluid.chance = this.chance;
     fluid.tagMatch = getTagMatch();
     fluid.tagDisplay = getTagDisplay();
@@ -100,7 +102,7 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
   @Override
   public RequirementFluid deepCopyModified(List<RecipeModifier> modifiers) {
     int amount = Math.round(RecipeModifier.applyModifiers(modifiers, this, this.amount, false));
-    RequirementFluid fluid = new RequirementFluid(this.getActionType(), new FluidIngredient(ingredient.getAll().getFirst()), amount);
+    RequirementFluid fluid = new RequirementFluid(this.getActionType(), new FluidIngredient(ingredient.getAll().getFirst()), amount, getPosition());
 
     fluid.chance = RecipeModifier.applyModifiers(modifiers, this, this.chance, true);
     fluid.tagMatch = getTagMatch();

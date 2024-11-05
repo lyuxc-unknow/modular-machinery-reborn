@@ -1,20 +1,19 @@
 package es.degrassi.mmreborn.common.crafting.requirement.jei;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
-import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.util.TextureSizeHelper;
-import java.util.LinkedList;
-import java.util.List;
 import lombok.Getter;
-import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.ingredients.IIngredientRenderer;
-import mezz.jei.api.recipe.IFocusGroup;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.LinkedList;
+import java.util.List;
 
 @Getter
 public abstract class JeiComponent<C, T extends ComponentRequirement<C, T>> implements IIngredientRenderer<C>, IJeiRequirement<C, T> {
@@ -48,4 +47,8 @@ public abstract class JeiComponent<C, T extends ComponentRequirement<C, T>> impl
   }
 
   public abstract List<C> ingredients();
+
+  public RecipeIngredientRole role() {
+    return requirement.getActionType().isInput() ? RecipeIngredientRole.INPUT : RecipeIngredientRole.OUTPUT;
+  }
 }

@@ -11,6 +11,7 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiDimensionRequirement;
 import es.degrassi.mmreborn.common.machine.IOType;
@@ -27,14 +28,15 @@ import java.util.List;
 public class RequirementDimension extends ComponentRequirement<ResourceLocation, RequirementDimension> {
   public static final NamedCodec<RequirementDimension> CODEC = NamedCodec.record(instance -> instance.group(
       DefaultCodecs.RESOURCE_LOCATION.listOf().fieldOf("filter").forGetter(RequirementDimension::filter),
-      NamedCodec.BOOL.optionalFieldOf("blacklist", false).forGetter(RequirementDimension::blacklist)
+      NamedCodec.BOOL.optionalFieldOf("blacklist", false).forGetter(RequirementDimension::blacklist),
+      IJeiRequirement.POSITION_CODEC.fieldOf("position").forGetter(ComponentRequirement::getPosition)
   ).apply(instance, RequirementDimension::new), "Dimension Requirement");
 
   private final List<ResourceLocation> filter;
   private final boolean blacklist;
 
-  public RequirementDimension(List<ResourceLocation> filter, boolean blacklist) {
-    super(RequirementTypeRegistration.DIMENSION.get(), IOType.INPUT);
+  public RequirementDimension(List<ResourceLocation> filter, boolean blacklist, IJeiRequirement.JeiPositionedRequirement position) {
+    super(RequirementTypeRegistration.DIMENSION.get(), IOType.INPUT, position);
     this.filter = filter;
     this.blacklist = blacklist;
   }
@@ -76,12 +78,12 @@ public class RequirementDimension extends ComponentRequirement<ResourceLocation,
 
   @Override
   public ComponentRequirement<ResourceLocation, RequirementDimension> deepCopy() {
-    return new RequirementDimension(Lists.newArrayList(filter), blacklist);
+    return new RequirementDimension(Lists.newArrayList(filter), blacklist, getPosition());
   }
 
   @Override
   public ComponentRequirement<ResourceLocation, RequirementDimension> deepCopyModified(List<RecipeModifier> modifiers) {
-    return new RequirementDimension(Lists.newArrayList(filter), blacklist);
+    return new RequirementDimension(Lists.newArrayList(filter), blacklist, getPosition());
   }
 
   @Override

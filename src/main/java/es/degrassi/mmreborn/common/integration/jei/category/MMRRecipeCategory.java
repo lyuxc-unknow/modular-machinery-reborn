@@ -3,7 +3,6 @@ package es.degrassi.mmreborn.common.integration.jei.category;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiComponent;
 import es.degrassi.mmreborn.common.integration.jei.MMRJeiPlugin;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
@@ -25,30 +24,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
   private final DynamicMachine machine;
   private final String title;
   private final IDrawable background, icon;
 
-  public final int gapX = 8, gapY = 8;
-  public final int initialX = 8, initialXOut = getArrowEndPos() + gapX, initialY = 8;
-  public final AtomicInteger x = new AtomicInteger(0), y = new AtomicInteger(0);
-  public final AtomicInteger maxHeight = new AtomicInteger(initialY);
-  public final List<Component> textsToRender = new LinkedList<>();
-  public final List<MMRRecipeCategory.ComponentValue> processedInputComponents = new LinkedList<>();
-  public final List<MMRRecipeCategory.ComponentValue> processedOutputComponents = new LinkedList<>();
-  public final AtomicReference<MMRRecipeCategory.ComponentValue> firstItem = new AtomicReference<>(null);
+  public final int initialX = 8, gap = 8;
 
   public List<ComponentRequirement<?, ?>> requirements;
-  public List<ComponentRequirement<?, ?>> inputRequirements;
-  public List<ComponentRequirement<?, ?>> outputRequirements;
 
   public MMRRecipeCategory(DynamicMachine machine) {
     this.machine = machine;
@@ -109,14 +96,7 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
   @Override
   public void setRecipe(@NotNull IRecipeLayoutBuilder builder, MachineRecipe recipe, @NotNull IFocusGroup focuses) {
     requirements = recipe.getCraftingRequirements();
-    inputRequirements = new ArrayList<>(requirements.stream().filter(req -> req.getActionType().isInput()).toList()).stream().sorted().toList();
-    outputRequirements = new ArrayList<>(requirements.stream().filter(req -> !req.getActionType().isInput()).toList()).stream().sorted().toList();
-    x.set(initialX);
-    y.set(initialY);
-    processedInputComponents.clear();
-    processedOutputComponents.clear();
-    textsToRender.clear();
-    maxHeight.set(x.get());
+    final List<Component> textsToRender = new LinkedList<>();
 
     textsToRender.add(
       Component.translatable(
@@ -125,14 +105,12 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
       )
     );
 
-    firstItem.set(null);
-    inputRequirements.forEach(component -> component.jeiComponent().setRecipeInput(this, builder, recipe, focuses));
-
-    x.set(initialXOut);
-    y.set(initialY);
-
-    firstItem.set(null);
-    outputRequirements.forEach(component -> component.jeiComponent().setRecipeOutput(this, builder, recipe, focuses));
+    requirements.forEach(component -> component.jeiComponent().setRecipe(this, builder, recipe, focuses));
+    AtomicInteger maxHeight = new AtomicInteger(0);
+    requirements.forEach(component -> {
+      if (component.getPosition().y() + component.jeiComponent().getHeight() >= maxHeight.get())
+        maxHeight.set(component.getPosition().y() + component.jeiComponent().getHeight() + gap);
+    });
 
     Font font = Minecraft.getInstance().font;
     textsToRender.forEach(component -> {
@@ -146,56 +124,8 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
     });
   }
 
-  public void updateMaxHeightInput(JeiComponent<?, ?> component, boolean useGaps) {
-    if (y.get() + component.getHeight() > maxHeight.get()) maxHeight.set(y.get() + component.getHeight() + gapY(useGaps));
-    if (x.get() >= (getArrowPos() - gapX)) {
-      x.set(initialX);
-      y.getAndAdd(component.getHeight() + gapY(useGaps));
-    }
-  }
-
-  public void updateMaxHeightOutput(JeiComponent<?, ?> component, boolean useGaps) {
-    if (y.get() + component.getHeight() > maxHeight.get()) maxHeight.set(y.get() + component.getHeight() + gapY(useGaps));
-    if (x.get() >= (getMaxWidth() - gapX)) {
-      x.set(initialXOut);
-      y.getAndAdd(component.getHeight() + gapY(useGaps));
-    }
-  }
-
-  public int gapY(boolean useGaps) {
-    return useGaps ? gapY : 0;
-  }
-
-  public int gapX(boolean useGaps) {
-    return useGaps ? gapX : 0;
-  }
-
-  public void updateByProcessed(List<ComponentValue> processedComponents, int width, int height, boolean useGaps) {
-    processedComponents.stream().filter(entry -> entry.x >= x.get()
-        && y.get() >= entry.y
-        && y.get() <= entry.height + entry.y
-      )
-      .min(Comparator.comparingInt(entry -> entry.x))
-      .ifPresent(entry -> x.set(entry.x + entry.height + gapX(useGaps)));
-    processedComponents.stream().filter(entry -> entry.y >= y.get()
-        && x.get() >= entry.x
-        && x.get() <= entry.width + entry.x
-      )
-      .min(Comparator.comparingInt(entry -> entry.y))
-      .ifPresent(entry -> y.set(entry.y + entry.height + gapY(useGaps)));
-    processedComponents.add(new ComponentValue(x.get(), y.get(), width, height));
-  }
-
   public int getArrowPos() {
-    return getMaxWidth() / 2 - getHalfArrowWidth();
-  }
-
-  public int getArrowEndPos() {
-    return getMaxWidth() / 2 + getHalfArrowWidth() * 3;
-  }
-
-  public int getHalfArrowWidth() {
-    return MMRJeiPlugin.jeiHelpers.getGuiHelper().getRecipeArrowFilled().getWidth() / 4;
+    return getMaxWidth() / 2 - MMRJeiPlugin.jeiHelpers.getGuiHelper().getRecipeArrowFilled().getWidth() / 4;
   }
 
   @Override
@@ -203,6 +133,4 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
     builder.addAnimatedRecipeArrow(20)
       .setPosition(getArrowPos(), 8);
   }
-
-  public record ComponentValue(int x, int y, int width, int height) {}
 }

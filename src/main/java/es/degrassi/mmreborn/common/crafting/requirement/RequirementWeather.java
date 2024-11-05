@@ -3,14 +3,13 @@ package es.degrassi.mmreborn.common.crafting.requirement;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.ModularMachineryReborn;
-import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentOutputRestrictor;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiWeatherRequirement;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
@@ -19,7 +18,6 @@ import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.ResultChance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.jetbrains.annotations.NotNull;
@@ -29,13 +27,14 @@ import java.util.Locale;
 
 public class RequirementWeather extends ComponentRequirement<RequirementWeather.WeatherType, RequirementWeather> {
   public static final NamedCodec<RequirementWeather> CODEC = NamedCodec.record(instance -> instance.group(
-      WeatherType.CODEC.fieldOf("weather").forGetter(RequirementWeather::weather)
+      WeatherType.CODEC.fieldOf("weather").forGetter(RequirementWeather::weather),
+      IJeiRequirement.POSITION_CODEC.fieldOf("position").forGetter(ComponentRequirement::getPosition)
   ).apply(instance, RequirementWeather::new), "Weather Requirement");
 
   private final WeatherType weather;
 
-  public RequirementWeather(WeatherType filter) {
-    super(RequirementTypeRegistration.WEATHER.get(), IOType.INPUT);
+  public RequirementWeather(WeatherType filter, IJeiRequirement.JeiPositionedRequirement position) {
+    super(RequirementTypeRegistration.WEATHER.get(), IOType.INPUT, position);
     this.weather = filter;
   }
 
@@ -78,12 +77,12 @@ public class RequirementWeather extends ComponentRequirement<RequirementWeather.
 
   @Override
   public ComponentRequirement<WeatherType, RequirementWeather> deepCopy() {
-    return new RequirementWeather(weather);
+    return new RequirementWeather(weather, getPosition());
   }
 
   @Override
   public ComponentRequirement<WeatherType, RequirementWeather> deepCopyModified(List<RecipeModifier> modifiers) {
-    return new RequirementWeather(weather);
+    return new RequirementWeather(weather, getPosition());
   }
 
   @Override

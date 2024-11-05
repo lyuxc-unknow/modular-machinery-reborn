@@ -9,6 +9,7 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiTimeRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiWeatherRequirement;
 import es.degrassi.mmreborn.common.machine.IOType;
@@ -28,13 +29,14 @@ import java.util.Locale;
 
 public class RequirementTime extends ComponentRequirement<IntRange, RequirementTime> {
   public static final NamedCodec<RequirementTime> CODEC = NamedCodec.record(instance -> instance.group(
-      IntRange.CODEC.fieldOf("range").forGetter(RequirementTime::time)
+      IntRange.CODEC.fieldOf("range").forGetter(RequirementTime::time),
+      IJeiRequirement.POSITION_CODEC.fieldOf("position").forGetter(ComponentRequirement::getPosition)
   ).apply(instance, RequirementTime::new), "Time Requirement");
 
   private final IntRange time;
 
-  public RequirementTime(IntRange time) {
-    super(RequirementTypeRegistration.TIME.get(), IOType.INPUT);
+  public RequirementTime(IntRange time, IJeiRequirement.JeiPositionedRequirement position) {
+    super(RequirementTypeRegistration.TIME.get(), IOType.INPUT, position);
     this.time = time;
   }
 
@@ -75,12 +77,12 @@ public class RequirementTime extends ComponentRequirement<IntRange, RequirementT
 
   @Override
   public ComponentRequirement<IntRange, RequirementTime> deepCopy() {
-    return new RequirementTime(time);
+    return new RequirementTime(time, getPosition());
   }
 
   @Override
   public ComponentRequirement<IntRange, RequirementTime> deepCopyModified(List<RecipeModifier> modifiers) {
-    return new RequirementTime(time);
+    return new RequirementTime(time, getPosition());
   }
 
   @Override

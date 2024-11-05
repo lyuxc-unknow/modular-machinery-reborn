@@ -5,10 +5,12 @@ import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.codec.NamedMapCodec;
 import es.degrassi.mmreborn.api.codec.RegistrarCodec;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiComponent;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.util.ResultChance;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -25,10 +27,13 @@ public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, 
   private final RequirementType<V> requirementType;
 
   private ComponentSelectorTag tag = null;
+  @Getter
+  private final IJeiRequirement.JeiPositionedRequirement position;
 
-  public ComponentRequirement(RequirementType<V> requirementType, IOType actionType) {
+  public ComponentRequirement(RequirementType<V> requirementType, IOType actionType, IJeiRequirement.JeiPositionedRequirement position) {
     this.requirementType = requirementType;
     this.actionType = actionType;
+    this.position = position;
   }
 
   public final NamedCodec<ComponentRequirement<?, ?>> getCodec() {

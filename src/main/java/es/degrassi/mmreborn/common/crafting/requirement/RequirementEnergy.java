@@ -10,6 +10,7 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiEnergyComponent;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
@@ -25,8 +26,9 @@ import javax.annotation.Nonnull;
 public class RequirementEnergy extends ComponentRequirement<Long, RequirementEnergy> implements ComponentRequirement.PerTick {
   public static final NamedMapCodec<RequirementEnergy> CODEC = NamedCodec.record(instance -> instance.group(
     NamedCodec.longRange(0, Long.MAX_VALUE).fieldOf("amount").forGetter(req -> req.requirementPerTick),
-    NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(ComponentRequirement::getActionType)
-  ).apply(instance, (amount, type) -> new RequirementEnergy(type, amount)), "EnergyRequirement");
+    NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(ComponentRequirement::getActionType),
+      IJeiRequirement.POSITION_CODEC.fieldOf("position").forGetter(ComponentRequirement::getPosition)
+  ).apply(instance, (amount, type, position) -> new RequirementEnergy(type, amount, position)), "EnergyRequirement");
 
   public final long requirementPerTick;
   private long activeIO;
@@ -45,8 +47,8 @@ public class RequirementEnergy extends ComponentRequirement<Long, RequirementEne
     return new JeiEnergyComponent(this);
   }
 
-  public RequirementEnergy(IOType ioType, long requirementPerTick) {
-    super(RequirementTypeRegistration.ENERGY.get(), ioType);
+  public RequirementEnergy(IOType ioType, long requirementPerTick, IJeiRequirement.JeiPositionedRequirement position) {
+    super(RequirementTypeRegistration.ENERGY.get(), ioType, position);
     this.requirementPerTick = requirementPerTick;
     this.activeIO = this.requirementPerTick;
   }
@@ -58,7 +60,7 @@ public class RequirementEnergy extends ComponentRequirement<Long, RequirementEne
 
   @Override
   public ComponentRequirement<Long, RequirementEnergy> deepCopy() {
-    RequirementEnergy energy = new RequirementEnergy(this.getActionType(), this.requirementPerTick);
+    RequirementEnergy energy = new RequirementEnergy(this.getActionType(), this.requirementPerTick, getPosition());
     energy.activeIO = this.activeIO;
     return energy;
   }
@@ -66,7 +68,7 @@ public class RequirementEnergy extends ComponentRequirement<Long, RequirementEne
   @Override
   public ComponentRequirement<Long, RequirementEnergy> deepCopyModified(List<RecipeModifier> modifiers) {
     int requirement = Math.round(RecipeModifier.applyModifiers(modifiers, this, this.requirementPerTick, false));
-    RequirementEnergy energy = new RequirementEnergy(this.getActionType(), requirement);
+    RequirementEnergy energy = new RequirementEnergy(this.getActionType(), requirement, getPosition());
     energy.activeIO = this.activeIO;
     return energy;
   }

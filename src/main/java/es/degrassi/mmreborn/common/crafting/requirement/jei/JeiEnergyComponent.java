@@ -3,9 +3,6 @@ package es.degrassi.mmreborn.common.crafting.requirement.jei;
 import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import es.degrassi.mmreborn.common.integration.jei.category.MMRRecipeCategory;
 import es.degrassi.mmreborn.common.integration.jei.ingredient.CustomIngredientTypes;
 import es.degrassi.mmreborn.common.util.Utils;
@@ -16,6 +13,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class JeiEnergyComponent extends JeiComponent<Long, RequirementEnergy> {
   private int width = 16;
@@ -65,26 +64,11 @@ public class JeiEnergyComponent extends JeiComponent<Long, RequirementEnergy> {
   }
 
   @Override
-  public void setRecipeInput(MMRRecipeCategory category, IRecipeLayoutBuilder builder, MachineRecipe recipe, IFocusGroup focuses) {
-    addEnergyComponent(category, builder, category.processedInputComponents);
-    recipeTime = recipe.getRecipeTotalTickTime();
-    category.updateMaxHeightInput(this, true);
-  }
-
-  @Override
-  public void setRecipeOutput(MMRRecipeCategory category, IRecipeLayoutBuilder builder, MachineRecipe recipe, IFocusGroup focuses) {
-    addEnergyComponent(category, builder, category.processedOutputComponents);
-    recipeTime = recipe.getRecipeTotalTickTime();
-    category.updateMaxHeightOutput(this, true);
-  }
-
-  private void addEnergyComponent(MMRRecipeCategory category, @NotNull IRecipeLayoutBuilder builder, List<MMRRecipeCategory.ComponentValue> processedComponents) {
-    category.updateByProcessed(processedComponents, getWidth(), getHeight(), true);
+  public void setRecipe(MMRRecipeCategory category, IRecipeLayoutBuilder builder, MachineRecipe recipe, IFocusGroup focuses) {
+    this.recipeTime = recipe.getRecipeTotalTickTime();
     builder
-      .addSlot(RecipeIngredientRole.RENDER_ONLY, category.x.get() + 1, category.y.get() + 1)
-      .setCustomRenderer(CustomIngredientTypes.ENERGY, this)
-      .addIngredients(CustomIngredientTypes.ENERGY, ingredients());
-    category.x.getAndAdd(category.gapX);
-    category.x.getAndAdd(getWidth());
+        .addSlot(RecipeIngredientRole.RENDER_ONLY, getPosition().x(), getPosition().y())
+        .setCustomRenderer(CustomIngredientTypes.ENERGY, this)
+        .addIngredients(CustomIngredientTypes.ENERGY, ingredients());
   }
 }

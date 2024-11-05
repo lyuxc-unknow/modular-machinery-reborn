@@ -9,6 +9,7 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiComponent;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
@@ -21,7 +22,8 @@ import org.jetbrains.annotations.NotNull;
 @Getter
 public class RequirementDuration extends ComponentRequirement<Integer, RequirementDuration> implements ComponentRequirement.PerTick {
   public static final NamedMapCodec<RequirementDuration> CODEC = NamedCodec.record(instance -> instance.group(
-      NamedCodec.intRange(1, Integer.MAX_VALUE).fieldOf("time").forGetter(RequirementDuration::getTime)
+      NamedCodec.intRange(1, Integer.MAX_VALUE).fieldOf("time").forGetter(RequirementDuration::getTime),
+      IJeiRequirement.POSITION_CODEC.fieldOf("position").forGetter(ComponentRequirement::getPosition)
     ).apply(instance, RequirementDuration::new),
     "Duration requirement"
   );
@@ -46,8 +48,8 @@ public class RequirementDuration extends ComponentRequirement<Integer, Requireme
     return asJson().toString();
   }
 
-  public RequirementDuration(int time) {
-    super(RequirementTypeRegistration.DURATION.get(), IOType.INPUT);
+  public RequirementDuration(int time, IJeiRequirement.JeiPositionedRequirement position) {
+    super(RequirementTypeRegistration.DURATION.get(), IOType.INPUT, position);
     this.time = time;
   }
 
@@ -75,12 +77,12 @@ public class RequirementDuration extends ComponentRequirement<Integer, Requireme
 
   @Override
   public ComponentRequirement<Integer, RequirementDuration> deepCopy() {
-    return new RequirementDuration(time);
+    return new RequirementDuration(time, getPosition());
   }
 
   @Override
   public ComponentRequirement<Integer, RequirementDuration> deepCopyModified(List<RecipeModifier> modifiers) {
-    return new RequirementDuration(time);
+    return new RequirementDuration(time, getPosition());
   }
 
   @Override

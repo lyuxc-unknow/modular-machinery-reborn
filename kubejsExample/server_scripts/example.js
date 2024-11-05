@@ -1,35 +1,62 @@
 // Visit the wiki for more info - https://kubejs.com/
 ServerEvents.recipes(event => {
     event.recipes.modular_machinery_reborn.machine_recipe("mmr:testing", 150)
-        .requireEnergy(100000)
-        .produceEnergy(100)
-        .requireItem("2x modular_machinery_reborn:casing_plain")
-        .requireItemTag('<item tag>', amount)
+        .requireEnergy(100000, x, y)
+        .produceEnergy(100, x, y)
+        .requireItem("2x modular_machinery_reborn:casing_plain", x, y)
+        .requireItemTag('<item tag>', amount, x, y)
         // default amount is 1
-        .requireItemTag('<item tag>')
-        .produceItem('1x modular_machinery_reborn:modularium')
-        .produceFluid('10000x minecraft:lava')
-        .requireFluid('minecraft:lava')
+        .requireItemTag('<item tag>', x, y)
+        .produceItem('1x modular_machinery_reborn:modularium', x, y)
+        .produceFluid('10000x minecraft:lava', x, y)
+        .requireFluid('minecraft:lava', x, y)
         // list of dimensions, blacklist
-        .dimensions(['minecraft:overworld'], true)
+        .dimensions(['minecraft:overworld'], true, x, y)
         // default blacklist: false
-        .dimensions(['minecraft:overworld'])
+        .dimensions(['minecraft:overworld'], x, y)
         // list of biomes, blacklist
-        .biomes(['minecraft:plains'], true)
+        .biomes(['minecraft:plains'], true, x, y)
         // default blacklist: false
-        .biomes(['minecraft:plains'])
+        .biomes(['minecraft:plains'], x, y)
         // weather time: rain, clear, snow, thunder
-        .weather('clear')
+        .weather('clear', x, y)
         // time
-        .time('[0,24000]')
+        .time('[0,24000]', x, y)
         // chunkload
-        .chunkload(3)
+        .chunkload(3, x, y)
         // only if mekanism addon available
-        .produceChemical('10x mekanism:sulfuric_acid')
-        .requireChemical('10x mekanism:sulfuric_acid')
+        .produceChemical('10x mekanism:sulfuric_acid', x, y)
+        .requireChemical('10x mekanism:sulfuric_acid', x, y)
         // only if ars addon available
-        .produceSource(100)
-        .requireSource(100)
+        .produceSource(100, x, y)
+        .requireSource(100, x, y)
+
+    /**
+     * Width/Height and positions in pixels
+     *
+     * Energy bar width: internal 16, external 18,
+     * Energy bar height: internal 61, external 63
+     *
+     * Item slot width/height: internal 16, external 18
+     *
+     * Fluid tank width: internal 16, external 18
+     * Fluid tank height: internal 61, external 63
+     *
+     * Dimension, Biome, Time, Weather, Chunkload width/height: 18
+     *
+     * Chemical tank width: internal 16, external 18
+     * Chemical tank height: internal 61, external 63
+     *
+     * Source buffer width: internal 14, external 18
+     * Source buffer height: internal 59, external 63
+     *
+     * Progress width: 22
+     * Progress height: 16
+     *
+     * Calculated on GUI 2, monitor 1920*1080 p,
+     * Progress x: 74
+     * Progress y: 8
+     */
 })
 
 MMREvents.machines(event => {
