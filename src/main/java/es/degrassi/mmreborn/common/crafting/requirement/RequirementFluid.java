@@ -172,7 +172,7 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
         if (drained.isEmpty()) {
           yield CraftCheck.failure("craftcheck.failure.fluid.input");
         }
-        if (FluidStack.isSameFluidSameComponents(drained, required.copy().asFluidStack())) {
+        if (!FluidStack.isSameFluidSameComponents(drained, required.copy().asFluidStack())) {
           yield CraftCheck.failure("craftcheck.failure.fluid.input");
         }
         this.requirementCheck.setAmount(Math.max(this.requirementCheck.getAmount() - drained.getAmount(), 0));
@@ -213,7 +213,7 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
       if (drainedSimulated.isEmpty()) {
         return false;
       }
-      if (FluidStack.isSameFluidSameComponents(drainedSimulated, required.copy().asFluidStack())) {
+      if (!FluidStack.isSameFluidSameComponents(drainedSimulated, required.copy().asFluidStack())) {
         return false;
       }
       if (this.doesntConsumeInput) {
@@ -224,7 +224,7 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
       if (actualDrained.isEmpty()) {
         return false;
       }
-      if (FluidStack.isSameFluidSameComponents(actualDrained, required.copy().asFluidStack())) {
+      if (!FluidStack.isSameFluidSameComponents(actualDrained, required.copy().asFluidStack())) {
         return false;
       }
       this.requirementCheck.setAmount(Math.max(this.requirementCheck.getAmount() - actualDrained.getAmount(), 0));
