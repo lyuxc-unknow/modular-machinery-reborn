@@ -113,7 +113,7 @@
 
   "tooltip.energyhatch.charge": "%s / %s %s",
   "tooltip.energyhatch.storage": "最大存储 %s FE",
-  "tooltip.energyhatch.out.transfer": "最大传输  %s FE/t",
+  "tooltip.energyhatch.out.transfer": "最大输出  %s FE/t",
   "tooltip.energyhatch.in.accept": "最大输入 %s FE/t",
 
   "tooltip.energyhatch.ic2.powerrate": "EU/t",
