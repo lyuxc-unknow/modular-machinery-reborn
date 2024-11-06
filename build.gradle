@@ -139,23 +139,31 @@ dependencies {
   implementation "net.neoforged:neoforge:${neo_version}"
 
   // Cloth config
-  api("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}")
+  api ("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}")
 
   // ProbeJS
-  localRuntime("curse.maven:probejs-585406:5820894")
+  localRuntime ("curse.maven:probejs-585406:5820894")
 
   // JEI
-  compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
+  compileOnly ("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
   compileOnly localRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
   // KubeJS
-  localRuntime compileOnly("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
+  compileOnly localRuntime ("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
 
   // Jade
-  localRuntime compileOnly("curse.maven:jade-324717:${jade_version}")
+  compileOnly localRuntime ("curse.maven:jade-324717:${jade_version}")
 
   // Mekanism
-  compileOnly localRuntime("mekanism:Mekanism:${mekanism_version}")
+  compileOnly localRuntime ("mekanism:Mekanism:${mekanism_version}")
+
+  // Addons for testing
+  localRuntime ("es.degrassi:modular_machinery_reborn_ars:${minecraft_version}-1.0.3")
+  localRuntime ("es.degrassi:modular_machinery_reborn_mekanism:${minecraft_version}-1.0.3")
+  localRuntime ("software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:4.6.6")
+  localRuntime ("vazkii.patchouli:Patchouli:1.21-88-NEOFORGE-SNAPSHOT")
+  localRuntime ("top.theillusivec4.curios:curios-neoforge:9.0.12+1.21")
+  localRuntime ("com.hollingsworth.ars_nouveau:ars_nouveau-${project.minecraft_version}:5.2.2.765")
 }
 
 tasks.withType(ProcessResources).configureEach {

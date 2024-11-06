@@ -27,7 +27,7 @@ public class JeiFluidComponent extends JeiComponent<FluidStack, RequirementFluid
 
   @Override
   public int getHeight() {
-    return 61;
+    return 16;
   }
 
   @Override

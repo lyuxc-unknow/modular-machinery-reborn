@@ -27,7 +27,7 @@
   "gui.controller.status.no_recipe": "Sin receta encontrada",
   "gui.controller.status.failure": "",
   "gui.controller.status.crafting": "Procesando...",
-  "gui.controller.status.crafting.progress": "progreso: %s",
+  "gui.controller.status.crafting.progress": "Progreso: %s",
 
   "craftcheck.failure.item.input": "Sin item de entrada!",
   "craftcheck.failure.item.output.space": "No hay suficiente espacio en el inventario para la salida de item(s)!",

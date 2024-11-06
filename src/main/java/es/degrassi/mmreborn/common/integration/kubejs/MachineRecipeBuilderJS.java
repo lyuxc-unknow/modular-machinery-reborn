@@ -6,8 +6,10 @@ import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.util.TickDuration;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.BiomeRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.ChunkloadRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.DimensionRequirementJS;
@@ -31,16 +33,41 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
   WeatherRequirementJS, TimeRequirementJS, ChunkloadRequirementJS
 {
 
+  @HideFromJS
   public static final Map<ResourceLocation, Map<ResourceLocation, Integer>> IDS = new HashMap<>();
 
+  @HideFromJS
+  public MachineRecipeBuilderJS(ResourceLocation machine, int time, int width, int height, int progressX, int progressY) {
+    setValue(ModularMachineryRebornRecipeSchemas.MACHINE_ID, machine);
+    setValue(ModularMachineryRebornRecipeSchemas.TIME, new TickDuration(time));
+    setValue(ModularMachineryRebornRecipeSchemas.PROGRESS_X, progressX);
+    setValue(ModularMachineryRebornRecipeSchemas.PROGRESS_Y, progressY);
+    setValue(ModularMachineryRebornRecipeSchemas.WIDTH, width);
+    setValue(ModularMachineryRebornRecipeSchemas.HEIGHT, height);
+  }
+  @HideFromJS
+  public MachineRecipeBuilderJS(ResourceLocation machine, int time, int width, int height) {
+    setValue(ModularMachineryRebornRecipeSchemas.MACHINE_ID, machine);
+    setValue(ModularMachineryRebornRecipeSchemas.TIME, new TickDuration(time));
+    setValue(ModularMachineryRebornRecipeSchemas.WIDTH, width);
+    setValue(ModularMachineryRebornRecipeSchemas.HEIGHT, height);
+  }
+
+  @HideFromJS
   public MachineRecipeBuilderJS(ResourceLocation machine, int time) {
     setValue(ModularMachineryRebornRecipeSchemas.MACHINE_ID, machine);
     setValue(ModularMachineryRebornRecipeSchemas.TIME, new TickDuration(time));
+    setValue(ModularMachineryRebornRecipeSchemas.PROGRESS_X, 74);
+    setValue(ModularMachineryRebornRecipeSchemas.PROGRESS_Y, 8);
+    setValue(ModularMachineryRebornRecipeSchemas.WIDTH, 256);
+    setValue(ModularMachineryRebornRecipeSchemas.HEIGHT, 256);
   }
 
+  @HideFromJS
   public MachineRecipeBuilderJS() {}
 
   @Override
+  @HideFromJS
   public void afterLoaded() {
     super.afterLoaded();
     ResourceLocation machine = getValue(ModularMachineryRebornRecipeSchemas.MACHINE_ID);
@@ -55,11 +82,21 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
   }
 
   @Override
+  @HideFromJS
   public @Nullable KubeRecipe serializeChanges() {
     if(!this.newRecipe)
       return super.serializeChanges();
 
-    MachineRecipe.MachineRecipeBuilder builder = new MachineRecipe.MachineRecipeBuilder(getValue(ModularMachineryRebornRecipeSchemas.MACHINE_ID), (int) getValue(ModularMachineryRebornRecipeSchemas.TIME).ticks());
+    MachineRecipe.MachineRecipeBuilder builder = new MachineRecipe.MachineRecipeBuilder(
+        getValue(ModularMachineryRebornRecipeSchemas.MACHINE_ID),
+        (int) getValue(ModularMachineryRebornRecipeSchemas.TIME).ticks(),
+        getValue(ModularMachineryRebornRecipeSchemas.WIDTH),
+        getValue(ModularMachineryRebornRecipeSchemas.HEIGHT),
+        new IJeiRequirement.JeiPositionedRequirement(
+            getValue(ModularMachineryRebornRecipeSchemas.PROGRESS_X),
+            getValue(ModularMachineryRebornRecipeSchemas.PROGRESS_Y)
+        )
+    );
 
     for (ComponentRequirement<?, ?> requirement : getValue(ModularMachineryRebornRecipeSchemas.REQUIREMENTS))
       builder.addRequirement(requirement);
@@ -75,6 +112,26 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
     return this;
   }
 
+  public MachineRecipeBuilderJS progressX(int x) {
+    setValue(ModularMachineryRebornRecipeSchemas.PROGRESS_X, x);
+    return this;
+  }
+
+  public MachineRecipeBuilderJS progressY(int y) {
+    setValue(ModularMachineryRebornRecipeSchemas.PROGRESS_Y, y);
+    return this;
+  }
+
+  public MachineRecipeBuilderJS width(int width) {
+    setValue(ModularMachineryRebornRecipeSchemas.WIDTH, width);
+    return this;
+  }
+
+  public MachineRecipeBuilderJS height(int height) {
+    setValue(ModularMachineryRebornRecipeSchemas.HEIGHT, height);
+    return this;
+  }
+
   public MachineRecipeBuilderJS voidOnFailure(boolean v) {
     setValue(ModularMachineryRebornRecipeSchemas.VOID, v);
     return this;
@@ -86,11 +143,13 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
   }
 
   @Override
+  @HideFromJS
   public MachineRecipeBuilderJS addRequirement(ComponentRequirement<?, ?> requirement) {
     setValue(ModularMachineryRebornRecipeSchemas.REQUIREMENTS, addToList(ModularMachineryRebornRecipeSchemas.REQUIREMENTS, requirement));
     return this;
   }
 
+  @HideFromJS
   private <E> List<E> addToList(RecipeKey<List<E>> key, E element) {
     List<E> list = new ArrayList<>();
     List<E> values = getValue(key);
@@ -100,6 +159,7 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
   }
 
   @Override
+  @HideFromJS
   public MachineRecipeBuilderJS error(String error, Object... args) {
     throw new KubeRuntimeException(MessageFormatter.arrayFormat(error, args).getMessage());
   }

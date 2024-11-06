@@ -46,7 +46,11 @@ public interface ModularMachineryRebornRecipeSchemas {
   RecipeKey<ResourceLocation> MACHINE_ID = RESOURCE_LOCATION.key("machine", ComponentRole.OTHER);
   RecipeKey<TickDuration> TIME = TimeComponent.TICKS.key("time", ComponentRole.OTHER);
   RecipeKey<Boolean> VOID = BooleanComponent.BOOLEAN.key("voidOnFailure", ComponentRole.OTHER).optional(true).alwaysWrite().exclude();
+  RecipeKey<Integer> PROGRESS_X = NumberComponent.INT.key("progress_x", ComponentRole.OTHER).optional(74).alwaysWrite().exclude();
+  RecipeKey<Integer> PROGRESS_Y = NumberComponent.INT.key("progress_y", ComponentRole.OTHER).optional(8).alwaysWrite().exclude();
+  RecipeKey<Integer> WIDTH = NumberComponent.INT.key("width", ComponentRole.OTHER).optional(256).alwaysWrite().exclude();
+  RecipeKey<Integer> HEIGHT = NumberComponent.INT.key("height", ComponentRole.OTHER).optional(256).alwaysWrite().exclude();
   RecipeKey<List<ComponentRequirement<?, ?>>> REQUIREMENTS = REQUIREMENT_LIST.key("requirements", ComponentRole.OTHER).optional(List.of()).allowEmpty().alwaysWrite().exclude();
   RecipeKey<Integer> PRIORITY = NumberComponent.INT.key("priority", ComponentRole.OTHER).optional(0).alwaysWrite().exclude();
-  RecipeSchema CUSTOM_MACHINE = new RecipeSchema(MACHINE_ID, TIME, REQUIREMENTS, PRIORITY, VOID).factory(new KubeRecipeFactory(ModularMachineryReborn.rl("recipe"), TypeInfo.of(MachineRecipeBuilderJS.class), MachineRecipeBuilderJS::new));
+  RecipeSchema CUSTOM_MACHINE = new RecipeSchema(MACHINE_ID, TIME, PROGRESS_X, PROGRESS_Y, WIDTH, HEIGHT, REQUIREMENTS, PRIORITY, VOID).factory(new KubeRecipeFactory(ModularMachineryReborn.rl("recipe"), TypeInfo.of(MachineRecipeBuilderJS.class), MachineRecipeBuilderJS::new));
 }

@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.crafting.requirement.jei;
 
+import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
@@ -21,5 +22,12 @@ public interface IJeiRequirement<C, T extends ComponentRequirement<C, T>> {
     return getRequirement().getPosition();
   }
 
-  record JeiPositionedRequirement(int x, int y) {}
+  record JeiPositionedRequirement(int x, int y) {
+    public JsonObject asJson() {
+      JsonObject json = new JsonObject();
+      json.addProperty("x", x);
+      json.addProperty("y", y);
+      return json;
+    }
+  }
 }

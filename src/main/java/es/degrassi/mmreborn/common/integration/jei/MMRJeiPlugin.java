@@ -12,17 +12,9 @@ import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import es.degrassi.mmreborn.common.registration.Registration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IJeiHelpers;
-import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.registration.IModIngredientRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
@@ -36,10 +28,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+
 @JeiPlugin
 public class MMRJeiPlugin implements IModPlugin {
   public static final ResourceLocation PLUGIN_ID = ModularMachineryReborn.rl("jei_plugin");
-  public static IRecipeManager recipeManager;
   private static final Map<DynamicMachine, MMRRecipeCategory> recipeCategories = new HashMap<>();
   public static IJeiHelpers jeiHelpers;
 
@@ -54,7 +53,6 @@ public class MMRJeiPlugin implements IModPlugin {
   @Override
   public void registerIngredients(IModIngredientRegistration registration) {
     registration.register(CustomIngredientTypes.ENERGY, new ArrayList<>(), new EnergyIngredientHelper(), new DummyIngredientRenderer<>(), NamedCodec.LONG.codec());
-//    registration.register(CustomIngredientTypes.HYBRID_FLUID, new ArrayList<>, new HybridFluidIngredientHelper(), new DummyIngredientRenderer<>(), HybridFluid);
   }
 
   @Override
@@ -94,19 +92,19 @@ public class MMRJeiPlugin implements IModPlugin {
   @Override
   public void registerRecipes(IRecipeRegistration registration) {
     for (DynamicMachine machine : ModularMachineryReborn.MACHINES.values()) {
-      if(machine == null) continue;
+      if (machine == null) continue;
       registration.addRecipes(getCategory(machine).getRecipeType(),
-        Optional.ofNullable(Minecraft.getInstance().level)
-          .map(ClientLevel::getRecipeManager)
-          .map(r -> r.getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get()))
-          .map(list -> list
-            .stream()
-            .map(RecipeHolder::value)
-            .map(MachineRecipe::copy)
-            .filter(recipe -> Objects.requireNonNull(recipe.getOwningMachine()).getRegistryName().equals(machine.getRegistryName()))
-            .toList()
-          )
-          .orElse(List.of())
+          Optional.ofNullable(Minecraft.getInstance().level)
+              .map(ClientLevel::getRecipeManager)
+              .map(r -> r.getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get()))
+              .map(list -> list
+                  .stream()
+                  .map(RecipeHolder::value)
+                  .map(MachineRecipe::copy)
+                  .filter(recipe -> Objects.requireNonNull(recipe.getOwningMachine()).getRegistryName().equals(machine.getRegistryName()))
+                  .toList()
+              )
+              .orElse(List.of())
       );
     }
   }
@@ -118,7 +116,6 @@ public class MMRJeiPlugin implements IModPlugin {
 
   @Override
   public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
-    recipeManager = jeiRuntime.getRecipeManager();
     jeiHelpers = jeiRuntime.getJeiHelpers();
   }
 }

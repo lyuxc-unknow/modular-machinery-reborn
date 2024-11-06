@@ -14,11 +14,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class JeiEnergyComponent extends JeiComponent<Long, RequirementEnergy> {
   private int width = 16;
-  private int height = 61;
+  private int height = 52;
   private int recipeTime;
   public JeiEnergyComponent(RequirementEnergy requirement) {
     super(requirement, 18, 0);
@@ -56,8 +57,8 @@ public class JeiEnergyComponent extends JeiComponent<Long, RequirementEnergy> {
     tooltip.add(
         Component.translatable(
             "modular_machinery_reborn.jei.ingredient.energy.total." + mode,
-            Utils.format(ingredient * recipeTime),
-            Utils.format(ingredient)
+            Utils.format(requirement.requirementPerTick * recipeTime),
+            Utils.format(requirement.requirementPerTick)
         )
     );
     return tooltip;

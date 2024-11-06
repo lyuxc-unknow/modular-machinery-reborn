@@ -9,6 +9,7 @@ import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.codec.NamedMapCodec;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
@@ -31,18 +32,20 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Function;
 
 @Getter
 @Setter
 public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeInput> {
 
   public static final NamedMapCodec<MachineRecipeBuilder> CODEC = NamedCodec.record(instance -> instance.group(
-    DefaultCodecs.RESOURCE_LOCATION.fieldOf("machine").forGetter(MachineRecipeBuilder::getMachine),
-    NamedCodec.intRange(1, Integer.MAX_VALUE).fieldOf("time").forGetter(MachineRecipeBuilder::getTime),
-    ComponentRequirement.CODEC.listOf().fieldOf("requirements").forGetter(MachineRecipeBuilder::getRequirements),
-    NamedCodec.INT.optionalFieldOf("priority", 0).forGetter(MachineRecipeBuilder::getPrio),
-    NamedCodec.BOOL.optionalFieldOf("voidFailure", true).forGetter(MachineRecipeBuilder::isVoidF)
+      DefaultCodecs.RESOURCE_LOCATION.fieldOf("machine").forGetter(MachineRecipeBuilder::getMachine),
+      NamedCodec.intRange(1, Integer.MAX_VALUE).fieldOf("time").forGetter(MachineRecipeBuilder::getTime),
+      ComponentRequirement.CODEC.listOf().fieldOf("requirements").forGetter(MachineRecipeBuilder::getRequirements),
+      NamedCodec.INT.optionalFieldOf("priority", 0).forGetter(MachineRecipeBuilder::getPrio),
+      NamedCodec.BOOL.optionalFieldOf("voidFailure", true).forGetter(MachineRecipeBuilder::isVoidF),
+      NamedCodec.INT.optionalFieldOf("width", 256).forGetter(MachineRecipeBuilder::getWidth),
+      NamedCodec.INT.optionalFieldOf("height", 256).forGetter(MachineRecipeBuilder::getHeight),
+      IJeiRequirement.POSITION_CODEC.optionalFieldOf("progressPosition", new IJeiRequirement.JeiPositionedRequirement(74, 8)).forGetter(MachineRecipeBuilder::getProgressPosition)
   ).apply(instance, MachineRecipeBuilder::new), "Machine recipe");
 
   @Override
@@ -81,16 +84,21 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
   private final List<ComponentRequirement<?, ?>> recipeRequirements = Lists.newArrayList();
   private final int configuredPriority;
   private final boolean voidPerTickFailure;
+  private final IJeiRequirement.JeiPositionedRequirement progressPosition;
+  private final int width, height;
 
-  public MachineRecipe(ResourceLocation owningMachine, int tickTime, int configuredPriority, boolean voidPerTickFailure) {
-    this(owningMachine, tickTime, configuredPriority, voidPerTickFailure, false);
+  public MachineRecipe(ResourceLocation owningMachine, int tickTime, int configuredPriority, boolean voidPerTickFailure, int width, int height, IJeiRequirement.JeiPositionedRequirement progressPosition) {
+    this(owningMachine, tickTime, configuredPriority, voidPerTickFailure, false, width, height, progressPosition);
   }
 
-  public MachineRecipe( ResourceLocation owningMachine, int tickTime, int configuredPriority, boolean voidPerTickFailure, boolean copy) {
+  public MachineRecipe(ResourceLocation owningMachine, int tickTime, int configuredPriority, boolean voidPerTickFailure, boolean copy, int width, int height, IJeiRequirement.JeiPositionedRequirement progressPosition) {
     this.owningMachine = owningMachine;
     this.tickTime = tickTime;
     this.configuredPriority = configuredPriority;
     this.voidPerTickFailure = voidPerTickFailure;
+    this.progressPosition = progressPosition;
+    this.width = width;
+    this.height = height;
   }
 
   public ResourceLocation getOwningMachineIdentifier() {
@@ -131,11 +139,14 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
 
   public MachineRecipe copy(ResourceLocation newOwningMachineIdentifier, List<RecipeModifier> modifiers) {
     MachineRecipe copy = new MachineRecipe(
-      newOwningMachineIdentifier,
-      Math.round(RecipeModifier.applyModifiers(modifiers, RequirementTypeRegistration.DURATION.get(), null, this.getRecipeTotalTickTime(), false)),
-      this.getConfiguredPriority(),
-      this.doesCancelRecipeOnPerTickFailure(),
-      true
+        newOwningMachineIdentifier,
+        Math.round(RecipeModifier.applyModifiers(modifiers, RequirementTypeRegistration.DURATION.get(), null, this.getRecipeTotalTickTime(), false)),
+        this.getConfiguredPriority(),
+        this.doesCancelRecipeOnPerTickFailure(),
+        true,
+        this.width,
+        this.height,
+        this.progressPosition
     );
 
     for (ComponentRequirement<?, ?> requirement : this.getCraftingRequirements()) {
@@ -162,6 +173,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
     json.add("recipeRequirements", recipeRequirements);
     json.addProperty("configuredPriority", configuredPriority);
     json.addProperty("voidPerTickFailure", voidPerTickFailure);
+    json.add("progressPosition", progressPosition.asJson());
     return json;
   }
 
@@ -173,15 +185,20 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
   @Getter
   public static class MachineRecipeBuilder {
     private final ResourceLocation machine;
+    private final IJeiRequirement.JeiPositionedRequirement progressPosition;
     private final int time;
+    private final int width, height;
     private int prio;
     private final List<ComponentRequirement<?, ?>> requirements;
     private boolean voidF;
 
-    public MachineRecipeBuilder(ResourceLocation machine, int time) {
+    public MachineRecipeBuilder(ResourceLocation machine, int time, int width, int height, IJeiRequirement.JeiPositionedRequirement progressPosition) {
       this.requirements = new LinkedList<>();
       this.machine = machine;
       this.time = time;
+      this.progressPosition = progressPosition;
+      this.width = width;
+      this.height = height;
     }
 
     public void withPriority(int prio) {
@@ -196,30 +213,31 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
       requirements.add(requirement);
     }
 
-    public MachineRecipeBuilder(ResourceLocation machine, int time, List<ComponentRequirement<?, ?>> requirements, int prio, boolean voidF) {
+    public MachineRecipeBuilder(ResourceLocation machine, int time, List<ComponentRequirement<?, ?>> requirements, int prio, boolean voidF, int width, int height, IJeiRequirement.JeiPositionedRequirement progressPosition) {
       this.machine = machine;
       this.time = time;
       this.requirements = requirements;
       this.prio = prio;
       this.voidF = voidF;
+      this.progressPosition = progressPosition;
+      this.width = width;
+      this.height = height;
     }
 
     public MachineRecipeBuilder(MachineRecipe recipe) {
-      this(recipe.getOwningMachineIdentifier(), recipe.tickTime, recipe.recipeRequirements, recipe.configuredPriority, recipe.voidPerTickFailure);
+      this(recipe.getOwningMachineIdentifier(), recipe.tickTime, recipe.recipeRequirements, recipe.configuredPriority, recipe.voidPerTickFailure, recipe.width, recipe.height, recipe.progressPosition);
     }
 
     public MachineRecipe build() {
       try {
-        MachineRecipe recipe = new MachineRecipe(machine, time, prio, voidF);
+        MMRLogger.INSTANCE.info("Building recipe...");
+        MachineRecipe recipe = new MachineRecipe(machine, time, prio, voidF, width, height, progressPosition);
         requirements.forEach(recipe::addRequirement);
-        logBuild(recipe);
+        MMRLogger.INSTANCE.info("Finished building recipe {}", recipe);
         return recipe;
-      } catch(Exception ignored){}
-      return  null;
-    }
-
-    private static void logBuild(MachineRecipe recipe) {
-      MMRLogger.INSTANCE.info("Building recipe...\n{}\nFinished building recipe", recipe);
+      } catch (Exception ignored) {
+      }
+      return null;
     }
   }
 }

@@ -1,6 +1,12 @@
 // Visit the wiki for more info - https://kubejs.com/
 ServerEvents.recipes(event => {
     event.recipes.modular_machinery_reborn.machine_recipe("mmr:testing", 150)
+        // OPTIONAL CUSTOMIZATION {
+        .progressX(number) // default 74
+        .progressY(number) // default 8
+        .width(number) // default 256
+        .height(number) // default 256
+        // }
         .requireEnergy(100000, x, y)
         .produceEnergy(100, x, y)
         .requireItem("2x modular_machinery_reborn:casing_plain", x, y)
@@ -34,28 +40,22 @@ ServerEvents.recipes(event => {
     /**
      * Width/Height and positions in pixels
      *
-     * Energy bar width: internal 16, external 18,
-     * Energy bar height: internal 61, external 63
-     *
-     * Item slot width/height: internal 16, external 18
-     *
-     * Fluid tank width: internal 16, external 18
-     * Fluid tank height: internal 61, external 63
-     *
-     * Dimension, Biome, Time, Weather, Chunkload width/height: 18
-     *
-     * Chemical tank width: internal 16, external 18
-     * Chemical tank height: internal 61, external 63
-     *
-     * Source buffer width: internal 14, external 18
-     * Source buffer height: internal 59, external 63
-     *
      * Progress width: 22
      * Progress height: 16
      *
-     * Calculated on GUI 2, monitor 1920*1080 p,
-     * Progress x: 74
-     * Progress y: 8
+     * Energy bar width: internal 16, external 18,
+     * Energy bar height: internal 52, external 54
+     *
+     * Item slot width/height: internal 16, external 18
+     *
+     * Fluid tank width/height: internal 16, external 18
+     *
+     * Dimension, Biome, Time, Weather, Chunkload width/height: 18
+     *
+     * Addons:
+     * Chemical tank width/height: internal 16, external 18
+     *
+     * Source buffer width/height: internal 14, external 18
      */
 })
 
