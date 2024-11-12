@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 public interface ItemRequirementJS extends RecipeJSBuilder {
 
   default MachineRecipeBuilderJS requireItem(ItemStack stack, int x, int y) {
-    return addRequirement(new RequirementItem(IOType.INPUT, new ItemIngredient(stack.getItem()), stack.getCount(), new IJeiRequirement.JeiPositionedRequirement(x, y)));
+    return addRequirement(new RequirementItem(IOType.INPUT, new ItemIngredient(stack), stack.getCount(), new IJeiRequirement.JeiPositionedRequirement(x, y)));
   }
 
   default MachineRecipeBuilderJS requireItemTag(String tag, int x, int y) {
@@ -24,6 +24,6 @@ public interface ItemRequirementJS extends RecipeJSBuilder {
   }
 
   default MachineRecipeBuilderJS produceItem(ItemStack stack, int x, int y) {
-    return addRequirement(new RequirementItem(IOType.OUTPUT, new ItemIngredient(stack.getItem()), stack.getCount(), new IJeiRequirement.JeiPositionedRequirement(x, y)));
+    return addRequirement(new RequirementItem(IOType.OUTPUT, new ItemIngredient(stack), stack.getCount(), new IJeiRequirement.JeiPositionedRequirement(x, y)));
   }
 }

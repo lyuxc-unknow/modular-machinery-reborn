@@ -2,7 +2,6 @@ package es.degrassi.mmreborn.common.crafting.helper;
 
 import es.degrassi.mmreborn.common.integration.ingredient.HybridFluid;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalTank;
 import net.minecraft.world.item.ItemStack;
 
 public abstract class ComponentOutputRestrictor {

@@ -28,7 +28,8 @@ public class JeiItemComponent extends JeiComponent<ItemStack, RequirementItem> {
 
   @Override
   public List<ItemStack> ingredients() {
-    return Lists.newArrayList(new ItemStack(requirement.ingredient.getAll().get(0), requirement.amount));
+    return requirement.getIngredient().getAll().stream().map(ItemStack::copy).toList();
+    // return Lists.newArrayList(new ItemStack(requirement.ingredient.getAll().get(0), requirement.amount, requirement.ingredient.getAll().get(0).getDefaultInstance().getComponents()));
   }
 
   @Override

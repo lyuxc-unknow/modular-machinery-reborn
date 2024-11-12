@@ -114,6 +114,7 @@ public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, 
   public JsonObject asJson() {
     JsonObject json = new JsonObject();
     json.addProperty("actionType", actionType.name());
+    json.add("position", position.asJson());
     return json;
   }
 

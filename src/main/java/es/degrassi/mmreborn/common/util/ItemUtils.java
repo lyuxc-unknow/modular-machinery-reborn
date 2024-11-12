@@ -44,7 +44,7 @@ public class ItemUtils {
   }
 
   public static boolean consumeFromInventory(IItemHandlerModifiable handler, ItemStack toConsume, boolean simulate, @Nullable CompoundTag matchNBTTag) {
-    Map<Integer, ItemStack> contents = findItemsIndexedInInventory(handler, toConsume, false, matchNBTTag);
+    Map<Integer, ItemStack> contents = findItemsIndexedInInventory(handler, toConsume, true, matchNBTTag);
     if (contents.isEmpty()) return false;
 
     int cAmt = toConsume.getCount();
@@ -104,7 +104,7 @@ public class ItemUtils {
         if (stack.getCount() <= 0)
           return insertedAmt;
       } else {
-        if (stackEqualsNonNBT(toAdd, in) && matchTags(toAdd, in)) {
+        if (matchTags(toAdd, in)) {
           int space = max - in.getCount();
           int added = Math.min(stack.getCount(), space);
           insertedAmt += added;
@@ -128,7 +128,7 @@ public class ItemUtils {
       if (in.isEmpty()) {
         size -= max;
       } else {
-        if (stackEqualsNonNBT(stack, in) && matchTags(stack, in)) {
+        if (matchTags(stack, in)) {
           int space = max - in.getCount();
           size -= space;
         }
@@ -142,11 +142,11 @@ public class ItemUtils {
       return true;
     if (stack.isEmpty() || other.isEmpty())
       return false;
-    return ItemStack.isSameItemSameComponents(stack, other);
+    return ItemStack.isSameItem(stack, other);
   }
 
   public static boolean matchTags(@Nonnull ItemStack stack, @Nonnull  ItemStack other) {
-    return ItemStack.isSameItem(stack, other);
+    return stackEqualsNonNBT(stack, other) && ItemStack.isSameItemSameComponents(stack, other);
   }
 
   @Nonnull
@@ -188,12 +188,10 @@ public class ItemUtils {
   }
 
   public static boolean matchStacks(@Nonnull ItemStack stack, @Nonnull  ItemStack other) {
-    if (!ItemStack.isSameItem(stack, other)) return false;
-    return ItemStack.isSameItemSameComponents(stack, other);
+    return matchTags(stack, other);
   }
 
   public static boolean matchStackLoosely(@Nonnull ItemStack stack, @Nonnull  ItemStack other) {
-    if (stack.isEmpty()) return other.isEmpty();
-    return ItemStack.isSameItem(stack, other);
+    return stackEqualsNonNBT(stack, other);
   }
 }

@@ -159,7 +159,7 @@ dependencies {
 
   // Addons for testing
   localRuntime ("es.degrassi:modular_machinery_reborn_ars:${minecraft_version}-1.0.3")
-  localRuntime ("es.degrassi:modular_machinery_reborn_mekanism:${minecraft_version}-1.0.3")
+  localRuntime ("es.degrassi:modular_machinery_reborn_mekanism:${minecraft_version}-1.0.4")
   localRuntime ("software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:4.6.6")
   localRuntime ("vazkii.patchouli:Patchouli:1.21-88-NEOFORGE-SNAPSHOT")
   localRuntime ("top.theillusivec4.curios:curios-neoforge:9.0.12+1.21")
@@ -270,6 +270,20 @@ unifiedPublishing {
                 optional "jade"
             }
         }
+    }
+
+    var MODRINTH_API_KEY = System.getenv("MODRINTH")
+    if (MODRINTH_API_KEY != null) {
+      modrinth {
+        token = MODRINTH_API_KEY
+        id = "oPdlqv8D"
+        relations {
+          depends "cloth-config"
+          optional "kubejs"
+          optional "jei"
+          optional "jade"
+        }
+      }
     }
   }
 }

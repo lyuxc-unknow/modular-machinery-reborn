@@ -8,9 +8,10 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Rotation;
 
-public class ItemTagIngredient implements IIngredient<Item> {
+public class ItemTagIngredient implements IIngredient<ItemStack> {
 
   private final TagKey<Item> tag;
 
@@ -36,23 +37,23 @@ public class ItemTagIngredient implements IIngredient<Item> {
   }
 
   @Override
-  public List<Item> getAll() {
-    return TagUtil.getItems(this.tag).toList();
+  public List<ItemStack> getAll() {
+    return TagUtil.getItems(this.tag).toList().stream().map(Item::getDefaultInstance).toList();
   }
 
   @Override
-  public IIngredient<Item> copy() {
+  public IIngredient<ItemStack> copy() {
     return new ItemTagIngredient(tag);
   }
 
   @Override
-  public IIngredient<Item> copyWithRotation(Rotation rotation) {
+  public IIngredient<ItemStack> copyWithRotation(Rotation rotation) {
     return new ItemTagIngredient(tag);
   }
 
   @Override
-  public boolean test(Item item) {
-    return TagUtil.getItems(this.tag).anyMatch(Predicate.isEqual(item));
+  public boolean test(ItemStack item) {
+    return item.is(this.tag);//TagUtil.getItems(this.tag).anyMatch(Predicate.isEqual(item));
   }
 
   @Override

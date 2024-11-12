@@ -1,54 +1,56 @@
 package es.degrassi.mmreborn.api;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import java.util.Collections;
-import java.util.List;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.Item;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Rotation;
 
-public class ItemIngredient implements IIngredient<Item> {
+import java.util.Collections;
+import java.util.List;
 
-  private final Item item;
+public class ItemIngredient implements IIngredient<ItemStack> {
 
-  public ItemIngredient(Item item) {
+  private final ItemStack item;
+
+  public ItemIngredient(ItemStack item) {
     this.item = item;
   }
 
   @Override
-  public List<Item> getAll() {
+  public List<ItemStack> getAll() {
     return Collections.singletonList(this.item);
   }
 
   @Override
-  public IIngredient<Item> copy() {
-    return new ItemIngredient(item);
+  public IIngredient<ItemStack> copy() {
+    return new ItemIngredient(item.copy());
   }
 
   @Override
-  public IIngredient<Item> copyWithRotation(Rotation rotation) {
-    return new ItemIngredient(item);
+  public IIngredient<ItemStack> copyWithRotation(Rotation rotation) {
+    return new ItemIngredient(item.copy());
   }
 
   @Override
-  public boolean test(Item item) {
-    return this.item == item;
+  public boolean test(ItemStack item) {
+    return ItemStack.isSameItemSameComponents(this.item, item);
   }
 
   @Override
   public String toString() {
-    return BuiltInRegistries.ITEM.getKey(this.item).toString();
+    return ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, this.item).result().map(JsonElement::toString).orElse("");
   }
 
   public ItemStack getStack(int amount) {
-    return new ItemStack(item, amount);
+    return item.copyWithCount(amount);
   }
 
   @Override
   public JsonObject asJson() {
     JsonObject json = new JsonObject();
-    json.addProperty("item", BuiltInRegistries.ITEM.getKey(this.item).toString());
+    json.addProperty("item", item.toString());
+    json.addProperty("components", item.getComponents().toString().replaceAll("=>", "=").replaceAll("\\{", "[").replaceAll("}", "]"));
     return json;
   }
 }

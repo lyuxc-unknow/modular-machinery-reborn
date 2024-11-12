@@ -53,7 +53,7 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
     }), "RequirementItem");
 
   @Getter
-  public final IIngredient<Item> ingredient;
+  public final IIngredient<ItemStack> ingredient;
   @Getter
   public final int amount;
 
@@ -81,7 +81,7 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
     return new JeiItemComponent(this);
   }
 
-  public RequirementItem(IOType ioType, IIngredient<Item> ingredient, int amount, IJeiRequirement.JeiPositionedRequirement position) {
+  public RequirementItem(IOType ioType, IIngredient<ItemStack> ingredient, int amount, IJeiRequirement.JeiPositionedRequirement position) {
     super(RequirementTypeRegistration.ITEM.get(), ioType, position);
     boolean isTag = ingredient instanceof ItemTagIngredient;
     if (ioType == IOType.OUTPUT && isTag) throw new IllegalArgumentException("Output item can not be a tag");
@@ -179,7 +179,7 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
           }
         }
 
-        ItemStack stack = new ItemStack(ingredient.getAll().get(0), this.countIOBuffer);
+        ItemStack stack = ingredient.getAll().get(0).copyWithCount(countIOBuffer);
 
         int inserted = ItemUtils.tryPlaceItemInInventory(stack.copy(), handler, true);
         if (inserted > 0) {
