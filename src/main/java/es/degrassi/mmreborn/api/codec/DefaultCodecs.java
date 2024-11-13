@@ -62,7 +62,6 @@ public class DefaultCodecs {
     .xmap(stack -> stack.orElse(FluidStack.EMPTY), stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
   public static final NamedCodec<FluidStack> FLUID_OR_STACK = NamedCodec.either(RegistrarCodec.FLUID, NamedCodec.of(OPTIONAL_FLUID_CODEC), "FluidStack").xmap(either -> either.map(fluid -> new FluidStack(fluid, 1000), Function.identity()), Either::right, "Fluid Stack");
   public static final NamedCodec<ItemStack> ITEM_OR_STACK = NamedCodec.either(RegistrarCodec.ITEM, NamedCodec.of(ItemStack.OPTIONAL_CODEC), "ItemStack").xmap(either -> either.map(Item::getDefaultInstance, Function.identity()), Either::right, "Item Stack");
-
   public static final NamedCodec<Ingredient> INGREDIENT = NamedCodec.of(Ingredient.CODEC, "Ingredient");
 
   public static final NamedCodec<SizedIngredient> SIZED_INGREDIENT_WITH_NBT = NamedCodec.record(sizedIngredientInstance ->
@@ -83,23 +82,6 @@ public class DefaultCodecs {
   }, aabb -> DoubleStream.of(aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ), "Box");
 
   public static final NamedCodec<Integer> HEX = NamedCodec.STRING.comapFlatMap(DefaultCodecs::decodeHexColor, DefaultCodecs::encodeHexColor, "Hex color");
-
-//  public static final NamedCodec<Either<TagKey<Item>, ItemStack>> ITEMSTACK_OR_TAG = NamedCodec.either(
-//    DefaultCodecs.ITEM_OR_STACK,
-//    DefaultCodecs.registryValueOrTag(BuiltInRegistries.ITEM)
-//  ).comapFlatMap(either -> {
-//    if (either.left().isPresent()) {
-//      return DataResult.success(Either.right(either.left().get()));
-//    } else if (either.right().isPresent()) {
-//      var e = either.right().get();
-//      if (e.left().isPresent()) {
-//        return DataResult.success(Either.left(e.left().get()));
-//      } else if(e.right().isPresent()) {
-//        return DataResult.success(Either.right(e.right().get().value().getDefaultInstance()));
-//      }
-//    }
-//    return DataResult.error(() -> "Either values can not be empty");
-//  }, either -> either.map(key -> "#" + key.location(), stack -> BuiltInRegistries.ITEM.getKey(stack.getItem()).toString()), "");
 
   public static <T> NamedCodec<TagKey<T>> tagKey(ResourceKey<Registry<T>> registry) {
     return RESOURCE_LOCATION.xmap(rl -> TagKey.create(registry, rl), TagKey::location, "Tag: " + registry.location());

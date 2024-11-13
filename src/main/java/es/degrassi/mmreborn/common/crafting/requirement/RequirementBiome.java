@@ -67,7 +67,8 @@ public class RequirementBiome extends ComponentRequirement<ResourceLocation, Req
   }
 
   @Override
-  public @NotNull CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context, List<ComponentOutputRestrictor> restrictions) {
+  public @NotNull CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context,
+                                              List<ComponentOutputRestrictor<?>> restrictions) {
     Registry<Biome> biomeRegistry = context.getMachineController().getLevel().registryAccess().registryOrThrow(Registries.BIOME);
     if (this.filter.stream().anyMatch(biome -> biomeRegistry.get(biome) == context.getMachineController().getLevel().getBiome(context.getMachineController().getBlockPos()).value()) != this.blacklist)
       return CraftCheck.success();

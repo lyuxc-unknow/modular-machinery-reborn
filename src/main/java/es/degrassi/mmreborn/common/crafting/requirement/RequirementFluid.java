@@ -162,7 +162,8 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
 
   @Nonnull
   @Override
-  public CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context, List<ComponentOutputRestrictor> restrictions) {
+  public CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context,
+                                     List<ComponentOutputRestrictor<?>> restrictions) {
     HybridTank handler = (HybridTank) component.providedComponent();
 
     return switch (getActionType()) {

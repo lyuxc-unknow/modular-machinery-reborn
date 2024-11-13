@@ -60,7 +60,8 @@ public class RequirementTime extends ComponentRequirement<IntRange, RequirementT
   }
 
   @Override
-  public @NotNull CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context, List<ComponentOutputRestrictor> restrictions) {
+  public @NotNull CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context,
+                                              List<ComponentOutputRestrictor<?>> restrictions) {
     long time = context.getMachineController().getLevel().dimensionType().hasFixedTime()
         ? context.getMachineController().getLevel().getDayTime()
         : context.getMachineController().getLevel().getDayTime() % 24000L;

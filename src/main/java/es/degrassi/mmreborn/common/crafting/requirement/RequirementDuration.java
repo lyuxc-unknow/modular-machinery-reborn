@@ -71,7 +71,8 @@ public class RequirementDuration extends ComponentRequirement<Integer, Requireme
 
   @NotNull
   @Override
-  public CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context, List<ComponentOutputRestrictor> restrictions) {
+  public CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context,
+                                     List<ComponentOutputRestrictor<?>> restrictions) {
     return CraftCheck.skipComponent();
   }
 

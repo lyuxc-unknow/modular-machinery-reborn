@@ -1,10 +1,13 @@
 package es.degrassi.mmreborn.common.integration.kubejs;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
+import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.kubejs.util.TickDuration;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
@@ -19,6 +22,8 @@ import es.degrassi.mmreborn.common.integration.kubejs.requirement.ItemRequiremen
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.TimeRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.WeatherRequirementJS;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.helpers.MessageFormatter;
@@ -74,7 +79,7 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
     if(machine == null)
       throw new KubeRuntimeException("Invalid machine id: " + getValue(ModularMachineryRebornRecipeSchemas.MACHINE_ID));
 
-    if(this.newRecipe) {
+    if (this.newRecipe) {
       int uniqueID = IDS.computeIfAbsent(RecipeRegistration.RECIPE_TYPE.getId(), id -> new HashMap<>()).computeIfAbsent(machine, m -> 0);
       IDS.get(RecipeRegistration.RECIPE_TYPE.getId()).put(machine, uniqueID + 1);
       this.id = ResourceLocation.fromNamespaceAndPath("kubejs", RecipeRegistration.RECIPE_TYPE.getId().getPath() + "/" + machine.getNamespace() + "/" + machine.getPath() + "/" + uniqueID);
@@ -105,8 +110,14 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
     builder.shouldVoidOnFailure(getValue(ModularMachineryRebornRecipeSchemas.VOID));
 
     this.id = getOrCreateId();
-
-    this.json = (JsonObject) MachineRecipe.CODEC.encodeStart(JsonOps.INSTANCE, builder).result().orElse(null);
+    DataResult<JsonElement> result =
+        MachineRecipe.CODEC.encodeStart(this.type.event.registries.json(), builder);
+    if(result.result().isPresent())
+      this.json = (JsonObject) result.result().get();
+    else if(result.error().isPresent()) {
+      ConsoleJS.SERVER.error("Error in Modular Machinery recipe: " + this.id + "\n" + result.error().get().message());
+      this.json = new JsonObject();
+    }
     if (this.json != null)
       this.json.addProperty("type", RecipeRegistration.RECIPE_TYPE.getId().toString());
     return this;

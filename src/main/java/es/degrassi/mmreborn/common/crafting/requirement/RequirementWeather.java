@@ -58,7 +58,8 @@ public class RequirementWeather extends ComponentRequirement<RequirementWeather.
   }
 
   @Override
-  public @NotNull CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context, List<ComponentOutputRestrictor> restrictions) {
+  public @NotNull CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context,
+                                              List<ComponentOutputRestrictor<?>> restrictions) {
     Level world = context.getMachineController().getLevel();
     BlockPos pos = context.getMachineController().getBlockPos();
     if (switch(weather) {

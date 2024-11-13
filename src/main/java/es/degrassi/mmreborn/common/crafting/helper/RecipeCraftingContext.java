@@ -37,7 +37,7 @@ public class RecipeCraftingContext {
   private List<ProcessingComponent<?>> typeComponents = new LinkedList<>();
   private Map<RequirementType<?>, List<RecipeModifier>> modifiers = new HashMap<>();
 
-  private List<ComponentOutputRestrictor> currentRestrictions = Lists.newArrayList();
+  private List<ComponentOutputRestrictor<?>> currentRestrictions = Lists.newArrayList();
 
   public RecipeCraftingContext(ActiveMachineRecipe activeRecipe, MachineControllerEntity controller) {
     this.activeRecipe = activeRecipe;
@@ -59,7 +59,7 @@ public class RecipeCraftingContext {
     return dur / result;
   }
 
-  public void addRestriction(ComponentOutputRestrictor restrictor) {
+  public void addRestriction(ComponentOutputRestrictor<?> restrictor) {
     this.currentRestrictions.add(restrictor);
   }
 

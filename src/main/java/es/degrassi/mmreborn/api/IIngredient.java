@@ -23,6 +23,7 @@ public interface IIngredient<O> extends Predicate<O> {
   NamedCodec<IIngredient<ItemStack>> ITEM = new NamedCodec<>() {
     @Override
     public <T> DataResult<Pair<IIngredient<ItemStack>, T>> decode(DynamicOps<T> ops, T input) {
+      MMRLogger.INSTANCE.info(input);
       DataResult<MapLike<T>> mapResult = ops.getMap(input);
       if(mapResult.result().isPresent()) {
         MapLike<T> map = mapResult.result().get();
@@ -37,23 +38,22 @@ public interface IIngredient<O> extends Predicate<O> {
       DataResult<String> result = ops.getStringValue(input);
       if(result.result().isPresent()) {
         String s = result.result().get();
-        if (s.contains("id")) {
-          try {
-            DataResult<ItemStack> r = NamedCodec.of(ItemStack.CODEC).read(JsonOps.INSTANCE, new Gson().fromJson(s, JsonObject.class));
-            if (r.result().isPresent()) {
-              ItemStack stack = r.result().get();
-              return DataResult.success(Pair.of(new ItemIngredient(stack), ops.empty()));
-            }
-          } catch (IllegalArgumentException e) {
-            return DataResult.error(() -> "Invalid item stack: " + e.getMessage());
-          }
-        }
         if(s.startsWith("#")) {
           try {
             return DataResult.success(Pair.of(ItemTagIngredient.create(s), ops.empty()));
           } catch (IllegalArgumentException e) {
             return DataResult.error(e::getMessage);
           }
+        }
+
+        try {
+          DataResult<ItemStack> r = NamedCodec.of(ItemStack.CODEC).read(JsonOps.INSTANCE, new Gson().fromJson(s, JsonObject.class));
+          if (r.result().isPresent()) {
+            ItemStack stack = r.result().get();
+            return DataResult.success(Pair.of(new ItemIngredient(stack), ops.empty()));
+          }
+        } catch (IllegalArgumentException e) {
+          return DataResult.error(() -> "Invalid item stack: " + e.getMessage());
         }
 
         /*try {

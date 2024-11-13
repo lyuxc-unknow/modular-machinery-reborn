@@ -65,7 +65,8 @@ public class RequirementDimension extends ComponentRequirement<ResourceLocation,
   }
 
   @Override
-  public @NotNull CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context, List<ComponentOutputRestrictor> restrictions) {
+  public @NotNull CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context,
+                                              List<ComponentOutputRestrictor<?>> restrictions) {
     if (filter.contains(context.getMachineController().getLevel().dimension().location()) != blacklist)
       return CraftCheck.success();
     return CraftCheck.failure(Component.translatable(

@@ -101,7 +101,8 @@ public class RequirementEnergy extends ComponentRequirement<Long, RequirementEne
 
   @Nonnull
   @Override
-  public CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context, List<ComponentOutputRestrictor> restrictions) {
+  public CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context,
+                                     List<ComponentOutputRestrictor<?>> restrictions) {
     IEnergyHandler handler = (IEnergyHandler) component.providedComponent();
     return switch (getActionType()) {
       case INPUT -> {

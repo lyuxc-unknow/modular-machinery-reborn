@@ -82,7 +82,7 @@ public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, 
   public abstract CraftCheck finishCrafting(ProcessingComponent<?> component, RecipeCraftingContext context, ResultChance chance);
 
   @Nonnull
-  public abstract CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context, List<ComponentOutputRestrictor> restrictions);
+  public abstract CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context, List<ComponentOutputRestrictor<?>> restrictions);
 
   //Creates an exact copy of the current requirement
   public abstract ComponentRequirement<T, V> deepCopy();

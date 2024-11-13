@@ -50,7 +50,6 @@ public class ItemIngredient implements IIngredient<ItemStack> {
   public JsonObject asJson() {
     JsonObject json = new JsonObject();
     json.addProperty("item", item.toString());
-    json.addProperty("components", item.getComponents().toString().replaceAll("=>", "=").replaceAll("\\{", "[").replaceAll("}", "]"));
     return json;
   }
 }

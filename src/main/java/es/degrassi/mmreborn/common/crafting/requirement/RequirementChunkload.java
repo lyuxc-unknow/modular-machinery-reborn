@@ -60,7 +60,8 @@ public class RequirementChunkload extends ComponentRequirement<Integer, Requirem
   }
 
   @Override
-  public @NotNull CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context, List<ComponentOutputRestrictor> restrictions) {
+  public @NotNull CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context,
+                                              List<ComponentOutputRestrictor<?>> restrictions) {
     return switch (getActionType()) {
       case INPUT -> CraftCheck.skipComponent();
       case OUTPUT -> CraftCheck.success();

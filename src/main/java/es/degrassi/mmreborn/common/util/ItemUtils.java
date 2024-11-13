@@ -26,8 +26,8 @@ public class ItemUtils {
 
   //Negative amount: overhead fuel burnt
   //Positive amount: Failure/couldn't find enough fuel
-  public static int consumeFromInventoryFuel(IItemHandlerModifiable handler, int fuelAmtToConsume, boolean simulate, @Nullable CompoundTag matchNBTTag) {
-    Map<Integer, ItemStack> contents = findItemsIndexedInInventoryFuel(handler, matchNBTTag);
+  public static int consumeFromInventoryFuel(IItemHandlerModifiable handler, int fuelAmtToConsume, boolean simulate) {
+    Map<Integer, ItemStack> contents = findItemsIndexedInInventoryFuel(handler);
     if (contents.isEmpty()) {
       return fuelAmtToConsume;
     }
@@ -43,8 +43,8 @@ public class ItemUtils {
     return fuelAmtToConsume;
   }
 
-  public static boolean consumeFromInventory(IItemHandlerModifiable handler, ItemStack toConsume, boolean simulate, @Nullable CompoundTag matchNBTTag) {
-    Map<Integer, ItemStack> contents = findItemsIndexedInInventory(handler, toConsume, true, matchNBTTag);
+  public static boolean consumeFromInventory(IItemHandlerModifiable handler, ItemStack toConsume, boolean simulate) {
+    Map<Integer, ItemStack> contents = findItemsIndexedInInventory(handler, toConsume, true);
     if (contents.isEmpty()) return false;
 
     int cAmt = toConsume.getCount();
@@ -60,8 +60,8 @@ public class ItemUtils {
     return false;
   }
 
-  public static boolean consumeFromInventoryOreDict(IItemHandlerModifiable handler, ResourceLocation oreName, int amount, boolean simulate, @Nullable CompoundTag matchNBTTag) {
-    Map<Integer, ItemStack> contents = findItemsIndexedInInventoryOreDict(handler, oreName, matchNBTTag);
+  public static boolean consumeFromInventoryOreDict(IItemHandlerModifiable handler, ResourceLocation oreName, int amount, boolean simulate) {
+    Map<Integer, ItemStack> contents = findItemsIndexedInInventoryOreDict(handler, oreName);
     if (contents.isEmpty()) return false;
 
     int cAmt = amount;
@@ -157,7 +157,7 @@ public class ItemUtils {
     return s;
   }
 
-  public static Map<Integer, ItemStack> findItemsIndexedInInventoryFuel(IItemHandlerModifiable handler, @Nullable CompoundTag matchNBTTag) {
+  public static Map<Integer, ItemStack> findItemsIndexedInInventoryFuel(IItemHandlerModifiable handler) {
     Map<Integer, ItemStack> stacksOut = new HashMap<>();
     for (int j = 0; j < handler.getSlots(); j++) {
       ItemStack s = handler.getStackInSlot(j);
@@ -165,7 +165,7 @@ public class ItemUtils {
     return stacksOut;
   }
 
-  public static Map<Integer, ItemStack> findItemsIndexedInInventoryOreDict(IItemHandlerModifiable handler, ResourceLocation oreDict, @Nullable CompoundTag matchNBTTag) {
+  public static Map<Integer, ItemStack> findItemsIndexedInInventoryOreDict(IItemHandlerModifiable handler, ResourceLocation oreDict) {
     Map<Integer, ItemStack> stacksOut = new HashMap<>();
     for (int j = 0; j < handler.getSlots(); j++) {
       ItemStack s = handler.getStackInSlot(j);
@@ -176,7 +176,7 @@ public class ItemUtils {
     return stacksOut;
   }
 
-  public static Map<Integer, ItemStack> findItemsIndexedInInventory(IItemHandlerModifiable handler, ItemStack match, boolean strict, @Nullable CompoundTag matchNBTTag) {
+  public static Map<Integer, ItemStack> findItemsIndexedInInventory(IItemHandlerModifiable handler, ItemStack match, boolean strict) {
     Map<Integer, ItemStack> stacksOut = new HashMap<>();
     for (int j = 0; j < handler.getSlots(); j++) {
       ItemStack s = handler.getStackInSlot(j);

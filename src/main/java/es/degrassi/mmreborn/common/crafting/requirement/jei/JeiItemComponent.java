@@ -9,6 +9,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class JeiItemComponent extends JeiComponent<ItemStack, RequirementItem> {
@@ -28,7 +29,7 @@ public class JeiItemComponent extends JeiComponent<ItemStack, RequirementItem> {
 
   @Override
   public List<ItemStack> ingredients() {
-    return requirement.getIngredient().getAll().stream().map(ItemStack::copy).toList();
+    return Arrays.stream(requirement.getIngredient().getItems()).map(ItemStack::copy).toList();
     // return Lists.newArrayList(new ItemStack(requirement.ingredient.getAll().get(0), requirement.amount, requirement.ingredient.getAll().get(0).getDefaultInstance().getComponents()));
   }
 
