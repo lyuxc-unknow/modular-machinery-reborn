@@ -66,9 +66,10 @@ public class DefaultCodecs {
 
   public static final NamedCodec<SizedIngredient> SIZED_INGREDIENT_WITH_NBT = NamedCodec.record(sizedIngredientInstance ->
       sizedIngredientInstance.group(
-          ITEM_OR_STACK.listOf().fieldOf("item").forGetter(ingredient -> Arrays.asList(ingredient.getItems())),
+          INGREDIENT.fieldOf("ingredient").forGetter(SizedIngredient::ingredient),
           NamedCodec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("count", 1).forGetter(SizedIngredient::count)
-      ).apply(sizedIngredientInstance, (items, count) -> new SizedIngredient(Ingredient.of(items.stream()), count)), "Sized ingredient with nbt"
+      ).apply(sizedIngredientInstance, SizedIngredient::new), "Sized ingredient " +
+      "with nbt"
   );
 
   public static final NamedCodec<AABB> BOX = NamedCodec.DOUBLE_STREAM.comapFlatMap(stream -> {

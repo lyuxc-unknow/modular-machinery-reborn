@@ -36,7 +36,7 @@ import java.util.Objects;
 public class RequirementItem extends ComponentRequirement<ItemStack, RequirementItem> implements ComponentRequirement.ChancedRequirement {
   public static final NamedCodec<RequirementItem> CODEC =
     NamedCodec.record(instance -> instance.group(
-      DefaultCodecs.SIZED_INGREDIENT_WITH_NBT.fieldOf("ingredient").forGetter(req -> req.ingredient),
+      DefaultCodecs.SIZED_INGREDIENT_WITH_NBT.fieldOf("sizedIngredient").forGetter(req -> req.ingredient),
       NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(ComponentRequirement::getActionType),
       NamedCodec.floatRange(0, 1).optionalFieldOf("chance", 1f).forGetter(req -> req.chance),
       IJeiRequirement.POSITION_CODEC.fieldOf("position").forGetter(ComponentRequirement::getPosition)
