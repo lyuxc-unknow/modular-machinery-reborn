@@ -6,19 +6,15 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.MapLike;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.machine.MachineJsonReloadListener;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.DoubleStream;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -28,8 +24,20 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.common.crafting.CompoundIngredient;
+import net.neoforged.neoforge.common.crafting.ICustomIngredient;
+import net.neoforged.neoforge.common.crafting.IngredientType;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.DoubleStream;
+import java.util.stream.Stream;
 
 public class DefaultCodecs {
 
@@ -39,13 +47,14 @@ public class DefaultCodecs {
   public static final NamedCodec<SoundEvent> SOUND_EVENT = RESOURCE_LOCATION.xmap(SoundEvent::createVariableRangeEvent, SoundEvent::getLocation, "Sound event");
 
   public static final NamedCodec<Direction> DIRECTION = NamedCodec.enumCodec(Direction.class);
+
   public static <A> Codec<Optional<A>> optionalEmptyMap(final Codec<A> pCodec) {
     return new Codec<>() {
       @Override
       public <T> DataResult<Pair<Optional<A>, T>> decode(DynamicOps<T> p_330879_, T p_330924_) {
         return isEmptyMap(p_330879_, p_330924_)
-          ? DataResult.success(Pair.of(Optional.empty(), p_330924_))
-          : pCodec.decode(p_330879_, p_330924_).map(p_337591_ -> p_337591_.mapFirst(Optional::of));
+            ? DataResult.success(Pair.of(Optional.empty(), p_330924_))
+            : pCodec.decode(p_330879_, p_330924_).map(p_337591_ -> p_337591_.mapFirst(Optional::of));
       }
 
       private static <T> boolean isEmptyMap(DynamicOps<T> p_338754_, T p_338581_) {
@@ -58,25 +67,74 @@ public class DefaultCodecs {
       }
     };
   }
+
   public static final Codec<FluidStack> OPTIONAL_FLUID_CODEC = optionalEmptyMap(FluidStack.CODEC)
-    .xmap(stack -> stack.orElse(FluidStack.EMPTY), stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
+      .xmap(stack -> stack.orElse(FluidStack.EMPTY), stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
   public static final NamedCodec<FluidStack> FLUID_OR_STACK = NamedCodec.either(RegistrarCodec.FLUID, NamedCodec.of(OPTIONAL_FLUID_CODEC), "FluidStack").xmap(either -> either.map(fluid -> new FluidStack(fluid, 1000), Function.identity()), Either::right, "Fluid Stack");
   public static final NamedCodec<ItemStack> ITEM_OR_STACK = NamedCodec.either(RegistrarCodec.ITEM, NamedCodec.of(ItemStack.OPTIONAL_CODEC), "ItemStack").xmap(either -> either.map(Item::getDefaultInstance, Function.identity()), Either::right, "Item Stack");
-  public static final NamedCodec<Ingredient> INGREDIENT = NamedCodec.of(Ingredient.CODEC, "Ingredient");
+
+  private static final MapCodec<Ingredient.ItemValue> INGREDIENT_ITEM_VALUE_MAP_CODEC = RecordCodecBuilder.mapCodec(
+      instance -> instance.group(ITEM_OR_STACK.codec().fieldOf("item").forGetter(Ingredient.ItemValue::item))
+          .apply(instance, Ingredient.ItemValue::new)
+  );
+
+  private static final MapCodec<Ingredient.TagValue> INGREDIENT_TAG_VALUE_MAP_CODEC = RecordCodecBuilder.mapCodec(
+      instance -> instance.group(TagKey.codec(Registries.ITEM).fieldOf("tag").forGetter(Ingredient.TagValue::tag))
+          .apply(instance, Ingredient.TagValue::new)
+  );
+
+  private static final MapCodec<Ingredient.Value> INGREDIENT_VALUE_MAP_CODEC =
+      NeoForgeExtraCodecs.xor(INGREDIENT_ITEM_VALUE_MAP_CODEC, INGREDIENT_TAG_VALUE_MAP_CODEC)
+          .xmap(either -> either.map(itemValue -> itemValue, tagValue -> tagValue), value -> {
+            if (value instanceof Ingredient.TagValue ingredient$tagvalue) {
+              return Either.right(ingredient$tagvalue);
+            } else if (value instanceof Ingredient.ItemValue ingredient$itemvalue) {
+              return Either.left(ingredient$itemvalue);
+            } else {
+              throw new UnsupportedOperationException("This is neither an item value nor a tag value.");
+            }
+          });
+
+  private static final MapCodec<Ingredient> INGREDIENT_MAP_CODEC = NeoForgeExtraCodecs.<IngredientType<?>,
+          ICustomIngredient, Ingredient.Value>dispatchMapOrElse(
+          NeoForgeRegistries.INGREDIENT_TYPES.byNameCodec(),
+          ICustomIngredient::getType,
+          IngredientType::codec,
+          INGREDIENT_VALUE_MAP_CODEC)
+      .xmap(either -> either.map(ICustomIngredient::toVanilla, v -> Ingredient.fromValues(Stream.of(v))), ingredient -> {
+        if (!ingredient.isCustom()) {
+          var values = ingredient.getValues();
+          if (values.length == 1) {
+            return Either.right(values[0]);
+          }
+          // Convert vanilla ingredients with 2+ values to a CompoundIngredient. Empty ingredients are not allowed here.
+          return Either.left(new CompoundIngredient(Stream.of(ingredient.getValues()).map(v -> Ingredient.fromValues(Stream.of(v))).toList()));
+        }
+        return Either.left(ingredient.getCustomIngredient());
+      })
+      .validate(ingredient -> {
+        if (!ingredient.isCustom() && ingredient.getValues().length == 0) {
+          return DataResult.error(() -> "Cannot serialize empty ingredient using the map codec");
+        }
+        return DataResult.success(ingredient);
+      });
+
+  public static final NamedCodec<Ingredient> INGREDIENT = NamedCodec.of(INGREDIENT_MAP_CODEC.codec(), "Ingredient");
+
+//  public static final NamedCodec<Ingredient> INGREDIENT = NamedCodec.of(Ingredient.CODEC, "Ingredient");
 
   public static final NamedCodec<SizedIngredient> SIZED_INGREDIENT_WITH_NBT = NamedCodec.record(sizedIngredientInstance ->
       sizedIngredientInstance.group(
           INGREDIENT.fieldOf("ingredient").forGetter(SizedIngredient::ingredient),
           NamedCodec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("count", 1).forGetter(SizedIngredient::count)
-      ).apply(sizedIngredientInstance, SizedIngredient::new), "Sized ingredient " +
-      "with nbt"
+      ).apply(sizedIngredientInstance, SizedIngredient::new), "Sized ingredient with nbt"
   );
 
   public static final NamedCodec<AABB> BOX = NamedCodec.DOUBLE_STREAM.comapFlatMap(stream -> {
     double[] arr = stream.toArray();
-    if(arr.length == 3)
+    if (arr.length == 3)
       return DataResult.success(new AABB(arr[0], arr[1], arr[2], arr[0], arr[1], arr[2]));
-    else if(arr.length == 6)
+    else if (arr.length == 6)
       return DataResult.success(new AABB(arr[0], arr[1], arr[2], arr[3], arr[4], arr[5]));
     else
       return DataResult.error(() -> Arrays.toString(arr) + " is not an array of 3 or 6 elements");
@@ -90,10 +148,10 @@ public class DefaultCodecs {
 
   public static <T> NamedCodec<TagKey<T>> registryKey(Registry<T> registry) {
     return NamedCodec.STRING.comapFlatMap(s -> {
-      if(s.startsWith("#")) {
+      if (s.startsWith("#")) {
         try {
           TagKey<T> key = TagKey.create(registry.key(), ResourceLocation.parse(s.substring(1)));
-          if(MachineJsonReloadListener.context != null && MachineJsonReloadListener.context.getTag(key).isEmpty())
+          if (MachineJsonReloadListener.context != null && MachineJsonReloadListener.context.getTag(key).isEmpty())
             return DataResult.error(() -> "Invalid tag: " + s);
           return DataResult.success(key);
         } catch (ResourceLocationException e) {
@@ -106,10 +164,10 @@ public class DefaultCodecs {
 
   public static <T> NamedCodec<Either<TagKey<T>, Holder<T>>> registryValueOrTag(Registry<T> registry) {
     return NamedCodec.STRING.comapFlatMap(s -> {
-      if(s.startsWith("#")) {
+      if (s.startsWith("#")) {
         try {
           TagKey<T> key = TagKey.create(registry.key(), ResourceLocation.parse(s.substring(1)));
-          if(MachineJsonReloadListener.context != null && MachineJsonReloadListener.context.getTag(key).isEmpty())
+          if (MachineJsonReloadListener.context != null && MachineJsonReloadListener.context.getTag(key).isEmpty())
             return DataResult.error(() -> "Invalid tag: " + s);
           return DataResult.success(Either.left(key));
         } catch (ResourceLocationException e) {
@@ -135,7 +193,7 @@ public class DefaultCodecs {
   }
 
   private static DataResult<Character> decodeCharacter(String encoded) {
-    if(encoded.length() != 1)
+    if (encoded.length() != 1)
       return DataResult.error(() -> "Invalid character : \"" + encoded + "\" must be a single character !");
     return DataResult.success(encoded.charAt(0));
   }
@@ -145,7 +203,7 @@ public class DefaultCodecs {
   private static DataResult<Integer> decodeHexColor(String encoded) {
     if (!encoded.startsWith("#"))
       return DataResult.error(() -> "Invalid hex color format, must starts with '#'");
-    if(encoded.length() != 9)
+    if (encoded.length() != 9)
       return DataResult.error(() -> "Invalid length : \"" + encoded + "\" must be 9 characters !(#FFFFFFFF [alpha alpha red red green green blue blue])");
     char[] chars = encoded.substring(1).toCharArray();
     for (char c : chars) {
