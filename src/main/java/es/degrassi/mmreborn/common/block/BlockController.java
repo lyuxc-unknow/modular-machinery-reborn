@@ -53,6 +53,7 @@ public class BlockController extends BlockMachineComponent {
       Properties.of()
         .sound(SoundType.METAL)
         .strength(5F, 10F)
+        .requiresCorrectToolForDrops()
         .dynamicShape()
         .noOcclusion()
     );
@@ -153,6 +154,13 @@ public class BlockController extends BlockMachineComponent {
         }
         ControllerContainer.open(serverPlayer, controller);
       }
+//      if (player.getItemInHand(hand).getItem() instanceof ItemBlueprint) {
+//        DynamicMachine machine = controller.getFoundMachine();
+//        if (machine == null) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+//        MMRLogger.INSTANCE.info("ShiftDown, machine {}, blockPos: {}, creative: {}, player: {}",
+//            machine.getName(), pos.toString(), player.isCreative(), player.getName().getString());
+//        PacketDistributor.sendToServer(new CPlaceStructurePacket(controller.getFoundMachine().getRegistryName(), controller.getBlockPos()));
+//      }
       return ItemInteractionResult.SUCCESS;
     }
     return super.useItemOn(stack, state, level, pos, player, hand, hitResult);

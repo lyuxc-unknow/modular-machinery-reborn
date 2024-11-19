@@ -1,6 +1,7 @@
 package es.degrassi.mmreborn.common.network;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
+import es.degrassi.mmreborn.common.network.client.CPlaceStructurePacket;
 import es.degrassi.mmreborn.common.network.server.SMachineUpdatePacket;
 import es.degrassi.mmreborn.common.network.server.SOpenFilePacket;
 import es.degrassi.mmreborn.common.network.server.SUpdateCraftingStatusPacket;
@@ -19,6 +20,7 @@ public class PacketManager {
   @SubscribeEvent
   public static void register(final RegisterPayloadHandlersEvent event) {
     final PayloadRegistrar registrar = event.registrar(ModularMachineryReborn.MODID);
+    // TO CLIENT
     registrar.playToClient(SOpenFilePacket.TYPE, SOpenFilePacket.CODEC, SOpenFilePacket::handle);
     registrar.playToClient(SMachineUpdatePacket.TYPE, SMachineUpdatePacket.CODEC, SMachineUpdatePacket::handle);
     registrar.playToClient(SUpdateEnergyComponentPacket.TYPE, SUpdateEnergyComponentPacket.CODEC, SUpdateEnergyComponentPacket::handle);
@@ -27,5 +29,8 @@ public class PacketManager {
     registrar.playToClient(SUpdateCraftingStatusPacket.TYPE, SUpdateCraftingStatusPacket.CODEC, SUpdateCraftingStatusPacket::handle);
     registrar.playToClient(SUpdateRecipePacket.TYPE, SUpdateRecipePacket.CODEC, SUpdateRecipePacket::handle);
     registrar.playToClient(SUpdateMachineColorPacket.TYPE, SUpdateMachineColorPacket.CODEC, SUpdateMachineColorPacket::handle);
+
+    // TO SERVER
+    registrar.playToServer(CPlaceStructurePacket.TYPE, CPlaceStructurePacket.CODEC, CPlaceStructurePacket::handle);
   }
 }

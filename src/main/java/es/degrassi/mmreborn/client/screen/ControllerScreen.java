@@ -2,11 +2,15 @@ package es.degrassi.mmreborn.client.screen;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.client.container.ControllerContainer;
+import es.degrassi.mmreborn.client.screen.widget.StructurePlacerWidget;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.util.RedstoneHelper;
 import es.degrassi.mmreborn.common.util.Utils;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -14,10 +18,13 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ControllerScreen extends BaseScreen<ControllerContainer, MachineControllerEntity> {
-
+  StructurePlacerWidget widget;
   public ControllerScreen(ControllerContainer pMenu, Inventory pPlayerInventory, Component pTitle) {
     super(pMenu, pPlayerInventory, pTitle);
   }
@@ -31,6 +38,11 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
   protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
     // render image background
     super.renderBg(guiGraphics, partialTick, mouseX, mouseY);
+    clearWidgets();
+    widget = addRenderableWidget(new StructurePlacerWidget(leftPos + imageWidth - 5, topPos,
+        getMenu().getEntity().getId(), getMenu().getEntity().getBlockPos()));
+    widget.setTooltip(widget.getTooltip());
+
     guiGraphics.pose().pushPose();
     guiGraphics.pose().translate(this.leftPos, this.topPos, 0);
     float scale = 0.72f;
@@ -55,9 +67,7 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
     DynamicMachine machine = entity.getFoundMachine();
     if(machine != DynamicMachine.DUMMY) {
       // render if the structure of machine is not null
-//      Component drawnHead = Component.translatable("gui.controller.structure", "");
       List<FormattedCharSequence> out = font.split(Component.literal(machine.getLocalizedName()), Mth.floor(135 * (1 / scale)));
-//      guiGraphics.drawString(font, drawnHead, offsetX, offsetY, 0xFFFFFF);
       for (FormattedCharSequence draw : out) {
         guiGraphics.drawString(font, draw, offsetX, offsetY, 0xFFFFFF);
         offsetY += 10;
@@ -93,4 +103,12 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
 
   @Override
   protected void renderLabels(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {}
+
+  @Override
+  protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
+    super.renderTooltip(guiGraphics, x, y);
+    if(widget != null && widget.isMouseOver(x, y)) {
+       guiGraphics.renderTooltip(Minecraft.getInstance().font, widget.getTooltip().toCharSequence(Minecraft.getInstance()), x, y);
+    }
+  }
 }

@@ -1,31 +1,56 @@
 {
-  "machine": "modular_machinery_reborn:alloy_furnace",
+  "machine": "modular_machinery_reborn:alloy_smelter",
   "type": "modular_machinery_reborn:machine_recipe",
   "id": "modular_machinery_reborn:alloy_smelter_diamond",
   "time": 100,
+  "width": 256,
+  "height": 256,
   "requirements": [
     {
       "type": "modular_machinery_reborn:energy",
       "mode": "input",
-      "amount": 128
+      "amount": 128,
+      "position": {
+        "x": 0,
+        "y": 0
+      }
     },
     {
       "type": "modular_machinery_reborn:item",
       "mode": "input",
-      "item": "#minecraft:planks",
-      "amount": 2
+      "sizedIngredient": {
+        "ingredient": {
+          "tag": "minecraft:planks"
+        },
+        "count": 2
+      },
+      "position": {
+        "x": 0,
+        "y": 0
+      }
     },
     {
       "type": "modular_machinery_reborn:fluid",
       "mode": "input",
       "fluid": "minecraft:water",
-      "amount": 1000
+      "amount": 1000,
+      "position": {
+        "x": 0,
+        "y": 0
+      }
     },
     {
       "type": "modular_machinery_reborn:item",
       "mode": "output",
-      "item": "minecraft:charcoal",
-      "amount": 1
+      "sizedIngredient": {
+        "ingredient": {
+          "item": "minecraft:charcoal"
+        }
+      },
+      "position": {
+        "x": 0,
+        "y": 0
+      }
     }
   ]
 }

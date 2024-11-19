@@ -270,7 +270,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
   }
 
   public boolean hasActiveRecipe() {
-    return this.activeRecipe != null && this.activeRecipe.getRecipe() != null && this.recipeTicks > -1;
+    return this.activeRecipe != null && this.activeRecipe.getHolder() != null && this.activeRecipe.getRecipe() != null && this.recipeTicks > -1;
   }
 
   @Nullable

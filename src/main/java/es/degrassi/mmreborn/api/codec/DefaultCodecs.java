@@ -121,8 +121,6 @@ public class DefaultCodecs {
 
   public static final NamedCodec<Ingredient> INGREDIENT = NamedCodec.of(INGREDIENT_MAP_CODEC.codec(), "Ingredient");
 
-//  public static final NamedCodec<Ingredient> INGREDIENT = NamedCodec.of(Ingredient.CODEC, "Ingredient");
-
   public static final NamedCodec<SizedIngredient> SIZED_INGREDIENT_WITH_NBT = NamedCodec.record(sizedIngredientInstance ->
       sizedIngredientInstance.group(
           INGREDIENT.fieldOf("ingredient").forGetter(SizedIngredient::ingredient),

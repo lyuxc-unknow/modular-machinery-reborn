@@ -9,10 +9,7 @@ ServerEvents.recipes(event => {
         // }
         .requireEnergy(100000, x, y)
         .produceEnergy(100, x, y)
-        .requireItem("2x modular_machinery_reborn:casing_plain", x, y)
-        .requireItemTag('<item tag>', amount, x, y)
-        // default amount is 1
-        .requireItemTag('<item tag>', x, y)
+        .requireItem("2x modular_machinery_reborn:casing_plain", x, y) // valid for item tags too(uses sized ingredient)
         .produceItem('1x modular_machinery_reborn:modularium', x, y)
         .produceFluid('10000x minecraft:lava', x, y)
         .requireFluid('minecraft:lava', x, y)

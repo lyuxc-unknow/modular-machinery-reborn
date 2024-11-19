@@ -7,21 +7,32 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
-import es.degrassi.mmreborn.common.util.MMRLogger;
+import es.degrassi.mmreborn.common.machine.DynamicMachine;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.LevelReader;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Structure {
   public static final NamedCodec<Structure> CODEC = NamedCodec.record(structure -> structure.group(
-    NamedCodec.STRING.listOf().listOf().fieldOf("pattern").forGetter(s -> s.pattern.asList()),
-    NamedCodec.unboundedMap(DefaultCodecs.CHARACTER, BlockIngredient.CODEC, "Map<Character, Block>").fieldOf("keys").forGetter(s -> s.pattern.asMap())
+      NamedCodec.STRING.listOf().listOf().fieldOf("pattern").forGetter(s -> s.pattern.asList()),
+      NamedCodec.unboundedMap(DefaultCodecs.CHARACTER, BlockIngredient.CODEC, "Map<Character, Block>").fieldOf("keys").forGetter(s -> s.pattern.asMap())
   ).apply(structure, Structure::makeStructure), "Structure");
 
   public static final Structure EMPTY = new Structure(Map.of(), List.of(List.of("m")), Map.of());
@@ -33,6 +44,60 @@ public class Structure {
     for (Map.Entry<Character, BlockIngredient> key : keys.entrySet())
       builder.where(key.getKey(), key.getValue());
     return builder.build(pattern, keys);
+  }
+
+  public static ItemInteractionResult place(DynamicMachine machine, BlockPos controllerPos, Level level, boolean isCreative, ServerPlayer player) {
+    Structure structure = machine.getPattern();
+    BlockState blockState = level.getBlockState(controllerPos);
+    Direction facing = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
+    AtomicBoolean success = new AtomicBoolean(true);
+    structure.getBlocks(facing).forEach((pos, ingredient) -> {
+      BlockPos worldPos = pos.offset(controllerPos);
+      if (worldPos.equals(controllerPos)) return;
+      if (pos != BlockPos.ZERO && !ingredient.test(PartialBlockState.ANY)) {
+        PartialBlockState block = ingredient.getAll().get(0);
+        if (!level.getBlockState(worldPos).isAir()) {
+          if (!ingredient.test(new PartialBlockState(level.getBlockState(worldPos), level.getBlockState(worldPos).getProperties().stream().toList(), null))) {
+            level.destroyBlock(worldPos, !isCreative);
+            success.set(false);
+            player.sendSystemMessage(Component.translatable("mmr.place.non_air", block.getName(), worldPos.toString()));
+          }
+        }
+        ItemStack blockToRemove = new ItemStack(block.getBlockState().getBlock());
+        if (!isCreative) {
+          for (PartialBlockState state : ingredient.getAll()) {
+            ItemStack blockToRemove2 = new ItemStack(state.getBlockState().getBlock());
+            if (player.getInventory().contains(blockToRemove2)) {
+              int slot = player.getInventory().findSlotMatchingItem(blockToRemove2);
+              player.getInventory().removeItem(slot, 1);
+              player.containerMenu.broadcastChanges();
+              player.inventoryMenu.slotsChanged(player.getInventory());
+              setBlock(level, worldPos, state);
+              return;
+            }
+          }
+          success.set(false);
+          player.sendSystemMessage(Component.translatable("mmr.place.no_item", block.getName(), worldPos.toString(),
+              blockToRemove.getHoverName().toString()));
+          return;
+        }
+        setBlock(level, worldPos, block);
+      }
+    });
+
+    return success.get() ? ItemInteractionResult.CONSUME : ItemInteractionResult.CONSUME_PARTIAL;
+  }
+
+  private static void setBlock(Level world, BlockPos pos, PartialBlockState state) {
+    world.setBlockAndUpdate(pos, state.getBlockState());
+    BlockEntity tile = world.getBlockEntity(pos);
+    if (tile != null && state.getNbt() != null && !state.getNbt().isEmpty()) {
+      CompoundTag nbt = state.getNbt().copy();
+      nbt.putInt("x", pos.getX());
+      nbt.putInt("y", pos.getY());
+      nbt.putInt("z", pos.getZ());
+      tile.loadWithComponents(nbt, world.registryAccess());
+    }
   }
 
   private final Pattern pattern;
