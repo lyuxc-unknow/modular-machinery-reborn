@@ -178,7 +178,8 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
         yield CraftCheck.failure("craftcheck.failure.fluid.input");
       }
       case OUTPUT -> {
-        handler = CopyHandlerHelper.copyTank(handler, context.getMachineController().getLevel().registryAccess());
+        handler = CopyHandlerHelper.copyTank(context.getMachineController(), handler,
+            context.getMachineController().getLevel().registryAccess());
 
         for (ComponentOutputRestrictor restrictor : restrictions) {
           if (restrictor instanceof ComponentOutputRestrictor.RestrictionTank tank) {
