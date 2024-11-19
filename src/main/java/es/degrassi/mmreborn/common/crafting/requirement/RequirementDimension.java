@@ -12,8 +12,7 @@ import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiDimensionRequirement;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
@@ -29,13 +28,13 @@ public class RequirementDimension extends ComponentRequirement<ResourceLocation,
   public static final NamedCodec<RequirementDimension> CODEC = NamedCodec.record(instance -> instance.group(
       DefaultCodecs.RESOURCE_LOCATION.listOf().fieldOf("filter").forGetter(RequirementDimension::filter),
       NamedCodec.BOOL.optionalFieldOf("blacklist", false).forGetter(RequirementDimension::blacklist),
-      IJeiRequirement.POSITION_CODEC.fieldOf("position").forGetter(ComponentRequirement::getPosition)
+      JeiPositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new JeiPositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
   ).apply(instance, RequirementDimension::new), "Dimension Requirement");
 
   private final List<ResourceLocation> filter;
   private final boolean blacklist;
 
-  public RequirementDimension(List<ResourceLocation> filter, boolean blacklist, IJeiRequirement.JeiPositionedRequirement position) {
+  public RequirementDimension(List<ResourceLocation> filter, boolean blacklist, JeiPositionedRequirement position) {
     super(RequirementTypeRegistration.DIMENSION.get(), IOType.INPUT, position);
     this.filter = filter;
     this.blacklist = blacklist;
@@ -70,9 +69,9 @@ public class RequirementDimension extends ComponentRequirement<ResourceLocation,
     if (filter.contains(context.getMachineController().getLevel().dimension().location()) != blacklist)
       return CraftCheck.success();
     return CraftCheck.failure(Component.translatable(
-        "craftcheck.failure.dimension." + blacklist,
-        filter.stream().map(ResourceLocation::toString).toList().toString(),
-        context.getMachineController().getLevel().dimension().location().toString()
+            "craftcheck.failure.dimension." + blacklist,
+            filter.stream().map(ResourceLocation::toString).toList().toString(),
+            context.getMachineController().getLevel().dimension().location().toString()
         ).getString()
     );
   }
@@ -100,11 +99,6 @@ public class RequirementDimension extends ComponentRequirement<ResourceLocation,
   @Override
   public @NotNull String getMissingComponentErrorMessage(IOType ioType) {
     return "component.missing.dimension";
-  }
-
-  @Override
-  public JeiDimensionRequirement jeiComponent() {
-    return new JeiDimensionRequirement(this);
   }
 
   @Override

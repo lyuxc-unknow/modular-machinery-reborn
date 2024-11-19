@@ -2,7 +2,7 @@ package es.degrassi.mmreborn.common.integration.jei.category;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
-import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
+import es.degrassi.mmreborn.common.integration.jei.JeiComponentRegistry;
 import es.degrassi.mmreborn.common.integration.jei.MMRJeiPlugin;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
@@ -72,7 +72,12 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
     this.width = recipe.getWidth();
     this.height = recipe.getHeight();
 
-    recipe.getCraftingRequirements().forEach(component -> component.jeiComponent().setRecipe(this, builder, recipe, focuses));
+    recipe.getCraftingRequirements()
+        .stream()
+        .filter(component -> JeiComponentRegistry.hasJeiComponent(component.getRequirementType()))
+        .map(component -> component.getRequirementType().castRequirement(component))
+        .map(component -> JeiComponentRegistry.getJeiComponent(component.getRequirementType()).create(component))
+        .forEach(requirement -> requirement.setRecipe(this, builder, recipe, focuses));
   }
 
   @Override

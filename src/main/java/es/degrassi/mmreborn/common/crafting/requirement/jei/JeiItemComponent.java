@@ -1,6 +1,5 @@
 package es.degrassi.mmreborn.common.crafting.requirement.jei;
 
-import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementItem;
 import es.degrassi.mmreborn.common.integration.jei.category.MMRRecipeCategory;
@@ -30,7 +29,6 @@ public class JeiItemComponent extends JeiComponent<ItemStack, RequirementItem> {
   @Override
   public List<ItemStack> ingredients() {
     return Arrays.stream(requirement.getIngredient().getItems()).map(ItemStack::copy).toList();
-    // return Lists.newArrayList(new ItemStack(requirement.ingredient.getAll().get(0), requirement.amount, requirement.ingredient.getAll().get(0).getDefaultInstance().getComponents()));
   }
 
   @Override

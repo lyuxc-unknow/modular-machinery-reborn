@@ -6,31 +6,31 @@ import es.degrassi.mmreborn.api.codec.NamedMapCodec;
 import es.degrassi.mmreborn.api.codec.RegistrarCodec;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.util.ResultChance;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, V>> implements Comparable<ComponentRequirement<?, ?>> {
   public static final NamedMapCodec<ComponentRequirement<?, ?>> CODEC = RegistrarCodec.REQUIREMENT.dispatch(type -> type.requirementType, RequirementType::getCodec, "Requirement");
 
   public static final int PRIORITY_WEIGHT_ENERGY = 500_000_000;
-  public static final int PRIORITY_WEIGHT_FLUID  = 100_000_000;
-  public static final int PRIORITY_WEIGHT_ITEM   = 500_000;
+  public static final int PRIORITY_WEIGHT_FLUID = 100_000_000;
+  public static final int PRIORITY_WEIGHT_ITEM = 500_000;
 
   private final IOType actionType;
   private final RequirementType<V> requirementType;
 
   private ComponentSelectorTag tag = null;
   @Getter
-  private final IJeiRequirement.JeiPositionedRequirement position;
+  private final JeiPositionedRequirement position;
 
-  public ComponentRequirement(RequirementType<V> requirementType, IOType actionType, IJeiRequirement.JeiPositionedRequirement position) {
+  public ComponentRequirement(RequirementType<V> requirementType, IOType actionType, JeiPositionedRequirement position) {
     this.requirementType = requirementType;
     this.actionType = actionType;
     this.position = position;
@@ -65,12 +65,12 @@ public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, 
    * - {@link #startCrafting(ProcessingComponent, RecipeCraftingContext, ResultChance)}
    * - {@link #finishCrafting(ProcessingComponent, RecipeCraftingContext, ResultChance)}
    * - {@link #canStartCrafting(ProcessingComponent, RecipeCraftingContext, List)}
-   *
+   * <p>
    * and for {@link PerTick} instances:
    * - {@link PerTick#doIOTick(ProcessingComponent, RecipeCraftingContext)}
    *
    * @param component The component to test
-   * @param ctx The context to test in
+   * @param ctx       The context to test in
    * @return true, if the component is valid for further processing by the specified methods, false otherwise
    */
   public abstract boolean isValidComponent(ProcessingComponent<?> component, RecipeCraftingContext ctx);
@@ -118,7 +118,7 @@ public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, 
     return json;
   }
 
-  public abstract <J extends JeiComponent<T, V>> J jeiComponent();
+//  public abstract <J extends JeiComponent<T, V>> J jeiComponent();
 
   @Override
   public int compareTo(@NotNull ComponentRequirement<?, ?> o) {

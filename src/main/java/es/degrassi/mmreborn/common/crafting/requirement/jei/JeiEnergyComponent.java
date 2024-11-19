@@ -14,13 +14,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class JeiEnergyComponent extends JeiComponent<Long, RequirementEnergy> {
   private int width = 16;
   private int height = 52;
   private int recipeTime;
+
   public JeiEnergyComponent(RequirementEnergy requirement) {
     super(requirement, 18, 0);
   }

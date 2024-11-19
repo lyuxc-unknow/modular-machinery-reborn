@@ -11,7 +11,7 @@ import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiFluidComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
 import es.degrassi.mmreborn.common.integration.ingredient.HybridFluid;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
@@ -21,25 +21,25 @@ import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.CopyHandlerHelper;
 import es.degrassi.mmreborn.common.util.HybridTank;
 import es.degrassi.mmreborn.common.util.ResultChance;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
-@SuppressWarnings("unchecked")
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 public class RequirementFluid extends ComponentRequirement<FluidStack, RequirementFluid> implements ComponentRequirement.ChancedRequirement {
   public static final NamedMapCodec<RequirementFluid> CODEC = NamedCodec.record(instance -> instance.group(
-    FluidIngredient.CODEC.fieldOf("fluid").forGetter(req -> req.ingredient),
-    NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(ComponentRequirement::getActionType),
-    NamedCodec.INT.optionalFieldOf("amount").forGetter(req -> Optional.of(req.amount)),
-    NamedCodec.floatRange(0, 1).optionalFieldOf("chance", 1f).forGetter(req -> req.chance),
-    NamedCodec.of(CompoundTag.CODEC).optionalFieldOf("nbt", new CompoundTag()).forGetter(RequirementFluid::getTagMatch),
-    NamedCodec.of(CompoundTag.CODEC).optionalFieldOf("nbt-display").forGetter(req -> Optional.ofNullable(req.getTagDisplay())),
-      IJeiRequirement.POSITION_CODEC.fieldOf("position").forGetter(ComponentRequirement::getPosition)
+      FluidIngredient.CODEC.fieldOf("fluid").forGetter(req -> req.ingredient),
+      NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(ComponentRequirement::getActionType),
+      NamedCodec.INT.optionalFieldOf("amount").forGetter(req -> Optional.of(req.amount)),
+      NamedCodec.floatRange(0, 1).optionalFieldOf("chance", 1f).forGetter(req -> req.chance),
+      NamedCodec.of(CompoundTag.CODEC).optionalFieldOf("nbt", new CompoundTag()).forGetter(RequirementFluid::getTagMatch),
+      NamedCodec.of(CompoundTag.CODEC).optionalFieldOf("nbt-display").forGetter(req -> Optional.ofNullable(req.getTagDisplay())),
+      JeiPositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new JeiPositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
   ).apply(instance, (fluid, mode, amount, chance, nbt, nbt_display, position) -> {
     RequirementFluid requirementFluid = new RequirementFluid(mode, fluid, amount.orElse(1000), position);
     requirementFluid.setChance(chance);
@@ -70,16 +70,11 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
     return json;
   }
 
-  @Override
-  public JeiFluidComponent jeiComponent() {
-    return new JeiFluidComponent(this);
-  }
-
-  public RequirementFluid(IOType ioType, FluidIngredient fluid, int amount, IJeiRequirement.JeiPositionedRequirement position) {
+  public RequirementFluid(IOType ioType, FluidIngredient fluid, int amount, JeiPositionedRequirement position) {
     this(RequirementTypeRegistration.FLUID.get(), ioType, fluid, amount, position);
   }
 
-  private RequirementFluid(RequirementType<RequirementFluid> type, IOType ioType, FluidIngredient fluid, int amount, IJeiRequirement.JeiPositionedRequirement position) {
+  private RequirementFluid(RequirementType<RequirementFluid> type, IOType ioType, FluidIngredient fluid, int amount, JeiPositionedRequirement position) {
     super(type, ioType, position);
     this.ingredient = fluid;
     this.required = new HybridFluid(new FluidStack(fluid.getAll().getFirst(), amount));
@@ -156,8 +151,8 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
   public boolean isValidComponent(ProcessingComponent<?> component, RecipeCraftingContext ctx) {
     MachineComponent<?> cmp = component.component();
     return (cmp.getComponentType().equals(ComponentRegistration.COMPONENT_FLUID.get())) &&
-      cmp instanceof MachineComponent.FluidHatch &&
-      cmp.getIOType() == this.getActionType();
+        cmp instanceof MachineComponent.FluidHatch &&
+        cmp.getIOType() == this.getActionType();
   }
 
   @Nonnull

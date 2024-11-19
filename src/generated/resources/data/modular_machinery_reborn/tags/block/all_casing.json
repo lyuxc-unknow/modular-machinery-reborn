@@ -1,12 +1,9 @@
 {
   "values": [
     "#modular_machinery_reborn:casing",
-    "#modular_machinery_reborn:inputbus",
-    "#modular_machinery_reborn:outputbus",
-    "#modular_machinery_reborn:energyinputhatch",
-    "#modular_machinery_reborn:energyoutputhatch",
-    "#modular_machinery_reborn:fluidinputhatch",
-    "#modular_machinery_reborn:fluidoutputhatch",
+    "#modular_machinery_reborn:energyhatch",
+    "#modular_machinery_reborn:itembus",
+    "#modular_machinery_reborn:fluidhatch",
     "modular_machinery_reborn:biome_reader",
     "modular_machinery_reborn:dimensional_detector",
     "modular_machinery_reborn:weather_sensor",

@@ -4,6 +4,7 @@ import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.util.TextureSizeHelper;
 import lombok.Getter;
+import lombok.Setter;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphics;
@@ -16,10 +17,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Getter
+@Setter
 public abstract class JeiComponent<C, T extends ComponentRequirement<C, T>> implements IIngredientRenderer<C>, IJeiRequirement<C, T> {
   protected static final ResourceLocation LOCATION_JEI_ICONS = ResourceLocation.fromNamespaceAndPath(ModularMachineryReborn.MODID, "textures/gui/jeirecipeicons.png");
 
-  protected final T requirement;
+  protected T requirement;
   protected final int uOffset, vOffset;
 
   protected JeiComponent(T requirement, int uOffset, int vOffset) {
@@ -29,6 +31,7 @@ public abstract class JeiComponent<C, T extends ComponentRequirement<C, T>> impl
   }
 
   public abstract int getWidth();
+
   public abstract int getHeight();
 
   public ResourceLocation texture() {
@@ -49,6 +52,7 @@ public abstract class JeiComponent<C, T extends ComponentRequirement<C, T>> impl
   public abstract List<C> ingredients();
 
   public RecipeIngredientRole role() {
+    if (requirement == null) return RecipeIngredientRole.RENDER_ONLY;
     return requirement.getActionType().isInput() ? RecipeIngredientRole.INPUT : RecipeIngredientRole.OUTPUT;
   }
 }

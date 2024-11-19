@@ -13,7 +13,7 @@ import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiItemComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
@@ -35,21 +35,21 @@ import java.util.Objects;
 @SuppressWarnings("unchecked")
 public class RequirementItem extends ComponentRequirement<ItemStack, RequirementItem> implements ComponentRequirement.ChancedRequirement {
   public static final NamedCodec<RequirementItem> CODEC =
-    NamedCodec.record(instance -> instance.group(
-      DefaultCodecs.SIZED_INGREDIENT_WITH_NBT.fieldOf("sizedIngredient").forGetter(req -> req.ingredient),
-      NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(ComponentRequirement::getActionType),
-      NamedCodec.floatRange(0, 1).optionalFieldOf("chance", 1f).forGetter(req -> req.chance),
-      IJeiRequirement.POSITION_CODEC.fieldOf("position").forGetter(ComponentRequirement::getPosition)
-    ).apply(instance, (item, mode, chance, position) -> {
-      RequirementItem requirementItem = new RequirementItem(
-          mode,
-          new SizedIngredient(item.ingredient(), item.count()),
-          position
-      );
-      requirementItem.setChance(chance);
+      NamedCodec.record(instance -> instance.group(
+          DefaultCodecs.SIZED_INGREDIENT_WITH_NBT.fieldOf("sizedIngredient").forGetter(req -> req.ingredient),
+          NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(ComponentRequirement::getActionType),
+          NamedCodec.floatRange(0, 1).optionalFieldOf("chance", 1f).forGetter(req -> req.chance),
+          JeiPositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new JeiPositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
+      ).apply(instance, (item, mode, chance, position) -> {
+        RequirementItem requirementItem = new RequirementItem(
+            mode,
+            new SizedIngredient(item.ingredient(), item.count()),
+            position
+        );
+        requirementItem.setChance(chance);
 
-      return requirementItem;
-    }), "RequirementItem");
+        return requirementItem;
+      }), "RequirementItem");
 
   @Getter
   public final SizedIngredient ingredient;
@@ -78,12 +78,7 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
     return json;
   }
 
-  @Override
-  public JeiItemComponent jeiComponent() {
-    return new JeiItemComponent(this);
-  }
-
-  public RequirementItem(IOType ioType, SizedIngredient ingredient, IJeiRequirement.JeiPositionedRequirement position) {
+  public RequirementItem(IOType ioType, SizedIngredient ingredient, JeiPositionedRequirement position) {
     super(RequirementTypeRegistration.ITEM.get(), ioType, position);
     this.ingredient = ingredient;
   }
@@ -135,8 +130,8 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
   public boolean isValidComponent(ProcessingComponent<?> component, RecipeCraftingContext ctx) {
     MachineComponent<?> cmp = component.component();
     return cmp.getComponentType().equals(ComponentRegistration.COMPONENT_ITEM.get()) &&
-      cmp instanceof MachineComponent.ItemBus &&
-      cmp.getIOType() == getActionType();
+        cmp instanceof MachineComponent.ItemBus &&
+        cmp.getIOType() == getActionType();
   }
 
   @Nonnull

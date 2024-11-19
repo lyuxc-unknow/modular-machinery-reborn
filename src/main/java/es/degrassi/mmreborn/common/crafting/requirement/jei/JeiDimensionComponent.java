@@ -13,8 +13,8 @@ import org.apache.commons.compress.utils.Lists;
 
 import java.util.List;
 
-public class JeiDimensionRequirement extends JeiComponent<ResourceLocation, RequirementDimension> {
-  public JeiDimensionRequirement(RequirementDimension requirement) {
+public class JeiDimensionComponent extends JeiComponent<ResourceLocation, RequirementDimension> {
+  public JeiDimensionComponent(RequirementDimension requirement) {
     super(requirement, 0, 0);
   }
 

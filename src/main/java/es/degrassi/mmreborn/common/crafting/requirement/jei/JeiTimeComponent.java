@@ -12,8 +12,8 @@ import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
-public class JeiTimeRequirement extends JeiComponent<IntRange, RequirementTime> {
-  public JeiTimeRequirement(RequirementTime requirement) {
+public class JeiTimeComponent extends JeiComponent<IntRange, RequirementTime> {
+  public JeiTimeComponent(RequirementTime requirement) {
     super(requirement, 0, 0);
   }
 

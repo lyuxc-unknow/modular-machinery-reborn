@@ -32,6 +32,11 @@ public class RequirementType<V extends ComponentRequirement<?, V>> {
     return requiresModid;
   }
 
+  @SuppressWarnings("unchecked")
+  public V castRequirement(ComponentRequirement<?, ?> requirement) {
+    return (V) requirement;
+  }
+
   public RequirementType<V> getType() {
     return this;
   }

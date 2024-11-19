@@ -1,7 +1,7 @@
 package es.degrassi.mmreborn.common.integration.kubejs.requirement;
 
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementDimension;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
 import es.degrassi.mmreborn.common.integration.kubejs.MachineRecipeBuilderJS;
 import es.degrassi.mmreborn.common.integration.kubejs.RecipeJSBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -15,6 +15,14 @@ public interface DimensionRequirementJS extends RecipeJSBuilder {
   }
 
   default MachineRecipeBuilderJS dimensions(List<ResourceLocation> dimensions, boolean blacklist, int x, int y) {
-    return addRequirement(new RequirementDimension(dimensions, blacklist, new IJeiRequirement.JeiPositionedRequirement(x, y)));
+    return addRequirement(new RequirementDimension(dimensions, blacklist, new JeiPositionedRequirement(x, y)));
+  }
+
+  default MachineRecipeBuilderJS dimensions(List<ResourceLocation> dimensions) {
+    return dimensions(dimensions, false);
+  }
+
+  default MachineRecipeBuilderJS dimensions(List<ResourceLocation> dimensions, boolean blacklist) {
+    return dimensions(dimensions, blacklist, 0, 0);
   }
 }

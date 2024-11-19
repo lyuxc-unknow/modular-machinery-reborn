@@ -11,8 +11,8 @@ import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
-public class JeiChunkloadRequirement extends JeiComponent<Integer, RequirementChunkload> {
-  public JeiChunkloadRequirement(RequirementChunkload requirement) {
+public class JeiChunkloadComponent extends JeiComponent<Integer, RequirementChunkload> {
+  public JeiChunkloadComponent(RequirementChunkload requirement) {
     super(requirement, 0, 0);
   }
 

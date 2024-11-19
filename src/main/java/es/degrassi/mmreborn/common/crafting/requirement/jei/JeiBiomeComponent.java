@@ -13,8 +13,8 @@ import org.apache.commons.compress.utils.Lists;
 
 import java.util.List;
 
-public class JeiBiomeRequirement extends JeiComponent<ResourceLocation, RequirementBiome> {
-  public JeiBiomeRequirement(RequirementBiome requirement) {
+public class JeiBiomeComponent extends JeiComponent<ResourceLocation, RequirementBiome> {
+  public JeiBiomeComponent(RequirementBiome requirement) {
     super(requirement, 0, 0);
   }
 

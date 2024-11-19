@@ -10,32 +10,27 @@ import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiTimeRequirement;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiWeatherRequirement;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.IntRange;
 import es.degrassi.mmreborn.common.util.ResultChance;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.Heightmap;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Locale;
 
 public class RequirementTime extends ComponentRequirement<IntRange, RequirementTime> {
   public static final NamedCodec<RequirementTime> CODEC = NamedCodec.record(instance -> instance.group(
       IntRange.CODEC.fieldOf("range").forGetter(RequirementTime::time),
-      IJeiRequirement.POSITION_CODEC.fieldOf("position").forGetter(ComponentRequirement::getPosition)
+      JeiPositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new JeiPositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
   ).apply(instance, RequirementTime::new), "Time Requirement");
 
   private final IntRange time;
 
-  public RequirementTime(IntRange time, IJeiRequirement.JeiPositionedRequirement position) {
+  public RequirementTime(IntRange time, JeiPositionedRequirement position) {
     super(RequirementTypeRegistration.TIME.get(), IOType.INPUT, position);
     this.time = time;
   }
@@ -69,7 +64,7 @@ public class RequirementTime extends ComponentRequirement<IntRange, RequirementT
       return CraftCheck.success();
     return CraftCheck.failure(
         Component.translatable(
-        "craftcheck.failure.time",
+            "craftcheck.failure.time",
             this.time.toFormattedString(),
             time
         ).getString()
@@ -99,11 +94,6 @@ public class RequirementTime extends ComponentRequirement<IntRange, RequirementT
   @Override
   public @NotNull String getMissingComponentErrorMessage(IOType ioType) {
     return "component.missing.time";
-  }
-
-  @Override
-  public JeiTimeRequirement jeiComponent() {
-    return new JeiTimeRequirement(this);
   }
 
   @Override

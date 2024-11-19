@@ -3,7 +3,6 @@ package es.degrassi.mmreborn.common.integration.kubejs;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.DataResult;
-import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.recipe.KubeRecipe;
 import dev.latvian.mods.kubejs.recipe.RecipeKey;
@@ -12,7 +11,7 @@ import dev.latvian.mods.kubejs.util.TickDuration;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.BiomeRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.ChunkloadRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.DimensionRequirementJS;
@@ -22,8 +21,6 @@ import es.degrassi.mmreborn.common.integration.kubejs.requirement.ItemRequiremen
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.TimeRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.WeatherRequirementJS;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.helpers.MessageFormatter;
@@ -97,7 +94,7 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
         (int) getValue(ModularMachineryRebornRecipeSchemas.TIME).ticks(),
         getValue(ModularMachineryRebornRecipeSchemas.WIDTH),
         getValue(ModularMachineryRebornRecipeSchemas.HEIGHT),
-        new IJeiRequirement.JeiPositionedRequirement(
+        new JeiPositionedRequirement(
             getValue(ModularMachineryRebornRecipeSchemas.PROGRESS_X),
             getValue(ModularMachineryRebornRecipeSchemas.PROGRESS_Y)
         )

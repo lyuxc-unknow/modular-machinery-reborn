@@ -10,22 +10,23 @@ import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.ResultChance;
-import java.util.List;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 @Getter
 public class RequirementDuration extends ComponentRequirement<Integer, RequirementDuration> implements ComponentRequirement.PerTick {
   public static final NamedMapCodec<RequirementDuration> CODEC = NamedCodec.record(instance -> instance.group(
-      NamedCodec.intRange(1, Integer.MAX_VALUE).fieldOf("time").forGetter(RequirementDuration::getTime),
-      IJeiRequirement.POSITION_CODEC.fieldOf("position").forGetter(ComponentRequirement::getPosition)
-    ).apply(instance, RequirementDuration::new),
-    "Duration requirement"
+          NamedCodec.intRange(1, Integer.MAX_VALUE).fieldOf("time").forGetter(RequirementDuration::getTime),
+          JeiPositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new JeiPositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
+      ).apply(instance, RequirementDuration::new),
+      "Duration requirement"
   );
 
   public final int time;
@@ -39,16 +40,11 @@ public class RequirementDuration extends ComponentRequirement<Integer, Requireme
   }
 
   @Override
-  public <J extends JeiComponent<Integer, RequirementDuration>> J jeiComponent() {
-    return null;
-  }
-
-  @Override
   public String toString() {
     return asJson().toString();
   }
 
-  public RequirementDuration(int time, IJeiRequirement.JeiPositionedRequirement position) {
+  public RequirementDuration(int time, JeiPositionedRequirement position) {
     super(RequirementTypeRegistration.DURATION.get(), IOType.INPUT, position);
     this.time = time;
   }

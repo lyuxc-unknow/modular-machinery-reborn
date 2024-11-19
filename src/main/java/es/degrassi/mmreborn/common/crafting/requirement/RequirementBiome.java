@@ -12,7 +12,7 @@ import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiBiomeRequirement;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
@@ -31,13 +31,13 @@ public class RequirementBiome extends ComponentRequirement<ResourceLocation, Req
   public static final NamedCodec<RequirementBiome> CODEC = NamedCodec.record(instance -> instance.group(
       DefaultCodecs.RESOURCE_LOCATION.listOf().fieldOf("filter").forGetter(RequirementBiome::filter),
       NamedCodec.BOOL.optionalFieldOf("blacklist", false).forGetter(RequirementBiome::blacklist),
-      IJeiRequirement.POSITION_CODEC.fieldOf("position").forGetter(ComponentRequirement::getPosition)
+      JeiPositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new JeiPositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
   ).apply(instance, RequirementBiome::new), "Biome Requirement");
 
   private final List<ResourceLocation> filter;
   private final boolean blacklist;
 
-  public RequirementBiome(List<ResourceLocation> filter, boolean blacklist, IJeiRequirement.JeiPositionedRequirement position) {
+  public RequirementBiome(List<ResourceLocation> filter, boolean blacklist, JeiPositionedRequirement position) {
     super(RequirementTypeRegistration.BIOME.get(), IOType.INPUT, position);
     this.filter = filter;
     this.blacklist = blacklist;
@@ -73,10 +73,10 @@ public class RequirementBiome extends ComponentRequirement<ResourceLocation, Req
     if (this.filter.stream().anyMatch(biome -> biomeRegistry.get(biome) == context.getMachineController().getLevel().getBiome(context.getMachineController().getBlockPos()).value()) != this.blacklist)
       return CraftCheck.success();
     return CraftCheck.failure(Component.translatable(
-          "craftcheck.failure.biome." + blacklist,
-          filter.stream().map(ResourceLocation::toString).toList().toString(),
-          context.getMachineController().getLevel().getBiome(context.getMachineController().getBlockPos()).unwrapKey().get().location().toString()
-      ).getString()
+            "craftcheck.failure.biome." + blacklist,
+            filter.stream().map(ResourceLocation::toString).toList().toString(),
+            context.getMachineController().getLevel().getBiome(context.getMachineController().getBlockPos()).unwrapKey().get().location().toString()
+        ).getString()
     );
   }
 
@@ -103,11 +103,6 @@ public class RequirementBiome extends ComponentRequirement<ResourceLocation, Req
   @Override
   public @NotNull String getMissingComponentErrorMessage(IOType ioType) {
     return "component.missing.biome";
-  }
-
-  @Override
-  public JeiBiomeRequirement jeiComponent() {
-    return new JeiBiomeRequirement(this);
   }
 
   @Override

@@ -12,8 +12,8 @@ import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.Locale;
 
-public class JeiWeatherRequirement extends JeiComponent<RequirementWeather.WeatherType, RequirementWeather> {
-  public JeiWeatherRequirement(RequirementWeather requirement) {
+public class JeiWeatherComponent extends JeiComponent<RequirementWeather.WeatherType, RequirementWeather> {
+  public JeiWeatherComponent(RequirementWeather requirement) {
     super(requirement, 0, 0);
   }
 

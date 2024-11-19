@@ -29,12 +29,18 @@ public class MMRTags {
   }
 
   public static class Blocks extends Tag<Block> {
+    public static final TagKey<Block> ENERGY = new Blocks(false, "energyhatch").get();
     public static final TagKey<Block> ENERGY_INPUT = new Blocks(false, "energyinputhatch").get();
-    public static final TagKey<Block> INPUT_BUS = new Blocks(false, "inputbus").get();
-    public static final TagKey<Block> FLUID_INPUT = new Blocks(false, "fluidinputhatch").get();
     public static final TagKey<Block> ENERGY_OUTPUT = new Blocks(false, "energyoutputhatch").get();
-    public static final TagKey<Block> FLUID_OUTPUT = new Blocks(false, "fluidoutputhatch").get();
+
+    public static final TagKey<Block> ITEM = new Blocks(false, "itembus").get();
+    public static final TagKey<Block> INPUT_BUS = new Blocks(false, "inputbus").get();
     public static final TagKey<Block> OUTPUT_BUS = new Blocks(false, "outputbus").get();
+
+    public static final TagKey<Block> FLUID = new Blocks(false, "fluidhatch").get();
+    public static final TagKey<Block> FLUID_INPUT = new Blocks(false, "fluidinputhatch").get();
+    public static final TagKey<Block> FLUID_OUTPUT = new Blocks(false, "fluidoutputhatch").get();
+
     public static final TagKey<Block> CASINGS = new Blocks(false, "casing").get();
     public static final TagKey<Block> ALL_CASINGS = new Blocks(false, "all_casing").get();
 

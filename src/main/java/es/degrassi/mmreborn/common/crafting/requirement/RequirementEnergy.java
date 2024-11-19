@@ -11,7 +11,7 @@ import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiEnergyComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
@@ -19,15 +19,15 @@ import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.IEnergyHandler;
 import es.degrassi.mmreborn.common.util.ResultChance;
-import java.util.List;
-import javax.annotation.Nonnull;
 
-@SuppressWarnings("unchecked")
+import javax.annotation.Nonnull;
+import java.util.List;
+
 public class RequirementEnergy extends ComponentRequirement<Long, RequirementEnergy> implements ComponentRequirement.PerTick {
   public static final NamedMapCodec<RequirementEnergy> CODEC = NamedCodec.record(instance -> instance.group(
-    NamedCodec.longRange(0, Long.MAX_VALUE).fieldOf("amount").forGetter(req -> req.requirementPerTick),
-    NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(ComponentRequirement::getActionType),
-      IJeiRequirement.POSITION_CODEC.fieldOf("position").forGetter(ComponentRequirement::getPosition)
+      NamedCodec.longRange(0, Long.MAX_VALUE).fieldOf("amount").forGetter(req -> req.requirementPerTick),
+      NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(ComponentRequirement::getActionType),
+      JeiPositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new JeiPositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
   ).apply(instance, (amount, type, position) -> new RequirementEnergy(type, amount, position)), "EnergyRequirement");
 
   public final long requirementPerTick;
@@ -42,12 +42,7 @@ public class RequirementEnergy extends ComponentRequirement<Long, RequirementEne
     return json;
   }
 
-  @Override
-  public JeiEnergyComponent jeiComponent() {
-    return new JeiEnergyComponent(this);
-  }
-
-  public RequirementEnergy(IOType ioType, long requirementPerTick, IJeiRequirement.JeiPositionedRequirement position) {
+  public RequirementEnergy(IOType ioType, long requirementPerTick, JeiPositionedRequirement position) {
     super(RequirementTypeRegistration.ENERGY.get(), ioType, position);
     this.requirementPerTick = requirementPerTick;
     this.activeIO = this.requirementPerTick;
@@ -95,8 +90,8 @@ public class RequirementEnergy extends ComponentRequirement<Long, RequirementEne
   public boolean isValidComponent(ProcessingComponent<?> component, RecipeCraftingContext ctx) {
     MachineComponent<?> cmp = component.component();
     return cmp.getComponentType().equals(ComponentRegistration.COMPONENT_ENERGY.get()) &&
-      cmp instanceof MachineComponent.EnergyHatch &&
-      cmp.getIOType() == this.getActionType();
+        cmp instanceof MachineComponent.EnergyHatch &&
+        cmp.getIOType() == this.getActionType();
   }
 
   @Nonnull

@@ -41,15 +41,15 @@ public class JeiFluidComponent extends JeiComponent<FluidStack, RequirementFluid
     List<Component> tooltip = super.getTooltip(ingredient, tooltipFlag);
     String mode = requirement.getActionType().isInput() ? "input" : "output";
     tooltip.add(Component.translatable("modular_machinery_reborn.jei.ingredient.fluid." + mode, ingredient.getHoverName(), ingredient.getAmount()));
-    if(requirement.chance < 1F && requirement.chance >= 0F) {
+    if (requirement.chance < 1F && requirement.chance >= 0F) {
       String keyNever = requirement.getActionType().isInput() ? "tooltip.machinery.chance.in.never" : "tooltip.machinery.chance.out.never";
       String keyChance = requirement.getActionType().isInput() ? "tooltip.machinery.chance.in" : "tooltip.machinery.chance.out";
 
       String chanceStr = String.valueOf(Mth.floor(requirement.chance * 100F));
-      if(requirement.chance == 0F) {
+      if (requirement.chance == 0F) {
         tooltip.add(Component.translatable(keyNever));
       } else {
-        if(requirement.chance < 0.01F) {
+        if (requirement.chance < 0.01F) {
           chanceStr = "< 1";
         }
         chanceStr += "%";
@@ -62,13 +62,13 @@ public class JeiFluidComponent extends JeiComponent<FluidStack, RequirementFluid
   @Override
   public void setRecipe(MMRRecipeCategory category, IRecipeLayoutBuilder builder, MachineRecipe recipe, IFocusGroup focuses) {
     builder
-      .addSlot(role(), getPosition().x(), getPosition().y())
-      .setOverlay(
-        MMRJeiPlugin.jeiHelpers.getGuiHelper().createDrawable(texture(), getUOffset(), getVOffset(), getWidth() + 2, getHeight() + 2),
-        -1,
-        -1
-      )
-      .setFluidRenderer(getRequirement().amount, false, getWidth(), getHeight())
-      .addFluidStack(getRequirement().required.asFluidStack().getFluid(), getRequirement().amount);
+        .addSlot(role(), getPosition().x(), getPosition().y())
+        .setOverlay(
+            MMRJeiPlugin.jeiHelpers.getGuiHelper().createDrawable(texture(), getUOffset(), getVOffset(), getWidth() + 2, getHeight() + 2),
+            -1,
+            -1
+        )
+        .setFluidRenderer(getRequirement().amount, false, getWidth(), getHeight())
+        .addFluidStack(getRequirement().required.asFluidStack().getFluid(), getRequirement().amount);
   }
 }
