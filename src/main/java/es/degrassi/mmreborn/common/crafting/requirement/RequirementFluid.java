@@ -10,7 +10,6 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
 import es.degrassi.mmreborn.common.integration.ingredient.HybridFluid;
 import es.degrassi.mmreborn.common.machine.IOType;
@@ -178,8 +177,7 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
         yield CraftCheck.failure("craftcheck.failure.fluid.input");
       }
       case OUTPUT -> {
-        handler = CopyHandlerHelper.copyTank(context.getMachineController(), handler,
-            context.getMachineController().getLevel().registryAccess());
+        handler = CopyHandlerHelper.copyTank(handler, context.getMachineController().getLevel().registryAccess());
 
         for (ComponentOutputRestrictor restrictor : restrictions) {
           if (restrictor instanceof ComponentOutputRestrictor.RestrictionTank tank) {

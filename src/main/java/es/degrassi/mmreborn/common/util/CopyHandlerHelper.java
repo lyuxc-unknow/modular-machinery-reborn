@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class CopyHandlerHelper {
 
-    public static HybridTank copyTank(BlockEntity entity, HybridTank tank, HolderLookup.Provider provider) {
+    public static HybridTank copyTank(HybridTank tank, HolderLookup.Provider provider) {
         CompoundTag cmp = new CompoundTag();
         tank.writeToNBT(provider, cmp);
         HybridTank newTank = new HybridTank(tank.getCapacity());
