@@ -37,7 +37,7 @@ public enum ItemBusSize implements StringRepresentable {
 
   public static void loadFromConfig() {
     for (ItemBusSize size : ItemBusSize.values()) {
-      size.slots = MMRConfig.get().itemBus.itemSize(size);
+      size.slots = MMRConfig.get().itemSize(size);
     }
   }
 

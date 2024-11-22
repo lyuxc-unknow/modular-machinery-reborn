@@ -1,57 +1,62 @@
 package es.degrassi.mmreborn.common.data.config;
 
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
-import me.shedaniel.autoconfig.ConfigData;
-import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.autoconfig.annotation.ConfigEntry;
-import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
 
-@Config(name = "fluid_hatch")
-public class MMRFluidHatchConfig implements ConfigData {
-  @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
-  public Tier TINY = new Tier(FluidHatchSize.TINY);
+public class MMRFluidHatchConfig {
+  public Tier TINY;
 
-  @ConfigEntry.Gui.CollapsibleObject
-  public Tier SMALL = new Tier(FluidHatchSize.SMALL);
+  public Tier SMALL;
 
-  @ConfigEntry.Gui.CollapsibleObject
-  public Tier NORMAL = new Tier(FluidHatchSize.NORMAL);
+  public Tier NORMAL;
 
-  @ConfigEntry.Gui.CollapsibleObject
-  public Tier REINFORCED = new Tier(FluidHatchSize.REINFORCED);
+  public Tier REINFORCED;
 
-  @ConfigEntry.Gui.CollapsibleObject
-  public Tier BIG = new Tier(FluidHatchSize.BIG);
+  public Tier BIG;
 
-  @ConfigEntry.Gui.CollapsibleObject
-  public Tier HUGE = new Tier(FluidHatchSize.HUGE);
+  public Tier HUGE;
 
-  @ConfigEntry.Gui.CollapsibleObject
-  public Tier LUDICROUS = new Tier(FluidHatchSize.LUDICROUS);
+  public Tier LUDICROUS;
 
-  @ConfigEntry.Gui.CollapsibleObject
-  public Tier VACUUM = new Tier(FluidHatchSize.VACUUM);
+  public Tier VACUUM;
 
   public static class Tier {
-    @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)
-    @Comment("Defines the tank size of fluid hatch in mB")
-    public int size;
+    public final ConfigValue<Integer> size;
+//    @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)
+//    @Comment("Defines the tank size of fluid hatch in mB")
+//    public int size;
 
-    public Tier(FluidHatchSize tier) {
-      this.size = tier.defaultConfigurationValue;
+    public Tier(ModConfigSpec.Builder builder, FluidHatchSize tier) {
+      builder.push(tier.getSerializedName());
+      this.size = builder
+          .comment("Defines the tank size of fluid hatch in mB")
+          .define("size", tier.defaultConfigurationValue);
+      builder.pop();
     }
+  }
+
+  public MMRFluidHatchConfig(ModConfigSpec.Builder builder) {
+    TINY = new Tier(builder, FluidHatchSize.TINY);
+    SMALL = new Tier(builder, FluidHatchSize.SMALL);
+    NORMAL = new Tier(builder, FluidHatchSize.NORMAL);
+    REINFORCED = new Tier(builder, FluidHatchSize.REINFORCED);
+    BIG = new Tier(builder, FluidHatchSize.BIG);
+    HUGE = new Tier(builder, FluidHatchSize.HUGE);
+    LUDICROUS = new Tier(builder, FluidHatchSize.LUDICROUS);
+    VACUUM = new Tier(builder, FluidHatchSize.VACUUM);
   }
 
   public int fluidSize(FluidHatchSize size) {
     return switch(size) {
-      case TINY -> TINY.size;
-      case SMALL -> SMALL.size;
-      case NORMAL -> NORMAL.size;
-      case REINFORCED -> REINFORCED.size;
-      case BIG -> BIG.size;
-      case HUGE -> HUGE.size;
-      case LUDICROUS -> LUDICROUS.size;
-      case VACUUM -> VACUUM.size;
+      case TINY -> TINY.size.get();
+      case SMALL -> SMALL.size.get();
+      case NORMAL -> NORMAL.size.get();
+      case REINFORCED -> REINFORCED.size.get();
+      case BIG -> BIG.size.get();
+      case HUGE -> HUGE.size.get();
+      case LUDICROUS -> LUDICROUS.size.get();
+      case VACUUM -> VACUUM.size.get();
     };
   }
 }

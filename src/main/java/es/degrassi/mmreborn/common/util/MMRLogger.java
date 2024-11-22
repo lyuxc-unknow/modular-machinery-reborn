@@ -71,7 +71,7 @@ public class MMRLogger {
       .withtFilter(null)
       .build();
 
-    loggerConfig.addAppender(cmAppender, MMRConfig.get().general.debugLevel.getLevel(), null);
+    loggerConfig.addAppender(cmAppender, MMRConfig.get().debugLevel.get().getLevel(), null);
 
     Appender debug = config.getAppender("DebugFile");
     if(debug != null)

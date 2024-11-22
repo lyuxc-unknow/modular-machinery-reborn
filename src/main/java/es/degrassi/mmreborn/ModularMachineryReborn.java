@@ -20,16 +20,15 @@ import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.registration.Registration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.MMRLogger;
-import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.ConfigHolder;
-import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
-import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionResult;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -49,35 +48,53 @@ public class ModularMachineryReborn {
   public static final BiMap<ResourceLocation, DynamicMachine> MACHINES = HashBiMap.create();
   public static final BiMap<ResourceLocation, BlockController> MACHINES_BLOCK = HashBiMap.create();
 
-  public ModularMachineryReborn(final IEventBus MOD_BUS) {
-    ConfigHolder<MMRConfig> config = AutoConfig.register(MMRConfig.class, PartitioningSerializer.wrap(JanksonConfigSerializer::new));
+  public ModularMachineryReborn(final ModContainer CONTAINER, final IEventBus MOD_BUS) {
+    CONTAINER.registerConfig(ModConfig.Type.COMMON, MMRConfig.getSpec());
+//    ConfigHolder<MMRConfig> config = AutoConfig.register(MMRConfig.class, PartitioningSerializer.wrap(JanksonConfigSerializer::new));
 
-    config.registerSaveListener((holder, mmrConfig) -> {
-      MMRLogger.setDebugLevel(mmrConfig.general.debugLevel.getLevel());
-      Config.load();
-      EnergyHatchSize.loadFromConfig();
-      FluidHatchSize.loadFromConfig();
-      ItemBusSize.loadFromConfig();
-      EnergyDisplayUtil.loadFromConfig();
-      return InteractionResult.SUCCESS;
-    });
-
-    MMRLogger.init();
+//    config.registerSaveListener((holder, mmrConfig) -> {
+//      MMRLogger.setDebugLevel(mmrConfig.general.debugLevel.getLevel());
+//      Config.load();
+//      EnergyHatchSize.loadFromConfig();
+//      FluidHatchSize.loadFromConfig();
+//      ItemBusSize.loadFromConfig();
+//      EnergyDisplayUtil.loadFromConfig();
+//      return InteractionResult.SUCCESS;
+//    });
 
     Registration.register(MOD_BUS);
 
+    MOD_BUS.addListener(this::commonSetup);
+
     MOD_BUS.register(new ModularMachineryRebornClient());
     MOD_BUS.addListener(this::registerCapabilities);
+    MOD_BUS.addListener(this::reloadConfig);
 
     final IEventBus GAME_BUS = NeoForge.EVENT_BUS;
     GAME_BUS.addListener(this::registerReloadListener);
     GAME_BUS.addListener(this::registerCommands);
     GAME_BUS.addListener(this::onReloadStart);
+  }
 
+  private void commonSetup(final FMLCommonSetupEvent event) {
+    MMRLogger.init();
+
+    Config.load();
     EnergyHatchSize.loadFromConfig();
     FluidHatchSize.loadFromConfig();
     ItemBusSize.loadFromConfig();
     EnergyDisplayUtil.loadFromConfig();
+  }
+
+  private void reloadConfig(final ModConfigEvent.Reloading event) {
+    if(event.getConfig().getSpec() == MMRConfig.getSpec()) {
+      MMRLogger.setDebugLevel(MMRConfig.get().debugLevel.get().getLevel());
+      Config.load();
+      EnergyHatchSize.loadFromConfig();
+      FluidHatchSize.loadFromConfig();
+      ItemBusSize.loadFromConfig();
+      EnergyDisplayUtil.loadFromConfig();
+    }
   }
 
   private void registerCapabilities(final RegisterCapabilitiesEvent event) {

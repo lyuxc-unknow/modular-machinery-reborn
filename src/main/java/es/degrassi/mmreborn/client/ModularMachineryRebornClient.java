@@ -17,7 +17,6 @@ import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiItemComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiTimeComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiWeatherComponent;
 import es.degrassi.mmreborn.common.data.Config;
-import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.entity.base.ColorableMachineComponentEntity;
 import es.degrassi.mmreborn.common.entity.base.EnergyHatchEntity;
@@ -30,7 +29,6 @@ import es.degrassi.mmreborn.common.registration.ContainerRegistration;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
-import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -46,13 +44,11 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
-import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 
@@ -270,13 +266,13 @@ public class ModularMachineryRebornClient {
   @SubscribeEvent
   @OnlyIn(Dist.CLIENT)
   public void clientSetup(final FMLClientSetupEvent event) {
-    if (ModList.get().isLoaded("cloth_config")) {
-      ModLoadingContext.get().registerExtensionPoint(
-          IConfigScreenFactory.class,
-          () -> (minecraft, parent) ->
-              AutoConfig.getConfigScreen(MMRConfig.class, parent).get()
-      );
-    }
+//    if (ModList.get().isLoaded("cloth_config")) {
+//      ModLoadingContext.get().registerExtensionPoint(
+//          IConfigScreenFactory.class,
+//          () -> (minecraft, parent) ->
+//              AutoConfig.getConfigScreen(MMRConfig.class, parent).get()
+//      );
+//    }
 
     if (ModList.get().isLoaded("jei")) {
       JeiComponentRegistry.init();

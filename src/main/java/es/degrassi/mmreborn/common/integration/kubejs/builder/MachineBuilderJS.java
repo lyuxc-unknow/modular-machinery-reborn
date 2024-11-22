@@ -6,6 +6,7 @@ import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.kubejs.event.KubeEvent;
 import es.degrassi.mmreborn.api.Structure;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
+import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import net.minecraft.resources.ResourceLocation;
@@ -56,7 +57,7 @@ public class MachineBuilderJS {
     if (intColor != null)
       machine.setDefinedColor(intColor);
     else if(color != null)
-      machine.setDefinedColor(DefaultCodecs.HEX.decode(JsonOps.INSTANCE, new JsonPrimitive(color)).result().orElse(new Pair<>(MMRConfig.get().general.general_casing_color, null)).getFirst());
+      machine.setDefinedColor(DefaultCodecs.HEX.decode(JsonOps.INSTANCE, new JsonPrimitive(color)).result().orElse(new Pair<>(Config.toInt(MMRConfig.get().general_casing_color.get()), null)).getFirst());
     return machine;
   }
 

@@ -42,7 +42,7 @@ public class StructureRenderer {
       int cycleTime = time / ingredient.getAll().size();
       minCycleTime.set(Math.min(cycleTime, minCycleTime.get()));
     });
-    this.timer = new CycleTimer(() -> Math.min(MMRConfig.get().general.blockTagCycleTime, minCycleTime.get()));
+    this.timer = new CycleTimer(() -> Math.min(MMRConfig.get().blockTagCycleTime.get(), minCycleTime.get()));
   }
 
   public void render(PoseStack matrix, MultiBufferSource buffer, Direction direction, Level world, BlockPos machinePos) {

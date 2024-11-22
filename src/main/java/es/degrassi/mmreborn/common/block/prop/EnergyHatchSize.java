@@ -88,13 +88,12 @@ public enum EnergyHatchSize implements StringRepresentable {
   }
 
   public static void loadFromConfig() {
-    MMREnergyHatchConfig cfg = MMRConfig.get().energyHatch;
     for (EnergyHatchSize size : values()) {
-      size.maxEnergy = cfg.energySize(size);
+      size.maxEnergy = MMRConfig.get().energySize(size);
       size.maxEnergy = MiscUtils.clamp(size.maxEnergy, 1, Long.MAX_VALUE);
-      size.transferLimit = cfg.energyLimit(size);
+      size.transferLimit = MMRConfig.get().energyLimit(size);
       size.transferLimit = MiscUtils.clamp(size.transferLimit, 1, Long.MAX_VALUE - 1);
-      size.ic2EnergyTier = cfg.energyTier(size);
+      size.ic2EnergyTier = MMRConfig.get().energyTier(size);
 
 //      size.gtEnergyTier = cfg.get("energyhatch.gtvoltage", size.name().toUpperCase(), size.defaultGTEnergyTier, "Defines the GT voltage tier. Affects both input and output hatches of this tier. [range: 0 ~ 8, default: " + size.defaultGTEnergyTier + "]").getInt();
 //      size.gtEnergyTier = Mth.clamp(size.gtEnergyTier, 0, 8);

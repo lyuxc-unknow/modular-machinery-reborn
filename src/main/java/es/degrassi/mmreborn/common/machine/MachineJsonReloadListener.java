@@ -27,7 +27,7 @@ public class MachineJsonReloadListener extends CustomJsonReloadListener {
   public static IContext context;
 
   public MachineJsonReloadListener() {
-    super(MMRConfig.get().general.machineDirectory);
+    super(MMRConfig.get().machineDirectory.get());
   }
 
   @Override

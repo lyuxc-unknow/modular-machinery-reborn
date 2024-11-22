@@ -10,7 +10,7 @@ public class Config {
   }
 
   public static void load() {
-    machineColor = MMRConfig.get().general.general_casing_color;
+    machineColor = toInt(MMRConfig.get().general_casing_color.get());
   }
 
   public static int toInt(String color) {

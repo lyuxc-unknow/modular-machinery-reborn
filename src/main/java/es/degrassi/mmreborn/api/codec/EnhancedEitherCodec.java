@@ -35,7 +35,7 @@ public class EnhancedEitherCodec<F, S> implements NamedCodec<Either<F, S>> {
     if (firstRead.result().isPresent())
       return firstRead;
     String firstError = firstRead.error().map(DataResult.Error::message).orElse("");
-    if(MMRConfig.get().general.logFirstEitherError)
+    if(MMRConfig.get().logFirstEitherError.get())
       MMRLogger.INSTANCE.warn("Can't deserialize {} with {}, trying with {} now.\n{}", this, this.first.name(), this.second.name(), firstError);
     return second.decode(ops, input).mapError(s -> String.format(this.error, this, this.first.name(), this.second.name(), firstError, s)).map(vo -> vo.mapFirst(Either::right));
   }

@@ -111,7 +111,7 @@ public enum FluidHatchSize implements StringRepresentable {
 
   public static void loadFromConfig() {
     for (FluidHatchSize size : values()) {
-      size.size = MMRConfig.get().fluidHatch.fluidSize(size);
+      size.size = MMRConfig.get().fluidSize(size);
     }
   }
 

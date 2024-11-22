@@ -76,7 +76,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
     updateComponents();
 
     if (this.activeRecipe == null) {
-      if (level.getGameTime() % MMRConfig.get().general.checkRecipeTicks == 0) {
+      if (level.getGameTime() % MMRConfig.get().checkRecipeTicks.get() == 0) {
         searchAndUpdateRecipe();
       }
     } else if (this.recipeTicks > -1) {
@@ -187,11 +187,11 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
   }
 
   private void checkStructure() {
-    if (ticksToUpdateComponent % MMRConfig.get().general.checkRecipeTicks == 0) {
+    if (ticksToUpdateComponent % MMRConfig.get().checkRecipeTicks.get() == 0) {
       setCraftingStatus(CraftingStatus.NO_RECIPE);
       ticksToUpdateComponent = 1;
     }
-    if (level.getGameTime() % MMRConfig.get().general.checkStructureTicks == 0) {
+    if (level.getGameTime() % MMRConfig.get().checkStructureTicks.get() == 0) {
       if (this.getFoundMachine() != null && this.getFoundMachine() != DynamicMachine.DUMMY) {
         if (!getFoundMachine().getPattern().match(getLevel(), getBlockPos(), getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING))) {
           distributeCasingColor(true);

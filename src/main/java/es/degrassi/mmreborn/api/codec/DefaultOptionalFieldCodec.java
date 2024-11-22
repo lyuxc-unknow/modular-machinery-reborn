@@ -45,7 +45,7 @@ public class DefaultOptionalFieldCodec<A> extends NamedMapCodec<A> {
       }
     }
     if (value == null) {
-      if(MMRConfig.get().general.logMissingOptional)
+      if(MMRConfig.get().logMissingOptional.get())
         MMRLogger.INSTANCE.debug("Missing optional property: \"{}\" of type: {}, using default value: {}", fieldName, name, defaultValue.get());
       return DataResult.success(defaultValue.get());
     }

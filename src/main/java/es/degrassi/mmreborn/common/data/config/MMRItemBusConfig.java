@@ -1,53 +1,58 @@
 package es.degrassi.mmreborn.common.data.config;
 
 import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
-import me.shedaniel.autoconfig.ConfigData;
-import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.autoconfig.annotation.ConfigEntry;
-import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
 
-@Config(name = "item_bus")
-public class MMRItemBusConfig implements ConfigData {
-  @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
-  public Tier TINY = new Tier(ItemBusSize.TINY);
+public class MMRItemBusConfig {
+  public Tier TINY;
 
-  @ConfigEntry.Gui.CollapsibleObject
-  public Tier SMALL = new Tier(ItemBusSize.SMALL);
+  public Tier SMALL;
 
-  @ConfigEntry.Gui.CollapsibleObject
-  public Tier NORMAL = new Tier(ItemBusSize.NORMAL);
+  public Tier NORMAL;
 
-  @ConfigEntry.Gui.CollapsibleObject
-  public Tier REINFORCED = new Tier(ItemBusSize.REINFORCED);
+  public Tier REINFORCED ;
 
-  @ConfigEntry.Gui.CollapsibleObject
-  public Tier BIG = new Tier(ItemBusSize.BIG);
+  public Tier BIG;
 
-  @ConfigEntry.Gui.CollapsibleObject
-  public Tier HUGE = new Tier(ItemBusSize.HUGE);
+  public Tier HUGE;
 
-  @ConfigEntry.Gui.CollapsibleObject
-  public Tier LUDICROUS = new Tier(ItemBusSize.LUDICROUS);
+  public Tier LUDICROUS;
 
   public static class Tier {
-    @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)
-    @Comment("Slot number of the item bus")
-    public int size;
+    public final ConfigValue<Integer> size;
+//    @ConfigEntry.BoundedDiscrete(max = Integer.MAX_VALUE)
+//    @Comment("Slot number of the item bus")
+//    public int size;
 
-    public Tier(ItemBusSize tier) {
-      size = tier.defaultConfigSize;
+    public Tier(ModConfigSpec.Builder builder, ItemBusSize tier) {
+      builder.push(tier.getSerializedName());
+      size = builder
+          .comment("Slot number of the item bus")
+          .define("size", tier.defaultConfigSize);
+      builder.pop();
     }
+  }
+
+  public MMRItemBusConfig(ModConfigSpec.Builder builder) {
+    TINY = new Tier(builder, ItemBusSize.TINY);
+    SMALL = new Tier(builder, ItemBusSize.SMALL);
+    NORMAL = new Tier(builder, ItemBusSize.NORMAL);
+    REINFORCED = new Tier(builder, ItemBusSize.REINFORCED);
+    BIG = new Tier(builder, ItemBusSize.BIG);
+    HUGE = new Tier(builder, ItemBusSize.HUGE);
+    LUDICROUS = new Tier(builder, ItemBusSize.LUDICROUS);
   }
 
   public int itemSize(ItemBusSize size) {
     return switch(size) {
-      case TINY -> TINY.size;
-      case SMALL -> SMALL.size;
-      case NORMAL -> NORMAL.size;
-      case REINFORCED -> REINFORCED.size;
-      case BIG -> BIG.size;
-      case HUGE -> HUGE.size;
-      case LUDICROUS -> LUDICROUS.size;
+      case TINY -> TINY.size.get();
+      case SMALL -> SMALL.size.get();
+      case NORMAL -> NORMAL.size.get();
+      case REINFORCED -> REINFORCED.size.get();
+      case BIG -> BIG.size.get();
+      case HUGE -> HUGE.size.get();
+      case LUDICROUS -> LUDICROUS.size.get();
     };
   }
 }

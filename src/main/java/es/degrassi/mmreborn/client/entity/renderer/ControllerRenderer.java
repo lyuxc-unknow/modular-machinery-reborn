@@ -34,6 +34,7 @@ public class ControllerRenderer implements BlockEntityRenderer<MachineController
   }
 
   public static void add(DynamicMachine machine, BlockPos controllerPos) {
-    renderers.put(controllerPos, new StructureRenderer(MMRConfig.get().general.structureRenderTime, machine.getPattern()::getBlocks));
+    renderers.put(controllerPos, new StructureRenderer(MMRConfig.get().structureRenderTime.get(),
+        machine.getPattern()::getBlocks));
   }
 }

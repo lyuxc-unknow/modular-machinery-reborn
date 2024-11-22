@@ -1,7 +1,6 @@
 package es.degrassi.mmreborn.client.util;
 
 import es.degrassi.mmreborn.common.data.MMRConfig;
-import es.degrassi.mmreborn.common.data.config.MMREnergyHatchConfig;
 import lombok.Getter;
 import net.minecraft.util.Mth;
 
@@ -15,11 +14,10 @@ public class EnergyDisplayUtil {
   public static EnergyType type = EnergyType.FE;
 
   public static void loadFromConfig() {
-    MMREnergyHatchConfig config = MMRConfig.get().energyHatch;
-    displayFETooltip = config.displayFETooltip;
-    displayIC2EUTooltip = config.displayIC2EUTooltip;
+    displayFETooltip = MMRConfig.get().energy_displayFETooltip.get();
+    displayIC2EUTooltip = MMRConfig.get().energy_displayIC2EUTooltip.get();
 //    displayGTEUTooltip = config.displayGTEUTooltip;
-    type = config.type;
+    type = MMRConfig.get().energy_type.get();
   }
 
   public enum EnergyType {
