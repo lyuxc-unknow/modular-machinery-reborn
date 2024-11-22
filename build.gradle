@@ -138,9 +138,6 @@ dependencies {
   annotationProcessor "org.projectlombok:lombok:${project.lombok_version}"
   implementation "net.neoforged:neoforge:${neo_version}"
 
-  // Cloth config
-  api ("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}")
-
   // ProbeJS
   localRuntime ("curse.maven:probejs-585406:5820894")
 
@@ -158,9 +155,9 @@ dependencies {
   compileOnly localRuntime ("mekanism:Mekanism:${mekanism_version}")
 
   // Addons for testing
-  localRuntime ("es.degrassi:modular_machinery_reborn_energistics:${minecraft_version}-1.0.0")
-  localRuntime ("es.degrassi:modular_machinery_reborn_ars:${minecraft_version}-1.0.5")
-  localRuntime ("es.degrassi:modular_machinery_reborn_mekanism:${minecraft_version}-1.0.6")
+  localRuntime ("es.degrassi:modular_machinery_reborn_energistics:${minecraft_version}-1.0.1")
+  localRuntime ("es.degrassi:modular_machinery_reborn_ars:${minecraft_version}-1.0.6")
+  localRuntime ("es.degrassi:modular_machinery_reborn_mekanism:${minecraft_version}-1.0.7")
   localRuntime ("curse.maven:applied-energistics-2-223794:5729094")
   localRuntime ("software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:4.6.6")
   localRuntime ("vazkii.patchouli:Patchouli:1.21-88-NEOFORGE-SNAPSHOT")
@@ -266,7 +263,6 @@ unifiedPublishing {
             id = "1083840"
             gameVersions.addAll "Java 21"
             relations {
-                depends "cloth-config"
                 optional "kubejs"
                 optional "jei"
                 optional "jade"
@@ -280,7 +276,6 @@ unifiedPublishing {
         token = MODRINTH_API_KEY
         id = "oPdlqv8D"
         relations {
-          depends "cloth-config"
           optional "kubejs"
           optional "jei"
           optional "jade"
