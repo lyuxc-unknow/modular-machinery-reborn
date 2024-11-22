@@ -149,9 +149,24 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
   @Override
   public boolean isValidComponent(ProcessingComponent<?> component, RecipeCraftingContext ctx) {
     MachineComponent<?> cmp = component.component();
-    return (cmp.getComponentType().equals(ComponentRegistration.COMPONENT_FLUID.get())) &&
-        cmp instanceof MachineComponent.FluidHatch &&
-        cmp.getIOType() == this.getActionType();
+    return cmp.getComponentType().equals(ComponentRegistration.COMPONENT_FLUID.get()) &&
+        cmp instanceof MachineComponent.FluidHatch hatch &&
+        hatch.getIOType() == this.getActionType() && ((
+            !getActionType().isInput() && (
+                hatch.getContainerProvider().getFluid().isEmpty() || (
+                    hatch.getContainerProvider().getFluid().is(required.asFluidStack().getFluid()) &&
+                    hatch.getContainerProvider().getCapacity() - hatch.getContainerProvider().getFluidAmount() >= required.getAmount()
+                )
+            )
+        ) || (
+            getActionType().isInput() && (
+                hatch.getContainerProvider().isFluidValid(required.asFluidStack()) && (
+                    hatch.getContainerProvider().getFluid().is(required.asFluidStack().getFluid()) &&
+                    hatch.getContainerProvider().getFluidAmount() >= required.getAmount()
+                )
+            )
+        )
+    );
   }
 
   @Nonnull
