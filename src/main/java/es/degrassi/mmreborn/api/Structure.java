@@ -60,7 +60,7 @@ public class Structure {
           if (!ingredient.test(new PartialBlockState(level.getBlockState(worldPos), level.getBlockState(worldPos).getProperties().stream().toList(), null))) {
             level.destroyBlock(worldPos, !isCreative);
             success.set(false);
-            player.sendSystemMessage(Component.translatable("mmr.place.non_air", block.getName(), worldPos.toString()));
+            player.sendSystemMessage(Component.translatable("mmr.place.non_air", block.getName(), "X:" + worldPos.getX()  + " Y:" + worldPos.getY() + " Z:" + worldPos.getZ()));
           }
         }
         ItemStack blockToRemove = new ItemStack(block.getBlockState().getBlock());
@@ -77,8 +77,8 @@ public class Structure {
             }
           }
           success.set(false);
-          player.sendSystemMessage(Component.translatable("mmr.place.no_item", block.getName(), worldPos.toString(),
-              blockToRemove.getHoverName().toString()));
+          player.sendSystemMessage(Component.translatable("mmr.place.no_item", block.getName(), "X:" + worldPos.getX() + " Y:" + worldPos.getY() + " Z:" + worldPos.getZ(),
+              blockToRemove.getHoverName().getString()));
           return;
         }
         setBlock(level, worldPos, block);
