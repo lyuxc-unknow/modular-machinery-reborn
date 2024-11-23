@@ -50,17 +50,6 @@ public class ModularMachineryReborn {
 
   public ModularMachineryReborn(final ModContainer CONTAINER, final IEventBus MOD_BUS) {
     CONTAINER.registerConfig(ModConfig.Type.COMMON, MMRConfig.getSpec());
-//    ConfigHolder<MMRConfig> config = AutoConfig.register(MMRConfig.class, PartitioningSerializer.wrap(JanksonConfigSerializer::new));
-
-//    config.registerSaveListener((holder, mmrConfig) -> {
-//      MMRLogger.setDebugLevel(mmrConfig.general.debugLevel.getLevel());
-//      Config.load();
-//      EnergyHatchSize.loadFromConfig();
-//      FluidHatchSize.loadFromConfig();
-//      ItemBusSize.loadFromConfig();
-//      EnergyDisplayUtil.loadFromConfig();
-//      return InteractionResult.SUCCESS;
-//    });
 
     Registration.register(MOD_BUS);
 

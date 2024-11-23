@@ -11,7 +11,7 @@ import dev.latvian.mods.kubejs.util.TickDuration;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
+import es.degrassi.mmreborn.common.crafting.requirement.PositionedRequirement;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.BiomeRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.ChunkloadRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.DimensionRequirementJS;
@@ -94,7 +94,7 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
         (int) getValue(ModularMachineryRebornRecipeSchemas.TIME).ticks(),
         getValue(ModularMachineryRebornRecipeSchemas.WIDTH),
         getValue(ModularMachineryRebornRecipeSchemas.HEIGHT),
-        new JeiPositionedRequirement(
+        new PositionedRequirement(
             getValue(ModularMachineryRebornRecipeSchemas.PROGRESS_X),
             getValue(ModularMachineryRebornRecipeSchemas.PROGRESS_Y)
         )

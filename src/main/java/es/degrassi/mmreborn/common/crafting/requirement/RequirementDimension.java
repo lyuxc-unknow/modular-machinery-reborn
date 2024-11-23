@@ -11,8 +11,6 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
@@ -28,13 +26,13 @@ public class RequirementDimension extends ComponentRequirement<ResourceLocation,
   public static final NamedCodec<RequirementDimension> CODEC = NamedCodec.record(instance -> instance.group(
       DefaultCodecs.RESOURCE_LOCATION.listOf().fieldOf("filter").forGetter(RequirementDimension::filter),
       NamedCodec.BOOL.optionalFieldOf("blacklist", false).forGetter(RequirementDimension::blacklist),
-      JeiPositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new JeiPositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
+      PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
   ).apply(instance, RequirementDimension::new), "Dimension Requirement");
 
   private final List<ResourceLocation> filter;
   private final boolean blacklist;
 
-  public RequirementDimension(List<ResourceLocation> filter, boolean blacklist, JeiPositionedRequirement position) {
+  public RequirementDimension(List<ResourceLocation> filter, boolean blacklist, PositionedRequirement position) {
     super(RequirementTypeRegistration.DIMENSION.get(), IOType.INPUT, position);
     this.filter = filter;
     this.blacklist = blacklist;

@@ -3,15 +3,15 @@ package es.degrassi.mmreborn.common.block.prop;
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.entity.base.BlockEntitySynchronized;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateFluidComponentPacket;
-import es.degrassi.mmreborn.common.network.server.component.SUpdateItemComponentPacket;
 import es.degrassi.mmreborn.common.util.HybridTank;
-import java.util.Locale;
 import lombok.Getter;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.ChunkPos;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.network.PacketDistributor;
+
+import java.util.Locale;
 
 public enum FluidHatchSize implements StringRepresentable {
   TINY(100),

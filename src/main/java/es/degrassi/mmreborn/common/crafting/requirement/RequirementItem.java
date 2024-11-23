@@ -12,7 +12,6 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
@@ -37,7 +36,7 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
           DefaultCodecs.SIZED_INGREDIENT_WITH_NBT.fieldOf("sizedIngredient").forGetter(req -> req.ingredient),
           NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(ComponentRequirement::getActionType),
           NamedCodec.floatRange(0, 1).optionalFieldOf("chance", 1f).forGetter(req -> req.chance),
-          JeiPositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new JeiPositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
+          PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
       ).apply(instance, (item, mode, chance, position) -> {
         RequirementItem requirementItem = new RequirementItem(
             mode,
@@ -76,7 +75,7 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
     return json;
   }
 
-  public RequirementItem(IOType ioType, SizedIngredient ingredient, JeiPositionedRequirement position) {
+  public RequirementItem(IOType ioType, SizedIngredient ingredient, PositionedRequirement position) {
     super(RequirementTypeRegistration.ITEM.get(), ioType, position);
     this.ingredient = ingredient;
   }

@@ -9,8 +9,6 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
@@ -26,12 +24,12 @@ import java.util.List;
 public class RequirementChunkload extends ComponentRequirement<Integer, RequirementChunkload> implements ComponentRequirement.PerTick {
   public static final NamedCodec<RequirementChunkload> CODEC = NamedCodec.record(instance -> instance.group(
       NamedCodec.intRange(1, 32).optionalFieldOf("radius", 1).forGetter(RequirementChunkload::radius),
-      JeiPositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new JeiPositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
+      PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
   ).apply(instance, RequirementChunkload::new), "Chunkload Requirement");
 
   private final Integer radius;
 
-  public RequirementChunkload(Integer radius, JeiPositionedRequirement position) {
+  public RequirementChunkload(Integer radius, PositionedRequirement position) {
     super(RequirementTypeRegistration.CHUNKLOAD.get(), IOType.OUTPUT, position);
     this.radius = radius;
   }

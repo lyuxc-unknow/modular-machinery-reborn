@@ -9,8 +9,6 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
@@ -28,12 +26,12 @@ import java.util.Locale;
 public class RequirementWeather extends ComponentRequirement<RequirementWeather.WeatherType, RequirementWeather> {
   public static final NamedCodec<RequirementWeather> CODEC = NamedCodec.record(instance -> instance.group(
       WeatherType.CODEC.fieldOf("weather").forGetter(RequirementWeather::weather),
-      JeiPositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new JeiPositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
+      PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
   ).apply(instance, RequirementWeather::new), "Weather Requirement");
 
   private final WeatherType weather;
 
-  public RequirementWeather(WeatherType filter, JeiPositionedRequirement position) {
+  public RequirementWeather(WeatherType filter, PositionedRequirement position) {
     super(RequirementTypeRegistration.WEATHER.get(), IOType.INPUT, position);
     this.weather = filter;
   }

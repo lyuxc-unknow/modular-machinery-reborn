@@ -9,7 +9,7 @@ import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.codec.NamedMapCodec;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
+import es.degrassi.mmreborn.common.crafting.requirement.PositionedRequirement;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
@@ -45,7 +45,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
       NamedCodec.BOOL.optionalFieldOf("voidFailure", true).forGetter(MachineRecipeBuilder::isVoidF),
       NamedCodec.INT.optionalFieldOf("width", 256).forGetter(MachineRecipeBuilder::getWidth),
       NamedCodec.INT.optionalFieldOf("height", 256).forGetter(MachineRecipeBuilder::getHeight),
-      JeiPositionedRequirement.POSITION_CODEC.optionalFieldOf("progressPosition", new JeiPositionedRequirement(74, 8)).forGetter(MachineRecipeBuilder::getProgressPosition)
+      PositionedRequirement.POSITION_CODEC.optionalFieldOf("progressPosition", new PositionedRequirement(74, 8)).forGetter(MachineRecipeBuilder::getProgressPosition)
   ).apply(instance, MachineRecipeBuilder::new), "Machine recipe");
 
   @Override
@@ -84,14 +84,14 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
   private final List<ComponentRequirement<?, ?>> recipeRequirements = Lists.newArrayList();
   private final int configuredPriority;
   private final boolean voidPerTickFailure;
-  private final JeiPositionedRequirement progressPosition;
+  private final PositionedRequirement progressPosition;
   private final int width, height;
 
-  public MachineRecipe(ResourceLocation owningMachine, int tickTime, int configuredPriority, boolean voidPerTickFailure, int width, int height, JeiPositionedRequirement progressPosition) {
+  public MachineRecipe(ResourceLocation owningMachine, int tickTime, int configuredPriority, boolean voidPerTickFailure, int width, int height, PositionedRequirement progressPosition) {
     this(owningMachine, tickTime, configuredPriority, voidPerTickFailure, false, width, height, progressPosition);
   }
 
-  public MachineRecipe(ResourceLocation owningMachine, int tickTime, int configuredPriority, boolean voidPerTickFailure, boolean copy, int width, int height, JeiPositionedRequirement progressPosition) {
+  public MachineRecipe(ResourceLocation owningMachine, int tickTime, int configuredPriority, boolean voidPerTickFailure, boolean copy, int width, int height, PositionedRequirement progressPosition) {
     this.owningMachine = owningMachine;
     this.tickTime = tickTime;
     this.configuredPriority = configuredPriority;
@@ -185,14 +185,14 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
   @Getter
   public static class MachineRecipeBuilder {
     private final ResourceLocation machine;
-    private final JeiPositionedRequirement progressPosition;
+    private final PositionedRequirement progressPosition;
     private final int time;
     private final int width, height;
     private int prio;
     private final List<ComponentRequirement<?, ?>> requirements;
     private boolean voidF;
 
-    public MachineRecipeBuilder(ResourceLocation machine, int time, int width, int height, JeiPositionedRequirement progressPosition) {
+    public MachineRecipeBuilder(ResourceLocation machine, int time, int width, int height, PositionedRequirement progressPosition) {
       this.requirements = new LinkedList<>();
       this.machine = machine;
       this.time = time;
@@ -213,7 +213,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
       requirements.add(requirement);
     }
 
-    public MachineRecipeBuilder(ResourceLocation machine, int time, List<ComponentRequirement<?, ?>> requirements, int prio, boolean voidF, int width, int height, JeiPositionedRequirement progressPosition) {
+    public MachineRecipeBuilder(ResourceLocation machine, int time, List<ComponentRequirement<?, ?>> requirements, int prio, boolean voidF, int width, int height, PositionedRequirement progressPosition) {
       this.machine = machine;
       this.time = time;
       this.requirements = requirements;

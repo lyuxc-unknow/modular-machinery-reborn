@@ -5,8 +5,7 @@ import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.codec.NamedMapCodec;
 import es.degrassi.mmreborn.api.codec.RegistrarCodec;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
+import es.degrassi.mmreborn.common.crafting.requirement.PositionedRequirement;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.util.ResultChance;
@@ -28,9 +27,9 @@ public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, 
 
   private ComponentSelectorTag tag = null;
   @Getter
-  private final JeiPositionedRequirement position;
+  private final PositionedRequirement position;
 
-  public ComponentRequirement(RequirementType<V> requirementType, IOType actionType, JeiPositionedRequirement position) {
+  public ComponentRequirement(RequirementType<V> requirementType, IOType actionType, PositionedRequirement position) {
     this.requirementType = requirementType;
     this.actionType = actionType;
     this.position = position;

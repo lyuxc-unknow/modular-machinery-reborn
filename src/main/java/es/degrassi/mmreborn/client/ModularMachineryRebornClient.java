@@ -2,12 +2,21 @@ package es.degrassi.mmreborn.client;
 
 import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.ModularMachineryReborn;
+import es.degrassi.mmreborn.api.integration.emi.RegisterEmiComponentEvent;
 import es.degrassi.mmreborn.api.integration.jei.RegisterJeiComponentEvent;
 import es.degrassi.mmreborn.client.entity.renderer.ControllerRenderer;
 import es.degrassi.mmreborn.client.screen.ControllerScreen;
 import es.degrassi.mmreborn.client.screen.EnergyHatchScreen;
 import es.degrassi.mmreborn.client.screen.FluidHatchScreen;
 import es.degrassi.mmreborn.client.screen.ItemBusScreen;
+import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiBiomeComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiEnergyComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiFluidComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiItemComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiTimeComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiWeatherComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiChunkloadComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiDimensionComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiBiomeComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiChunkloadComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiDimensionComponent;
@@ -22,6 +31,7 @@ import es.degrassi.mmreborn.common.entity.base.ColorableMachineComponentEntity;
 import es.degrassi.mmreborn.common.entity.base.EnergyHatchEntity;
 import es.degrassi.mmreborn.common.entity.base.FluidTankEntity;
 import es.degrassi.mmreborn.common.entity.base.TileItemBus;
+import es.degrassi.mmreborn.common.integration.emi.EmiComponentRegistry;
 import es.degrassi.mmreborn.common.integration.jei.JeiComponentRegistry;
 import es.degrassi.mmreborn.common.item.ItemDynamicColor;
 import es.degrassi.mmreborn.common.registration.BlockRegistration;
@@ -266,15 +276,9 @@ public class ModularMachineryRebornClient {
   @SubscribeEvent
   @OnlyIn(Dist.CLIENT)
   public void clientSetup(final FMLClientSetupEvent event) {
-//    if (ModList.get().isLoaded("cloth_config")) {
-//      ModLoadingContext.get().registerExtensionPoint(
-//          IConfigScreenFactory.class,
-//          () -> (minecraft, parent) ->
-//              AutoConfig.getConfigScreen(MMRConfig.class, parent).get()
-//      );
-//    }
-
-    if (ModList.get().isLoaded("jei")) {
+    if (ModList.get().isLoaded("emi")) {
+      EmiComponentRegistry.init();
+    } else if (ModList.get().isLoaded("jei")) {
       JeiComponentRegistry.init();
     }
   }
@@ -289,6 +293,18 @@ public class ModularMachineryRebornClient {
     event.register(RequirementTypeRegistration.CHUNKLOAD.get(), JeiChunkloadComponent::new);
     event.register(RequirementTypeRegistration.DIMENSION.get(), JeiDimensionComponent::new);
     event.register(RequirementTypeRegistration.WEATHER.get(), JeiWeatherComponent::new);
+  }
+
+  @SubscribeEvent
+  public void registerEmiComponents(final RegisterEmiComponentEvent event) {
+    event.register(RequirementTypeRegistration.ENERGY.get(), EmiEnergyComponent::new);
+    event.register(RequirementTypeRegistration.ITEM.get(), EmiItemComponent::new);
+    event.register(RequirementTypeRegistration.FLUID.get(), EmiFluidComponent::new);
+    event.register(RequirementTypeRegistration.BIOME.get(), EmiBiomeComponent::new);
+    event.register(RequirementTypeRegistration.TIME.get(), EmiTimeComponent::new);
+    event.register(RequirementTypeRegistration.CHUNKLOAD.get(), EmiChunkloadComponent::new);
+    event.register(RequirementTypeRegistration.DIMENSION.get(), EmiDimensionComponent::new);
+    event.register(RequirementTypeRegistration.WEATHER.get(), EmiWeatherComponent::new);
   }
 
   public void registerBlockModel(Block block) {

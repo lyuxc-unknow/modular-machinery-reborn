@@ -26,7 +26,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class ControllerItem extends ItemBlockMachineComponent {
-  private static final ResourceLocation DUMMY = ModularMachineryReborn.rl("dummy");
+  public static final ResourceLocation DUMMY = ModularMachineryReborn.rl("dummy");
 
   public ControllerItem() {
     super(

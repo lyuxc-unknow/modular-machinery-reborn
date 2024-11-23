@@ -9,8 +9,6 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
@@ -24,7 +22,7 @@ import java.util.List;
 public class RequirementDuration extends ComponentRequirement<Integer, RequirementDuration> implements ComponentRequirement.PerTick {
   public static final NamedMapCodec<RequirementDuration> CODEC = NamedCodec.record(instance -> instance.group(
           NamedCodec.intRange(1, Integer.MAX_VALUE).fieldOf("time").forGetter(RequirementDuration::getTime),
-          JeiPositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new JeiPositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
+          PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
       ).apply(instance, RequirementDuration::new),
       "Duration requirement"
   );
@@ -44,7 +42,7 @@ public class RequirementDuration extends ComponentRequirement<Integer, Requireme
     return asJson().toString();
   }
 
-  public RequirementDuration(int time, JeiPositionedRequirement position) {
+  public RequirementDuration(int time, PositionedRequirement position) {
     super(RequirementTypeRegistration.DURATION.get(), IOType.INPUT, position);
     this.time = time;
   }

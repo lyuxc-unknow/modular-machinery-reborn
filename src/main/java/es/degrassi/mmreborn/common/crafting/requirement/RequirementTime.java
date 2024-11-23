@@ -9,8 +9,6 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
@@ -25,12 +23,12 @@ import java.util.List;
 public class RequirementTime extends ComponentRequirement<IntRange, RequirementTime> {
   public static final NamedCodec<RequirementTime> CODEC = NamedCodec.record(instance -> instance.group(
       IntRange.CODEC.fieldOf("range").forGetter(RequirementTime::time),
-      JeiPositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new JeiPositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
+      PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
   ).apply(instance, RequirementTime::new), "Time Requirement");
 
   private final IntRange time;
 
-  public RequirementTime(IntRange time, JeiPositionedRequirement position) {
+  public RequirementTime(IntRange time, PositionedRequirement position) {
     super(RequirementTypeRegistration.TIME.get(), IOType.INPUT, position);
     this.time = time;
   }

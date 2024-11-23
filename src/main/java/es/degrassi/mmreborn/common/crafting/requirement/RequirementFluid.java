@@ -10,7 +10,6 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
 import es.degrassi.mmreborn.common.integration.ingredient.HybridFluid;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
@@ -38,7 +37,7 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
       NamedCodec.floatRange(0, 1).optionalFieldOf("chance", 1f).forGetter(req -> req.chance),
       NamedCodec.of(CompoundTag.CODEC).optionalFieldOf("nbt", new CompoundTag()).forGetter(RequirementFluid::getTagMatch),
       NamedCodec.of(CompoundTag.CODEC).optionalFieldOf("nbt-display").forGetter(req -> Optional.ofNullable(req.getTagDisplay())),
-      JeiPositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new JeiPositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
+      PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
   ).apply(instance, (fluid, mode, amount, chance, nbt, nbt_display, position) -> {
     RequirementFluid requirementFluid = new RequirementFluid(mode, fluid, amount.orElse(1000), position);
     requirementFluid.setChance(chance);
@@ -69,11 +68,11 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
     return json;
   }
 
-  public RequirementFluid(IOType ioType, FluidIngredient fluid, int amount, JeiPositionedRequirement position) {
+  public RequirementFluid(IOType ioType, FluidIngredient fluid, int amount, PositionedRequirement position) {
     this(RequirementTypeRegistration.FLUID.get(), ioType, fluid, amount, position);
   }
 
-  private RequirementFluid(RequirementType<RequirementFluid> type, IOType ioType, FluidIngredient fluid, int amount, JeiPositionedRequirement position) {
+  private RequirementFluid(RequirementType<RequirementFluid> type, IOType ioType, FluidIngredient fluid, int amount, PositionedRequirement position) {
     super(type, ioType, position);
     this.ingredient = fluid;
     this.required = new HybridFluid(new FluidStack(fluid.getAll().getFirst(), amount));

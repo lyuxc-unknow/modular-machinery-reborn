@@ -1,11 +1,11 @@
 package es.degrassi.mmreborn.common.block.prop;
 
 import es.degrassi.mmreborn.common.data.MMRConfig;
-import es.degrassi.mmreborn.common.data.config.MMREnergyHatchConfig;
 import es.degrassi.mmreborn.common.util.MiscUtils;
-import java.util.Locale;
-import javax.annotation.Nonnull;
 import net.minecraft.util.StringRepresentable;
+
+import javax.annotation.Nonnull;
+import java.util.Locale;
 
 public enum EnergyHatchSize implements StringRepresentable {
   TINY      (2048,    1, 128/*, 1, 2*/),

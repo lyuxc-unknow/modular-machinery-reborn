@@ -10,8 +10,6 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.IJeiRequirement;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiPositionedRequirement;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
@@ -27,7 +25,7 @@ public class RequirementEnergy extends ComponentRequirement<Long, RequirementEne
   public static final NamedMapCodec<RequirementEnergy> CODEC = NamedCodec.record(instance -> instance.group(
       NamedCodec.longRange(0, Long.MAX_VALUE).fieldOf("amount").forGetter(req -> req.requirementPerTick),
       NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(ComponentRequirement::getActionType),
-      JeiPositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new JeiPositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
+      PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
   ).apply(instance, (amount, type, position) -> new RequirementEnergy(type, amount, position)), "EnergyRequirement");
 
   public final long requirementPerTick;
@@ -42,7 +40,7 @@ public class RequirementEnergy extends ComponentRequirement<Long, RequirementEne
     return json;
   }
 
-  public RequirementEnergy(IOType ioType, long requirementPerTick, JeiPositionedRequirement position) {
+  public RequirementEnergy(IOType ioType, long requirementPerTick, PositionedRequirement position) {
     super(RequirementTypeRegistration.ENERGY.get(), ioType, position);
     this.requirementPerTick = requirementPerTick;
     this.activeIO = this.requirementPerTick;

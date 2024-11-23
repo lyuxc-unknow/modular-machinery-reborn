@@ -1,8 +1,9 @@
 package es.degrassi.mmreborn.common.block.prop;
 
 import es.degrassi.mmreborn.common.data.MMRConfig;
-import java.util.Locale;
 import net.minecraft.util.StringRepresentable;
+
+import java.util.Locale;
 
 public enum ItemBusSize implements StringRepresentable {
   TINY(1),
