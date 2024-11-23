@@ -358,5 +358,10 @@
   "modular_machinery_reborn.jei.ingredient.time": "时间: %s",
   "modular_machinery_reborn.jei.ingredient.chunkload": "区块加载器半径: %s",
 
-  "modular_machinery_reborn.controller.tooltip": "潜行时右击控制器以投影其机器的蓝图至世界。"
+  "modular_machinery_reborn.controller.tooltip": "潜行时右击控制器以投影其机器的蓝图至世界。",
+
+  "modular_machinery_reborn.gui.structure_placer_button": "点击以尝试放置结构",
+
+  "mmr.place.non_air": "尝试防止 %s 在 %s 但是找到了不属于当前结构的方块",
+  "mmr.place.no_item": "尝试放置 %s 在 %s 但是在玩家库存中未找到 %s "
 }
