@@ -1,7 +1,6 @@
 package es.degrassi.mmreborn.common.integration.emi;
 
 import dev.emi.emi.api.EmiEntrypoint;
-import dev.emi.emi.api.EmiInitRegistry;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
@@ -10,8 +9,6 @@ import dev.emi.emi.api.stack.EmiStack;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.integration.emi.recipe.MMREmiRecipe;
-import es.degrassi.mmreborn.common.integration.emi.recipe.MMREmiStack;
-import es.degrassi.mmreborn.common.integration.emi.recipe.MMREmiStackSerializer;
 import es.degrassi.mmreborn.common.item.ControllerItem;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
@@ -26,12 +23,6 @@ import java.util.List;
 
 @EmiEntrypoint
 public class MMREmiPlugin implements EmiPlugin {
-
-  @Override
-  public void initialize(EmiInitRegistry registry) {
-    registry.addIngredientSerializer(MMREmiStack.class, new MMREmiStackSerializer());
-  }
-
   @Override
   public void register(EmiRegistry registry) {
     EmiStack controller = EmiStack.of(ItemRegistration.CONTROLLER);
