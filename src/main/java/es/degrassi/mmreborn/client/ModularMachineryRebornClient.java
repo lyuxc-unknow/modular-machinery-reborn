@@ -1,14 +1,18 @@
 package es.degrassi.mmreborn.client;
 
 import com.google.common.collect.Lists;
+import dev.emi.emi.api.stack.EmiStack;
 import es.degrassi.mmreborn.ModularMachineryReborn;
+import es.degrassi.mmreborn.api.TagUtil;
 import es.degrassi.mmreborn.api.integration.emi.RegisterEmiComponentEvent;
+import es.degrassi.mmreborn.api.integration.emi.RegisterEmiRequirementToStackEvent;
 import es.degrassi.mmreborn.api.integration.jei.RegisterJeiComponentEvent;
 import es.degrassi.mmreborn.client.entity.renderer.ControllerRenderer;
 import es.degrassi.mmreborn.client.screen.ControllerScreen;
 import es.degrassi.mmreborn.client.screen.EnergyHatchScreen;
 import es.degrassi.mmreborn.client.screen.FluidHatchScreen;
 import es.degrassi.mmreborn.client.screen.ItemBusScreen;
+import es.degrassi.mmreborn.common.crafting.requirement.RequirementItem;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiBiomeComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiEnergyComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiFluidComponent;
@@ -32,6 +36,7 @@ import es.degrassi.mmreborn.common.entity.base.EnergyHatchEntity;
 import es.degrassi.mmreborn.common.entity.base.FluidTankEntity;
 import es.degrassi.mmreborn.common.entity.base.TileItemBus;
 import es.degrassi.mmreborn.common.integration.emi.EmiComponentRegistry;
+import es.degrassi.mmreborn.common.integration.emi.EmiStackRegistry;
 import es.degrassi.mmreborn.common.integration.jei.JeiComponentRegistry;
 import es.degrassi.mmreborn.common.item.ItemDynamicColor;
 import es.degrassi.mmreborn.common.registration.BlockRegistration;
@@ -46,6 +51,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -62,6 +68,7 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -278,6 +285,7 @@ public class ModularMachineryRebornClient {
   public void clientSetup(final FMLClientSetupEvent event) {
     if (ModList.get().isLoaded("emi")) {
       EmiComponentRegistry.init();
+      EmiStackRegistry.init();
     } else if (ModList.get().isLoaded("jei")) {
       JeiComponentRegistry.init();
     }
@@ -305,6 +313,32 @@ public class ModularMachineryRebornClient {
     event.register(RequirementTypeRegistration.CHUNKLOAD.get(), EmiChunkloadComponent::new);
     event.register(RequirementTypeRegistration.DIMENSION.get(), EmiDimensionComponent::new);
     event.register(RequirementTypeRegistration.WEATHER.get(), EmiWeatherComponent::new);
+  }
+
+  @SubscribeEvent
+  public void registerEmiStacks(final RegisterEmiRequirementToStackEvent event) {
+    event.register(
+        RequirementTypeRegistration.ITEM.get(),
+        this::emiStackFromItemRequirement
+    );
+    event.register(
+        RequirementTypeRegistration.FLUID.get(),
+        requirement -> List.of(EmiStack.of(requirement.required.asFluidStack().getFluid(), requirement.amount))
+    );
+  }
+
+  private List<EmiStack> emiStackFromItemRequirement(RequirementItem requirement) {
+    List<EmiStack> stacks = new ArrayList<>();
+    for (Ingredient.Value value : requirement.getIngredient().ingredient().values) {
+      if (value instanceof Ingredient.TagValue tag) {
+        for (Item stack : TagUtil.getItems(tag.tag()).toList()) {
+          stacks.add(EmiStack.of(stack, requirement.ingredient.count()));
+        }
+      } else if (value instanceof Ingredient.ItemValue item) {
+        stacks.add(EmiStack.of(item.item(), requirement.ingredient.count()));
+      }
+    }
+    return stacks;
   }
 
   public void registerBlockModel(Block block) {

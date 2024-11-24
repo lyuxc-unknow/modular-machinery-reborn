@@ -3,14 +3,10 @@ package es.degrassi.mmreborn.common.integration.emi.recipe;
 import com.mojang.datafixers.util.Pair;
 import dev.emi.emi.api.recipe.BasicEmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
-import dev.emi.emi.api.stack.EmiIngredient;
-import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
-import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.integration.emi.EmiComponentRegistry;
-import es.degrassi.mmreborn.common.registration.ItemRegistration;
-import es.degrassi.mmreborn.common.registration.Registration;
+import es.degrassi.mmreborn.common.integration.emi.EmiStackRegistry;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.StringSplitter;
@@ -19,7 +15,6 @@ import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.ArrayList;
@@ -40,32 +35,26 @@ public class MMREmiRecipe extends BasicEmiRecipe {
         .getCraftingRequirements()
         .stream()
         .filter(requirement -> requirement.getActionType().isInput())
-        .map(ComponentRequirement::getRequirementType)
-        .map(MMREmiStack::of)
-        .map(stack -> (EmiIngredient) stack)
-        .toList();
-  }
-
-  @Override
-  public List<EmiStack> getOutputs() {
-    return recipe
+        .filter(requirement -> EmiStackRegistry.hasEmiStack(requirement.getRequirementType()))
+        .map(requirement -> requirement.getRequirementType().castRequirement(requirement))
+        .map(requirement -> EmiStackRegistry.getStack(requirement.getRequirementType()).create(requirement))
+        .collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll);
+    this.outputs = this.recipe
         .getCraftingRequirements()
         .stream()
         .filter(requirement -> !requirement.getActionType().isInput())
-        .map(ComponentRequirement::getRequirementType)
-        .map(MMREmiStack::of)
-        .map(stack -> (EmiStack) stack)
-        .toList();
-  }
-
-  @Override
-  public List<EmiIngredient> getCatalysts() {
-    ItemStack controller = ItemRegistration.CONTROLLER.toStack();
-    controller.set(Registration.MACHINE_DATA.get(), recipe.getOwningMachineIdentifier());
-    return List.of(
-        EmiStack.of(controller),
-        EmiStack.of(ItemRegistration.BLUEPRINT.get())
-    );
+        .filter(requirement -> EmiStackRegistry.hasEmiStack(requirement.getRequirementType()))
+        .map(requirement -> requirement.getRequirementType().castRequirement(requirement))
+        .map(requirement -> EmiStackRegistry.getStack(requirement.getRequirementType()).create(requirement))
+        .collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll);
+    this.catalysts = this.recipe
+        .getCraftingRequirements()
+        .stream()
+        .filter(requirement -> requirement.getActionType().isInput())
+        .filter(requirement -> EmiStackRegistry.hasEmiStack(requirement.getRequirementType()))
+        .map(requirement -> requirement.getRequirementType().castRequirement(requirement))
+        .map(requirement -> EmiStackRegistry.getStack(requirement.getRequirementType()).create(requirement))
+        .collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll);
   }
 
   @Override
