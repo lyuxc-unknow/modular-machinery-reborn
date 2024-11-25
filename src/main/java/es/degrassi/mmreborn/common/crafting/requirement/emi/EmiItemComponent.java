@@ -5,7 +5,7 @@ import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.EmiStackInteraction;
 import dev.emi.emi.screen.EmiScreenManager;
-import dev.emi.emi.screen.RecipeScreen;
+import es.degrassi.mmreborn.client.requirement.ItemRendering;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementItem;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;

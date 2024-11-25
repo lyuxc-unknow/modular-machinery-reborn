@@ -1,7 +1,9 @@
-package es.degrassi.mmreborn.common.crafting.requirement.emi;
+package es.degrassi.mmreborn.client.requirement;
 
 import dev.emi.emi.api.stack.FluidEmiStack;
 import dev.emi.emi.platform.EmiAgnos;
+import es.degrassi.mmreborn.common.crafting.requirement.emi.Position;
+import es.degrassi.mmreborn.common.crafting.requirement.emi.StackHolder;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.level.material.Fluid;
 

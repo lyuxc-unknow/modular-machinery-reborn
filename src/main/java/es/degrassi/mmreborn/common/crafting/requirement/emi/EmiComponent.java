@@ -83,13 +83,21 @@ public abstract class EmiComponent<C, T extends ComponentRequirement<C, T>> exte
     return mouseX >= x && mouseX < x + getWidth() && mouseY >= y && mouseY < y + getHeight() && renderOverlay;
   }
 
+  public int getXHighlight() {
+    return 1;
+  }
+
+  public int getYHighlight() {
+    return 1;
+  }
+
   public final void drawSlotHighlight(GuiGraphics guiGraphics) {
     EmiDrawContext context = EmiDrawContext.wrap(guiGraphics);
     context.push();
     context.matrices().translate(x, y, 200);
     RenderSystem.disableDepthTest();
     RenderSystem.colorMask(true, true, true, false);
-    context.fill(1, 1, getWidth(), getHeight(), -2130706433);
+    context.fill(getXHighlight(), getYHighlight(), getWidth(), getHeight(), -2130706433);
     RenderSystem.colorMask(true, true, true, true);
     RenderSystem.enableDepthTest();
     context.pop();

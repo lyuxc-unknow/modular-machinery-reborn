@@ -1,10 +1,11 @@
-package es.degrassi.mmreborn.common.crafting.requirement.emi;
+package es.degrassi.mmreborn.client.requirement;
 
 import com.mojang.blaze3d.platform.Lighting;
 import dev.emi.emi.EmiPort;
 import dev.emi.emi.EmiRenderHelper;
 import dev.emi.emi.api.render.EmiRender;
 import dev.emi.emi.runtime.EmiDrawContext;
+import es.degrassi.mmreborn.common.crafting.requirement.emi.StackHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
@@ -12,7 +13,6 @@ import net.minecraft.world.item.ItemStack;
 public interface ItemRendering extends StackHolder {
   int RENDER_ICON = 1;
   int RENDER_AMOUNT = 2;
-  int RENDER_INGREDIENT = 4;
   int RENDER_REMAINDER = 8;
 
   int getWidth();

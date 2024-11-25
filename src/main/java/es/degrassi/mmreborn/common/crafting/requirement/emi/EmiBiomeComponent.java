@@ -1,6 +1,7 @@
 package es.degrassi.mmreborn.common.crafting.requirement.emi;
 
 import dev.emi.emi.api.stack.EmiStack;
+import es.degrassi.mmreborn.client.requirement.ItemRendering;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementBiome;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import net.minecraft.client.gui.GuiGraphics;
