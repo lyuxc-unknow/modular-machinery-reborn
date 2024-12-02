@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.data;
 
+import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.client.util.EnergyDisplayUtil;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
@@ -9,6 +10,8 @@ import lombok.Getter;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
 import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.List;
 
 public class MMRConfig {
   private static final MMRConfig INSTANCE;
@@ -21,8 +24,6 @@ public class MMRConfig {
     spec = pair.getRight();
   }
 
-//  public final MMRGeneralConfig general;
-
   public final ConfigValue<LoggingLevel> debugLevel;
   public final ConfigValue<Boolean> logMissingOptional;
   public final ConfigValue<Boolean> logFirstEitherError;
@@ -34,8 +35,8 @@ public class MMRConfig {
   public final ConfigValue<Integer> structureRenderTime;
   public final ConfigValue<Integer> blockTagCycleTime;
   public final ConfigValue<String> machineDirectory;
+  public final ConfigValue<List<String>> modelFolders;
 
-//  public final MMREnergyHatchConfig energyHatch;
   public final ConfigValue<Integer> TINY_energy_size;
   public final ConfigValue<Integer> TINY_energy_transferRate;
   public final ConfigValue<Integer> TINY_energy_ic2_tier;
@@ -72,7 +73,6 @@ public class MMRConfig {
   public final ConfigValue<Boolean> energy_displayIC2EUTooltip;
   public final ConfigValue<EnergyDisplayUtil.EnergyType> energy_type;
 
-//  public final MMRFluidHatchConfig fluidHatch;
   public final ConfigValue<Integer> TINY_fluid_size;
 
   public final ConfigValue<Integer> SMALL_fluid_size;
@@ -89,7 +89,6 @@ public class MMRConfig {
 
   public final ConfigValue<Integer> VACUUM_fluid_size;
 
-//  public final MMRItemBusConfig itemBus;
   public final ConfigValue<Integer> TINY_item_size;
 
   public final ConfigValue<Integer> SMALL_item_size;
@@ -159,6 +158,9 @@ public class MMRConfig {
         this.machineDirectory = builder
             .comment("A folder name where MMR will load machine structure json.\nThese folder must be under the \"data/<namespace>\" folder.")
             .define("machine_directory", "machines");
+        this.modelFolders = builder
+            .comment("A list of folder names where MMR will load controller models json. These folders must be under the 'assets/namespace/models' folder.")
+            .define("model_folders", Lists.newArrayList("controller", "controllers"));
         builder.pop();
       }
     }

@@ -9,11 +9,13 @@ import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
+import es.degrassi.mmreborn.common.util.MachineModelLocation;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class MachineBuilderJS {
   @NotNull
@@ -22,6 +24,7 @@ public class MachineBuilderJS {
   private String color;
   private Integer intColor;
   private Structure structure;
+  private MachineModelLocation controllerModel;
 
   public MachineBuilderJS(@NotNull ResourceLocation id) {
     this.id = id;
@@ -47,11 +50,17 @@ public class MachineBuilderJS {
     return this;
   }
 
+  public MachineBuilderJS controllerModel(MachineModelLocation modelLocation) {
+    this.controllerModel = modelLocation;
+    return this;
+  }
+
   public DynamicMachine build() {
     if (structure == null)
       throw new IllegalArgumentException("Structure is invalid");
     DynamicMachine machine = new DynamicMachine(id);
     machine.setPattern(structure);
+    machine.setControllerModel(Objects.requireNonNullElse(controllerModel, MachineModelLocation.DEFAULT));
     if (name != null)
       machine.setLocalizedName(name);
     if (intColor != null)

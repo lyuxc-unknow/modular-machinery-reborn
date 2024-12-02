@@ -1,19 +1,11 @@
 package es.degrassi.mmreborn.api;
 
 import com.google.common.collect.Lists;
-import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.DataResult;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.block.BlockController;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.function.Predicate;
-
 import es.degrassi.mmreborn.common.registration.BlockRegistration;
 import lombok.Getter;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
@@ -30,6 +22,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.function.Predicate;
 
 public class PartialBlockState implements Predicate<BlockInWorld> {
 
@@ -59,16 +58,13 @@ public class PartialBlockState implements Predicate<BlockInWorld> {
   };
 
   public static final NamedCodec<PartialBlockState> CODEC = NamedCodec.STRING.comapFlatMap(s -> {
-    StringReader reader = new StringReader(s);
     try {
-      BlockStateParser.BlockResult result = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), reader, true);
+      BlockStateParser.BlockResult result = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), s, true);
       return DataResult.success(new PartialBlockState(result.blockState(), Lists.newArrayList(result.properties().keySet()), result.nbt()));
     } catch (CommandSyntaxException exception) {
       return DataResult.error(exception::getMessage);
     }
   }, PartialBlockState::toString, "Partial block state");
-
-  public static final NamedCodec<List<PartialBlockState>> CODEC_LIST = CODEC.listOf();
 
   @Getter
   private final BlockState blockState;
@@ -82,12 +78,12 @@ public class PartialBlockState implements Predicate<BlockInWorld> {
     this.nbt = nbt;
   }
 
-  public PartialBlockState copy() {
-    return new PartialBlockState(blockState, properties, nbt);
-  }
-
   public PartialBlockState(Block block) {
     this(block.defaultBlockState(), new ArrayList<>(), null);
+  }
+
+  public PartialBlockState copy() {
+    return new PartialBlockState(blockState, properties, nbt);
   }
 
   public List<String> getProperties() {
@@ -95,22 +91,22 @@ public class PartialBlockState implements Predicate<BlockInWorld> {
   }
 
   public PartialBlockState rotate(Rotation rotation) {
-    if(this.properties.contains(BlockStateProperties.HORIZONTAL_FACING) && this.blockState.hasProperty(BlockStateProperties.HORIZONTAL_FACING) && !(this.blockState.getBlock() instanceof BlockController)) {
+    if (this.properties.contains(BlockStateProperties.HORIZONTAL_FACING) && this.blockState.hasProperty(BlockStateProperties.HORIZONTAL_FACING) && !(this.blockState.getBlock() instanceof BlockController)) {
       Direction direction = this.blockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
       direction = rotation.rotate(direction);
       BlockState blockState = this.blockState.setValue(BlockStateProperties.HORIZONTAL_FACING, direction);
       List<Property<?>> properties = Lists.newArrayList(this.properties);
-      if(!properties.contains(BlockStateProperties.HORIZONTAL_FACING))
+      if (!properties.contains(BlockStateProperties.HORIZONTAL_FACING))
         properties.add(BlockStateProperties.HORIZONTAL_FACING);
       return new PartialBlockState(blockState, properties, this.nbt);
-    } else if(this.properties.contains(BlockStateProperties.FACING) && this.blockState.hasProperty(BlockStateProperties.FACING) && !(this.blockState.getBlock() instanceof BlockController)) {
+    } else if (this.properties.contains(BlockStateProperties.FACING) && this.blockState.hasProperty(BlockStateProperties.FACING) && !(this.blockState.getBlock() instanceof BlockController)) {
       Direction direction = this.blockState.getValue(BlockStateProperties.FACING);
-      if(direction.getAxis() == Direction.Axis.Y)
+      if (direction.getAxis() == Direction.Axis.Y)
         return this;
       direction = rotation.rotate(direction);
       BlockState blockState = this.blockState.setValue(BlockStateProperties.FACING, direction);
       List<Property<?>> properties = Lists.newArrayList(this.properties);
-      if(!properties.contains(BlockStateProperties.FACING))
+      if (!properties.contains(BlockStateProperties.FACING))
         properties.add(BlockStateProperties.FACING);
       return new PartialBlockState(blockState, properties, this.nbt);
     }
@@ -123,7 +119,7 @@ public class PartialBlockState implements Predicate<BlockInWorld> {
     if (!blockstate.is(this.blockState.getBlock())) {
       return false;
     } else {
-      for(Property<?> property : this.properties) {
+      for (Property<?> property : this.properties) {
         if (blockstate.getValue(property) != this.blockState.getValue(property)) {
           return false;
         }
@@ -142,7 +138,7 @@ public class PartialBlockState implements Predicate<BlockInWorld> {
   public String toString() {
     StringBuilder builder = new StringBuilder();
     builder.append(BuiltInRegistries.BLOCK.getKey(this.blockState.getBlock()));
-    if(!this.properties.isEmpty())
+    if (!this.properties.isEmpty())
       builder.append("[");
     Iterator<Property<?>> iterator = this.properties.iterator();
     while (iterator.hasNext()) {
@@ -151,13 +147,13 @@ public class PartialBlockState implements Predicate<BlockInWorld> {
       builder.append(property.getName());
       builder.append("=");
       builder.append(value);
-      if(iterator.hasNext())
+      if (iterator.hasNext())
         builder.append(",");
       else
         builder.append("]");
     }
 
-    if(this.nbt != null && !this.nbt.isEmpty())
+    if (this.nbt != null && !this.nbt.isEmpty())
       builder.append(this.nbt);
     return builder.toString();
   }
@@ -170,14 +166,14 @@ public class PartialBlockState implements Predicate<BlockInWorld> {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof PartialBlockState other)) return false;
-    if(this.blockState != other.blockState)
+    if (this.blockState != other.blockState)
       return false;
-    if(!new HashSet<>(this.properties).containsAll(other.properties) || !new HashSet<>(other.properties).containsAll(this.properties))
+    if (!new HashSet<>(this.properties).containsAll(other.properties) || !new HashSet<>(other.properties).containsAll(this.properties))
       return false;
     return NbtUtils.compareNbt(this.nbt, other.nbt, true);
   }
 
   public PartialBlockState copyWithRotation(Rotation rotation) {
-    return rotate(rotation).copy();
+    return copy().rotate(rotation);
   }
 }

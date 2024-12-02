@@ -50,12 +50,12 @@ import java.util.List;
 public class BlockController extends BlockMachineComponent {
   public BlockController() {
     super(
-      Properties.of()
-        .sound(SoundType.METAL)
-        .strength(5F, 10F)
-        .requiresCorrectToolForDrops()
-        .dynamicShape()
-        .noOcclusion()
+        Properties.of()
+            .sound(SoundType.METAL)
+            .strength(5F, 10F)
+            .requiresCorrectToolForDrops()
+            .dynamicShape()
+            .noOcclusion()
     );
   }
 
@@ -74,8 +74,9 @@ public class BlockController extends BlockMachineComponent {
   @Override
   protected void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
     ResourceLocation id = ModularMachineryReborn.MACHINES_BLOCK.inverse().get(this);
-    if (id != null && pLevel.getBlockEntity(pPos) instanceof MachineControllerEntity entity)
+    if (id != null && pLevel.getBlockEntity(pPos) instanceof MachineControllerEntity entity) {
       entity.setId(id);
+    }
   }
 
   //When placed by an entity
@@ -83,9 +84,9 @@ public class BlockController extends BlockMachineComponent {
   public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
     ControllerItem.getMachine(stack).ifPresent(machine -> {
       BlockEntity tile = level.getBlockEntity(pos);
-      if(tile instanceof MachineControllerEntity machineTile) {
+      if (tile instanceof MachineControllerEntity machineTile) {
         machineTile.setId(machine.getRegistryName());
-        if(level instanceof ServerLevel serverLevel)
+        if (level instanceof ServerLevel serverLevel)
           level.getServer().tell(new TickTask(1, () -> PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(pos), new SMachineUpdatePacket(machine.getRegistryName(), pos))));
       }
     });
@@ -108,7 +109,7 @@ public class BlockController extends BlockMachineComponent {
   @Override
   public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
     BlockEntity te = level.getBlockEntity(pos);
-    if(te instanceof MachineControllerEntity entity) {
+    if (te instanceof MachineControllerEntity entity) {
       ControllerRenderer.renderers.remove(entity.getBlockPos());
     }
     super.playerDestroy(level, player, pos, state, blockEntity, tool);
@@ -116,7 +117,7 @@ public class BlockController extends BlockMachineComponent {
 
   @Override
   public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-    if(player.getAbilities().instabuild && level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof MachineControllerEntity entity) {
+    if (player.getAbilities().instabuild && level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof MachineControllerEntity entity) {
       ControllerRenderer.renderers.remove(entity.getBlockPos());
     }
     return super.playerWillDestroy(level, pos, state, player);
@@ -144,7 +145,7 @@ public class BlockController extends BlockMachineComponent {
   @Override
   protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
     BlockEntity te = level.getBlockEntity(pos);
-    if(te instanceof MachineControllerEntity controller) {
+    if (te instanceof MachineControllerEntity controller) {
       if (player instanceof ServerPlayer serverPlayer) {
         if (player.getItemInHand(hand).getItem() instanceof ItemBlueprint) {
           DynamicMachine machine = controller.getFoundMachine();
@@ -154,13 +155,6 @@ public class BlockController extends BlockMachineComponent {
         }
         ControllerContainer.open(serverPlayer, controller);
       }
-//      if (player.getItemInHand(hand).getItem() instanceof ItemBlueprint) {
-//        DynamicMachine machine = controller.getFoundMachine();
-//        if (machine == null) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-//        MMRLogger.INSTANCE.info("ShiftDown, machine {}, blockPos: {}, creative: {}, player: {}",
-//            machine.getName(), pos.toString(), player.isCreative(), player.getName().getString());
-//        PacketDistributor.sendToServer(new CPlaceStructurePacket(controller.getFoundMachine().getRegistryName(), controller.getBlockPos()));
-//      }
       return ItemInteractionResult.SUCCESS;
     }
     return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
@@ -182,7 +176,7 @@ public class BlockController extends BlockMachineComponent {
   @Override
   public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
     BlockEntity tile = level.getBlockEntity(pos);
-    if(tile instanceof MachineControllerEntity entity)
+    if (tile instanceof MachineControllerEntity entity)
       RedstoneHelper.getRedstoneLevel(entity);
     return 0;
   }
@@ -191,7 +185,7 @@ public class BlockController extends BlockMachineComponent {
   @Override
   public int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction side) {
     BlockEntity tile = level.getBlockEntity(pos);
-    if(tile instanceof MachineControllerEntity entity)
+    if (tile instanceof MachineControllerEntity entity)
       RedstoneHelper.getRedstoneLevel(entity);
     return 0;
   }
@@ -200,7 +194,7 @@ public class BlockController extends BlockMachineComponent {
   @Override
   public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction side) {
     BlockEntity tile = level.getBlockEntity(pos);
-    if(tile instanceof MachineControllerEntity entity)
+    if (tile instanceof MachineControllerEntity entity)
       RedstoneHelper.getRedstoneLevel(entity);
     return 0;
   }

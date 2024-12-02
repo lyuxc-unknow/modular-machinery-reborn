@@ -8,7 +8,6 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.DataResult;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
-import es.degrassi.mmreborn.common.util.MMRLogger;
 import es.degrassi.mmreborn.common.util.Utils;
 import lombok.Getter;
 import net.minecraft.core.registries.Registries;
@@ -27,8 +26,6 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
   public static final BlockIngredient AIR = new BlockIngredient(PartialBlockState.AIR);
   public static final BlockIngredient ANY = new BlockIngredient(PartialBlockState.ANY);
   public static final BlockIngredient MACHINE = new BlockIngredient(PartialBlockState.MACHINE);
-
-//  public static final NamedCodec<BlockIngredient> CODEC = PartialBlockState.CODEC_LIST.xmap(BlockIngredient::new, BlockIngredient::getAll, "Block ingredient");
 
   public static final NamedCodec<BlockIngredient> TAG_CODEC = NamedCodec.STRING.comapFlatMap(string -> {
     try {
@@ -93,9 +90,9 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
   }
 
   public static BlockIngredient create(String s) throws IllegalArgumentException {
-    if(s.startsWith("#"))
+    if (s.startsWith("#"))
       s = s.substring(1);
-    if(!Utils.isResourceNameValid(s))
+    if (!Utils.isResourceNameValid(s))
       throw new IllegalArgumentException(String.format("Invalid tag id : %s", s));
     TagKey<Block> tag = TagKey.create(Registries.BLOCK, ResourceLocation.parse(s));
     return new BlockIngredient(tag);

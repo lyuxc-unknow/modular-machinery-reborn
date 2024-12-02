@@ -12,6 +12,7 @@ import es.degrassi.mmreborn.common.integration.kubejs.builder.MachineBuilderJS.M
 import es.degrassi.mmreborn.common.integration.kubejs.builder.StructureBuilderJS;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import es.degrassi.mmreborn.common.util.IntRange;
+import es.degrassi.mmreborn.common.util.MachineModelLocation;
 
 public class MMRKubeJSPlugin implements KubeJSPlugin {
   public static final EventGroup MMR_EVENTS = EventGroup.of("MMREvents");
@@ -25,6 +26,7 @@ public class MMRKubeJSPlugin implements KubeJSPlugin {
   @Override
   public void registerBindings(BindingRegistry registry) {
     registry.add("MMRStructureBuilder", StructureBuilderJS.class);
+    registry.add("ControllerModel", MachineModelLocation.class);
   }
 
   @Override

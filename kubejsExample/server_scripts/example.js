@@ -143,5 +143,6 @@ MMREvents.machines(event => {
                     }
                 )
         )
+        .controllerModel(ControllerModel.of("<namespace>:<path under assets/models/(controller|controllers)>")) // Ex: minecraft:furnace, mekanism:chemical_infuser, etc
 })
 
