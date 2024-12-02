@@ -10,6 +10,7 @@ import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -46,11 +47,11 @@ public class Structure {
     return builder.build(pattern, keys);
   }
 
-  public static ItemInteractionResult place(DynamicMachine machine, BlockPos controllerPos, Level level, boolean isCreative, ServerPlayer player) {
+  public static void place(DynamicMachine machine, BlockPos controllerPos, Level level, boolean isCreative,
+                        ServerPlayer player) {
     Structure structure = machine.getPattern();
     BlockState blockState = level.getBlockState(controllerPos);
     Direction facing = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
-    AtomicBoolean success = new AtomicBoolean(true);
     structure.getBlocks(facing).forEach((pos, ingredient) -> {
       BlockPos worldPos = pos.offset(controllerPos);
       if (worldPos.equals(controllerPos)) return;
@@ -59,7 +60,6 @@ public class Structure {
         if (!level.getBlockState(worldPos).isAir()) {
           if (!ingredient.test(new PartialBlockState(level.getBlockState(worldPos), level.getBlockState(worldPos).getProperties().stream().toList(), null))) {
             level.destroyBlock(worldPos, !isCreative);
-            success.set(false);
             player.sendSystemMessage(Component.translatable("mmr.place.non_air", block.getName(), "X:" + worldPos.getX()  + " Y:" + worldPos.getY() + " Z:" + worldPos.getZ()));
           }
         }
@@ -76,7 +76,6 @@ public class Structure {
               return;
             }
           }
-          success.set(false);
           player.sendSystemMessage(Component.translatable("mmr.place.no_item", block.getName(), "X:" + worldPos.getX() + " Y:" + worldPos.getY() + " Z:" + worldPos.getZ(),
               blockToRemove.getHoverName().getString()));
           return;
@@ -84,8 +83,6 @@ public class Structure {
         setBlock(level, worldPos, block);
       }
     });
-
-    return success.get() ? ItemInteractionResult.CONSUME : ItemInteractionResult.CONSUME_PARTIAL;
   }
 
   private static void setBlock(Level world, BlockPos pos, PartialBlockState state) {

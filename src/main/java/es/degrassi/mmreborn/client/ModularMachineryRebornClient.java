@@ -8,6 +8,7 @@ import es.degrassi.mmreborn.api.integration.emi.RegisterEmiComponentEvent;
 import es.degrassi.mmreborn.api.integration.emi.RegisterEmiRequirementToStackEvent;
 import es.degrassi.mmreborn.api.integration.jei.RegisterJeiComponentEvent;
 import es.degrassi.mmreborn.client.entity.renderer.ControllerRenderer;
+import es.degrassi.mmreborn.client.model.ControllerModelLoader;
 import es.degrassi.mmreborn.client.screen.ControllerScreen;
 import es.degrassi.mmreborn.client.screen.EnergyHatchScreen;
 import es.degrassi.mmreborn.client.screen.FluidHatchScreen;
@@ -30,6 +31,7 @@ import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiItemComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiTimeComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiWeatherComponent;
 import es.degrassi.mmreborn.common.data.Config;
+import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.entity.base.ColorableMachineComponentEntity;
 import es.degrassi.mmreborn.common.entity.base.EnergyHatchEntity;
@@ -46,8 +48,10 @@ import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -70,11 +74,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("unused")
 public class ModularMachineryRebornClient {
   public static ClientScheduler clientScheduler = new ClientScheduler();
-
+  private static Map<ModelResourceLocation, BakedModel> models;
   private static final List<Block> blockModelsToRegister = Lists.newLinkedList();
   private static final List<Item> itemModelsToRegister = Lists.newLinkedList();
 
@@ -88,6 +93,20 @@ public class ModularMachineryRebornClient {
   @SubscribeEvent
   public void registerBlockEntityRenderers(final EntityRenderersEvent.RegisterRenderers event) {
     event.registerBlockEntityRenderer(EntityRegistration.CONTROLLER.get(), ControllerRenderer::new);
+  }
+
+  @SubscribeEvent
+  public void registerModelLoader(final ModelEvent.RegisterGeometryLoaders event) {
+    event.register(ModularMachineryReborn.rl("controller"), ControllerModelLoader.INSTANCE);
+  }
+
+  @SubscribeEvent
+  public void onBackingCompleted(final ModelEvent.BakingCompleted event) {
+    models = event.getModels();
+  }
+
+  public static Map<ModelResourceLocation, BakedModel> getAllModels() {
+    return models;
   }
 
   @SubscribeEvent
@@ -268,6 +287,13 @@ public class ModularMachineryRebornClient {
   @OnlyIn(Dist.CLIENT)
   public void onModelRegister(ModelEvent.RegisterAdditional event) {
     event.register(ModelResourceLocation.standalone(ModularMachineryReborn.rl("block/nope")));
+    event.register(ModelResourceLocation.standalone(ModularMachineryReborn.rl("default/controller")));
+    for(String folder : MMRConfig.get().modelFolders.get()) {
+      Minecraft.getInstance().getResourceManager().listResources("models/" + folder, s -> s.getPath().endsWith(".json")).forEach((rl, resource) -> {
+        ResourceLocation modelRL = ResourceLocation.fromNamespaceAndPath(rl.getNamespace(), rl.getPath().substring(7).replace(".json", ""));
+        event.register(ModelResourceLocation.standalone(modelRL));
+      });
+    }
     for (Block block : blockModelsToRegister) {
       Item i = block.asItem();
     }

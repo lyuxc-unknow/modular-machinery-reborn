@@ -3,6 +3,7 @@ package es.degrassi.mmreborn.common.entity;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.ModularMachineryReborn;
+import es.degrassi.mmreborn.client.model.ControllerBakedModel;
 import es.degrassi.mmreborn.common.crafting.ActiveMachineRecipe;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
@@ -38,6 +39,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
@@ -61,6 +63,13 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
 
   public MachineControllerEntity(BlockPos pos, BlockState state) {
     super(EntityRegistration.CONTROLLER.get(), pos, state);
+  }
+
+  @Override
+  public ModelData getModelData() {
+    return ModelData.builder()
+        .with(ControllerBakedModel.MACHINE, getFoundMachine())
+        .build();
   }
 
   @Override
@@ -109,7 +118,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
       this.activeRecipe = null;
       setRecipeTicks(-1);
     } else if (this.activeRecipe.isCompleted(context) &&
-      !context.canStartCrafting(req -> req.getActionType() == IOType.OUTPUT).isFailure()) {
+        !context.canStartCrafting(req -> req.getActionType() == IOType.OUTPUT).isFailure()) {
       this.activeRecipe.complete(context);
       setRecipeTicks(-1);
       setCraftingStatus(CraftingStatus.NO_RECIPE);
@@ -129,13 +138,13 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
     setChanged();
     if (getLevel() == null) return;
     List<RecipeHolder<MachineRecipe>> availableRecipes =
-      getLevel()
-        .getRecipeManager()
-        .getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get())
-        .stream()
-        .filter(recipe -> recipe.value().getOwningMachineIdentifier() != null)
-        .filter(recipe -> recipe.value().getOwningMachineIdentifier().equals(this.getId()))
-        .toList();
+        getLevel()
+            .getRecipeManager()
+            .getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get())
+            .stream()
+            .filter(recipe -> recipe.value().getOwningMachineIdentifier() != null)
+            .filter(recipe -> recipe.value().getOwningMachineIdentifier().equals(this.getId()))
+            .toList();
 
     RecipeHolder<MachineRecipe> highestValidity = null;
     RecipeCraftingContext.CraftingCheckResult highestValidityResult = null;
@@ -151,7 +160,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
         this.activeRecipe.start(context);
         break;
       } else if (highestValidity == null ||
-        (result.getValidity() >= 0.5F && result.getValidity() > validity)) {
+          (result.getValidity() >= 0.5F && result.getValidity() > validity)) {
         highestValidity = recipe;
         highestValidityResult = result;
         validity = result.getValidity();
@@ -162,7 +171,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
       setRecipeTicks(-1);
       if (highestValidity != null && validity >= .5) {
         setCraftingStatus(CraftingStatus.failure(
-          Iterables.getFirst(highestValidityResult.getUnlocalizedErrorMessages(), "")));
+            Iterables.getFirst(highestValidityResult.getUnlocalizedErrorMessages(), "")));
       }
     } else {
       setCraftingStatus(CraftingStatus.working());

@@ -17,5 +17,6 @@
       "i": "#modular_machinery_reborn:inputbus",
       "x": "#modular_machinery_reborn:fluidinputhatch"
     }
-  }
+  },
+  "controller": "minecraft:furnace"
 }

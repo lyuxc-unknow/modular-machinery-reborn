@@ -8,9 +8,6 @@ import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.integration.kubejs.KubeJSIntegration;
 import es.degrassi.mmreborn.common.util.CustomJsonReloadListener;
 import es.degrassi.mmreborn.common.util.MMRLogger;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.FilePackResources;
 import net.minecraft.server.packs.PackResources;
@@ -20,6 +17,9 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.conditions.ICondition.IContext;
+
+import java.io.IOException;
+import java.util.Map;
 
 public class MachineJsonReloadListener extends CustomJsonReloadListener {
 

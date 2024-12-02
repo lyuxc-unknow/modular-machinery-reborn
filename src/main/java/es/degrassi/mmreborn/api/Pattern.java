@@ -41,24 +41,8 @@ public class Pattern {
   }
 
   private Map<BlockPos, BlockIngredient> rotate(Rotation rotation) {
-//    Map<BlockPos, IIngredient<PartialBlockState>> newPattern = new HashMap<>();
-//    pattern.forEach((pos, ingredient) -> {
-////      newPattern.put(pos.rotate(rotation), ingredient.copyWithRotation(rotation));
-//      if (ingredient instanceof BlockIngredient blockIngredient) {
-//        newPattern.put(pos.rotate(rotation), blockIngredient.copyWithRotation(rotation));
-//      } else if (ingredient instanceof BlockTagIngredient tagIngredient) {
-//        newPattern.put(pos.rotate(rotation), tagIngredient.copy());
-//      }
-//    });
-//    return newPattern;
-
     Map<BlockPos, BlockIngredient> rotated = new HashMap<>();
-    pattern.forEach((pos, ingredient) -> {
-      if (ingredient instanceof BlockIngredient)
-        rotated.put(pos.rotate(rotation), new BlockIngredient(ingredient.getAll().stream().map(ing -> ing.rotate(rotation)).toList()));
-      else
-        rotated.put(pos.rotate(rotation), ingredient);
-    });
+    pattern.forEach((pos, ingredient) -> rotated.put(pos.rotate(rotation), ingredient.copyWithRotation(rotation)));
     return rotated;
   }
 
@@ -74,7 +58,7 @@ public class Pattern {
     Map<BlockPos, BlockIngredient> blocks = get(machineFacing);
     BlockPos.MutableBlockPos worldPos = new BlockPos.MutableBlockPos();
     for (BlockPos pos : blocks.keySet()) {
-      IIngredient<PartialBlockState> ingredient = blocks.get(pos);
+      BlockIngredient ingredient = blocks.get(pos);
       worldPos.set(pos.getX() + machinePos.getX(), pos.getY() + machinePos.getY(), pos.getZ() + machinePos.getZ());
       BlockInWorld info = new BlockInWorld(world, worldPos, false);
       if (ingredient.getAll().stream().noneMatch(state -> state.test(info)))
