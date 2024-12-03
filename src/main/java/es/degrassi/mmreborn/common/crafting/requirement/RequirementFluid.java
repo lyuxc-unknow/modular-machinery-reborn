@@ -19,6 +19,7 @@ import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.CopyHandlerHelper;
 import es.degrassi.mmreborn.common.util.HybridTank;
 import es.degrassi.mmreborn.common.util.ResultChance;
+import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -47,6 +48,7 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
   }), "FluidRequirement");
 
   public final HybridFluid required;
+  @Getter
   public float chance = 1F;
   public final int amount;
 
@@ -193,7 +195,7 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
       case OUTPUT -> {
         handler = CopyHandlerHelper.copyTank(handler, context.getMachineController().getLevel().registryAccess());
 
-        for (ComponentOutputRestrictor restrictor : restrictions) {
+        for (ComponentOutputRestrictor<?> restrictor : restrictions) {
           if (restrictor instanceof ComponentOutputRestrictor.RestrictionTank tank) {
 
             if (tank.exactComponent.equals(component)) {

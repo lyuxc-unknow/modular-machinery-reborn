@@ -53,6 +53,7 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
 
   public int countIOBuffer = 0;
 
+  @Getter
   public float chance = 1F;
 
   public JsonObject asJson(SizedIngredient ingredient) {

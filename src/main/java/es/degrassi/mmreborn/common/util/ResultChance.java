@@ -1,6 +1,6 @@
 package es.degrassi.mmreborn.common.util;
 
-import java.util.Random;
+import net.minecraft.util.RandomSource;
 
 public class ResultChance {
   public static ResultChance GUARANTEED = new ResultChance(0L) {
@@ -10,10 +10,10 @@ public class ResultChance {
     }
   };
 
-  private final Random rand;
+  private final RandomSource rand;
 
   public ResultChance(long seed) {
-    this.rand = new Random(seed);
+    this.rand = RandomSource.create(seed);
   }
 
   public boolean canProduce(float chance) {

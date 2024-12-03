@@ -10,9 +10,14 @@ ServerEvents.recipes(event => {
         .requireEnergy(100000, x, y)
         .produceEnergy(100, x, y)
         .requireItem("2x modular_machinery_reborn:casing_plain", x, y) // valid for item tags too(uses sized ingredient)
+        .requireItem("2x modular_machinery_reborn:casing_plain", 0.5, x, y) // valid for item tags too(uses sized
+        ingredient)
         .produceItem('1x modular_machinery_reborn:modularium', x, y)
+        .produceItem('1x modular_machinery_reborn:modularium', 0.8, x, y)
         .produceFluid('10000x minecraft:lava', x, y)
+        .produceFluid('10000x minecraft:lava', 0.75, x, y)
         .requireFluid('minecraft:lava', x, y)
+        .requireFluid('minecraft:lava', 0.15, x, y)
         // list of dimensions, blacklist
         .dimensions(['minecraft:overworld'], true, x, y)
         // default blacklist: false

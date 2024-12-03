@@ -140,6 +140,7 @@ public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, 
 
   public interface ChancedRequirement {
     void setChance(float chance);
+    float getChance();
   }
 
 }

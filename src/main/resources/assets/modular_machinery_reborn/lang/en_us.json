@@ -331,6 +331,10 @@
 
   "config.jade.plugin_modular_machinery_reborn.machine_component_provider": "Modular Machinery Reborn provider",
 
+  "modular_machinery_reborn.ingredient.chance.input": "Chance to be consumed: %s%s",
+  "modular_machinery_reborn.ingredient.chance.output": "Chance to be produced: %s%s",
+  "modular_machinery_reborn.ingredient.chance.not_consumed": "Not Consumed",
+
   "modular_machinery_reborn.jei.ingredient.energy.input": "Require: %s RF/t",
   "modular_machinery_reborn.jei.ingredient.energy.output": "Produce: %s RF/t",
   "modular_machinery_reborn.jei.ingredient.energy.total.input": "Require: %s RF @ %s RF/t",

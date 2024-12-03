@@ -43,6 +43,8 @@ public class Pattern {
   private Map<BlockPos, BlockIngredient> rotate(Rotation rotation) {
     Map<BlockPos, BlockIngredient> rotated = new HashMap<>();
     pattern.forEach((pos, ingredient) -> rotated.put(pos.rotate(rotation), ingredient.copyWithRotation(rotation)));
+//    pattern.forEach((pos, ingredient) -> rotated.put(pos.rotate(rotation),
+//        new BlockIngredient(ingredient.getAll().stream().map(ing -> ing.rotate(rotation)).toList())));
     return rotated;
   }
 

@@ -7,6 +7,7 @@ import dev.emi.emi.api.stack.EmiStackInteraction;
 import dev.emi.emi.screen.EmiScreenManager;
 import es.degrassi.mmreborn.client.requirement.ItemRendering;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementItem;
+import es.degrassi.mmreborn.common.util.Utils;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -14,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class EmiItemComponent extends EmiComponent<ItemStack, RequirementItem> implements SlotTooltip, ItemRendering {
   private int item;
@@ -53,7 +55,13 @@ public class EmiItemComponent extends EmiComponent<ItemStack, RequirementItem> i
   @Override
   public List<Component> getTooltip() {
     List<Component> list = Lists.newArrayList();
-    list.add(Component.translatable("modular_machinery_reborn.jei.ingredient.item.input"));
+    String chance = Utils.decimalFormat(requirement.chance * 100);
+    if (requirement.chance > 0 && requirement.chance < 1)
+      list.add(Component.translatable("modular_machinery_reborn.ingredient.chance." + requirement.getActionType().name().toLowerCase(Locale.ROOT), chance, "%"));
+    else if (requirement.chance == 0)
+      list.add(Component.translatable("modular_machinery_reborn.ingredient.chance.not_consumed"));
+    else if (requirement.chance == 1)
+      list.add(Component.translatable("modular_machinery_reborn.jei.ingredient.item." + requirement.getActionType().name().toLowerCase(Locale.ROOT)));
     if (getStack().isEmpty()) {
       return list;
     }

@@ -174,6 +174,6 @@ public class PartialBlockState implements Predicate<BlockInWorld> {
   }
 
   public PartialBlockState copyWithRotation(Rotation rotation) {
-    return copy().rotate(rotation);
+    return rotate(rotation);
   }
 }

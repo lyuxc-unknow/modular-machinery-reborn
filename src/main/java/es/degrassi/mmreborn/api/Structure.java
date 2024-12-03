@@ -10,11 +10,9 @@ import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -28,7 +26,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Structure {
   public static final NamedCodec<Structure> CODEC = NamedCodec.record(structure -> structure.group(
