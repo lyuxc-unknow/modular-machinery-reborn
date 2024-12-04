@@ -162,6 +162,9 @@ dependencies {
   // Jade
   compileOnly localRuntime("curse.maven:jade-324717:${jade_version}")
 
+  // The one probe
+  localRuntime compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}") {transitive = false}
+
   // Mekanism
   compileOnly localRuntime("mekanism:Mekanism:${mekanism_version}")
 

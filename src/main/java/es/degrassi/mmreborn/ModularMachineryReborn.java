@@ -13,28 +13,37 @@ import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.data.MMRConfig;
+import es.degrassi.mmreborn.common.integration.theoneprobe.TOPInfoProvider;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.machine.MachineJsonReloadListener;
+import es.degrassi.mmreborn.common.network.server.SLootTablesPacket;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.registration.Registration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
+import es.degrassi.mmreborn.common.util.LootTableHelper;
 import es.degrassi.mmreborn.common.util.MMRLogger;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.CommandEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Contract;
@@ -54,15 +63,40 @@ public class ModularMachineryReborn {
     Registration.register(MOD_BUS);
 
     MOD_BUS.addListener(this::commonSetup);
+    MOD_BUS.addListener(this::sendIMCMessages);
 
     MOD_BUS.register(new ModularMachineryRebornClient());
     MOD_BUS.addListener(this::registerCapabilities);
     MOD_BUS.addListener(this::reloadConfig);
 
     final IEventBus GAME_BUS = NeoForge.EVENT_BUS;
+    GAME_BUS.addListener(this::serverStarting);
+    GAME_BUS.addListener(this::syncDatapacks);
     GAME_BUS.addListener(this::registerReloadListener);
     GAME_BUS.addListener(this::registerCommands);
     GAME_BUS.addListener(this::onReloadStart);
+  }
+
+  private void sendIMCMessages(final InterModEnqueueEvent event) {
+    if(ModList.get().isLoaded("theoneprobe"))
+      InterModComms.sendTo("theoneprobe", "getTheOneProbe", TOPInfoProvider::new);
+  }
+
+  private void serverStarting(final ServerStartingEvent event) {
+    LootTableHelper.generate(event.getServer());
+  }
+
+  private void syncDatapacks(final OnDatapackSyncEvent event) {
+    if (event.getPlayer() != null)
+      syncData(event.getPlayer());
+    else {
+      LootTableHelper.generate(event.getPlayerList().getServer());
+      event.getPlayerList().getPlayers().forEach(ModularMachineryReborn::syncData);
+    }
+  }
+
+  public static void syncData(ServerPlayer player) {
+    PacketDistributor.sendToPlayer(player, new SLootTablesPacket(LootTableHelper.getLoots()));
   }
 
   private void commonSetup(final FMLCommonSetupEvent event) {

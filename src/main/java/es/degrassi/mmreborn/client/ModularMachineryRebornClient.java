@@ -14,10 +14,12 @@ import es.degrassi.mmreborn.client.screen.EnergyHatchScreen;
 import es.degrassi.mmreborn.client.screen.FluidHatchScreen;
 import es.degrassi.mmreborn.client.screen.ItemBusScreen;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementItem;
+import es.degrassi.mmreborn.common.crafting.requirement.RequirementLootTable;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiBiomeComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiEnergyComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiFluidComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiItemComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiLootTableComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiTimeComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiWeatherComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiChunkloadComponent;
@@ -28,6 +30,7 @@ import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiDimensionComponen
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiEnergyComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiFluidComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiItemComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiLootTableComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiTimeComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiWeatherComponent;
 import es.degrassi.mmreborn.common.data.Config;
@@ -46,12 +49,14 @@ import es.degrassi.mmreborn.common.registration.ContainerRegistration;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
+import es.degrassi.mmreborn.common.util.LootTableHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -288,7 +293,7 @@ public class ModularMachineryRebornClient {
   public void onModelRegister(ModelEvent.RegisterAdditional event) {
     event.register(ModelResourceLocation.standalone(ModularMachineryReborn.rl("block/nope")));
     event.register(ModelResourceLocation.standalone(ModularMachineryReborn.rl("default/controller")));
-    for(String folder : MMRConfig.get().modelFolders.get()) {
+    for (String folder : MMRConfig.get().modelFolders.get()) {
       Minecraft.getInstance().getResourceManager().listResources("models/" + folder, s -> s.getPath().endsWith(".json")).forEach((rl, resource) -> {
         ResourceLocation modelRL = ResourceLocation.fromNamespaceAndPath(rl.getNamespace(), rl.getPath().substring(7).replace(".json", ""));
         event.register(ModelResourceLocation.standalone(modelRL));
@@ -327,6 +332,7 @@ public class ModularMachineryRebornClient {
     event.register(RequirementTypeRegistration.CHUNKLOAD.get(), JeiChunkloadComponent::new);
     event.register(RequirementTypeRegistration.DIMENSION.get(), JeiDimensionComponent::new);
     event.register(RequirementTypeRegistration.WEATHER.get(), JeiWeatherComponent::new);
+    event.register(RequirementTypeRegistration.LOOT_TABLE.get(), JeiLootTableComponent::new);
   }
 
   @SubscribeEvent
@@ -339,6 +345,7 @@ public class ModularMachineryRebornClient {
     event.register(RequirementTypeRegistration.CHUNKLOAD.get(), EmiChunkloadComponent::new);
     event.register(RequirementTypeRegistration.DIMENSION.get(), EmiDimensionComponent::new);
     event.register(RequirementTypeRegistration.WEATHER.get(), EmiWeatherComponent::new);
+    event.register(RequirementTypeRegistration.LOOT_TABLE.get(), EmiLootTableComponent::new);
   }
 
   @SubscribeEvent
@@ -351,17 +358,26 @@ public class ModularMachineryRebornClient {
         RequirementTypeRegistration.FLUID.get(),
         requirement -> List.of(EmiStack.of(requirement.required.asFluidStack().getFluid(), requirement.amount))
     );
+    event.register(
+        RequirementTypeRegistration.LOOT_TABLE.get(),
+        requirement -> LootTableHelper
+            .getLootsForTable(requirement.getLootTable())
+            .stream()
+            .map(LootTableHelper.LootData::stack)
+            .map(EmiStack::of)
+            .toList()
+    );
   }
 
   private List<EmiStack> emiStackFromItemRequirement(RequirementItem requirement) {
     List<EmiStack> stacks = new ArrayList<>();
     for (Ingredient.Value value : requirement.getIngredient().ingredient().values) {
-      if (value instanceof Ingredient.TagValue tag) {
-        for (Item stack : TagUtil.getItems(tag.tag()).toList()) {
+      if (value instanceof Ingredient.TagValue(TagKey<Item> tag)) {
+        for (Item stack : TagUtil.getItems(tag).toList()) {
           stacks.add(EmiStack.of(stack, requirement.ingredient.count()));
         }
-      } else if (value instanceof Ingredient.ItemValue item) {
-        stacks.add(EmiStack.of(item.item(), requirement.ingredient.count()));
+      } else if (value instanceof Ingredient.ItemValue(ItemStack item)) {
+        stacks.add(EmiStack.of(item, requirement.ingredient.count()));
       }
     }
     return stacks;
