@@ -23,6 +23,7 @@ public class TOPInfoProvider implements IProbeInfoProvider, Function<ITheOneProb
   @Override
   public Void apply(ITheOneProbe probe) {
     probe.registerProvider(this);
+    probe.registerElementFactory(new CustomProgress.CustomProgressFactory());
     return null;
   }
 
@@ -53,25 +54,23 @@ public class TOPInfoProvider implements IProbeInfoProvider, Function<ITheOneProb
       int ticks = tile.getRecipeTicks();
       int total = tile.getActiveRecipe().getRecipe().getRecipeTotalTickTime();
       float progress = (float) ticks / total;
-      String ticksTotal = ticks + " / " + total;
-      boolean seconds = false;
-      if (total >= 20) {
-        ticksTotal = Utils.decimalFormat(ticks / 20) + " / " + Utils.decimalFormat(total / 20) + "s";
-        ticks /= 20;
-        total /= 20;
-        seconds = true;
-      }
-      info.progress(
-          ticks,
-          total,
-          info.defaultProgressStyle()
-              .suffix("/"
-                  + total
-                  + (seconds ? "s" : "")
-                  + "("
-                  + Utils.decimalFormatWithPercentage(progress * 100)
-                  + ")"
-              )
+      boolean seconds = total >= 20;
+      info.element(
+          new CustomProgress(
+              ticks,
+              total,
+              info.defaultProgressStyle()
+                  .suffix(Component
+                      .literal(
+                          "/"
+                              + Utils.decimalFormat(total / 20d)
+                              + (seconds ? "s" : "")
+                              + " ("
+                              + Utils.decimalFormatWithPercentage(progress * 100)
+                              + ")"
+                      )
+                  )
+          )
       );
     }
   }

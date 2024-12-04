@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class Utils {
   private static final NumberFormat NUMBER_FORMAT = new DecimalFormat("#,###");
-  public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#0.0#");
+  public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
 
   public static boolean isResourceNameValid(String resourceLocation) {
     try {
