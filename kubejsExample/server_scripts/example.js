@@ -32,6 +32,11 @@ ServerEvents.recipes(event => {
         .time('[0,24000]', x, y)
         // chunkload
         .chunkload(3, x, y)
+        // loottable
+        .lootTable('minecraft:chests/ancient_city') // luck: 0, x: 0, y: 0
+        .lootTable('minecraft:chests/ancient_city', luck) // x: 0, y: 0
+        .lootTable('minecraft:chests/ancient_city', x, y) // luck: 0
+        .lootTable('minecraft:chests/ancient_city', luck, x, y)
         // only if mekanism addon available
         .produceChemical('10x mekanism:sulfuric_acid', x, y)
         .requireChemical('10x mekanism:sulfuric_acid', x, y)

@@ -40,13 +40,9 @@
       }
     },
     {
-      "type": "modular_machinery_reborn:item",
-      "mode": "output",
-      "sizedIngredient": {
-        "ingredient": {
-          "item": "minecraft:charcoal"
-        }
-      },
+      "type": "modular_machinery_reborn:loot_table",
+      "table": "minecraft:chests/ancient_city",
+      "luck": 0,
       "position": {
         "x": 0,
         "y": 0
