@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -65,8 +64,8 @@ public class RecipeCraftingContext {
 
   public List<ProcessingComponent<?>> getComponentsFor(ComponentRequirement<?, ?> requirement) {
     return this.typeComponents.stream()
-      .filter(processingComponent -> requirement.isValidComponent(processingComponent, this))
-      .toList();
+        .filter(processingComponent -> requirement.isValidComponent(processingComponent, this))
+        .toList();
   }
 
   public CraftingCheckResult ioTick(int currentTick) {
@@ -74,7 +73,7 @@ public class RecipeCraftingContext {
 
     for (ComponentRequirement<?, ?> requirement : this.getParentRecipe().getCraftingRequirements()) {
       if (!(requirement instanceof ComponentRequirement.PerTick perTickRequirement) ||
-        requirement.getActionType() == IOType.OUTPUT) continue;
+          requirement.getActionType() == IOType.OUTPUT) continue;
 
       perTickRequirement.resetIOTick(this);
       perTickRequirement.startIOTick(this, durMultiplier);
@@ -88,7 +87,7 @@ public class RecipeCraftingContext {
 
       CraftCheck result = perTickRequirement.resetIOTick(this);
       if (!result.isSuccess()) {
-        CraftingCheckResult res = new CraftingCheckResult();
+        CraftingCheckResult res = CraftingCheckResult.empty();
         res.addError(result.getUnlocalizedMessage());
         return res;
       }
@@ -96,7 +95,7 @@ public class RecipeCraftingContext {
 
     for (ComponentRequirement<?, ?> requirement : this.getParentRecipe().getCraftingRequirements()) {
       if (!(requirement instanceof ComponentRequirement.PerTick perTickRequirement) ||
-        requirement.getActionType() == IOType.INPUT) continue;
+          requirement.getActionType() == IOType.INPUT) continue;
 
       perTickRequirement.resetIOTick(this);
       perTickRequirement.startIOTick(this, durMultiplier);
@@ -158,13 +157,13 @@ public class RecipeCraftingContext {
 
   public CraftingCheckResult canStartCrafting(Predicate<ComponentRequirement<?, ?>> requirementFilter) {
     currentRestrictions.clear();
-    CraftingCheckResult result = new CraftingCheckResult();
+    CraftingCheckResult result = CraftingCheckResult.empty();
     int successfulRequirements = 0;
     List<ComponentRequirement<?, ?>> requirements = getParentRecipe()
-      .getCraftingRequirements()
-      .stream()
-      .filter(requirementFilter)
-      .toList();
+        .getCraftingRequirements()
+        .stream()
+        .filter(requirementFilter)
+        .toList();
 
     lblRequirements:
     for (ComponentRequirement<?, ?> requirement : requirements) {
@@ -210,45 +209,6 @@ public class RecipeCraftingContext {
         target = RequirementTypeRegistration.DURATION.get();
       }
       this.modifiers.computeIfAbsent(target, t -> new LinkedList<>()).add(mod);
-    }
-  }
-
-  public static class CraftingCheckResult {
-
-    private static final CraftingCheckResult SUCCESS = new CraftingCheckResult(1);
-
-    private final Map<String, Integer> unlocErrorMessages = new HashMap<>();
-    @Getter
-    private float validity = 0F;
-
-    private CraftingCheckResult() {}
-
-    private CraftingCheckResult(float validity) {
-      this.validity = validity;
-    }
-
-    private void setValidity(float validity) {
-      this.validity = validity;
-    }
-
-    private void addError(String unlocError) {
-      if (!unlocError.isEmpty()) {
-        int count = this.unlocErrorMessages.getOrDefault(unlocError, 0);
-        count++;
-        this.unlocErrorMessages.put(unlocError, count);
-      }
-    }
-
-    public List<String> getUnlocalizedErrorMessages() {
-      return this.unlocErrorMessages.entrySet()
-        .stream()
-        .sorted(Map.Entry.comparingByValue())
-        .map(Map.Entry::getKey)
-        .collect(Collectors.toList());
-    }
-
-    public boolean isFailure() {
-      return !this.unlocErrorMessages.isEmpty() && validity != 1;
     }
   }
 }

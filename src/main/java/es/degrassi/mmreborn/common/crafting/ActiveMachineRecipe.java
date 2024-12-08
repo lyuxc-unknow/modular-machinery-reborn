@@ -1,6 +1,8 @@
 package es.degrassi.mmreborn.common.crafting;
 
 import com.google.common.collect.Iterables;
+import es.degrassi.mmreborn.common.crafting.helper.CraftingCheckResult;
+import es.degrassi.mmreborn.common.crafting.helper.CraftingStatus;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
@@ -52,40 +54,28 @@ public class ActiveMachineRecipe {
       .byKey(futureRecipeId)
       .orElse(null);
     this.futureRecipeId = null;
-
-//    if (serialized.contains("data", Tag.TAG_LIST)) {
-//      ListTag listData = serialized.getList("data", Tag.TAG_COMPOUND);
-//      for (int i = 0; i < listData.size(); i++) {
-//        CompoundTag tag = listData.getCompound(i);
-//        String key = tag.getString("key");
-//        CompoundTag data = tag.getCompound("data");
-//        if (!key.isEmpty()) {
-//          dataMap.put(ResourceLocation.parse(key), data);
-//        }
-//      }
-//    }
   }
 
   public void reset() {
     entity.setRecipeTicks(-1);
-    entity.setCraftingStatus(MachineControllerEntity.CraftingStatus.NO_RECIPE);
+    entity.setCraftingStatus(CraftingStatus.NO_RECIPE);
   }
 
   @Nonnull
-  public MachineControllerEntity.CraftingStatus tick(RecipeCraftingContext context) {
+  public CraftingStatus tick(RecipeCraftingContext context) {
     if (!initialized) init();
     //Skip per-tick logic until controller can finish the recipe
     if (this.isCompleted(context)) {
-      return MachineControllerEntity.CraftingStatus.working();
+      return CraftingStatus.working();
     }
 
-    RecipeCraftingContext.CraftingCheckResult check;
+    CraftingCheckResult check;
     if (!(check = context.ioTick(entity.getRecipeTicks())).isFailure()) {
       entity.setRecipeTicks(entity.getRecipeTicks() + 1);
-      return MachineControllerEntity.CraftingStatus.working();
+      return CraftingStatus.working();
     } else {
       entity.setRecipeTicks(-1);
-      return MachineControllerEntity.CraftingStatus.failure(
+      return CraftingStatus.failure(
         Iterables.getFirst(check.getUnlocalizedErrorMessages(), ""));
     }
   }
@@ -109,7 +99,7 @@ public class ActiveMachineRecipe {
 
   public void start(RecipeCraftingContext context) {
     entity.setRecipeTicks(0);
-    entity.setCraftingStatus(MachineControllerEntity.CraftingStatus.working());
+    entity.setCraftingStatus(CraftingStatus.working());
     context.startCrafting();
   }
 

@@ -57,12 +57,11 @@ public class MachineBuilderJS {
 
   public DynamicMachine build() {
     if (structure == null)
-      throw new IllegalArgumentException("Structure is invalid");
+      structure = Structure.EMPTY;
     DynamicMachine machine = new DynamicMachine(id);
     machine.setPattern(structure);
     machine.setControllerModel(Objects.requireNonNullElse(controllerModel, MachineModelLocation.DEFAULT));
-    if (name != null)
-      machine.setLocalizedName(name);
+    machine.setLocalizedName(name);
     if (intColor != null)
       machine.setDefinedColor(intColor);
     else if(color != null)

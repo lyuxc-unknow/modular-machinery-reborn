@@ -5,7 +5,9 @@ import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.client.model.ControllerBakedModel;
 import es.degrassi.mmreborn.common.crafting.ActiveMachineRecipe;
+import es.degrassi.mmreborn.common.crafting.helper.CraftingStatus;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
+import es.degrassi.mmreborn.common.crafting.helper.CraftingCheckResult;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.data.MMRConfig;
@@ -23,17 +25,13 @@ import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -41,11 +39,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Locale;
 
 @Getter
 @Setter
@@ -123,7 +119,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
       setRecipeTicks(-1);
       setCraftingStatus(CraftingStatus.NO_RECIPE);
       context = this.getFoundMachine().createContext(this.activeRecipe, this, this.foundComponents);
-      RecipeCraftingContext.CraftingCheckResult result = context.canStartCrafting();
+      CraftingCheckResult result = context.canStartCrafting();
       if (result.isFailure()) {
         this.activeRecipe = null;
         setCraftingStatus(CraftingStatus.failure(Iterables.getFirst(result.getUnlocalizedErrorMessages(), "")));
@@ -147,13 +143,13 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
             .toList();
 
     RecipeHolder<MachineRecipe> highestValidity = null;
-    RecipeCraftingContext.CraftingCheckResult highestValidityResult = null;
+    CraftingCheckResult highestValidityResult = null;
     float validity = 0F;
 
     for (RecipeHolder<MachineRecipe> recipe : availableRecipes) {
       ActiveMachineRecipe aRecipe = new ActiveMachineRecipe(recipe, this);
       RecipeCraftingContext context = this.getFoundMachine().createContext(aRecipe, this, this.foundComponents);
-      RecipeCraftingContext.CraftingCheckResult result = context.canStartCrafting();
+      CraftingCheckResult result = context.canStartCrafting();
       if (!result.isFailure()) {
         this.activeRecipe = aRecipe;
         setRecipeTicks(0);
@@ -324,111 +320,5 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
 
   public void refreshClientData() {
     requestModelDataUpdate();
-  }
-
-  public static class CraftingStatus {
-    public static final CraftingStatus SUCCESS = new CraftingStatus(Type.CRAFTING, "");
-    public static final CraftingStatus MISSING_STRUCTURE = new CraftingStatus(Type.MISSING_STRUCTURE, "");
-    public static final CraftingStatus NO_RECIPE = new CraftingStatus(Type.NO_RECIPE, "");
-
-    @MethodsReturnNonnullByDefault
-    public static final StreamCodec<RegistryFriendlyByteBuf, CraftingStatus> STREAM_CODEC = new StreamCodec<>() {
-      @Override
-      public CraftingStatus decode(RegistryFriendlyByteBuf buffer) {
-        Type type = buffer.readEnum(Type.class);
-        String unlocalizedMessage = buffer.readUtf();
-        return new CraftingStatus(type, unlocalizedMessage);
-      }
-
-      @Override
-      public void encode(RegistryFriendlyByteBuf buffer, CraftingStatus value) {
-        buffer.writeEnum(value.status);
-        buffer.writeUtf(value.unlocMessage);
-      }
-    };
-
-    @Getter
-    private final Type status;
-    private final String unlocMessage;
-
-    private CraftingStatus(Type status, String unlocMessage) {
-      this.status = status;
-      this.unlocMessage = unlocMessage;
-    }
-
-    public String getUnlocMessage() {
-      return !unlocMessage.isEmpty() ? unlocMessage : this.status.getUnlocalizedDescription();
-    }
-
-    public boolean isCrafting() {
-      return this.status == Type.CRAFTING;
-    }
-
-    public boolean isFailure() {
-      return this.status == Type.FAILURE;
-    }
-
-    public boolean isMissingStructure() {
-      return this.status == Type.MISSING_STRUCTURE;
-    }
-
-    public static CraftingStatus working() {
-      return SUCCESS;
-    }
-
-    public static CraftingStatus failure(String unlocMessage) {
-      return new CraftingStatus(Type.FAILURE, unlocMessage);
-    }
-
-    public CompoundTag serializeNBT() {
-      CompoundTag tag = new CompoundTag();
-      tag.putString("type", this.status.getSerializedName());
-      tag.putString("message", this.unlocMessage);
-      return tag;
-    }
-
-    public static CraftingStatus deserialize(CompoundTag tag) {
-      Type type = Type.fromString(tag.getString("type"));
-      String unlocMessage = tag.getString("message");
-      return new CraftingStatus(type, unlocMessage);
-    }
-
-    public static CraftingStatus of(Type type, String message) {
-      return new CraftingStatus(type, message);
-    }
-
-    public static CraftingStatus of(String type, String message) {
-      return new CraftingStatus(Type.fromString(type), message);
-    }
-  }
-
-  public enum Type implements StringRepresentable {
-    MISSING_STRUCTURE,
-    NO_RECIPE,
-    FAILURE,
-    CRAFTING;
-
-    public static Type fromString(String value) {
-      return switch (value.toLowerCase(Locale.ROOT)) {
-        case "missing_structure" -> MISSING_STRUCTURE;
-        case "crafting" -> CRAFTING;
-        case "no_recipe" -> NO_RECIPE;
-        case "failure" -> FAILURE;
-        default -> null;
-      };
-    }
-
-    public boolean isFailure() {
-      return this == FAILURE;
-    }
-
-    public String getUnlocalizedDescription() {
-      return "gui.controller.status." + getSerializedName();
-    }
-
-    @Override
-    public @NotNull String getSerializedName() {
-      return name().toLowerCase(Locale.ROOT);
-    }
   }
 }

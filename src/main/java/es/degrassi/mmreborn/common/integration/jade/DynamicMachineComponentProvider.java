@@ -1,6 +1,7 @@
 package es.degrassi.mmreborn.common.integration.jade;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
+import es.degrassi.mmreborn.common.crafting.helper.CraftingStatus;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.util.Utils;
 import net.minecraft.ChatFormatting;
@@ -27,7 +28,7 @@ public class DynamicMachineComponentProvider implements IBlockComponentProvider 
       CompoundTag nbt = accessor.getServerData().getCompound(ModularMachineryReborn.MODID);
       if (nbt.isEmpty()) return;
       if (nbt.contains("status", Tag.TAG_COMPOUND)) {
-        MachineControllerEntity.CraftingStatus status = MachineControllerEntity.CraftingStatus.deserialize(nbt.getCompound("status"));
+        CraftingStatus status = CraftingStatus.deserialize(nbt.getCompound("status"));
         MutableComponent message = Component.translatable(status.getUnlocMessage());
         switch (status.getStatus()) {
           case CRAFTING -> message.withStyle(ChatFormatting.GREEN);

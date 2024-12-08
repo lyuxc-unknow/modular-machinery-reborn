@@ -26,7 +26,7 @@ import java.util.Collection;
 public class DynamicMachine {
   public static final NamedCodec<DynamicMachine> CODEC = NamedCodec.record(instance -> instance.group(
       DefaultCodecs.RESOURCE_LOCATION.fieldOf("registryName").forGetter(DynamicMachine::getRegistryName),
-      NamedCodec.STRING.fieldOf("localizedName").forGetter(machine -> machine.localizedName),
+      NamedCodec.STRING.optionalFieldOf("localizedName", (String) null).forGetter(machine -> machine.localizedName),
       Structure.CODEC.fieldOf("structure").forGetter(machine -> machine.pattern),
       DefaultCodecs.HEX.optionalFieldOf("color", Config.machineColor).forGetter(machine -> machine.definedColor),
       MachineModelLocation.CODEC.optionalFieldOf("controller", MachineModelLocation.DEFAULT).forGetter(DynamicMachine::getControllerModel)
@@ -43,7 +43,7 @@ public class DynamicMachine {
 
   @Nonnull
   private ResourceLocation registryName;
-  private String localizedName = "";
+  private String localizedName;
   private Structure pattern = Structure.EMPTY;
   private int definedColor = Config.machineColor;
   private MachineModelLocation controllerModel;
@@ -83,7 +83,7 @@ public class DynamicMachine {
   public JsonObject asJson() {
     JsonObject json = new JsonObject();
     json.addProperty("registryName", registryName.toString());
-    json.addProperty("localizedName", localizedName);
+    json.addProperty("localizedName", localizedName != null ? localizedName : "null");
     json.add("pattern", pattern.asJson());
     json.addProperty("definedColor", definedColor);
     return json;

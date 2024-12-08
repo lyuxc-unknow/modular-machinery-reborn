@@ -12,6 +12,7 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
+import es.degrassi.mmreborn.common.crafting.helper.restriction.RestrictionInventory;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
@@ -148,11 +149,10 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
         yield CraftCheck.failure("craftcheck.failure.item.input");
       }
       case OUTPUT -> {
-        handler = CopyHandlerHelper.copyInventory(handler, context.getMachineController().getLevel().registryAccess());
         for (ComponentOutputRestrictor<?> restrictor : restrictions) {
-          if (restrictor instanceof ComponentOutputRestrictor.RestrictionInventory inv) {
+          if (restrictor instanceof RestrictionInventory inv) {
             if (inv.exactComponent.equals(component)) {
-              ItemUtils.tryPlaceItemInInventory(inv.inserted.copy(), handler, false);
+              ItemUtils.tryPlaceItemInInventory(inv.inserted.copy(), handler, true);
             }
           }
         }
@@ -161,7 +161,7 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
 
         int inserted = ItemUtils.tryPlaceItemInInventory(stack.copy(), handler, true);
         if (inserted > 0) {
-          context.addRestriction(new ComponentOutputRestrictor.RestrictionInventory(ItemUtils.copyStackWithSize(stack, inserted), component));
+          context.addRestriction(new RestrictionInventory(ItemUtils.copyStackWithSize(stack, inserted), component));
         }
         this.countIOBuffer -= inserted;
         if (this.countIOBuffer <= 0) {

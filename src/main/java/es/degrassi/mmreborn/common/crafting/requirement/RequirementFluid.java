@@ -10,6 +10,7 @@ import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
+import es.degrassi.mmreborn.common.crafting.helper.restriction.RestrictionTank;
 import es.degrassi.mmreborn.common.integration.ingredient.HybridFluid;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
@@ -153,20 +154,23 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
     return cmp.getComponentType().equals(ComponentRegistration.COMPONENT_FLUID.get()) &&
         cmp instanceof MachineComponent.FluidHatch hatch &&
         hatch.getIOType() == this.getActionType() && ((
-            !getActionType().isInput() && (
-                hatch.getContainerProvider().getFluid().isEmpty() || (
-                    hatch.getContainerProvider().getFluid().is(required.asFluidStack().getFluid()) &&
+        !getActionType().isInput() && (
+            (
+                hatch.getContainerProvider().getFluid().isEmpty() &&
+                    hatch.getContainerProvider().getCapacity() >= required.getAmount()
+            ) || (
+                hatch.getContainerProvider().getFluid().is(required.asFluidStack().getFluid()) &&
                     hatch.getContainerProvider().getCapacity() - hatch.getContainerProvider().getFluidAmount() >= required.getAmount()
-                )
-            )
-        ) || (
-            getActionType().isInput() && (
-                hatch.getContainerProvider().isFluidValid(required.asFluidStack()) && (
-                    hatch.getContainerProvider().getFluid().is(required.asFluidStack().getFluid()) &&
-                    hatch.getContainerProvider().getFluidAmount() >= required.getAmount()
-                )
             )
         )
+    ) || (
+        getActionType().isInput() && (
+            hatch.getContainerProvider().isFluidValid(required.asFluidStack()) && (
+                hatch.getContainerProvider().getFluid().is(required.asFluidStack().getFluid()) &&
+                    hatch.getContainerProvider().getFluidAmount() >= required.getAmount()
+            )
+        )
+    )
     );
   }
 
@@ -179,7 +183,7 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
     return switch (getActionType()) {
       case INPUT -> {
         //If it doesn't consume the item, we only need to see if it's actually there.
-        FluidStack drained = handler.drain(this.requirementCheck.copy().asFluidStack(), IFluidHandler.FluidAction.EXECUTE);
+        FluidStack drained = handler.drain(this.requirementCheck.copy().asFluidStack(), IFluidHandler.FluidAction.SIMULATE);
         if (drained.isEmpty()) {
           yield CraftCheck.failure("craftcheck.failure.fluid.input");
         }
@@ -193,20 +197,19 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
         yield CraftCheck.failure("craftcheck.failure.fluid.input");
       }
       case OUTPUT -> {
-        handler = CopyHandlerHelper.copyTank(handler, context.getMachineController().getLevel().registryAccess());
-
         for (ComponentOutputRestrictor<?> restrictor : restrictions) {
-          if (restrictor instanceof ComponentOutputRestrictor.RestrictionTank tank) {
+          if (restrictor instanceof RestrictionTank tank) {
 
             if (tank.exactComponent.equals(component)) {
               handler.fill(Objects.requireNonNull(tank.inserted == null ? null : tank.inserted.copy().asFluidStack()), IFluidHandler.FluidAction.SIMULATE);
             }
           }
         }
-        int filled = handler.fill(Objects.requireNonNull(this.requirementCheck.copy().asFluidStack()), IFluidHandler.FluidAction.EXECUTE); //True or false doesn't really matter tbh
+        int filled = handler.fill(Objects.requireNonNull(this.requirementCheck.copy().asFluidStack()),
+            IFluidHandler.FluidAction.SIMULATE); //True or false doesn't really matter tbh
         boolean didFill = filled >= this.requirementCheck.getAmount();
         if (didFill) {
-          context.addRestriction(new ComponentOutputRestrictor.RestrictionTank(this.requirementCheck.copy(), component));
+          context.addRestriction(new RestrictionTank(this.requirementCheck.copy(), component));
         }
         if (didFill) {
           yield CraftCheck.success();

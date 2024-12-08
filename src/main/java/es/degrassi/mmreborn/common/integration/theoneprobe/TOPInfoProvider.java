@@ -1,6 +1,7 @@
 package es.degrassi.mmreborn.common.integration.theoneprobe;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
+import es.degrassi.mmreborn.common.crafting.helper.CraftingStatus;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.util.Utils;
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -41,7 +42,7 @@ public class TOPInfoProvider implements IProbeInfoProvider, Function<ITheOneProb
   }
 
   private void showCraftingInfo(MachineControllerEntity tile, IProbeInfo info) {
-    MachineControllerEntity.CraftingStatus status = tile.getCraftingStatus();
+    CraftingStatus status = tile.getCraftingStatus();
     MutableComponent message = Component.translatable(status.getUnlocMessage());
     switch (status.getStatus()) {
       case CRAFTING -> message.withStyle(ChatFormatting.GREEN);

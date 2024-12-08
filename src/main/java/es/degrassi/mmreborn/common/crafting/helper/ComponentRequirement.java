@@ -24,8 +24,6 @@ public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, 
 
   private final IOType actionType;
   private final RequirementType<V> requirementType;
-
-  private ComponentSelectorTag tag = null;
   @Getter
   private final PositionedRequirement position;
 
@@ -45,14 +43,6 @@ public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, 
 
   public final IOType getActionType() {
     return actionType;
-  }
-
-  public final void setTag(ComponentSelectorTag tag) {
-    this.tag = tag;
-  }
-
-  public final ComponentSelectorTag getTag() {
-    return tag;
   }
 
   public int getSortingWeight() {
