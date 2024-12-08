@@ -105,7 +105,7 @@
   "tooltip.fluidhatch.tank.info": "容积： %s mb",
 
   "tooltip.chemicalhatch.empty": "空",
-  "tooltip.chemicalhatch.chemical": "[化学元素]",
+  "tooltip.chemicalhatch.chemical": "[化学品]",
   "tooltip.chemicalhatch.tank": "%smb / %smb",
   "tooltip.chemicalhatch.tank.chemical": "%s / %s",
   "tooltip.chemicalhatch.tank.info": "容积： %s mb",
