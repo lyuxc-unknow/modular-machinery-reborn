@@ -33,7 +33,6 @@
   "craftcheck.failure.item.output.space": "没有足够的库存空间用于物品输出！",
   "craftcheck.failure.fluid.input": "缺少液体输入！",
   "craftcheck.failure.fluid.output.space": "没有足够的库存空间用于流体输出！",
-  
   "craftcheck.failure.energy.input": "缺少能量输入！",
   "craftcheck.failure.energy.output": "能源仓已满！",
   "craftcheck.failure.dimension.false": "未在指定的维度中, 应为: %s, 当前为: %s",
@@ -331,6 +330,10 @@
   "tooltip.blueprint": "右键任意机器控制器以显示结构",
 
   "config.jade.plugin_modular_machinery_reborn.machine_component_provider": "模块化机械:重置",
+
+  "modular_machinery_reborn.ingredient.chance.input": "消耗概率: %s%s",
+  "modular_machinery_reborn.ingredient.chance.output": "产出概率: %s%s",
+  "modular_machinery_reborn.ingredient.chance.not_consumed": "不被消耗",
 
   "modular_machinery_reborn.jei.ingredient.energy.input": "需要: %s RF/t",
   "modular_machinery_reborn.jei.ingredient.energy.output": "产出: %s RF/t",
