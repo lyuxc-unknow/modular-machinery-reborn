@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
-  private final DynamicMachine machine;
+  private DynamicMachine machine;
   private final String title;
   private final IDrawable background, icon;
 
@@ -43,6 +43,10 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
     ItemStack stack = new ItemStack(ItemRegistration.CONTROLLER.get());
     stack.set(Registration.MACHINE_DATA, machine.getRegistryName());
     this.icon = MMRJeiPlugin.jeiHelpers.getGuiHelper().createDrawableIngredient(VanillaTypes.ITEM_STACK, stack);
+  }
+
+  public void updateMachine(DynamicMachine machine) {
+    this.machine = machine;
   }
 
   @Nullable

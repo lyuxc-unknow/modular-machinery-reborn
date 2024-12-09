@@ -68,8 +68,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
@@ -84,6 +86,7 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("unused")
+@Mod(value = ModularMachineryReborn.MODID, dist = Dist.CLIENT)
 public class ModularMachineryRebornClient {
   public static ClientScheduler clientScheduler = new ClientScheduler();
   private static Map<ModelResourceLocation, BakedModel> models;
@@ -92,9 +95,10 @@ public class ModularMachineryRebornClient {
 
   public static ModularMachineryRebornClient instance;
 
-  public ModularMachineryRebornClient() {
+  public ModularMachineryRebornClient(final IEventBus bus) {
     NeoForge.EVENT_BUS.register(clientScheduler);
     instance = this;
+    bus.register(this);
   }
 
   @SubscribeEvent

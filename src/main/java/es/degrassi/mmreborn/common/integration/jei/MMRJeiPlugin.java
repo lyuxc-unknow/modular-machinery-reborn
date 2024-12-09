@@ -118,4 +118,12 @@ public class MMRJeiPlugin implements IModPlugin {
   public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
     jeiHelpers = jeiRuntime.getJeiHelpers();
   }
+
+  public static void reloadMachines(Map<ResourceLocation, DynamicMachine> machines) {
+    machines.forEach((id, machine) -> {
+      MMRRecipeCategory category = recipeCategories.get(machine);
+      if(category != null)
+        category.updateMachine(machine);
+    });
+  }
 }

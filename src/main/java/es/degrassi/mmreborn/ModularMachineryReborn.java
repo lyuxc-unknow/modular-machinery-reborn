@@ -65,7 +65,6 @@ public class ModularMachineryReborn {
     MOD_BUS.addListener(this::commonSetup);
     MOD_BUS.addListener(this::sendIMCMessages);
 
-    MOD_BUS.register(new ModularMachineryRebornClient());
     MOD_BUS.addListener(this::registerCapabilities);
     MOD_BUS.addListener(this::reloadConfig);
 
