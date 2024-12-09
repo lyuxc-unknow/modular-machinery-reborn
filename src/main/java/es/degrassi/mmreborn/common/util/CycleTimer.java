@@ -3,6 +3,8 @@ package es.degrassi.mmreborn.common.util;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+
+import lombok.Setter;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,6 +14,9 @@ public class CycleTimer {
     private long startTime;
     private long drawTime;
     private long pausedDuration = 0;
+
+    @Setter
+    private boolean ignoreShift = false;
 
     public CycleTimer(Supplier<Integer> cycleTime) {
         this.cycleTime = cycleTime;
@@ -34,7 +39,7 @@ public class CycleTimer {
     }
 
     public void onDraw() {
-        if (!Screen.hasShiftDown()) {
+        if (!Screen.hasShiftDown() || ignoreShift) {
             if (pausedDuration > 0) {
                 startTime += pausedDuration;
                 pausedDuration = 0;

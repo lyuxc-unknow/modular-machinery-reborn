@@ -362,7 +362,14 @@
   "modular_machinery_reborn.jei.ingredient.time": "Time: %s",
   "modular_machinery_reborn.jei.ingredient.chunkload": "Chunkload radius: %s",
 
-  "modular_machinery_reborn.controller.tooltip": "Click in placed controller with blueprint \nto show the structure around the controller.",
+  "modular_machinery_reborn.controller.tooltip.0": "Click in placed controller with blueprint",
+  "modular_machinery_reborn.controller.tooltip.1":"to show the structure around the controller.",
+  "modular_machinery_reborn.controller.no_machine": "No machine provided",
+  "modular_machinery_reborn.controller.shift": "[SHIFT]",
+  "modular_machinery_reborn.controller.shift.blocks": "to show the required blocks",
+  "modular_machinery_reborn.controller.required": "Required:",
+  "modular_machinery_reborn.controller.required.tag": "%s",
+  "modular_machinery_reborn.controller.required.block": "%s",
 
   "modular_machinery_reborn.gui.structure_placer_button": "Click to try place structure",
 

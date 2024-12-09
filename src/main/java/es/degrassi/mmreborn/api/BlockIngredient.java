@@ -10,12 +10,14 @@ import com.mojang.serialization.DataResult;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.util.Utils;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -70,9 +72,13 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
   private final Supplier<List<PartialBlockState>> partialBlockStates;
   @Getter
   private final boolean isTag;
+  @Getter
+  @Setter
+  private List<TagKey<Block>> tags = new LinkedList<>();
 
   public BlockIngredient(TagKey<Block> tag) {
     this.isTag = true;
+    this.tags.add(tag);
     this.partialBlockStates = Suppliers.memoize(() -> TagUtil.getBlocks(tag).map(PartialBlockState::new).collect(Collectors.collectingAndThen(Collectors.toList(), ImmutableList::copyOf)));
   }
 
@@ -99,7 +105,9 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
   }
 
   public BlockIngredient copy() {
-    return new BlockIngredient(partialBlockStates.get().stream().map(PartialBlockState::copy).toList());
+    BlockIngredient ing = new BlockIngredient(partialBlockStates.get().stream().map(PartialBlockState::copy).toList(), isTag);
+    ing.tags.addAll(tags);
+    return ing;
   }
 
   @Override
@@ -125,18 +133,21 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
     List<PartialBlockState> ingredients = Lists.newArrayList();
     ingredients.addAll(getAll());
     ingredients.addAll(other.getAll());
-    return new BlockIngredient(ingredients, isTag || other.isTag);
+    BlockIngredient ing = new BlockIngredient(ingredients, isTag || other.isTag);
+    ing.tags.addAll(tags);
+    ing.tags.addAll(other.tags);
+    return ing;
   }
 
   public BlockIngredient merge(TagKey<Block> tag) {
     return merge(new BlockIngredient(tag));
   }
 
-
   @Override
   public JsonObject asJson() {
     JsonObject json = new JsonObject();
-    json.addProperty("tag", isTag);
+    json.addProperty("isTag", isTag);
+    json.addProperty("tags", tags.toString());
     JsonArray array = new JsonArray();
     getAll().forEach(state -> array.add(state.toString()));
     json.add("states", array);

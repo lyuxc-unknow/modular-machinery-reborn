@@ -8,22 +8,23 @@ import es.degrassi.mmreborn.api.integration.emi.RegisterEmiComponentEvent;
 import es.degrassi.mmreborn.api.integration.emi.RegisterEmiRequirementToStackEvent;
 import es.degrassi.mmreborn.api.integration.jei.RegisterJeiComponentEvent;
 import es.degrassi.mmreborn.client.entity.renderer.ControllerRenderer;
+import es.degrassi.mmreborn.client.item.MMRItemTooltip;
+import es.degrassi.mmreborn.client.item.MMRItemTooltipComponent;
 import es.degrassi.mmreborn.client.model.ControllerModelLoader;
 import es.degrassi.mmreborn.client.screen.ControllerScreen;
 import es.degrassi.mmreborn.client.screen.EnergyHatchScreen;
 import es.degrassi.mmreborn.client.screen.FluidHatchScreen;
 import es.degrassi.mmreborn.client.screen.ItemBusScreen;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementItem;
-import es.degrassi.mmreborn.common.crafting.requirement.RequirementLootTable;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiBiomeComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiChunkloadComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiDimensionComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiEnergyComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiFluidComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiItemComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiLootTableComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiTimeComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiWeatherComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiChunkloadComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiDimensionComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiBiomeComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiChunkloadComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiDimensionComponent;
@@ -72,6 +73,7 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -103,6 +105,11 @@ public class ModularMachineryRebornClient {
   @SubscribeEvent
   public void registerModelLoader(final ModelEvent.RegisterGeometryLoaders event) {
     event.register(ModularMachineryReborn.rl("controller"), ControllerModelLoader.INSTANCE);
+  }
+
+  @SubscribeEvent
+  public void registerTooltip(RegisterClientTooltipComponentFactoriesEvent event) {
+    event.register(MMRItemTooltipComponent.class, c -> new MMRItemTooltip(c.getItem(), c.getComponent()));
   }
 
   @SubscribeEvent

@@ -1,32 +1,54 @@
 package es.degrassi.mmreborn.client.screen;
 
+import com.mojang.datafixers.util.Either;
 import es.degrassi.mmreborn.ModularMachineryReborn;
+import es.degrassi.mmreborn.api.BlockIngredient;
+import es.degrassi.mmreborn.api.PartialBlockState;
+import es.degrassi.mmreborn.api.TagUtil;
 import es.degrassi.mmreborn.client.container.ControllerContainer;
+import es.degrassi.mmreborn.client.item.MMRItemTooltipComponent;
 import es.degrassi.mmreborn.client.screen.widget.StructurePlacerWidget;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.util.RedstoneHelper;
 import es.degrassi.mmreborn.common.util.Utils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ControllerScreen extends BaseScreen<ControllerContainer, MachineControllerEntity> {
   StructurePlacerWidget widget;
+  private final List<Either<FormattedText, TooltipComponent>> components;
+  private boolean addedWidget = false;
+
   public ControllerScreen(ControllerContainer pMenu, Inventory pPlayerInventory, Component pTitle) {
     super(pMenu, pPlayerInventory, pTitle);
+    List<Either<FormattedText, TooltipComponent>> components = new LinkedList<>();
+    gatherComponents(components);
+    this.components = components;
   }
 
   @Override
@@ -42,6 +64,10 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
     widget = addRenderableWidget(new StructurePlacerWidget(leftPos + imageWidth - 5, topPos,
         getMenu().getEntity().getId(), getMenu().getEntity().getBlockPos()));
     widget.setTooltip(widget.getTooltip());
+    if (!addedWidget) {
+      components.addFirst(Either.left(widget.component));
+      addedWidget = true;
+    }
 
     guiGraphics.pose().pushPose();
     guiGraphics.pose().translate(this.leftPos, this.topPos, 0);
@@ -51,7 +77,7 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
     int offsetY = 12;
 
     int redstone = RedstoneHelper.getRedstoneLevel(entity);
-    if(redstone > 0) {
+    if (redstone > 0) {
       // render if redstone paused the machine
       Component drawnStop = Component.translatable("gui.controller.status.redstone_stopped");
       List<FormattedCharSequence> out = font.split(drawnStop, Mth.floor(135 * (1 / scale)));
@@ -65,7 +91,7 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
     }
 
     DynamicMachine machine = entity.getFoundMachine();
-    if(machine != DynamicMachine.DUMMY) {
+    if (machine != DynamicMachine.DUMMY) {
       // render if the structure of machine is not null
       List<FormattedCharSequence> out = font.split(Component.literal(machine.getLocalizedName()), Mth.floor(135 * (1 / scale)));
       for (FormattedCharSequence draw : out) {
@@ -102,13 +128,84 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
   }
 
   @Override
-  protected void renderLabels(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {}
+  protected void renderLabels(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+  }
 
   @Override
   protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
     super.renderTooltip(guiGraphics, x, y);
-    if(widget != null && widget.isMouseOver(x, y)) {
-       guiGraphics.renderTooltip(Minecraft.getInstance().font, widget.getTooltip().toCharSequence(Minecraft.getInstance()), x, y);
+    if (widget != null && widget.isMouseOver(x, y)) {
+      guiGraphics.renderComponentTooltipFromElements(
+          Minecraft.getInstance().font,
+          components,
+          x,
+          y,
+          ItemStack.EMPTY
+      );
     }
+  }
+
+  private void gatherComponents(List<Either<FormattedText, TooltipComponent>> components) {
+    Optional.ofNullable(entity.getFoundMachine()).ifPresentOrElse(machine -> {
+          components.add(Either.left(Component.translatable("modular_machinery_reborn.controller.required").withStyle(ChatFormatting.GRAY)));
+          machine.getPattern()
+              .getPattern()
+              .asList()
+              .stream()
+              .flatMap(List::stream)
+              .flatMap(s -> s.chars().mapToObj(c -> (char) c))
+              .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+              .forEach((key, amount) -> {
+                BlockIngredient ingredient = machine.getPattern().getPattern().asMap().get(key);
+                if (ingredient != null && amount > 0) {
+                  String k;
+                  String value;
+                  MMRItemTooltipComponent component;
+                  if (ingredient.isTag()) {
+                    k = "tag";
+                    value = ingredient.getTags()
+                        .stream()
+                        .map(TagKey::location)
+                        .map(ResourceLocation::toString)
+                        .map(s -> "#" + s)
+                        .toList()
+                        .toString();
+                    component = new MMRItemTooltipComponent(
+                        ingredient.getTags()
+                            .stream()
+                            .flatMap(TagUtil::getBlocks)
+                            .map(Block::asItem)
+                            .map(Item::getDefaultInstance)
+                            .map(stack -> stack.copyWithCount(Math.toIntExact(amount)))
+                            .toList()
+                    );
+                  } else {
+                    k = "block";
+                    value = ingredient.getAll()
+                        .stream()
+                        .map(PartialBlockState::toString)
+                        .toList()
+                        .toString();
+                    component = new MMRItemTooltipComponent(
+                        ingredient.getAll().stream()
+                            .map(PartialBlockState::getBlockState)
+                            .map(BlockState::getBlock)
+                            .map(Block::asItem)
+                            .map(Item::getDefaultInstance)
+                            .map(stack -> stack.copyWithCount(Math.toIntExact(amount)))
+                            .toList()
+                    );
+                  }
+                  component.setComponent(
+                      Component.translatable(
+                          "modular_machinery_reborn.controller.required." + k,
+                          value
+                      ).withStyle(ChatFormatting.GRAY)
+                  );
+                  components.add(Either.right(component));
+                }
+              });
+        },
+        () -> components.add(Either.left(Component.translatable("modular_machinery_reborn.controller.no_machine").withStyle(ChatFormatting.GRAY))));
   }
 }

@@ -1,19 +1,22 @@
 package es.degrassi.mmreborn.common.item;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
+import es.degrassi.mmreborn.api.BlockIngredient;
+import es.degrassi.mmreborn.api.PartialBlockState;
 import es.degrassi.mmreborn.common.block.BlockController;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.registration.BlockRegistration;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import es.degrassi.mmreborn.common.registration.Registration;
-import java.util.List;
-import java.util.Optional;
+import net.minecraft.ChatFormatting;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -25,14 +28,22 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ControllerItem extends ItemBlockMachineComponent {
   public static final ResourceLocation DUMMY = ModularMachineryReborn.rl("dummy");
 
   public ControllerItem() {
     super(
-      BlockRegistration.CONTROLLER.get(),
-      new Properties()
-        .component(Registration.MACHINE_DATA, DUMMY)
+        BlockRegistration.CONTROLLER.get(),
+        new Properties()
+            .component(Registration.MACHINE_DATA, DUMMY)
     );
   }
 
@@ -42,7 +53,50 @@ public class ControllerItem extends ItemBlockMachineComponent {
 
   @Override
   public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-    tooltipComponents.add(Component.translatable("modular_machinery_reborn.controller.tooltip"));
+    tooltipComponents.add(Component.translatable("modular_machinery_reborn.controller.tooltip.0"));
+    tooltipComponents.add(Component.translatable("modular_machinery_reborn.controller.tooltip.1"));
+    getMachine(stack).ifPresentOrElse(machine -> {
+      if (tooltipFlag.hasShiftDown()) {
+        tooltipComponents.add(Component.translatable("modular_machinery_reborn.controller.required"));
+        machine.getPattern().getPattern().asList().stream().flatMap(List::stream).flatMap(s -> s.chars().mapToObj(c -> (char) c)).collect(Collectors.groupingBy(Function.identity(), Collectors.counting())).forEach((key, amount) -> {
+          BlockIngredient ingredient = machine.getPattern().getPattern().asMap().get(key);
+          if (ingredient != null && amount > 0) {
+            String k;
+            String value;
+            if (ingredient.isTag()) {
+              k = "tag";
+              value = ingredient.getTags()
+                  .stream()
+                  .map(TagKey::location)
+                  .map(ResourceLocation::toString)
+                  .map(s -> "#" + s)
+                  .toList()
+                  .toString();
+            } else {
+              k = "block";
+              value = ingredient.getAll()
+                  .stream()
+                  .map(PartialBlockState::toString)
+                  .toList()
+                  .toString();
+            }
+            tooltipComponents.add(
+                Component.translatable(
+                    "modular_machinery_reborn.controller.required." + k,
+                    String.format("%dx %s", amount, value)
+                )
+            );
+          }
+        });
+      } else {
+        tooltipComponents.add(
+            Component.empty()
+                .append(Component.translatable("modular_machinery_reborn.controller.shift").withStyle(ChatFormatting.AQUA))
+                .append(" ")
+                .append(Component.translatable("modular_machinery_reborn.controller.shift.blocks").withStyle(ChatFormatting.GRAY))
+        );
+      }
+    }, () -> tooltipComponents.add(Component.translatable("modular_machinery_reborn.controller.no_machine")));
   }
 
   @Override
