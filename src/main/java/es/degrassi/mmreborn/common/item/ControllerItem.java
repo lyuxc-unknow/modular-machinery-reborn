@@ -57,37 +57,42 @@ public class ControllerItem extends ItemBlockMachineComponent {
     tooltipComponents.add(Component.translatable("modular_machinery_reborn.controller.tooltip.1"));
     getMachine(stack).ifPresentOrElse(machine -> {
       if (tooltipFlag.hasShiftDown()) {
-        tooltipComponents.add(Component.translatable("modular_machinery_reborn.controller.required"));
-        machine.getPattern().getPattern().asList().stream().flatMap(List::stream).flatMap(s -> s.chars().mapToObj(c -> (char) c)).collect(Collectors.groupingBy(Function.identity(), Collectors.counting())).forEach((key, amount) -> {
-          BlockIngredient ingredient = machine.getPattern().getPattern().asMap().get(key);
-          if (ingredient != null && amount > 0) {
-            String k;
-            String value;
-            if (ingredient.isTag()) {
-              k = "tag";
-              value = ingredient.getTags()
-                  .stream()
-                  .map(TagKey::location)
-                  .map(ResourceLocation::toString)
-                  .map(s -> "#" + s)
-                  .toList()
-                  .toString();
-            } else {
-              k = "block";
-              value = ingredient.getAll()
-                  .stream()
-                  .map(PartialBlockState::toString)
-                  .toList()
-                  .toString();
-            }
-            tooltipComponents.add(
-                Component.translatable(
-                    "modular_machinery_reborn.controller.required." + k,
-                    String.format("%dx %s", amount, value)
-                )
-            );
-          }
-        });
+        tooltipComponents.add(Component.translatable("modular_machinery_reborn.controller.required").withStyle(ChatFormatting.GRAY));
+        machine.getPattern()
+            .getPattern()
+            .asList()
+            .stream()
+            .flatMap(List::stream)
+            .flatMap(s -> s.chars().mapToObj(c -> (char) c))
+            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+            .forEach((key, amount) -> {
+              BlockIngredient ingredient = machine.getPattern().getPattern().asMap().get(key);
+              if (ingredient != null && amount > 0) {
+                String value;
+                if (ingredient.isTag()) {
+                  value = ingredient.getTags()
+                      .stream()
+                      .map(TagKey::location)
+                      .map(ResourceLocation::toString)
+                      .map(s -> "#" + s)
+                      .toList()
+                      .toString();
+                } else {
+                  value = ingredient.getAll()
+                      .stream()
+                      .map(PartialBlockState::toString)
+                      .toList()
+                      .toString();
+                }
+                tooltipComponents.add(
+                    Component.translatable(
+                        "modular_machinery_reborn.controller.required.item",
+                        Component.literal(String.format("%dx", amount)).withStyle(ChatFormatting.GOLD),
+                        Component.literal(value).withStyle(ChatFormatting.GRAY)
+                    )
+                );
+              }
+            });
       } else {
         tooltipComponents.add(
             Component.empty()
@@ -96,7 +101,7 @@ public class ControllerItem extends ItemBlockMachineComponent {
                 .append(Component.translatable("modular_machinery_reborn.controller.shift.blocks").withStyle(ChatFormatting.GRAY))
         );
       }
-    }, () -> tooltipComponents.add(Component.translatable("modular_machinery_reborn.controller.no_machine")));
+    }, () -> tooltipComponents.add(Component.translatable("modular_machinery_reborn.controller.no_machine").withStyle(ChatFormatting.GRAY)));
   }
 
   @Override

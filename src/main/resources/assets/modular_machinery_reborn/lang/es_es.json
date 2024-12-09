@@ -368,6 +368,7 @@
   "modular_machinery_reborn.controller.shift": "[SHIFT]",
   "modular_machinery_reborn.controller.shift.blocks": "para mostrar los bloques requeridos",
   "modular_machinery_reborn.controller.required": "Requerimientos:",
+  "modular_machinery_reborn.controller.required.item": "%s %s",
   "modular_machinery_reborn.controller.required.tag": "%s",
   "modular_machinery_reborn.controller.required.block": "%s",
 
