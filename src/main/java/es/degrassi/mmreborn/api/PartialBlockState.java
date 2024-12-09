@@ -28,6 +28,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
 public class PartialBlockState implements Predicate<BlockInWorld> {
@@ -92,19 +94,27 @@ public class PartialBlockState implements Predicate<BlockInWorld> {
 
   public PartialBlockState rotate(Rotation rotation) {
     if (this.properties.contains(BlockStateProperties.HORIZONTAL_FACING) && this.blockState.hasProperty(BlockStateProperties.HORIZONTAL_FACING) && !(this.blockState.getBlock() instanceof BlockController)) {
-      Direction direction = this.blockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
-      direction = rotation.rotate(direction);
-      BlockState blockState = this.blockState.setValue(BlockStateProperties.HORIZONTAL_FACING, direction);
+      AtomicReference<Direction> direction = new AtomicReference<>(this.blockState.getValue(BlockStateProperties.HORIZONTAL_FACING));
+      this.blockState.getBlockHolder().unwrapKey().ifPresent(key -> {
+        if (!key.location().getNamespace().toLowerCase(Locale.ROOT).equals("minecraft")) {
+          direction.set(rotation.rotate(direction.get()));
+        }
+      });
+      BlockState blockState = this.blockState.setValue(BlockStateProperties.HORIZONTAL_FACING, direction.get());
       List<Property<?>> properties = Lists.newArrayList(this.properties);
       if (!properties.contains(BlockStateProperties.HORIZONTAL_FACING))
         properties.add(BlockStateProperties.HORIZONTAL_FACING);
       return new PartialBlockState(blockState, properties, this.nbt);
     } else if (this.properties.contains(BlockStateProperties.FACING) && this.blockState.hasProperty(BlockStateProperties.FACING) && !(this.blockState.getBlock() instanceof BlockController)) {
-      Direction direction = this.blockState.getValue(BlockStateProperties.FACING);
-      if (direction.getAxis() == Direction.Axis.Y)
+      AtomicReference<Direction> direction = new AtomicReference<>(this.blockState.getValue(BlockStateProperties.FACING));
+      if (direction.get().getAxis() == Direction.Axis.Y)
         return this;
-      direction = rotation.rotate(direction);
-      BlockState blockState = this.blockState.setValue(BlockStateProperties.FACING, direction);
+      this.blockState.getBlockHolder().unwrapKey().ifPresent(key -> {
+        if (!key.location().getNamespace().toLowerCase(Locale.ROOT).equals("minecraft")) {
+          direction.set(rotation.rotate(direction.get()));
+        }
+      });
+      BlockState blockState = this.blockState.setValue(BlockStateProperties.FACING, direction.get());
       List<Property<?>> properties = Lists.newArrayList(this.properties);
       if (!properties.contains(BlockStateProperties.FACING))
         properties.add(BlockStateProperties.FACING);
