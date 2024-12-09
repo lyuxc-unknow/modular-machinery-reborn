@@ -20,8 +20,7 @@ public class StructurePlacerWidget extends AbstractWidget {
   private final ResourceLocation machine;
   private final BlockPos controllerPos;
 
-  public final Component component = Component.translatable("modular_machinery_reborn.gui" +
-      ".structure_placer_button");
+  public final Component component = Component.translatable("modular_machinery_reborn.gui.structure_placer_button");
 
   public StructurePlacerWidget(int x, int y, ResourceLocation machine, BlockPos controllerPos) {
     super(x, y, TextureSizeHelper.getWidth(TEXTURE), TextureSizeHelper.getHeight(TEXTURE), Component.literal("structure placer"));

@@ -109,7 +109,7 @@ public class ModularMachineryRebornClient {
 
   @SubscribeEvent
   public void registerTooltip(RegisterClientTooltipComponentFactoriesEvent event) {
-    event.register(MMRItemTooltipComponent.class, c -> new MMRItemTooltip(c.getItem(), c.getComponent()));
+    event.register(MMRItemTooltipComponent.class, c -> new MMRItemTooltip(c.getItem(), c.getComponent(), c.isCompleted()));
   }
 
   @SubscribeEvent
