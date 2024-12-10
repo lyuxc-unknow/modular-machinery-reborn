@@ -280,7 +280,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
 
   @Nullable
   public DynamicMachine getFoundMachine() {
-    return ModularMachineryReborn.MACHINES.get(id);
+    return ModularMachineryReborn.MACHINES.getOrDefault(id, DynamicMachine.DUMMY);
   }
 
   @Nullable

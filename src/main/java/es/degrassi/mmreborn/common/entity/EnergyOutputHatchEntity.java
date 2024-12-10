@@ -4,6 +4,7 @@ import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.entity.base.EnergyHatchEntity;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
+import es.degrassi.mmreborn.common.machine.component.EnergyHatch;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.util.IEnergyHandler;
 import net.minecraft.core.BlockPos;
@@ -73,8 +74,8 @@ public class EnergyOutputHatchEntity extends EnergyHatchEntity {
 
   @Nullable
   @Override
-  public MachineComponent.EnergyHatch provideComponent() {
-    return new MachineComponent.EnergyHatch(IOType.OUTPUT) {
+  public EnergyHatch provideComponent() {
+    return new EnergyHatch(IOType.OUTPUT) {
       @Override
       public IEnergyHandler getContainerProvider() {
         return EnergyOutputHatchEntity.this;

@@ -3,6 +3,7 @@ package es.degrassi.mmreborn.common.entity;
 import es.degrassi.mmreborn.common.entity.base.BlockEntityRestrictedTick;
 import es.degrassi.mmreborn.common.entity.base.MachineComponentEntity;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
+import es.degrassi.mmreborn.common.machine.component.Chunkload;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.util.Chunkloader;
 import es.degrassi.mmreborn.common.util.ChunkloaderList;
@@ -22,8 +23,8 @@ public class ChunkloaderEntity extends BlockEntityRestrictedTick implements Mach
   }
 
   @Override
-  public @Nullable MachineComponent provideComponent() {
-    return new MachineComponent.Chunkload() {
+  public @Nullable Chunkload provideComponent() {
+    return new Chunkload() {
       @Override
       public Chunkloader getContainerProvider() {
         return chunkloader;

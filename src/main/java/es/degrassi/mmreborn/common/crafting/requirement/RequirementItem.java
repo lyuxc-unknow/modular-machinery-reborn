@@ -14,11 +14,11 @@ import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.crafting.helper.restriction.RestrictionInventory;
 import es.degrassi.mmreborn.common.machine.IOType;
+import es.degrassi.mmreborn.common.machine.component.ItemBus;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
-import es.degrassi.mmreborn.common.util.CopyHandlerHelper;
 import es.degrassi.mmreborn.common.util.IOInventory;
 import es.degrassi.mmreborn.common.util.ItemUtils;
 import es.degrassi.mmreborn.common.util.ResultChance;
@@ -129,7 +129,7 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
   public boolean isValidComponent(ProcessingComponent<?> component, RecipeCraftingContext ctx) {
     MachineComponent<?> cmp = component.component();
     return cmp.getComponentType().equals(ComponentRegistration.COMPONENT_ITEM.get()) &&
-        cmp instanceof MachineComponent.ItemBus &&
+        cmp instanceof ItemBus &&
         cmp.getIOType() == getActionType();
   }
 

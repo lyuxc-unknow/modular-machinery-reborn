@@ -12,6 +12,7 @@ import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
+import es.degrassi.mmreborn.common.machine.component.EnergyHatch;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
@@ -88,7 +89,7 @@ public class RequirementEnergy extends ComponentRequirement<Long, RequirementEne
   public boolean isValidComponent(ProcessingComponent<?> component, RecipeCraftingContext ctx) {
     MachineComponent<?> cmp = component.component();
     return cmp.getComponentType().equals(ComponentRegistration.COMPONENT_ENERGY.get()) &&
-        cmp instanceof MachineComponent.EnergyHatch &&
+        cmp instanceof EnergyHatch &&
         cmp.getIOType() == this.getActionType();
   }
 

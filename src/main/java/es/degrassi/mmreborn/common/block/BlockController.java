@@ -9,7 +9,6 @@ import es.degrassi.mmreborn.common.item.ItemBlueprint;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.network.server.SMachineUpdatePacket;
 import es.degrassi.mmreborn.common.util.RedstoneHelper;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -41,12 +40,9 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 @SuppressWarnings("unused")
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class BlockController extends BlockMachineComponent {
   public BlockController() {
     super(

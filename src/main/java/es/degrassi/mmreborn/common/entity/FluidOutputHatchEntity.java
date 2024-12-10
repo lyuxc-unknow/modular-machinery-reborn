@@ -5,6 +5,7 @@ import es.degrassi.mmreborn.common.entity.base.FluidTankEntity;
 import es.degrassi.mmreborn.common.entity.base.MachineComponentEntity;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
+import es.degrassi.mmreborn.common.machine.component.FluidHatch;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.util.HybridTank;
 import javax.annotation.Nullable;
@@ -24,7 +25,7 @@ public class FluidOutputHatchEntity extends FluidTankEntity implements MachineCo
   @Nullable
   @Override
   public MachineComponent provideComponent() {
-    return new MachineComponent.FluidHatch(IOType.OUTPUT) {
+    return new FluidHatch(IOType.OUTPUT) {
       @Override
       public HybridTank getContainerProvider() {
         return getTank();

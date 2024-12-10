@@ -14,6 +14,7 @@ import es.degrassi.mmreborn.common.crafting.helper.restriction.RestrictionTank;
 import es.degrassi.mmreborn.common.integration.ingredient.HybridFluid;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
+import es.degrassi.mmreborn.common.machine.component.FluidHatch;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
@@ -152,7 +153,7 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
   public boolean isValidComponent(ProcessingComponent<?> component, RecipeCraftingContext ctx) {
     MachineComponent<?> cmp = component.component();
     return cmp.getComponentType().equals(ComponentRegistration.COMPONENT_FLUID.get()) &&
-        cmp instanceof MachineComponent.FluidHatch hatch &&
+        cmp instanceof FluidHatch hatch &&
         hatch.getIOType() == this.getActionType() && ((
         !getActionType().isInput() && (
             (

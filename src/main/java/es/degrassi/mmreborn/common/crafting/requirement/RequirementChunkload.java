@@ -11,6 +11,7 @@ import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
+import es.degrassi.mmreborn.common.machine.component.Chunkload;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
@@ -41,7 +42,7 @@ public class RequirementChunkload extends ComponentRequirement<Integer, Requirem
   @Override
   public boolean isValidComponent(ProcessingComponent<?> component, RecipeCraftingContext ctx) {
     return component.component().getComponentType().equals(ComponentRegistration.COMPONENT_CHUNKLOAD.get()) &&
-        component.component() instanceof MachineComponent.Chunkload;
+        component.component() instanceof Chunkload;
   }
 
   @Override

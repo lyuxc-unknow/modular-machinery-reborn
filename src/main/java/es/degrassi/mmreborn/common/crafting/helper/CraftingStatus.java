@@ -1,7 +1,6 @@
 package es.degrassi.mmreborn.common.crafting.helper;
 
 import lombok.Getter;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -15,7 +14,6 @@ public class CraftingStatus {
   public static final CraftingStatus MISSING_STRUCTURE = new CraftingStatus(Type.MISSING_STRUCTURE, "");
   public static final CraftingStatus NO_RECIPE = new CraftingStatus(Type.NO_RECIPE, "");
 
-  @MethodsReturnNonnullByDefault
   public static final StreamCodec<RegistryFriendlyByteBuf, CraftingStatus> STREAM_CODEC = new StreamCodec<>() {
     @Override
     public CraftingStatus decode(RegistryFriendlyByteBuf buffer) {

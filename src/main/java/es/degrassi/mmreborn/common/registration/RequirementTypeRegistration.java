@@ -7,6 +7,7 @@ import es.degrassi.mmreborn.common.crafting.requirement.RequirementChunkload;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementDimension;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementDuration;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
+import es.degrassi.mmreborn.common.crafting.requirement.RequirementExperience;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementFluid;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementItem;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementLootTable;
@@ -34,6 +35,7 @@ public class RequirementTypeRegistration {
   public static final Supplier<RequirementType<RequirementTime>> TIME = MACHINE_REQUIREMENTS.register("time", () -> RequirementType.create(RequirementTime.CODEC));
   public static final Supplier<RequirementType<RequirementChunkload>> CHUNKLOAD = MACHINE_REQUIREMENTS.register("chunkload", () -> RequirementType.create(RequirementChunkload.CODEC));
   public static final Supplier<RequirementType<RequirementLootTable>> LOOT_TABLE = MACHINE_REQUIREMENTS.register("loot_table", () -> RequirementType.create(RequirementLootTable.CODEC));
+  public static final Supplier<RequirementType<RequirementExperience>> EXPERIENCE = MACHINE_REQUIREMENTS.register("experience", () -> RequirementType.create(RequirementExperience.CODEC));
 
   public static void register(IEventBus bus) {
     MACHINE_REQUIREMENTS.register(bus);

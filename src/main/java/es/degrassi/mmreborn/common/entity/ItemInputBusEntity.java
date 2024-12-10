@@ -5,6 +5,7 @@ import es.degrassi.mmreborn.common.entity.base.MachineComponentEntity;
 import es.degrassi.mmreborn.common.entity.base.TileInventory;
 import es.degrassi.mmreborn.common.entity.base.TileItemBus;
 import es.degrassi.mmreborn.common.machine.IOType;
+import es.degrassi.mmreborn.common.machine.component.ItemBus;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.util.IOInventory;
@@ -34,7 +35,7 @@ public class ItemInputBusEntity extends TileItemBus implements MachineComponentE
   @Nullable
   @Override
   public MachineComponent provideComponent() {
-    return new MachineComponent.ItemBus(IOType.INPUT) {
+    return new ItemBus(IOType.INPUT) {
       @Override
       public IOInventory getContainerProvider() {
         return ItemInputBusEntity.this.inventory;

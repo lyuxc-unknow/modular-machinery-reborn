@@ -1,6 +1,7 @@
 package es.degrassi.mmreborn.common.util;
 
 import es.degrassi.mmreborn.common.entity.base.EnergyHatchEntity;
+import es.degrassi.mmreborn.common.entity.base.ExperienceHatchEntity;
 import es.degrassi.mmreborn.common.entity.base.FluidTankEntity;
 import es.degrassi.mmreborn.common.entity.base.TileInventory;
 import net.minecraft.util.Mth;
@@ -21,6 +22,11 @@ public class RedstoneHelper {
       case EnergyHatchEntity entity -> {
         float cap = entity.getMaxEnergy();
         float cur = entity.getCurrentEnergy();
+        yield Mth.clamp(Math.round(15F * (cur / cap)), 0, 15);
+      }
+      case ExperienceHatchEntity entity -> {
+        float cap = entity.getExperienceCapacity();
+        float cur = entity.getExperience();
         yield Mth.clamp(Math.round(15F * (cur / cap)), 0, 15);
       }
       default -> 0;

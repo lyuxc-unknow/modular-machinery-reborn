@@ -22,11 +22,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
@@ -74,7 +74,7 @@ public class PartialBlockState implements Predicate<BlockInWorld> {
   @Getter
   private final CompoundTag nbt;
 
-  public PartialBlockState(BlockState blockState, List<Property<?>> properties, CompoundTag nbt) {
+  public PartialBlockState(BlockState blockState, List<Property<?>> properties, @Nullable CompoundTag nbt) {
     this.blockState = blockState;
     this.properties = properties;
     this.nbt = nbt;
@@ -149,19 +149,7 @@ public class PartialBlockState implements Predicate<BlockInWorld> {
     StringBuilder builder = new StringBuilder();
     builder.append(BuiltInRegistries.BLOCK.getKey(this.blockState.getBlock()));
     if (!this.properties.isEmpty())
-      builder.append("[");
-    Iterator<Property<?>> iterator = this.properties.iterator();
-    while (iterator.hasNext()) {
-      Property<?> property = iterator.next();
-      Comparable<?> value = this.blockState.getValue(property);
-      builder.append(property.getName());
-      builder.append("=");
-      builder.append(value);
-      if (iterator.hasNext())
-        builder.append(",");
-      else
-        builder.append("]");
-    }
+      builder.append(getProperties().toString().replaceAll(", ", ","));
 
     if (this.nbt != null && !this.nbt.isEmpty())
       builder.append(this.nbt);

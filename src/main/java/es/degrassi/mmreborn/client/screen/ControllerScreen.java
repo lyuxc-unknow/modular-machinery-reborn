@@ -13,7 +13,6 @@ import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.util.RedstoneHelper;
 import es.degrassi.mmreborn.common.util.Utils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -30,15 +29,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class ControllerScreen extends BaseScreen<ControllerContainer, MachineControllerEntity> {
   StructurePlacerWidget widget;
   private final List<Either<FormattedText, TooltipComponent>> components;

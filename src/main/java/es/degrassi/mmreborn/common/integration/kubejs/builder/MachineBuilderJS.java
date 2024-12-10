@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class MachineBuilderJS {
   @NotNull
@@ -61,7 +62,7 @@ public class MachineBuilderJS {
     DynamicMachine machine = new DynamicMachine(id);
     machine.setPattern(structure);
     machine.setControllerModel(Objects.requireNonNullElse(controllerModel, MachineModelLocation.DEFAULT));
-    machine.setLocalizedName(name);
+    machine.setLocalizedName(Optional.ofNullable(name).orElse(""));
     if (intColor != null)
       machine.setDefinedColor(intColor);
     else if(color != null)

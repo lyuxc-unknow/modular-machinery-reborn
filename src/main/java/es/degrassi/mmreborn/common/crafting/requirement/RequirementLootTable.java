@@ -8,6 +8,7 @@ import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.machine.IOType;
+import es.degrassi.mmreborn.common.machine.component.ItemBus;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
@@ -20,7 +21,6 @@ import es.degrassi.mmreborn.common.util.ResultChance;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -61,7 +61,7 @@ public class RequirementLootTable extends ComponentRequirement<ResourceLocation,
   public boolean isValidComponent(ProcessingComponent<?> component, RecipeCraftingContext ctx) {
     MachineComponent<?> cmp = component.component();
     return cmp.getComponentType().equals(ComponentRegistration.COMPONENT_ITEM.get()) &&
-        cmp instanceof MachineComponent.ItemBus &&
+        cmp instanceof ItemBus &&
         cmp.getIOType() == getActionType();
   }
 

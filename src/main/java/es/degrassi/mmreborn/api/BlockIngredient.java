@@ -6,8 +6,11 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
+import es.degrassi.mmreborn.common.util.MMRLogger;
 import es.degrassi.mmreborn.common.util.Utils;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,12 +20,15 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class BlockIngredient implements IIngredient<PartialBlockState> {
   public static final BlockIngredient AIR = new BlockIngredient(PartialBlockState.AIR);
@@ -76,51 +82,59 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
   @Setter
   private List<TagKey<Block>> tags = new LinkedList<>();
 
-  public BlockIngredient(TagKey<Block> tag) {
-    this.isTag = true;
-    this.tags.add(tag);
-    this.partialBlockStates = Suppliers.memoize(() -> TagUtil.getBlocks(tag).map(PartialBlockState::new).collect(Collectors.collectingAndThen(Collectors.toList(), ImmutableList::copyOf)));
+  public BlockIngredient(List<TagKey<Block>> tags, List<PartialBlockState> states) {
+    List<PartialBlockState> statesCopy = Lists.newArrayList(states.stream().map(PartialBlockState::copy).toList());
+    this.isTag = !tags.isEmpty();
+    if (isTag) {
+      this.tags.addAll(tags);
+      tags.forEach(tag ->
+          statesCopy.addAll(TagUtil.getBlocks(tag)
+              .map(PartialBlockState::new)
+              .toList())
+      );
+    }
+    this.partialBlockStates = Suppliers.memoize(() -> ImmutableList.copyOf(statesCopy));
   }
 
   public BlockIngredient(PartialBlockState partialBlockState) {
-    this(List.of(partialBlockState));
-  }
-
-  public BlockIngredient(List<PartialBlockState> partialBlockState) {
-    this(partialBlockState, false);
-  }
-
-  public BlockIngredient(List<PartialBlockState> partialBlockState, boolean isTag) {
-    partialBlockStates = Suppliers.memoize(() -> partialBlockState);
-    this.isTag = isTag;
+    this(List.of(), List.of(partialBlockState));
   }
 
   public static BlockIngredient create(String s) throws IllegalArgumentException {
-    if (s.startsWith("["))
-      s = s.substring(1);
-    if (s.endsWith("]"))
-      s = s.substring(0, s.length() - 1);
-    if (s.contains("\""))
-      s = s.replaceAll("\"", "");
+    MMRLogger.INSTANCE.debug(s);
+    if (s.startsWith("[")) {
+      if (s.endsWith("]")) {
+        s = s.substring(1, s.length() - 1);
+      } else {
+        s = s.substring(1);
+      }
+    }
+    String[] arr = s.split(", ");
     List<TagKey<Block>> tags = new LinkedList<>();
-    List.of(s.replaceAll(" ", "").split(",")).forEach(string -> {
-      if (string.startsWith("#"))
+    List<PartialBlockState> states = new LinkedList<>();
+    Arrays.asList(arr).forEach(string -> {
+      if (string.startsWith("#")) {
         string = string.substring(1);
-      if (!Utils.isResourceNameValid(string))
-        throw new IllegalArgumentException(String.format("Invalid tag id : %s", string));
-      tags.add(TagKey.create(Registries.BLOCK, ResourceLocation.parse(string)));
+        if (!Utils.isResourceNameValid(string))
+          throw new IllegalArgumentException(String.format("Invalid tag id : %s", string));
+        tags.add(TagKey.create(Registries.BLOCK, ResourceLocation.parse(string)));
+      } else {
+        try {
+          DataResult<PartialBlockState> result = PartialBlockState.CODEC.decode(JsonOps.INSTANCE, JsonOps.INSTANCE.createString(string)).map(Pair::getFirst);
+          states.add(result.getOrThrow());
+        } catch (Exception exception) {
+          throw new IllegalArgumentException(String.format("Invalid block id: %s", string));
+        }
+      }
     });
-    if (tags.isEmpty())
-      throw new IllegalArgumentException("Invalid tags provided, expected min size of 1");
-    AtomicReference<BlockIngredient> ingredient = new AtomicReference<>(new BlockIngredient(tags.get(0)));
-    tags.subList(1, tags.size()).forEach(tag -> ingredient.set(ingredient.get().merge(tag)));
-    return ingredient.get();
+    if (tags.isEmpty() && states.isEmpty())
+      throw new IllegalArgumentException("Invalid tags or states provided, expected min size of 1");
+
+    return new BlockIngredient(tags, states);
   }
 
   public BlockIngredient copy() {
-    BlockIngredient ing = new BlockIngredient(partialBlockStates.get().stream().map(PartialBlockState::copy).toList(), isTag);
-    ing.tags.addAll(tags);
-    return ing;
+    return new BlockIngredient(tags, partialBlockStates.get().stream().map(PartialBlockState::copy).toList());
   }
 
   @Override
@@ -134,10 +148,24 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
   }
 
   public String getString() {
-    if (isTag) return tags.stream().map(TagKey::location).map(ResourceLocation::toString).map(s -> "#" + s).toList().toString();
+    Set<String> states = new LinkedHashSet<>();
+    if (isTag)
+      states.addAll(tags.stream().map(TagKey::location).map(ResourceLocation::toString).map(s -> "#" + s).toList());
     else {
-      return getAll().stream().map(PartialBlockState::toString).toList().toString();
+      states.addAll(getAll().stream().map(PartialBlockState::toString).toList());
     }
+    return states.stream().filter(state -> {
+      AtomicBoolean contains = new AtomicBoolean(false);
+      tags.stream()
+          .flatMap(TagUtil::getBlocks)
+          .map(PartialBlockState::new)
+          .map(PartialBlockState::toString)
+          .forEach(tagState -> {
+            if (contains.get()) return;
+            if (tagState.equals(state)) contains.set(true);
+          });
+      return !contains.get();
+    }).toList().toString();
   }
 
   @Override
@@ -146,21 +174,17 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
   }
 
   public BlockIngredient copyWithRotation(Rotation rotation) {
-    return new BlockIngredient(getAll().stream().map(state -> state.copyWithRotation(rotation)).toList());
+    return new BlockIngredient(tags, getAll().stream().map(state -> state.copyWithRotation(rotation)).toList());
   }
 
   public BlockIngredient merge(BlockIngredient other) {
     List<PartialBlockState> ingredients = Lists.newArrayList();
     ingredients.addAll(getAll());
     ingredients.addAll(other.getAll());
-    BlockIngredient ing = new BlockIngredient(ingredients, isTag || other.isTag);
-    ing.tags.addAll(tags);
-    ing.tags.addAll(other.tags);
-    return ing;
-  }
-
-  public BlockIngredient merge(TagKey<Block> tag) {
-    return merge(new BlockIngredient(tag));
+    List<TagKey<Block>> tags = Lists.newArrayList();
+    tags.addAll(this.tags);
+    tags.addAll(other.tags);
+    return new BlockIngredient(tags, ingredients);
   }
 
   @Override
