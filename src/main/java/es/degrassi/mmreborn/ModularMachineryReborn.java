@@ -2,10 +2,10 @@ package es.degrassi.mmreborn;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import es.degrassi.mmreborn.client.ModularMachineryRebornClient;
 import es.degrassi.mmreborn.client.util.EnergyDisplayUtil;
 import es.degrassi.mmreborn.common.block.BlockController;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
+import es.degrassi.mmreborn.common.block.prop.ExperienceHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
 import es.degrassi.mmreborn.common.command.MMRCommand;
@@ -17,6 +17,7 @@ import es.degrassi.mmreborn.common.integration.theoneprobe.TOPInfoProvider;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.machine.MachineJsonReloadListener;
 import es.degrassi.mmreborn.common.network.server.SLootTablesPacket;
+import es.degrassi.mmreborn.common.network.server.SSyncMachinesPacket;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.registration.Registration;
@@ -95,6 +96,7 @@ public class ModularMachineryReborn {
   }
 
   public static void syncData(ServerPlayer player) {
+    PacketDistributor.sendToPlayer(player, new SSyncMachinesPacket(MACHINES));
     PacketDistributor.sendToPlayer(player, new SLootTablesPacket(LootTableHelper.getLoots()));
   }
 
@@ -105,6 +107,7 @@ public class ModularMachineryReborn {
     EnergyHatchSize.loadFromConfig();
     FluidHatchSize.loadFromConfig();
     ItemBusSize.loadFromConfig();
+    ExperienceHatchSize.loadFromConfig();
     EnergyDisplayUtil.loadFromConfig();
   }
 
@@ -115,6 +118,7 @@ public class ModularMachineryReborn {
       EnergyHatchSize.loadFromConfig();
       FluidHatchSize.loadFromConfig();
       ItemBusSize.loadFromConfig();
+      ExperienceHatchSize.loadFromConfig();
       EnergyDisplayUtil.loadFromConfig();
     }
   }
@@ -177,6 +181,7 @@ public class ModularMachineryReborn {
       EnergyHatchSize.loadFromConfig();
       FluidHatchSize.loadFromConfig();
       ItemBusSize.loadFromConfig();
+      ExperienceHatchSize.loadFromConfig();
       EnergyDisplayUtil.loadFromConfig();
       if (event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayer player) {
         MMRCommand.reloadMachines(player.server, player);
