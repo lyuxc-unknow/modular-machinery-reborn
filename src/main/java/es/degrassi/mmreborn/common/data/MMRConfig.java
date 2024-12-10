@@ -3,6 +3,7 @@ package es.degrassi.mmreborn.common.data;
 import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.client.util.EnergyDisplayUtil;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
+import es.degrassi.mmreborn.common.block.prop.ExperienceHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
 import es.degrassi.mmreborn.common.util.LoggingLevel;
@@ -102,6 +103,15 @@ public class MMRConfig {
   public final ConfigValue<Integer> HUGE_item_size;
 
   public final ConfigValue<Integer> LUDICROUS_item_size;
+
+  public final ConfigValue<Integer> TINY_experience_size;
+  public final ConfigValue<Integer> SMALL_experience_size;
+  public final ConfigValue<Integer> NORMAL_experience_size;
+  public final ConfigValue<Integer> REINFORCED_experience_size;
+  public final ConfigValue<Integer> BIG_experience_size;
+  public final ConfigValue<Integer> HUGE_experience_size;
+  public final ConfigValue<Integer> LUDICROUS_experience_size;
+  public final ConfigValue<Integer> VACUUM_experience_size;
 
   public static MMRConfig get() {
     return INSTANCE;
@@ -371,6 +381,50 @@ public class MMRConfig {
       builder.pop();
     }
     builder.pop();
+    builder.push("experienceHatch");
+    {
+      builder.push(ExperienceHatchSize.TINY.getSerializedName());
+      TINY_experience_size = builder
+          .comment("Defines the Experience Hatch")
+          .defineInRange("capacity", ExperienceHatchSize.TINY.defaultCapacity, 1, Integer.MAX_VALUE);
+      builder.pop();
+      builder.push(ExperienceHatchSize.SMALL.getSerializedName());
+      SMALL_experience_size = builder
+          .comment("Defines the Experience Hatch")
+          .defineInRange("capacity", ExperienceHatchSize.SMALL.defaultCapacity, 1, Integer.MAX_VALUE);
+      builder.pop();
+      builder.push(ExperienceHatchSize.NORMAL.getSerializedName());
+      NORMAL_experience_size = builder
+          .comment("Defines the Experience Hatch")
+          .defineInRange("capacity", ExperienceHatchSize.NORMAL.defaultCapacity, 1, Integer.MAX_VALUE);
+      builder.pop();
+      builder.push(ExperienceHatchSize.REINFORCED.getSerializedName());
+      REINFORCED_experience_size = builder
+          .comment("Defines the Experience Hatch")
+          .defineInRange("capacity", ExperienceHatchSize.REINFORCED.defaultCapacity, 1, Integer.MAX_VALUE);
+      builder.pop();
+      builder.push(ExperienceHatchSize.BIG.getSerializedName());
+      BIG_experience_size = builder
+          .comment("Defines the Experience Hatch")
+          .defineInRange("capacity", ExperienceHatchSize.BIG.defaultCapacity, 1, Integer.MAX_VALUE);
+      builder.pop();
+      builder.push(ExperienceHatchSize.HUGE.getSerializedName());
+      HUGE_experience_size = builder
+          .comment("Defines the Experience Hatch")
+          .defineInRange("capacity", ExperienceHatchSize.HUGE.defaultCapacity, 1, Integer.MAX_VALUE);
+      builder.pop();
+      builder.push(ExperienceHatchSize.LUDICROUS.getSerializedName());
+      LUDICROUS_experience_size = builder
+          .comment("Defines the Experience Hatch")
+          .defineInRange("capacity", ExperienceHatchSize.LUDICROUS.defaultCapacity, 1, Integer.MAX_VALUE);
+      builder.pop();
+      builder.push(ExperienceHatchSize.VACUUM.getSerializedName());
+      VACUUM_experience_size = builder
+          .comment("Defines the Experience Hatch")
+          .defineInRange("capacity", ExperienceHatchSize.VACUUM.defaultCapacity, 1, Integer.MAX_VALUE);
+      builder.pop();
+    }
+    builder.pop();
   }
 
   public int itemSize(ItemBusSize size) {
@@ -434,6 +488,19 @@ public class MMRConfig {
       case HUGE -> HUGE_energy_ic2_tier.get();
       case LUDICROUS -> LUDICROUS_energy_ic2_tier.get();
       case ULTIMATE -> ULTIMATE_energy_ic2_tier.get();
+    };
+  }
+
+  public int experienceSize(ExperienceHatchSize size) {
+    return switch(size) {
+      case TINY -> TINY_experience_size.get();
+      case SMALL -> SMALL_experience_size.get();
+      case NORMAL -> NORMAL_experience_size.get();
+      case REINFORCED -> REINFORCED_experience_size.get();
+      case BIG -> BIG_experience_size.get();
+      case HUGE -> HUGE_experience_size.get();
+      case LUDICROUS -> LUDICROUS_experience_size.get();
+      case VACUUM -> VACUUM_experience_size.get();
     };
   }
 }
