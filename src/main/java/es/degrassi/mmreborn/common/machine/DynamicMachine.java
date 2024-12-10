@@ -15,8 +15,6 @@ import lombok.Setter;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -52,7 +50,6 @@ public class DynamicMachine {
     this.registryName = registryName;
   }
 
-  @OnlyIn(Dist.CLIENT)
   public String getLocalizedName() {
     String localizationKey = registryName.getNamespace() + "." + registryName.getPath();
     return I18n.exists(localizationKey) ? I18n.get(localizationKey) :
