@@ -41,6 +41,10 @@ public class MMRTags {
     public static final TagKey<Block> FLUID_INPUT = new Blocks(false, "fluidinputhatch").get();
     public static final TagKey<Block> FLUID_OUTPUT = new Blocks(false, "fluidoutputhatch").get();
 
+    public static final TagKey<Block> EXPERIENCE = new Blocks(false, "experiencehatch").get();
+    public static final TagKey<Block> EXPERIENCE_INPUT = new Blocks(false, "experienceinputhatch").get();
+    public static final TagKey<Block> EXPERIENCE_OUTPUT = new Blocks(false, "experienceoutputhatch").get();
+
     public static final TagKey<Block> CASINGS = new Blocks(false, "casing").get();
     public static final TagKey<Block> ALL_CASINGS = new Blocks(false, "all_casing").get();
 
