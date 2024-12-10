@@ -35,7 +35,7 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
     } catch (IllegalArgumentException e) {
       return DataResult.error(e::getMessage);
     }
-  }, BlockIngredient::toString, "BlockIngredient with tag");
+  }, BlockIngredient::getString, "BlockIngredient with tag");
 
   public static final NamedCodec<BlockIngredient> CODEC = NamedCodec.either(
       PartialBlockState.CODEC,
@@ -96,12 +96,25 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
   }
 
   public static BlockIngredient create(String s) throws IllegalArgumentException {
-    if (s.startsWith("#"))
+    if (s.startsWith("["))
       s = s.substring(1);
-    if (!Utils.isResourceNameValid(s))
-      throw new IllegalArgumentException(String.format("Invalid tag id : %s", s));
-    TagKey<Block> tag = TagKey.create(Registries.BLOCK, ResourceLocation.parse(s));
-    return new BlockIngredient(tag);
+    if (s.endsWith("]"))
+      s = s.substring(0, s.length() - 1);
+    if (s.contains("\""))
+      s = s.replaceAll("\"", "");
+    List<TagKey<Block>> tags = new LinkedList<>();
+    List.of(s.replaceAll(" ", "").split(",")).forEach(string -> {
+      if (string.startsWith("#"))
+        string = string.substring(1);
+      if (!Utils.isResourceNameValid(string))
+        throw new IllegalArgumentException(String.format("Invalid tag id : %s", string));
+      tags.add(TagKey.create(Registries.BLOCK, ResourceLocation.parse(string)));
+    });
+    if (tags.isEmpty())
+      throw new IllegalArgumentException("Invalid tags provided, expected min size of 1");
+    AtomicReference<BlockIngredient> ingredient = new AtomicReference<>(new BlockIngredient(tags.get(0)));
+    tags.subList(1, tags.size()).forEach(tag -> ingredient.set(ingredient.get().merge(tag)));
+    return ingredient.get();
   }
 
   public BlockIngredient copy() {
@@ -118,6 +131,13 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
   @Override
   public boolean test(PartialBlockState partialBlockState) {
     return this.partialBlockStates.get().stream().anyMatch(state -> state.getBlockState() == partialBlockState.getBlockState());
+  }
+
+  public String getString() {
+    if (isTag) return tags.stream().map(TagKey::location).map(ResourceLocation::toString).map(s -> "#" + s).toList().toString();
+    else {
+      return getAll().stream().map(PartialBlockState::toString).toList().toString();
+    }
   }
 
   @Override

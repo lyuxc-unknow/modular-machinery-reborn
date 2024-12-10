@@ -91,11 +91,11 @@ public class ModularMachineryReborn {
       syncData(event.getPlayer());
     else {
       LootTableHelper.generate(event.getPlayerList().getServer());
-      event.getPlayerList().getPlayers().forEach(ModularMachineryReborn::syncData);
+      event.getPlayerList().getPlayers().forEach(this::syncData);
     }
   }
 
-  public static void syncData(ServerPlayer player) {
+  public void syncData(ServerPlayer player) {
     PacketDistributor.sendToPlayer(player, new SSyncMachinesPacket(MACHINES));
     PacketDistributor.sendToPlayer(player, new SLootTablesPacket(LootTableHelper.getLoots()));
   }
