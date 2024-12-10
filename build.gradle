@@ -144,6 +144,7 @@ dependencies {
   compileOnly "org.projectlombok:lombok:${project.lombok_version}"
   annotationProcessor "org.projectlombok:lombok:${project.lombok_version}"
   implementation "net.neoforged:neoforge:${neo_version}"
+  implementation "es.degrassi:experiencelib:${minecraft_version}-${experiencelib_version}"
 
   // ProbeJS
   localRuntime("curse.maven:probejs-585406:5820894")
@@ -196,6 +197,7 @@ tasks.withType(ProcessResources).configureEach {
       mod_description        : mod_description,
       mod_url                : mod_url,
       icon                   : icon,
+      experiencelib_version  : experiencelib_version,
       pack_format_number     : pack_format_number
   ]
   inputs.properties replaceProperties
@@ -279,6 +281,7 @@ unifiedPublishing {
         id = "1083840"
         gameVersions.addAll "Java 21"
         relations {
+          depends "experiencelib"
           optional "kubejs"
           optional "jei"
           optional "emi"
@@ -293,6 +296,7 @@ unifiedPublishing {
         token = MODRINTH_API_KEY
         id = "oPdlqv8D"
         relations {
+          depends "experiencelib"
           optional "kubejs"
           optional "jei"
           optional "emi"
