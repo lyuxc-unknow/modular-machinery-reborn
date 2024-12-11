@@ -143,12 +143,15 @@ MMREvents.machines(event => {
                  * #modular_machinery_reborn_energistics:me_source_outputhatch
                  *
                  * Only if ae2 addon available
-                 * #modular_machinery_reborn_energistics:me_bus
-                 * #modular_machinery_reborn_energistics:me_inputbus
-                 * #modular_machinery_reborn_energistics:me_outputbus
-                 * #modular_machinery_reborn_energistics:me_hatch
-                 * #modular_machinery_reborn_energistics:me_inputhatch
-                 * #modular_machinery_reborn_energistics:me_outputhatch
+                 * #modular_machinery_reborn_energistics:me_itembus
+                 * #modular_machinery_reborn_energistics:me_iteminputbus
+                 * #modular_machinery_reborn_energistics:me_itemoutputbus
+                 * #modular_machinery_reborn_energistics:me_fluidhatch
+                 * #modular_machinery_reborn_energistics:me_fluidinputhatch
+                 * #modular_machinery_reborn_energistics:me_fluidoutputhatch
+                 * #modular_machinery_reborn_energistics:me_experiencehatch
+                 * #modular_machinery_reborn_energistics:me_experienceinputhatch
+                 * #modular_machinery_reborn_energistics:me_experienceoutputhatch
                  */
                 .keys(
                     {
