@@ -19,6 +19,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Getter
 public class Structure {
   public static final NamedCodec<Structure> CODEC = NamedCodec.record(structure -> structure.group(
       NamedCodec.STRING.listOf().listOf().fieldOf("pattern").forGetter(s -> s.pattern.asList()),
@@ -45,42 +47,65 @@ public class Structure {
     return builder.build(pattern, keys);
   }
 
-  public static void place(DynamicMachine machine, BlockPos controllerPos, Level level, boolean isCreative,
-                        ServerPlayer player) {
+  public static void place(DynamicMachine machine, BlockPos controllerPos, Level level, boolean isCreative, ServerPlayer player) {
     Structure structure = machine.getPattern();
     BlockState blockState = level.getBlockState(controllerPos);
     Direction facing = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
-    structure.getBlocks(facing).forEach((pos, ingredient) -> {
-      BlockPos worldPos = pos.offset(controllerPos);
-      if (worldPos.equals(controllerPos)) return;
-      if (pos != BlockPos.ZERO && !ingredient.test(PartialBlockState.ANY)) {
-        PartialBlockState block = ingredient.getAll().get(0);
-        if (!level.getBlockState(worldPos).isAir()) {
-          if (!ingredient.test(new PartialBlockState(level.getBlockState(worldPos), level.getBlockState(worldPos).getProperties().stream().toList(), null))) {
-            level.destroyBlock(worldPos, !isCreative);
-            player.sendSystemMessage(Component.translatable("mmr.place.non_air", block.getName(), "X:" + worldPos.getX()  + " Y:" + worldPos.getY() + " Z:" + worldPos.getZ()));
-          }
-        }
-        ItemStack blockToRemove = new ItemStack(block.getBlockState().getBlock());
-        if (!isCreative) {
-          for (PartialBlockState state : ingredient.getAll()) {
-            ItemStack blockToRemove2 = new ItemStack(state.getBlockState().getBlock());
-            if (player.getInventory().contains(blockToRemove2)) {
-              int slot = player.getInventory().findSlotMatchingItem(blockToRemove2);
-              player.getInventory().removeItem(slot, 1);
-              player.containerMenu.broadcastChanges();
-              player.inventoryMenu.slotsChanged(player.getInventory());
-              setBlock(level, worldPos, state);
-              return;
-            }
-          }
-          player.sendSystemMessage(Component.translatable("mmr.place.no_item", block.getName(), "X:" + worldPos.getX() + " Y:" + worldPos.getY() + " Z:" + worldPos.getZ(),
-              blockToRemove.getHoverName().getString()));
-          return;
-        }
-        setBlock(level, worldPos, block);
+    Map<BlockPos, BlockIngredient> blocks = structure.getBlocks(facing);
+    BlockPos.MutableBlockPos worldPos = new BlockPos.MutableBlockPos();
+    blockSearch:
+    for (BlockPos pos : blocks.keySet()) {
+      BlockIngredient ingredient = blocks.get(pos);
+      if (
+          ingredient.equals(BlockIngredient.AIR) ||
+          ingredient.equals(BlockIngredient.ANY) ||
+          ingredient.getAll().stream().anyMatch(state ->
+              state.equals(PartialBlockState.AIR) ||
+              state.equals(PartialBlockState.ANY) ||
+              state.getBlockState().isAir()
+          )
+      ) continue;
+      worldPos.set(pos.getX() + controllerPos.getX(), pos.getY() + controllerPos.getY(), pos.getZ() + controllerPos.getZ());
+      BlockInWorld info = new BlockInWorld(level, worldPos, false);
+      if (!info.getState().isAir() && ingredient.getAll().stream().noneMatch(state -> state.test(info))) {
+        if (isCreative) level.destroyBlock(worldPos, false);
+        player.sendSystemMessage(
+            Component.translatable(
+                "mmr.place.non_air",
+                info.getState().getBlock().getName(),
+                "X:" + worldPos.getX() + " Y:" + worldPos.getY() + " Z:" + worldPos.getZ()
+            )
+        );
       }
-    });
+      if (!isCreative) {
+        boolean placed = false;
+        if (!info.getState().isAir()) continue;
+        for (PartialBlockState state : ingredient.getAll()) {
+          if (state.equals(PartialBlockState.AIR) || state.equals(PartialBlockState.ANY)) continue blockSearch;
+          ItemStack blockToRemove2 = new ItemStack(state.getBlockState().getBlock());
+          if (player.getInventory().contains(blockToRemove2)) {
+            int slot = player.getInventory().findSlotMatchingItem(blockToRemove2);
+            player.getInventory().removeItem(slot, 1);
+            player.containerMenu.broadcastChanges();
+            player.inventoryMenu.slotsChanged(player.getInventory());
+            setBlock(level, worldPos, state);
+            placed = true;
+            break;
+          }
+        }
+        if (!placed)
+          player.sendSystemMessage(
+              Component.translatable(
+                  "mmr.place.no_item",
+                  ingredient.getString(),
+                  "X:" + worldPos.getX() + " Y:" + worldPos.getY() + " Z:" + worldPos.getZ(),
+                  ingredient.getString()
+              )
+          );
+        continue;
+      }
+      setBlock(level, worldPos, ingredient.getAll().get((int) (Math.random() * ingredient.getAll().size())));
+    }
   }
 
   private static void setBlock(Level world, BlockPos pos, PartialBlockState state) {
@@ -95,7 +120,6 @@ public class Structure {
     }
   }
 
-  @Getter
   private final Pattern pattern;
 
   public Structure(Map<BlockPos, BlockIngredient> blocks, List<List<String>> pattern, Map<Character, BlockIngredient> keys) {

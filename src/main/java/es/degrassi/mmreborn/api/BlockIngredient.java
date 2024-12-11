@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -200,5 +201,16 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
 
   public static BlockIngredient of(Object o) {
     return (BlockIngredient) o;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof BlockIngredient that)) return false;
+    return isTag == that.isTag && Objects.equals(partialBlockStates, that.partialBlockStates) && Objects.equals(tags, that.tags);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(partialBlockStates, isTag, tags);
   }
 }
