@@ -12,7 +12,6 @@ import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.util.MachineModelLocation;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -52,13 +51,12 @@ public class DynamicMachine {
   }
 
   public String getLocalizedName() {
-    String localizationKey = registryName.getNamespace() + "." + registryName.getPath();
-    return I18n.exists(localizationKey) ? I18n.get(localizationKey) :
-        localizedName.orElse(localizationKey);
+    return getName().getString();
   }
 
   public Component getName() {
-    return Component.literal(getLocalizedName());
+    String localizationKey = registryName.getNamespace() + "." + registryName.getPath();
+    return Component.translatableWithFallback(localizationKey, localizedName.orElse(localizationKey));
   }
 
   public int getMachineColor() {
