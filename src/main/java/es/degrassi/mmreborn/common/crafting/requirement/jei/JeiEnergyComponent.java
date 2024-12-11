@@ -69,7 +69,7 @@ public class JeiEnergyComponent extends JeiComponent<Long, RequirementEnergy> {
     this.recipeTime = recipe.getRecipeTotalTickTime();
     builder
         .addSlot(RecipeIngredientRole.RENDER_ONLY, getPosition().x(), getPosition().y())
-        .setCustomRenderer(CustomIngredientTypes.ENERGY, this)
-        .addIngredients(CustomIngredientTypes.ENERGY, ingredients());
+        .setCustomRenderer(CustomIngredientTypes.LONG, this)
+        .addIngredients(CustomIngredientTypes.LONG, ingredients());
   }
 }

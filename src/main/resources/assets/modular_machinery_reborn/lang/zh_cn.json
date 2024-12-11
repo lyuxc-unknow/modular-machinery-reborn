@@ -220,113 +220,6 @@
   "block.modular_machinery_reborn.time_counter": "时间计数器",
   "block.modular_machinery_reborn.chunkloader": "区块加载器",
 
-  "text.autoconfig.modular_machinery_reborn.category.general": "常规",
-
-  "text.autoconfig.modular_machinery_reborn.option.general.debugLevel": "日志调试等级",
-  "text.autoconfig.modular_machinery_reborn.option.general.logMissingOptional": "日志记录缺失的可选项",
-  "text.autoconfig.modular_machinery_reborn.option.general.logFirstEitherError": "日志首次记录错误",
-  "text.autoconfig.modular_machinery_reborn.option.general.general_casing_color": "默认机械外壳颜色",
-  "text.autoconfig.modular_machinery_reborn.option.general.structureRenderTime": "结构渲染时间",
-  "text.autoconfig.modular_machinery_reborn.option.general.blockTagCycleTime": "方块标签检查时间",
-  "text.autoconfig.modular_machinery_reborn.option.general.checkStructureTicks": "结构检查时间",
-  "text.autoconfig.modular_machinery_reborn.option.general.checkRecipeTicks": "配方检查时间",
-  "text.autoconfig.modular_machinery_reborn.option.general.machineDirectory": "存放机器文件夹",
-
-  "text.autoconfig.modular_machinery_reborn.category.energy_hatch": "能源仓",
-
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.TINY": "微型能源仓",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.TINY.size": "微型能源仓最大容量",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.TINY.transferRate": "微型能源仓最大能量传输速率",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.TINY.ic2_tier": "微型能源仓的IC2电压等级",
-
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.SMALL": "小型能源仓",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.SMALL.size": "小型能源仓最大容量",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.SMALL.transferRate": "小型能源仓最大能量传输速率",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.SMALL.ic2_tier": "小型能源仓的IC2电压等级",
-
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.NORMAL": "中型能源仓",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.NORMAL.size": "中型能源仓最大容量",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.NORMAL.transferRate": "中型能源仓最大能量传输速率",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.NORMAL.ic2_tier": "中型能源仓的IC2电压等级",
-
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.REINFORCED": "强化能源仓",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.REINFORCED.size": "强化能源仓最大容量",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.REINFORCED.transferRate": "强化能源仓最大能量传输速率",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.REINFORCED.ic2_tier": "强化能源仓的IC2电压等级",
-
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.BIG": "大型能源仓",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.BIG.size": "大型能源仓最大容量",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.BIG.transferRate": "大型能源仓最大能量传输速率",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.BIG.ic2_tier": "大型能源仓的IC2电压等级",
-
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.HUGE": "巨型能源仓",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.HUGE.size": "巨型能源仓最大容量",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.HUGE.transferRate": "巨型能源仓最大能量传输速率",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.HUGE.ic2_tier": "巨型能源仓的IC2电压等级",
-
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.LUDICROUS": "超级能源仓",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.LUDICROUS.size": "超级能源仓最大容量",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.LUDICROUS.transferRate": "超级能源仓最大能量传输速率",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.LUDICROUS.ic2_tier": "超级能源仓的IC2电压等级",
-
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.ULTIMATE": "终极能源仓",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.ULTIMATE.size": "终极能源仓最大容量",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.ULTIMATE.transferRate": "终极能源仓最大能量传输速率",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.ULTIMATE.ic2_tier": "终极能源仓的IC2电压等级",
-
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.displayFETooltip": "最大容量以及最大传输速率提示",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.displayIC2EUTooltip": "IC2 EU等级提示",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.type": "预览配方时能量单位",
-
-  "text.autoconfig.modular_machinery_reborn.category.fluid_hatch": "流体仓",
-
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.TINY": "微型流体仓",
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.TINY.size": "最大容量",
-
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.SMALL": "小型流体仓",
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.SMALL.size": "最大容量",
-
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.NORMAL": "中型流体仓",
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.NORMAL.size": "最大容量",
-
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.REINFORCED": "强化流体仓",
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.REINFORCED.size": "最大容量",
-
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.BIG": "大型流体仓",
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.BIG.size": "最大容量",
-
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.HUGE": "巨型流体仓",
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.HUGE.size": "最大容量",
-
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.LUDICROUS": "超级流体仓",
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.LUDICROUS.size": "最大容量",
-
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.VACUUM": "真空流体仓",
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.VACUUM.size": "最大容量",
-
-  "text.autoconfig.modular_machinery_reborn.category.item_bus": "物品仓",
-
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.TINY": "微型物品仓",
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.TINY.size": "最大槽位",
-
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.SMALL": "小型物品仓",
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.SMALL.size": "最大槽位",
-
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.NORMAL": "中型物品仓",
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.NORMAL.size": "最大槽位",
-
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.REINFORCED": "强化物品仓",
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.REINFORCED.size": "最大槽位",
-
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.BIG": "大型物品仓",
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.BIG.size": "最大槽位",
-
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.HUGE": "巨型物品仓",
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.HUGE.size": "最大槽位",
-
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.LUDICROUS": "超级物品仓",
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.LUDICROUS.size": "最大槽位",
-
   "tooltip.blueprint": "右键任意机器控制器以显示结构",
 
   "config.jade.plugin_modular_machinery_reborn.machine_component_provider": "模块化机械:重置",
@@ -334,6 +227,8 @@
   "modular_machinery_reborn.ingredient.chance.input": "消耗概率: %s%s",
   "modular_machinery_reborn.ingredient.chance.output": "产出概率: %s%s",
   "modular_machinery_reborn.ingredient.chance.not_consumed": "不被消耗",
+
+  "modular_machinery_reborn.jei.ingredient.long": "%s",
 
   "modular_machinery_reborn.jei.ingredient.energy.input": "需要: %s RF/t",
   "modular_machinery_reborn.jei.ingredient.energy.output": "产出: %s RF/t",

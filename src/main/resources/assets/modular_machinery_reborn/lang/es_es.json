@@ -266,6 +266,8 @@
   "modular_machinery_reborn.ingredient.chance.output": "Probabilidad de ser producido: %s%s",
   "modular_machinery_reborn.ingredient.chance.not_consumed": "No se consume",
 
+  "modular_machinery_reborn.jei.ingredient.long": "%s",
+
   "modular_machinery_reborn.jei.ingredient.energy.input": "Requiere: %s RF/t",
   "modular_machinery_reborn.jei.ingredient.energy.output": "Produce: %s RF/t",
   "modular_machinery_reborn.jei.ingredient.energy.total.input": "Requiere: %s RF @ %s RF/t",

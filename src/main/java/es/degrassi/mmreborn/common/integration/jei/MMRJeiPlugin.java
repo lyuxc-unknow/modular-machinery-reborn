@@ -6,8 +6,7 @@ import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.integration.jei.category.MMRRecipeCategory;
 import es.degrassi.mmreborn.common.integration.jei.ingredient.CustomIngredientTypes;
 import es.degrassi.mmreborn.common.integration.jei.ingredient.DummyIngredientRenderer;
-import es.degrassi.mmreborn.common.integration.jei.ingredient.EnergyIngredientHelper;
-import es.degrassi.mmreborn.common.integration.jei.ingredient.ExperienceIngredientHelper;
+import es.degrassi.mmreborn.common.integration.jei.ingredient.LongIngredientHelper;
 import es.degrassi.mmreborn.common.item.ControllerItem;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
@@ -49,8 +48,8 @@ public class MMRJeiPlugin implements IModPlugin {
 
   @Override
   public void registerIngredients(IModIngredientRegistration registration) {
-    registration.register(CustomIngredientTypes.ENERGY, new ArrayList<>(), new EnergyIngredientHelper(), new DummyIngredientRenderer<>(), NamedCodec.LONG.codec());
-    registration.register(CustomIngredientTypes.EXPERIENCE, new ArrayList<>(), new ExperienceIngredientHelper(), new DummyIngredientRenderer<>(), NamedCodec.LONG.codec());
+    registration.register(CustomIngredientTypes.LONG, new ArrayList<>(), new LongIngredientHelper(),
+        new DummyIngredientRenderer<>(), NamedCodec.LONG.codec());
   }
 
   @Override
