@@ -2,7 +2,6 @@ package es.degrassi.mmreborn.common.crafting.requirement;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
-import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentOutputRestrictor;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
@@ -103,7 +102,6 @@ public class RequirementWeather extends ComponentRequirement<RequirementWeather.
   @Override
   public JsonObject asJson() {
     JsonObject json = super.asJson();
-    json.addProperty("type", ModularMachineryReborn.rl("weather").toString());
     json.addProperty("weather", weather.name().toLowerCase(Locale.ROOT));
     return json;
   }

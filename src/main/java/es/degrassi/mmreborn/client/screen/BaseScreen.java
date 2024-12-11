@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseScreen<T extends ContainerBase<E>, E extends ColorableMachineComponentEntity> extends AbstractContainerScreen<T> {
   protected final E entity;
@@ -16,6 +17,7 @@ public abstract class BaseScreen<T extends ContainerBase<E>, E extends Colorable
     this.entity = menu.getEntity();
   }
 
+  @Nullable
   public abstract ResourceLocation getTexture();
 
   @Override
@@ -26,11 +28,13 @@ public abstract class BaseScreen<T extends ContainerBase<E>, E extends Colorable
 
   @Override
   protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-    guiGraphics.pose().pushPose();
-    guiGraphics.setColor(1f, 1f, 1f, 1f);
-    this.leftPos = (this.width - this.imageWidth) / 2;
-    this.topPos = (this.height - this.imageHeight) / 2;
-    guiGraphics.blit(getTexture(), leftPos, topPos, 0, 0, imageWidth, imageHeight);
-    guiGraphics.pose().popPose();
+    if (getTexture() != null) {
+      guiGraphics.pose().pushPose();
+      guiGraphics.setColor(1f, 1f, 1f, 1f);
+      this.leftPos = (this.width - this.imageWidth) / 2;
+      this.topPos = (this.height - this.imageHeight) / 2;
+      guiGraphics.blit(getTexture(), leftPos, topPos, 0, 0, imageWidth, imageHeight);
+      guiGraphics.pose().popPose();
+    }
   }
 }

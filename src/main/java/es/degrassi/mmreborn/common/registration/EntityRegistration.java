@@ -7,6 +7,8 @@ import es.degrassi.mmreborn.common.entity.ChunkloaderEntity;
 import es.degrassi.mmreborn.common.entity.DimensionalDetectorEntity;
 import es.degrassi.mmreborn.common.entity.EnergyInputHatchEntity;
 import es.degrassi.mmreborn.common.entity.EnergyOutputHatchEntity;
+import es.degrassi.mmreborn.common.entity.ExperienceInputHatchEntity;
+import es.degrassi.mmreborn.common.entity.ExperienceOutputHatchEntity;
 import es.degrassi.mmreborn.common.entity.FluidInputHatchEntity;
 import es.degrassi.mmreborn.common.entity.FluidOutputHatchEntity;
 import es.degrassi.mmreborn.common.entity.ItemInputBusEntity;
@@ -139,6 +141,40 @@ public class EntityRegistration {
               BlockRegistration.FLUID_OUTPUT_HATCH_HUGE.get(),
               BlockRegistration.FLUID_OUTPUT_HATCH_LUDICROUS.get(),
               BlockRegistration.FLUID_OUTPUT_HATCH_VACUUM.get()
+          ),
+          null)
+  );
+  public static final Supplier<BlockEntityType<ExperienceInputHatchEntity>> EXPERIENCE_INPUT_HATCH =
+      ENTITY_TYPE.register(
+      "experience_hatch_input",
+      () -> new BlockEntityType<>(
+          ExperienceInputHatchEntity::new,
+          Set.of(
+              BlockRegistration.EXPERIENCE_INPUT_HATCH_TINY.get(),
+              BlockRegistration.EXPERIENCE_INPUT_HATCH_SMALL.get(),
+              BlockRegistration.EXPERIENCE_INPUT_HATCH_NORMAL.get(),
+              BlockRegistration.EXPERIENCE_INPUT_HATCH_REINFORCED.get(),
+              BlockRegistration.EXPERIENCE_INPUT_HATCH_BIG.get(),
+              BlockRegistration.EXPERIENCE_INPUT_HATCH_HUGE.get(),
+              BlockRegistration.EXPERIENCE_INPUT_HATCH_LUDICROUS.get(),
+              BlockRegistration.EXPERIENCE_INPUT_HATCH_VACUUM.get()
+          ),
+          null)
+  );
+  public static final Supplier<BlockEntityType<ExperienceOutputHatchEntity>> EXPERIENCE_OUTPUT_HATCH =
+      ENTITY_TYPE.register(
+      "experience_hatch_output",
+      () -> new BlockEntityType<>(
+          ExperienceOutputHatchEntity::new,
+          Set.of(
+              BlockRegistration.EXPERIENCE_OUTPUT_HATCH_TINY.get(),
+              BlockRegistration.EXPERIENCE_OUTPUT_HATCH_SMALL.get(),
+              BlockRegistration.EXPERIENCE_OUTPUT_HATCH_NORMAL.get(),
+              BlockRegistration.EXPERIENCE_OUTPUT_HATCH_REINFORCED.get(),
+              BlockRegistration.EXPERIENCE_OUTPUT_HATCH_BIG.get(),
+              BlockRegistration.EXPERIENCE_OUTPUT_HATCH_HUGE.get(),
+              BlockRegistration.EXPERIENCE_OUTPUT_HATCH_LUDICROUS.get(),
+              BlockRegistration.EXPERIENCE_OUTPUT_HATCH_VACUUM.get()
           ),
           null)
   );

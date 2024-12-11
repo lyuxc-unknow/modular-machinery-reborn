@@ -1,0 +1,59 @@
+package es.degrassi.mmreborn.common.crafting.requirement.jei;
+
+import com.google.common.collect.Lists;
+import es.degrassi.experiencelib.util.ExperienceUtils;
+import es.degrassi.mmreborn.common.crafting.MachineRecipe;
+import es.degrassi.mmreborn.common.crafting.requirement.RequirementExperience;
+import es.degrassi.mmreborn.common.integration.jei.category.MMRRecipeCategory;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.recipe.IFocusGroup;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.TooltipFlag;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+public class JeiExperienceComponent extends JeiComponent<Long, RequirementExperience> {
+  public JeiExperienceComponent(RequirementExperience requirement) {
+    super(requirement, 0, 0);
+  }
+
+  @Override
+  public int getWidth() {
+    return 0;
+  }
+
+  @Override
+  public int getHeight() {
+    return 0;
+  }
+
+  @Override
+  public void render(GuiGraphics guiGraphics, @NotNull Long ingredient) {
+    super.render(guiGraphics, ingredient);
+  }
+
+  @Override
+  @SuppressWarnings("removal")
+  public @NotNull List<Component> getTooltip(@NotNull Long ingredient, @NotNull TooltipFlag tooltipFlag) {
+    return super.getTooltip(ingredient, tooltipFlag);
+  }
+
+  @Override
+  public List<Long> ingredients() {
+    return Lists.newArrayList(requirement.getRequired());
+  }
+
+  @Override
+  public void setRecipe(MMRRecipeCategory category, IRecipeLayoutBuilder builder, MachineRecipe recipe, IFocusGroup focuses) {
+    String literal = String.format("%s XP", ExperienceUtils.format(requirement.getRequired()));
+    String level =  ExperienceUtils.format(ExperienceUtils.getLevelFromXp(requirement.getRequired()));
+    recipe.textsToRender.add(
+        Component.translatable("mmr.gui.element.experience.tooltip." + requirement.getActionType().getSerializedName(),
+            literal,
+            Component.translatable("mmr.gui.element.experience.level", level)
+        )
+    );
+  }
+}

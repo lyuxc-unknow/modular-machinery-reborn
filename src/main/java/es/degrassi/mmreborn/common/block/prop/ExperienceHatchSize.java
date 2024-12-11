@@ -2,14 +2,10 @@ package es.degrassi.mmreborn.common.block.prop;
 
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import lombok.Getter;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.util.StringRepresentable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Locale;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public enum ExperienceHatchSize implements StringRepresentable {
   TINY(1_000),
   SMALL(4_000),

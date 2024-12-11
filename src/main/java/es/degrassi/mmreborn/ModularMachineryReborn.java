@@ -2,6 +2,7 @@ package es.degrassi.mmreborn;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import es.degrassi.experiencelib.api.capability.ExperienceLibCapabilities;
 import es.degrassi.mmreborn.client.util.EnergyDisplayUtil;
 import es.degrassi.mmreborn.common.block.BlockController;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
@@ -78,7 +79,7 @@ public class ModularMachineryReborn {
   }
 
   private void sendIMCMessages(final InterModEnqueueEvent event) {
-    if(ModList.get().isLoaded("theoneprobe"))
+    if (ModList.get().isLoaded("theoneprobe"))
       InterModComms.sendTo("theoneprobe", "getTheOneProbe", TOPInfoProvider::new);
   }
 
@@ -112,7 +113,7 @@ public class ModularMachineryReborn {
   }
 
   private void reloadConfig(final ModConfigEvent.Reloading event) {
-    if(event.getConfig().getSpec() == MMRConfig.getSpec()) {
+    if (event.getConfig().getSpec() == MMRConfig.getSpec()) {
       MMRLogger.setDebugLevel(MMRConfig.get().debugLevel.get().getLevel());
       Config.load();
       EnergyHatchSize.loadFromConfig();
@@ -125,34 +126,44 @@ public class ModularMachineryReborn {
 
   private void registerCapabilities(final RegisterCapabilitiesEvent event) {
     event.registerBlockEntity(
-      Capabilities.ItemHandler.BLOCK,
-      EntityRegistration.ITEM_INPUT_BUS.get(),
-      (be, side) -> be.getInventory()
+        Capabilities.ItemHandler.BLOCK,
+        EntityRegistration.ITEM_INPUT_BUS.get(),
+        (be, side) -> be.getInventory()
     );
     event.registerBlockEntity(
-      Capabilities.ItemHandler.BLOCK,
-      EntityRegistration.ITEM_OUTPUT_BUS.get(),
-      (be, side) -> be.getInventory()
+        Capabilities.ItemHandler.BLOCK,
+        EntityRegistration.ITEM_OUTPUT_BUS.get(),
+        (be, side) -> be.getInventory()
     );
     event.registerBlockEntity(
-      Capabilities.FluidHandler.BLOCK,
-      EntityRegistration.FLUID_INPUT_HATCH.get(),
-      (be, side) -> be.getTank()
+        Capabilities.FluidHandler.BLOCK,
+        EntityRegistration.FLUID_INPUT_HATCH.get(),
+        (be, side) -> be.getTank()
     );
     event.registerBlockEntity(
-      Capabilities.FluidHandler.BLOCK,
-      EntityRegistration.FLUID_OUTPUT_HATCH.get(),
-      (be, side) -> be.getTank()
+        Capabilities.FluidHandler.BLOCK,
+        EntityRegistration.FLUID_OUTPUT_HATCH.get(),
+        (be, side) -> be.getTank()
     );
     event.registerBlockEntity(
-      Capabilities.EnergyStorage.BLOCK,
-      EntityRegistration.ENERGY_INPUT_HATCH.get(),
-      (be, side) -> be
+        Capabilities.EnergyStorage.BLOCK,
+        EntityRegistration.ENERGY_INPUT_HATCH.get(),
+        (be, side) -> be
     );
     event.registerBlockEntity(
-      Capabilities.EnergyStorage.BLOCK,
-      EntityRegistration.ENERGY_OUTPUT_HATCH.get(),
-      (be, side) -> be
+        Capabilities.EnergyStorage.BLOCK,
+        EntityRegistration.ENERGY_OUTPUT_HATCH.get(),
+        (be, side) -> be
+    );
+    event.registerBlockEntity(
+        ExperienceLibCapabilities.EXPERIENCE.block(),
+        EntityRegistration.EXPERIENCE_INPUT_HATCH.get(),
+        (be, side) -> be.getTank()
+    );
+    event.registerBlockEntity(
+        ExperienceLibCapabilities.EXPERIENCE.block(),
+        EntityRegistration.EXPERIENCE_OUTPUT_HATCH.get(),
+        (be, side) -> be.getTank()
     );
   }
 

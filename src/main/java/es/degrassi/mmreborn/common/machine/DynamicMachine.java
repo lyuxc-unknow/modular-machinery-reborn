@@ -18,13 +18,14 @@ import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.Optional;
 
 @Getter
 @Setter
 public class DynamicMachine {
   public static final NamedCodec<DynamicMachine> CODEC = NamedCodec.record(instance -> instance.group(
       DefaultCodecs.RESOURCE_LOCATION.fieldOf("registryName").forGetter(DynamicMachine::getRegistryName),
-      NamedCodec.STRING.optionalFieldOf("localizedName", "").forGetter(machine -> machine.localizedName),
+      NamedCodec.STRING.optionalFieldOf("localizedName").forGetter(machine -> machine.localizedName),
       Structure.CODEC.fieldOf("structure").forGetter(machine -> machine.pattern),
       DefaultCodecs.HEX.optionalFieldOf("color", Config.machineColor).forGetter(machine -> machine.definedColor),
       MachineModelLocation.CODEC.optionalFieldOf("controller", MachineModelLocation.DEFAULT).forGetter(DynamicMachine::getControllerModel)
@@ -41,7 +42,7 @@ public class DynamicMachine {
 
   @Nonnull
   private ResourceLocation registryName;
-  private String localizedName;
+  private Optional<String> localizedName;
   private Structure pattern = Structure.EMPTY;
   private int definedColor = Config.machineColor;
   private MachineModelLocation controllerModel;
@@ -53,7 +54,7 @@ public class DynamicMachine {
   public String getLocalizedName() {
     String localizationKey = registryName.getNamespace() + "." + registryName.getPath();
     return I18n.exists(localizationKey) ? I18n.get(localizationKey) :
-        !localizedName.isEmpty() ? localizedName : localizationKey;
+        localizedName.orElse(localizationKey);
   }
 
   public Component getName() {
@@ -80,7 +81,7 @@ public class DynamicMachine {
   public JsonObject asJson() {
     JsonObject json = new JsonObject();
     json.addProperty("registryName", registryName.toString());
-    json.addProperty("localizedName", localizedName);
+    json.addProperty("localizedName", localizedName.orElse("null"));
     json.add("pattern", pattern.asJson());
     json.addProperty("definedColor", definedColor);
     return json;

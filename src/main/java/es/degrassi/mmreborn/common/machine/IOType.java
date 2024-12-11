@@ -1,8 +1,11 @@
 package es.degrassi.mmreborn.common.machine;
 
-import javax.annotation.Nullable;
+import net.minecraft.util.StringRepresentable;
 
-public enum IOType {
+import javax.annotation.Nullable;
+import java.util.Locale;
+
+public enum IOType implements StringRepresentable {
   INPUT,
   OUTPUT;
 
@@ -18,5 +21,10 @@ public enum IOType {
 
   public boolean isInput() {
     return this == INPUT;
+  }
+
+  @Override
+  public String getSerializedName() {
+    return name().toLowerCase(Locale.ROOT);
   }
 }

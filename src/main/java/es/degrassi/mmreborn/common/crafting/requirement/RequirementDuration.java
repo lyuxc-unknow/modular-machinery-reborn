@@ -1,7 +1,6 @@
 package es.degrassi.mmreborn.common.crafting.requirement;
 
 import com.google.gson.JsonObject;
-import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.codec.NamedMapCodec;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentOutputRestrictor;
@@ -32,7 +31,6 @@ public class RequirementDuration extends ComponentRequirement<Integer, Requireme
   @Override
   public JsonObject asJson() {
     JsonObject json = super.asJson();
-    json.addProperty("type", ModularMachineryReborn.rl("duration").toString());
     json.addProperty("time", time);
     return json;
   }

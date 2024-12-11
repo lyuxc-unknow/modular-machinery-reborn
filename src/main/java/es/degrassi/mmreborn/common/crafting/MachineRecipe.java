@@ -19,6 +19,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -47,6 +48,9 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
       NamedCodec.INT.optionalFieldOf("height", 256).forGetter(MachineRecipeBuilder::getHeight),
       PositionedRequirement.POSITION_CODEC.optionalFieldOf("progressPosition", new PositionedRequirement(74, 8)).forGetter(MachineRecipeBuilder::getProgressPosition)
   ).apply(instance, MachineRecipeBuilder::new), "Machine recipe");
+
+
+  public final List<Component> textsToRender = new LinkedList<>();
 
   @Override
   public boolean matches(@NotNull RecipeInput container, @NotNull Level level) {

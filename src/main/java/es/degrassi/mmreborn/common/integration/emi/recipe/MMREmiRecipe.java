@@ -18,6 +18,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -27,6 +28,8 @@ public class MMREmiRecipe extends BasicEmiRecipe {
   public final int initialX = 8, gap = 8;
   @Getter
   protected int width = 256, height = 256;
+
+  public final List<FormattedText> textsToRender = new LinkedList<>();
 
   public MMREmiRecipe(EmiRecipeCategory category, RecipeHolder<MachineRecipe> recipe) {
     super(category, recipe.id(), recipe.value().getWidth(), recipe.value().getHeight());
@@ -59,7 +62,14 @@ public class MMREmiRecipe extends BasicEmiRecipe {
 
   @Override
   public void addWidgets(WidgetHolder widgets) {
+    textsToRender.clear();
     widgets.addFillingArrow(recipe.getProgressPosition().x(), recipe.getProgressPosition().y(), 1_000);
+    Font font = Minecraft.getInstance().font;
+    textsToRender.addAll(splitLines(font, List.of(Component.translatable(
+        "modular_machinery_reborn.jei.ingredient.duration",
+        recipe.getRecipeTotalTickTime()
+    )), recipe.getWidth() - 8).getFirst());
+
     recipe.getCraftingRequirements()
         .stream()
         .filter(component -> EmiComponentRegistry.hasEmiComponent(component.getRequirementType()))
@@ -67,16 +77,11 @@ public class MMREmiRecipe extends BasicEmiRecipe {
         .map(component -> EmiComponentRegistry.getEmiComponent(component.getRequirementType()).create(component))
         .forEach(requirement -> requirement.addWidgets(widgets, this));
 
-    Font font = Minecraft.getInstance().font;
     Language language = Language.getInstance();
     AtomicInteger nextHeight = new AtomicInteger(0);
     AtomicInteger toRemove = new AtomicInteger(0);
-    Pair<List<FormattedText>, Boolean> result = splitLines(font, List.of(Component.translatable(
-        "modular_machinery_reborn.jei.ingredient.duration",
-        recipe.getRecipeTotalTickTime()
-    )), recipe.getWidth() - 8);
 
-    result.getFirst().forEach(component -> {
+    textsToRender.forEach(component -> {
       nextHeight.set(recipe.getHeight() - gap - font.wordWrapHeight(component, recipe.getWidth() - 8) - toRemove.get());
       widgets.addText(language.getVisualOrder(component), initialX, nextHeight.get(), 0xFF000000, false);
       toRemove.getAndAdd(font.wordWrapHeight(component, recipe.getWidth() - 8) + 2);

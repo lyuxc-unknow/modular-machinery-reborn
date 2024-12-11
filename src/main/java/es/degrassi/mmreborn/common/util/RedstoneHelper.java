@@ -25,8 +25,8 @@ public class RedstoneHelper {
         yield Mth.clamp(Math.round(15F * (cur / cap)), 0, 15);
       }
       case ExperienceHatchEntity entity -> {
-        float cap = entity.getExperienceCapacity();
-        float cur = entity.getExperience();
+        float cap = entity.getTank().getExperienceCapacity();
+        float cur = entity.getTank().getExperience();
         yield Mth.clamp(Math.round(15F * (cur / cap)), 0, 15);
       }
       default -> 0;

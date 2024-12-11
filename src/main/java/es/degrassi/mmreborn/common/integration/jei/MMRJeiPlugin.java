@@ -7,6 +7,7 @@ import es.degrassi.mmreborn.common.integration.jei.category.MMRRecipeCategory;
 import es.degrassi.mmreborn.common.integration.jei.ingredient.CustomIngredientTypes;
 import es.degrassi.mmreborn.common.integration.jei.ingredient.DummyIngredientRenderer;
 import es.degrassi.mmreborn.common.integration.jei.ingredient.EnergyIngredientHelper;
+import es.degrassi.mmreborn.common.integration.jei.ingredient.ExperienceIngredientHelper;
 import es.degrassi.mmreborn.common.item.ControllerItem;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
@@ -42,10 +43,6 @@ public class MMRJeiPlugin implements IModPlugin {
   private static final Map<DynamicMachine, MMRRecipeCategory> recipeCategories = new HashMap<>();
   public static IJeiHelpers jeiHelpers;
 
-  public static String getCategoryStringFor(DynamicMachine machine) {
-    return "modularmachineryreborn.recipes." + machine.getRegistryName().getPath();
-  }
-
   public static MMRRecipeCategory getCategory(DynamicMachine machine) {
     return recipeCategories.get(machine);
   }
@@ -53,6 +50,7 @@ public class MMRJeiPlugin implements IModPlugin {
   @Override
   public void registerIngredients(IModIngredientRegistration registration) {
     registration.register(CustomIngredientTypes.ENERGY, new ArrayList<>(), new EnergyIngredientHelper(), new DummyIngredientRenderer<>(), NamedCodec.LONG.codec());
+    registration.register(CustomIngredientTypes.EXPERIENCE, new ArrayList<>(), new ExperienceIngredientHelper(), new DummyIngredientRenderer<>(), NamedCodec.LONG.codec());
   }
 
   @Override
@@ -122,8 +120,8 @@ public class MMRJeiPlugin implements IModPlugin {
   public static void reloadMachines(Map<ResourceLocation, DynamicMachine> machines) {
     machines.forEach((id, machine) -> {
       MMRRecipeCategory category = recipeCategories.get(machine);
-      if(category != null)
-        category.updateMachine(machine);
+//      if(category != null)
+//        category.updateMachine(machine);
     });
   }
 }

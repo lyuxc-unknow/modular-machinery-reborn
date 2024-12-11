@@ -26,7 +26,7 @@ public class EnergyHatchScreen extends BaseScreen<EnergyHatchContainer, EnergyHa
 
   @Override
   public ResourceLocation getTexture() {
-    return ResourceLocation.fromNamespaceAndPath(ModularMachineryReborn.MODID, "textures/gui/guibar.png");
+    return ModularMachineryReborn.rl("textures/gui/guibar.png");
   }
 
   @Override

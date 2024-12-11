@@ -1,7 +1,6 @@
 package es.degrassi.mmreborn.common.crafting.requirement;
 
 import com.google.gson.JsonObject;
-import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.FluidIngredient;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.codec.NamedMapCodec;
@@ -18,7 +17,6 @@ import es.degrassi.mmreborn.common.machine.component.FluidHatch;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
-import es.degrassi.mmreborn.common.util.CopyHandlerHelper;
 import es.degrassi.mmreborn.common.util.HybridTank;
 import es.degrassi.mmreborn.common.util.ResultChance;
 import lombok.Getter;
@@ -63,7 +61,6 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
   @Override
   public JsonObject asJson() {
     JsonObject json = super.asJson();
-    json.addProperty("type", ModularMachineryReborn.rl("fluid").toString());
     json.addProperty("fluid", required.asFluidStack().getHoverName().getString());
     json.addProperty("amount", required.asFluidStack().getAmount());
     json.addProperty("chance", chance);

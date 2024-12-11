@@ -10,8 +10,7 @@ ServerEvents.recipes(event => {
         .requireEnergy(100000, x, y)
         .produceEnergy(100, x, y)
         .requireItem("2x modular_machinery_reborn:casing_plain", x, y) // valid for item tags too(uses sized ingredient)
-        .requireItem("2x modular_machinery_reborn:casing_plain", 0.5, x, y) // valid for item tags too(uses sized
-        ingredient)
+        .requireItem("2x modular_machinery_reborn:casing_plain", 0.5, x, y) // valid for item tags too(uses sized ingredient)
         .produceItem('1x modular_machinery_reborn:modularium', x, y)
         .produceItem('1x modular_machinery_reborn:modularium', 0.8, x, y)
         .produceFluid('10000x minecraft:lava', x, y)
@@ -37,6 +36,9 @@ ServerEvents.recipes(event => {
         .lootTable('minecraft:chests/ancient_city', luck) // x: 0, y: 0
         .lootTable('minecraft:chests/ancient_city', x, y) // luck: 0
         .lootTable('minecraft:chests/ancient_city', luck, x, y)
+        // Experience
+        .produceExperience(100)
+        .requireExperience(100)
         // only if mekanism addon available
         .produceChemical('10x mekanism:sulfuric_acid', x, y)
         .requireChemical('10x mekanism:sulfuric_acid', x, y)
@@ -53,7 +55,7 @@ ServerEvents.recipes(event => {
      * Energy bar width: internal 16, external 18,
      * Energy bar height: internal 52, external 54
      *
-     * Item slot width/height: internal 16, external 18
+     * Item slot/loot table slot(cycles between every possible item) width/height: internal 16, external 18
      *
      * Fluid tank width/height: internal 16, external 18
      *
@@ -78,7 +80,7 @@ MMREvents.machines(event => {
          */
         .color('#FF2291FF')
         /**
-         * The name that the machine should display in the controller item and in the controller GUI
+         * The name that the machine should display in the controller item and in the controller GUI -> default localized with the id of the creation
          */
         .name('Testing machineJS')
         /**
@@ -107,22 +109,46 @@ MMREvents.machines(event => {
                  *
                  * The available tags from mmr are:
                  *
-                 * #modular_machinery_reborn:all_casing
+                 * #modular_machinery_reborn:all_casing -> includes every tag defined below
                  * #modular_machinery_reborn:casing
+                 * #modular_machinery_reborn:energyhatch
                  * #modular_machinery_reborn:energyinputhatch
                  * #modular_machinery_reborn:energyoutputhatch
+                 * #modular_machinery_reborn:fluidhatch -> includes input and output tags for fluids(ae2 included)
                  * #modular_machinery_reborn:fluidinputhatch
                  * #modular_machinery_reborn:fluidoutputhatch
+                 * #modular_machinery_reborn:itembus -> includes input and output tags for items(ae2 included)
                  * #modular_machinery_reborn:inputbus
                  * #modular_machinery_reborn:outputbus
+                 * #modular_machinery_reborn:experiencehatch -> includes input and output tags for experience(ae2 included)
+                 * #modular_machinery_reborn:experienceinputhatch
+                 * #modular_machinery_reborn:experienceoutputhatch
                  *
                  * Only if mekanism addon available
+                 * #modular_machinery_reborn_mekanism:chemicalhatch -> includes input and output tags for chemicals(ae2 included)
                  * #modular_machinery_reborn_mekanism:chemicalinputhatch
-                 * #modular_machinery_reborn_mekanism:chemicaloutputhatchç
+                 * #modular_machinery_reborn_mekanism:chemicaloutputhatch
+                 * Only if mekanism and ae2 addon available
+                 * #modular_machinery_reborn_energistics:me_chemical_hatch
+                 * #modular_machinery_reborn_energistics:me_chemical_inputhatch
+                 * #modular_machinery_reborn_energistics:me_chemical_outputhatch
                  *
                  * Only if ars addon available
+                 * #modular_machinery_reborn_ars:sourcehatch -> includes input and output tags for source(ae2 included)
                  * #modular_machinery_reborn_ars:sourceinputhatch
                  * #modular_machinery_reborn_ars:sourceputputhatch
+                 * Only if ars and ae2 addon available
+                 * #modular_machinery_reborn_energistics:me_source_hatch
+                 * #modular_machinery_reborn_energistics:me_source_inputhatch
+                 * #modular_machinery_reborn_energistics:me_source_outputhatch
+                 *
+                 * Only if ae2 addon available
+                 * #modular_machinery_reborn_energistics:me_bus
+                 * #modular_machinery_reborn_energistics:me_inputbus
+                 * #modular_machinery_reborn_energistics:me_outputbus
+                 * #modular_machinery_reborn_energistics:me_hatch
+                 * #modular_machinery_reborn_energistics:me_inputhatch
+                 * #modular_machinery_reborn_energistics:me_outputhatch
                  */
                 .keys(
                     {
@@ -154,5 +180,8 @@ MMREvents.machines(event => {
                 )
         )
         .controllerModel(ControllerModel.of("<namespace>:<path under assets/models/(controller|controllers)>")) // Ex: minecraft:furnace, mekanism:chemical_infuser, etc
+
+    // To create an empty machine (just the controller to make the multiblocks easier with the structure builder tool
+    event.create("mmr:empty")
 })
 

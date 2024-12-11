@@ -47,7 +47,10 @@ public class MMREmiPlugin implements EmiPlugin {
       registry.addCategory(category);
       registry.addWorkstation(category, EmiStack.of(ItemRegistration.BLUEPRINT.get()));
       registry.addWorkstation(category, stack);
-      recipes.stream().filter(recipe -> recipe.value().getOwningMachine() != null).filter(recipe -> recipe.value().getOwningMachine().getRegistryName().equals(id)).forEach(recipe -> registry.addRecipe(new MMREmiRecipe(category, recipe)));
+      recipes.stream()
+          .filter(recipe -> recipe.value().getOwningMachine() != null)
+          .filter(recipe -> recipe.value().getOwningMachine().getRegistryName().equals(id))
+          .forEach(recipe -> registry.addRecipe(new MMREmiRecipe(category, recipe)));
     });
 
     registry.removeEmiStacks(stack -> {

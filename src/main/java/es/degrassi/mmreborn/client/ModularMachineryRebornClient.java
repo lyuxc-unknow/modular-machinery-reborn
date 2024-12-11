@@ -13,6 +13,7 @@ import es.degrassi.mmreborn.client.item.MMRItemTooltipComponent;
 import es.degrassi.mmreborn.client.model.ControllerModelLoader;
 import es.degrassi.mmreborn.client.screen.ControllerScreen;
 import es.degrassi.mmreborn.client.screen.EnergyHatchScreen;
+import es.degrassi.mmreborn.client.screen.ExperienceHatchScreen;
 import es.degrassi.mmreborn.client.screen.FluidHatchScreen;
 import es.degrassi.mmreborn.client.screen.ItemBusScreen;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementItem;
@@ -20,6 +21,7 @@ import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiBiomeComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiChunkloadComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiDimensionComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiEnergyComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiExperienceComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiFluidComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiItemComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiLootTableComponent;
@@ -29,6 +31,7 @@ import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiBiomeComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiChunkloadComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiDimensionComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiEnergyComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiExperienceComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiFluidComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiItemComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiLootTableComponent;
@@ -39,6 +42,7 @@ import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.entity.base.ColorableMachineComponentEntity;
 import es.degrassi.mmreborn.common.entity.base.EnergyHatchEntity;
+import es.degrassi.mmreborn.common.entity.base.ExperienceHatchEntity;
 import es.degrassi.mmreborn.common.entity.base.FluidTankEntity;
 import es.degrassi.mmreborn.common.entity.base.TileItemBus;
 import es.degrassi.mmreborn.common.integration.emi.EmiComponentRegistry;
@@ -190,6 +194,24 @@ public class ModularMachineryRebornClient {
         BlockRegistration.FLUID_OUTPUT_HATCH_LUDICROUS.get(),
         BlockRegistration.FLUID_OUTPUT_HATCH_VACUUM.get(),
 
+        BlockRegistration.EXPERIENCE_INPUT_HATCH_TINY.get(),
+        BlockRegistration.EXPERIENCE_INPUT_HATCH_SMALL.get(),
+        BlockRegistration.EXPERIENCE_INPUT_HATCH_NORMAL.get(),
+        BlockRegistration.EXPERIENCE_INPUT_HATCH_REINFORCED.get(),
+        BlockRegistration.EXPERIENCE_INPUT_HATCH_BIG.get(),
+        BlockRegistration.EXPERIENCE_INPUT_HATCH_HUGE.get(),
+        BlockRegistration.EXPERIENCE_INPUT_HATCH_LUDICROUS.get(),
+        BlockRegistration.EXPERIENCE_INPUT_HATCH_VACUUM.get(),
+
+        BlockRegistration.EXPERIENCE_OUTPUT_HATCH_TINY.get(),
+        BlockRegistration.EXPERIENCE_OUTPUT_HATCH_SMALL.get(),
+        BlockRegistration.EXPERIENCE_OUTPUT_HATCH_NORMAL.get(),
+        BlockRegistration.EXPERIENCE_OUTPUT_HATCH_REINFORCED.get(),
+        BlockRegistration.EXPERIENCE_OUTPUT_HATCH_BIG.get(),
+        BlockRegistration.EXPERIENCE_OUTPUT_HATCH_HUGE.get(),
+        BlockRegistration.EXPERIENCE_OUTPUT_HATCH_LUDICROUS.get(),
+        BlockRegistration.EXPERIENCE_OUTPUT_HATCH_VACUUM.get(),
+
         BlockRegistration.DIMENSIONAL_DETECTOR.get(),
         BlockRegistration.BIOME_READER.get(),
         BlockRegistration.WEATHER_SENSOR.get(),
@@ -266,6 +288,24 @@ public class ModularMachineryRebornClient {
         ItemRegistration.FLUID_OUTPUT_HATCH_LUDICROUS.get(),
         ItemRegistration.FLUID_OUTPUT_HATCH_VACUUM.get(),
 
+        ItemRegistration.EXPERIENCE_INPUT_HATCH_TINY.get(),
+        ItemRegistration.EXPERIENCE_INPUT_HATCH_SMALL.get(),
+        ItemRegistration.EXPERIENCE_INPUT_HATCH_NORMAL.get(),
+        ItemRegistration.EXPERIENCE_INPUT_HATCH_REINFORCED.get(),
+        ItemRegistration.EXPERIENCE_INPUT_HATCH_BIG.get(),
+        ItemRegistration.EXPERIENCE_INPUT_HATCH_HUGE.get(),
+        ItemRegistration.EXPERIENCE_INPUT_HATCH_LUDICROUS.get(),
+        ItemRegistration.EXPERIENCE_INPUT_HATCH_VACUUM.get(),
+
+        ItemRegistration.EXPERIENCE_OUTPUT_HATCH_TINY.get(),
+        ItemRegistration.EXPERIENCE_OUTPUT_HATCH_SMALL.get(),
+        ItemRegistration.EXPERIENCE_OUTPUT_HATCH_NORMAL.get(),
+        ItemRegistration.EXPERIENCE_OUTPUT_HATCH_REINFORCED.get(),
+        ItemRegistration.EXPERIENCE_OUTPUT_HATCH_BIG.get(),
+        ItemRegistration.EXPERIENCE_OUTPUT_HATCH_HUGE.get(),
+        ItemRegistration.EXPERIENCE_OUTPUT_HATCH_LUDICROUS.get(),
+        ItemRegistration.EXPERIENCE_OUTPUT_HATCH_VACUUM.get(),
+
         ItemRegistration.DIMENSIONAL_DETECTOR.get(),
         ItemRegistration.BIOME_READER.get(),
         ItemRegistration.WEATHER_SENSOR.get(),
@@ -336,6 +376,7 @@ public class ModularMachineryRebornClient {
   @SubscribeEvent
   public void registerJeiComponents(final RegisterJeiComponentEvent event) {
     event.register(RequirementTypeRegistration.ENERGY.get(), JeiEnergyComponent::new);
+    event.register(RequirementTypeRegistration.EXPERIENCE.get(), JeiExperienceComponent::new);
     event.register(RequirementTypeRegistration.FLUID.get(), JeiFluidComponent::new);
     event.register(RequirementTypeRegistration.ITEM.get(), JeiItemComponent::new);
     event.register(RequirementTypeRegistration.TIME.get(), JeiTimeComponent::new);
@@ -349,6 +390,7 @@ public class ModularMachineryRebornClient {
   @SubscribeEvent
   public void registerEmiComponents(final RegisterEmiComponentEvent event) {
     event.register(RequirementTypeRegistration.ENERGY.get(), EmiEnergyComponent::new);
+    event.register(RequirementTypeRegistration.EXPERIENCE.get(), EmiExperienceComponent::new);
     event.register(RequirementTypeRegistration.ITEM.get(), EmiItemComponent::new);
     event.register(RequirementTypeRegistration.FLUID.get(), EmiFluidComponent::new);
     event.register(RequirementTypeRegistration.BIOME.get(), EmiBiomeComponent::new);
@@ -408,6 +450,7 @@ public class ModularMachineryRebornClient {
     event.register(ContainerRegistration.ENERGY_HATCH.get(), EnergyHatchScreen::new);
     event.register(ContainerRegistration.FLUID_HATCH.get(), FluidHatchScreen::new);
     event.register(ContainerRegistration.ITEM_BUS.get(), ItemBusScreen::new);
+    event.register(ContainerRegistration.EXPERIENCE_HATCH.get(), ExperienceHatchScreen::new);
   }
 
   @NotNull
@@ -417,7 +460,7 @@ public class ModularMachineryRebornClient {
       if (tile instanceof MachineControllerEntity controller)
         return controller;
     }
-    throw new IllegalStateException("Trying to open a Controller container without clicking on a Custom Machine block");
+    throw new IllegalStateException("Trying to open a Controller container without clicking on a Controller block");
   }
 
   public static EnergyHatchEntity getClientSideEnergyHatchEntity(BlockPos pos) {
@@ -426,7 +469,7 @@ public class ModularMachineryRebornClient {
       if (tile instanceof EnergyHatchEntity controller)
         return controller;
     }
-    throw new IllegalStateException("Trying to open a Energy Hatch container without clicking on a Custom Machine block");
+    throw new IllegalStateException("Trying to open a Energy Hatch container without clicking on a Energy Hatch block");
   }
 
   public static FluidTankEntity getClientSideFluidHatchEntity(BlockPos pos) {
@@ -435,7 +478,7 @@ public class ModularMachineryRebornClient {
       if (tile instanceof FluidTankEntity controller)
         return controller;
     }
-    throw new IllegalStateException("Trying to open a Fluid Hatch container without clicking on a Custom Machine block");
+    throw new IllegalStateException("Trying to open a Fluid Hatch container without clicking on a Fluid Hatch block");
   }
 
   public static TileItemBus getClientSideItemBusEntity(BlockPos pos) {
@@ -444,6 +487,15 @@ public class ModularMachineryRebornClient {
       if (tile instanceof TileItemBus controller)
         return controller;
     }
-    throw new IllegalStateException("Trying to open a Item Bus container without clicking on a Custom Machine block");
+    throw new IllegalStateException("Trying to open a Item Bus container without clicking on a Item Bus block");
+  }
+
+  public static ExperienceHatchEntity getClientSideExperienceHatchEntity(BlockPos pos) {
+    if (Minecraft.getInstance().level != null) {
+      BlockEntity tile = Minecraft.getInstance().level.getBlockEntity(pos);
+      if (tile instanceof ExperienceHatchEntity controller)
+        return controller;
+    }
+    throw new IllegalStateException("Trying to open a Experience Hatch container without clicking on a Experience Hatch block");
   }
 }

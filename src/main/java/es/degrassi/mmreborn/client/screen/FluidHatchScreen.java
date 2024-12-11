@@ -28,7 +28,7 @@ public class FluidHatchScreen extends BaseScreen<FluidHatchContainer, FluidTankE
 
   @Override
   public ResourceLocation getTexture() {
-    return ResourceLocation.fromNamespaceAndPath(ModularMachineryReborn.MODID, "textures/gui/guibar.png");
+    return ModularMachineryReborn.rl("textures/gui/guibar.png");
   }
 
   @Override
@@ -39,13 +39,6 @@ public class FluidHatchScreen extends BaseScreen<FluidHatchContainer, FluidTankE
     guiGraphics.pose().pushPose();
     FluidRenderer.renderFluid(guiGraphics.pose(), leftPos + 15, topPos + 10, 20, 61, content, entity.getTank().getCapacity());
     guiGraphics.pose().popPose();
-//    if (content.getAmount() > 0) {
-//      drawTexturedModalRect(15, 10 + 61 - pxFilled, tas, 20, pxFilled);
-//    } else if (Mods.MEKANISM.isPresent()){
-//      drawMekGasContent();
-//    }
-//    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-//    this.mc.getTextureManager().bindTexture(TEXTURES_FLUID_HATCH);
   }
 
   @Override
@@ -56,9 +49,6 @@ public class FluidHatchScreen extends BaseScreen<FluidHatchContainer, FluidTankE
     int offsetZ = (this.height - this.getYSize()) / 2;
 
     if(x >= 15 + offsetX && x <= 35 + offsetX && y >= 10 + offsetZ && y <= 71 + offsetZ) {
-//      if(Mods.MEKANISM.isPresent()) {
-//        drawMekTooltip(x, y);
-//      } else {
         List<Component> text = Lists.newArrayList();
 
         FluidStack content = entity.getTank().getFluid();
@@ -74,45 +64,6 @@ public class FluidHatchScreen extends BaseScreen<FluidHatchContainer, FluidTankE
 
         Font font = Minecraft.getInstance().font;
         guiGraphics.renderTooltip(font, text.stream().map(Component::getVisualOrderText).toList(), x, y);
-//      }
     }
-  }
-
-  private void drawMekTooltip(int x, int y) {
-    List<String> text = Lists.newArrayList();
-
-    FluidStack content = entity.getTank().getFluid();
-    int amt;
-    if(content.getAmount() <= 0) {
-//      if(entity.getTank() instanceof HybridGasTank) {
-//        GasStack gasContent = ((HybridGasTank) tank.getTank()).getGas();
-//        if(gasContent == null || gasContent.amount <= 0) {
-//          text.add(I18n.format("tooltip.fluidhatch.empty"));
-//          amt = 0;
-//          text.add(I18n.format("tooltip.fluidhatch.tank", String.valueOf(amt), String.valueOf(tank.getTank().getCapacity())));
-//        } else {
-//          if(Mods.MEKANISM.isPresent()) {
-//            text.add(I18n.format("tooltip.fluidhatch.gas"));
-//          }
-//          text.add(gasContent.getGas().getLocalizedName());
-//          amt = gasContent.amount;
-//          text.add(I18n.format("tooltip.fluidhatch.tank.gas", String.valueOf(amt), String.valueOf(tank.getTank().getCapacity())));
-//        }
-//      } else {
-//        text.add(I18n.format("tooltip.fluidhatch.empty"));
-//        amt = 0;
-//        text.add(I18n.format("tooltip.fluidhatch.tank", String.valueOf(amt), String.valueOf(tank.getTank().getCapacity())));
-//      }
-    } else {
-//      if(Mods.MEKANISM.isPresent()) {
-//        text.add(I18n.format("tooltip.fluidhatch.fluid"));
-//      }
-//      text.add(content.getLocalizedName());
-//      amt = content.amount;
-//      text.add(I18n.format("tooltip.fluidhatch.tank", String.valueOf(amt), String.valueOf(tank.getTank().getCapacity())));
-    }
-
-//    FontRenderer font = Minecraft.getMinecraft().fontRenderer;
-//    drawHoveringText(text, x, z, (font == null ? fontRenderer : font));
   }
 }

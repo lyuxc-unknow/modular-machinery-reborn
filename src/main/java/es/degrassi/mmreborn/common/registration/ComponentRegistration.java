@@ -6,6 +6,7 @@ import es.degrassi.mmreborn.common.crafting.component.ComponentBiome;
 import es.degrassi.mmreborn.common.crafting.component.ComponentChunkload;
 import es.degrassi.mmreborn.common.crafting.component.ComponentDimension;
 import es.degrassi.mmreborn.common.crafting.component.ComponentEnergy;
+import es.degrassi.mmreborn.common.crafting.component.ComponentExperience;
 import es.degrassi.mmreborn.common.crafting.component.ComponentFluid;
 import es.degrassi.mmreborn.common.crafting.component.ComponentItem;
 import es.degrassi.mmreborn.common.crafting.component.ComponentTime;
@@ -29,6 +30,7 @@ public class ComponentRegistration {
   public static final Supplier<ComponentType> COMPONENT_WEATHER = MACHINE_COMPONENTS.register("weather", ComponentWeather::new);
   public static final Supplier<ComponentType> COMPONENT_TIME = MACHINE_COMPONENTS.register("time", ComponentTime::new);
   public static final Supplier<ComponentType> COMPONENT_CHUNKLOAD = MACHINE_COMPONENTS.register("chunkload", ComponentChunkload::new);
+  public static final Supplier<ComponentType> COMPONENT_EXPERIENCE = MACHINE_COMPONENTS.register("experience", ComponentExperience::new);
 
   public static void register(final IEventBus bus) {
     MACHINE_COMPONENTS.register(bus);

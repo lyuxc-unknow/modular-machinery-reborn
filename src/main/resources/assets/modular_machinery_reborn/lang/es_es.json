@@ -35,6 +35,8 @@
   "craftcheck.failure.fluid.output.space": "No hay suficiente espacio en el tanque para salida de líquido(s)!",
   "craftcheck.failure.energy.input": "No hay suficiente energía!",
   "craftcheck.failure.energy.output": "No hay suficiente espacio para la salida de energía!",
+  "craftcheck.failure.experience.input": "Not enough experience!",
+  "craftcheck.failure.experience.output": "Not enough space for experience output!",
   "craftcheck.failure.dimension.false": "No está en la dimensión correcta, se esperaba estar en: %s, estando en: %s",
   "craftcheck.failure.dimension.true": "No está en la dimensión correcta, se esperaba no estar en: %s, estando en: %s",
   "craftcheck.failure.biome.false": "No está en la bioma correcto, se esperaba estar en: %s, estando en: %s",
@@ -44,6 +46,8 @@
 
   "component.missing.energy.output": "No se ha encontrado Energy Output Hatch!",
   "component.missing.energy.input": "No se ha encontrado Energy Input Hatch!",
+  "component.missing.experience.output": "No Experience Output Hatch found!",
+  "component.missing.experience.input": "No Experience Input Hatch found!",
   "component.missing.fluid.output": "No se ha encontrado Fluid Output Hatch!",
   "component.missing.fluid.input": "No se ha encontrado Fluid Input Hatch!",
   "component.missing.item.output": "No se ha encontrado Item Output Bus!",
@@ -97,6 +101,11 @@
   "tooltip.itembus.slot": "1 Slot",
   "tooltip.itembus.slots": "%s Slots",
 
+  "tooltip.experiencehatch.empty": "Vacío",
+  "tooltip.experiencehatch.tank.points": "%s / %s XP",
+  "tooltip.experiencehatch.tank.levels": "%s / %s niveles",
+  "tooltip.experiencehatch.tank.info": "Puede contener %s puntos de XP",
+
   "tooltip.fluidhatch.empty": "Vacío",
   "tooltip.fluidhatch.fluid": "[Líquido]",
   "tooltip.fluidhatch.gas": "[Gas]",
@@ -140,6 +149,17 @@
   "tooltip.ic2.powertier.10.name": "UEV",
   "tooltip.ic2.powertier.11.name": "UIV",
   "tooltip.ic2.powertier.12.name": "UXV",
+
+  "mmr.gui.element.experience.tooltip": "%s / %s",
+  "mmr.gui.element.experience.tooltip.input": "Requiere: %s / %s",
+  "mmr.gui.element.experience.tooltip.output": "Produce: %s / %s",
+  "mmr.gui.element.experience.level": "%s nivel(es)",
+  "mmr.gui.tooltip.experience.button.extract_1": "Extrae 1 Nivel",
+  "mmr.gui.tooltip.experience.button.extract_10": "Extrae 10 Niveles",
+  "mmr.gui.tooltip.experience.button.extract_all": "Extrae todos los Niveles",
+  "mmr.gui.tooltip.experience.button.insert_1": "Inserta 1 Nivel",
+  "mmr.gui.tooltip.experience.button.insert_10": "Inserta 10 Niveles",
+  "mmr.gui.tooltip.experience.button.insert_all": "Inserta todos los Niveles",
 
   "item.modular_machinery_reborn.blueprint": "Machine Blueprint",
   "item.modular_machinery_reborn.modularium": "Modularium",
@@ -187,6 +207,24 @@
   "block.modular_machinery_reborn.fluidoutputhatch_ludicrous": "Ludicrous Fluid Output Hatch",
   "block.modular_machinery_reborn.fluidoutputhatch_vacuum": "Vacuum Fluid Output Hatch",
 
+  "block.modular_machinery_reborn.experienceinputhatch_tiny": "Tiny Experience Input Hatch",
+  "block.modular_machinery_reborn.experienceinputhatch_small": "Small Experience Input Hatch",
+  "block.modular_machinery_reborn.experienceinputhatch_normal": "Normal Experience Input Hatch",
+  "block.modular_machinery_reborn.experienceinputhatch_reinforced": "Reinforced Experience Input Hatch",
+  "block.modular_machinery_reborn.experienceinputhatch_big": "Big Experience Input Hatch",
+  "block.modular_machinery_reborn.experienceinputhatch_huge": "Huge Experience Input Hatch",
+  "block.modular_machinery_reborn.experienceinputhatch_ludicrous": "Ludicrous Experience Input Hatch",
+  "block.modular_machinery_reborn.experienceinputhatch_vacuum": "Vacuum Experience Input Hatch",
+
+  "block.modular_machinery_reborn.experienceoutputhatch_tiny": "Tiny Experience Output Hatch",
+  "block.modular_machinery_reborn.experienceoutputhatch_small": "Small Experience Output Hatch",
+  "block.modular_machinery_reborn.experienceoutputhatch_normal": "Normal Experience Output Hatch",
+  "block.modular_machinery_reborn.experienceoutputhatch_reinforced": "Reinforced Experience Output Hatch",
+  "block.modular_machinery_reborn.experienceoutputhatch_big": "Big Experience Output Hatch",
+  "block.modular_machinery_reborn.experienceoutputhatch_huge": "Huge Experience Output Hatch",
+  "block.modular_machinery_reborn.experienceoutputhatch_ludicrous": "Ludicrous Experience Output Hatch",
+  "block.modular_machinery_reborn.experienceoutputhatch_vacuum": "Vacuum Fluid Experience Hatch",
+
   "block.modular_machinery_reborn.chemicalinputhatch_tiny": "Tiny Chemical Input Hatch",
   "block.modular_machinery_reborn.chemicalinputhatch_small": "Small Chemical Input Hatch",
   "block.modular_machinery_reborn.chemicalinputhatch_normal": "Normal Chemical Input Hatch",
@@ -220,113 +258,6 @@
   "block.modular_machinery_reborn.time_counter": "Time Counter",
   "block.modular_machinery_reborn.chunkloader": "Chunkloader",
 
-  "text.autoconfig.modular_machinery_reborn.category.general": "General",
-
-  "text.autoconfig.modular_machinery_reborn.option.general.debugLevel": "Debug Level",
-  "text.autoconfig.modular_machinery_reborn.option.general.logMissingOptional": "Log Missing Optional",
-  "text.autoconfig.modular_machinery_reborn.option.general.logFirstEitherError": "Log First Either Error",
-  "text.autoconfig.modular_machinery_reborn.option.general.general_casing_color": "Default Casing Color",
-  "text.autoconfig.modular_machinery_reborn.option.general.structureRenderTime": "Structure Render Time",
-  "text.autoconfig.modular_machinery_reborn.option.general.blockTagCycleTime": "Block Tag Cycle Time",
-  "text.autoconfig.modular_machinery_reborn.option.general.checkStructureTicks": "Structure Check Time",
-  "text.autoconfig.modular_machinery_reborn.option.general.checkRecipeTicks": "Recipe Check Time",
-  "text.autoconfig.modular_machinery_reborn.option.general.machineDirectory": "Machines Directory",
-
-  "text.autoconfig.modular_machinery_reborn.category.energy_hatch": "Energy Hatch",
-
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.TINY": "Energy Hatch Tiny",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.TINY.size": "Energy Storage for tiny size",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.TINY.transferRate": "Energy Transfer per tick for tiny size",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.TINY.ic2_tier": "IC2 Voltage Tier for tiny size",
-
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.SMALL": "Energy Hatch Small",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.SMALL.size": "Energy Storage for small size",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.SMALL.transferRate": "Energy Transfer per tick for small size",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.SMALL.ic2_tier": "IC2 Voltage Tier for small size",
-
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.NORMAL": "Energy Hatch Normal",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.NORMAL.size": "Energy Storage for normal size",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.NORMAL.transferRate": "Energy Transfer per tick for normal size",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.NORMAL.ic2_tier": "IC2 Voltage Tier for normal size",
-
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.REINFORCED": "Energy Hatch Reinforced",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.REINFORCED.size": "Energy Storage for reinforced size",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.REINFORCED.transferRate": "Energy Transfer per tick for reinforced size",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.REINFORCED.ic2_tier": "IC2 Voltage Tier for reinforced size",
-
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.BIG": "Energy Hatch Big",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.BIG.size": "Energy Storage for big size",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.BIG.transferRate": "Energy Transfer per tick for big size",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.BIG.ic2_tier": "IC2 Voltage Tier for big size",
-
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.HUGE": "Energy Hatch Huge",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.HUGE.size": "Energy Storage for huge size",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.HUGE.transferRate": "Energy Transfer per tick for huge size",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.HUGE.ic2_tier": "IC2 Voltage Tier for huge size",
-
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.LUDICROUS": "Energy Hatch Ludicrous",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.LUDICROUS.size": "Energy Storage for ludicrous size",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.LUDICROUS.transferRate": "Energy Transfer per tick for ludicrous size",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.LUDICROUS.ic2_tier": "IC2 Voltage Tier for ludicrous size",
-
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.ULTIMATE": "Energy Hatch Ultimate",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.ULTIMATE.size": "Energy Storage for ultimate size",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.ULTIMATE.transferRate": "Energy Transfer per tick for ultimate size",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.ULTIMATE.ic2_tier": "IC2 Voltage Tier for ultimate size",
-
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.displayFETooltip": "Energy Storage and Transfer rate in tooltips",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.displayIC2EUTooltip": "IC2 EU in tooltips",
-  "text.autoconfig.modular_machinery_reborn.option.energyHatch.type": "Recipe energy preview",
-
-  "text.autoconfig.modular_machinery_reborn.category.fluid_hatch": "Fluid Hatch",
-
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.TINY": "Fluid Hatch Tiny",
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.TINY.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.SMALL": "Fluid Hatch Small",
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.SMALL.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.NORMAL": "Fluid Hatch Normal",
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.NORMAL.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.REINFORCED": "Fluid Hatch Reinforced",
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.REINFORCED.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.BIG": "Fluid Hatch Big",
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.BIG.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.HUGE": "Fluid Hatch Huge",
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.HUGE.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.LUDICROUS": "Fluid Hatch Ludicrous",
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.LUDICROUS.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.VACUUM": "Fluid Hatch Vacuum",
-  "text.autoconfig.modular_machinery_reborn.option.fluidHatch.VACUUM.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.category.item_bus": "Item Bus",
-
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.TINY": "Item Bus Tiny",
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.TINY.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.SMALL": "Item Bus Small",
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.SMALL.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.NORMAL": "Item Bus Normal",
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.NORMAL.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.REINFORCED": "Item Bus Reinforced",
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.REINFORCED.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.BIG": "Item Bus Big",
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.BIG.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.HUGE": "Item Bus Huge",
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.HUGE.size": "Size",
-
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.LUDICROUS": "Item Bus Ludicrous",
-  "text.autoconfig.modular_machinery_reborn.option.itemBus.LUDICROUS.size": "Size",
-
   "tooltip.blueprint": "Click en cualquier controlador para mostrar la previsualización de la estructura",
 
   "config.jade.plugin_modular_machinery_reborn.machine_component_provider": "Modular Machinery Reborn provider",
@@ -342,6 +273,9 @@
 
   "modular_machinery_reborn.jei.ingredient.fluid.input": "Requiere %s %s mB",
   "modular_machinery_reborn.jei.ingredient.fluid.output": "Produce %s %s mB",
+
+  "modular_machinery_reborn.jei.ingredient.experience.input": "Requiere %s XP",
+  "modular_machinery_reborn.jei.ingredient.experience.output": "Produce %s XP",
 
   "modular_machinery_reborn.jei.ingredient.chemical.input": "Requiere %s %s mB",
   "modular_machinery_reborn.jei.ingredient.chemical.output": "Produce %s %s mB",

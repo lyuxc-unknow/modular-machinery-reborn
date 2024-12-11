@@ -17,7 +17,7 @@ public class ItemBusScreen extends BaseScreen<ItemBusContainer, TileItemBus> {
 
   @Override
   public ResourceLocation getTexture() {
-    return ResourceLocation.fromNamespaceAndPath(ModularMachineryReborn.MODID, "textures/gui/inventory_" + entity.getSize().name().toLowerCase() + ".png");
+    return ModularMachineryReborn.rl("textures/gui/inventory_" + entity.getSize().name().toLowerCase() + ".png");
   }
 
   @Override

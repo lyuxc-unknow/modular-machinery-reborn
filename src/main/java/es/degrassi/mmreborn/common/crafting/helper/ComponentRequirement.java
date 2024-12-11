@@ -1,6 +1,7 @@
 package es.degrassi.mmreborn.common.crafting.helper;
 
 import com.google.gson.JsonObject;
+import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.codec.NamedMapCodec;
 import es.degrassi.mmreborn.api.codec.RegistrarCodec;
@@ -10,7 +11,9 @@ import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.util.ResultChance;
 import lombok.Getter;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -43,6 +46,11 @@ public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, 
 
   public final IOType getActionType() {
     return actionType;
+  }
+
+  @Nullable
+  public final ResourceLocation getId() {
+    return ModularMachineryReborn.getRequirementRegistrar().getKey(getRequirementType());
   }
 
   public int getSortingWeight() {
@@ -104,6 +112,7 @@ public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, 
     JsonObject json = new JsonObject();
     json.addProperty("actionType", actionType.name());
     json.add("position", position.asJson());
+    json.addProperty("type", getId() != null ? getId().toString() : "");
     return json;
   }
 

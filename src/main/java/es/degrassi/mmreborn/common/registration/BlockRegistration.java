@@ -10,6 +10,9 @@ import es.degrassi.mmreborn.common.block.BlockDimensionDetector;
 import es.degrassi.mmreborn.common.block.BlockEnergyHatch;
 import es.degrassi.mmreborn.common.block.BlockEnergyInputHatch;
 import es.degrassi.mmreborn.common.block.BlockEnergyOutputHatch;
+import es.degrassi.mmreborn.common.block.BlockExperienceHatch;
+import es.degrassi.mmreborn.common.block.BlockExperienceInputHatch;
+import es.degrassi.mmreborn.common.block.BlockExperienceOutputHatch;
 import es.degrassi.mmreborn.common.block.BlockFluidHatch;
 import es.degrassi.mmreborn.common.block.BlockFluidInputHatch;
 import es.degrassi.mmreborn.common.block.BlockFluidOutputHatch;
@@ -18,6 +21,7 @@ import es.degrassi.mmreborn.common.block.BlockOutputBus;
 import es.degrassi.mmreborn.common.block.BlockTimeCounter;
 import es.degrassi.mmreborn.common.block.BlockWeatherSensor;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
+import es.degrassi.mmreborn.common.block.prop.ExperienceHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
 import net.neoforged.bus.api.IEventBus;
@@ -133,6 +137,40 @@ public class BlockRegistration {
       () -> new BlockFluidOutputHatch(FluidHatchSize.LUDICROUS));
   public static final DeferredBlock<BlockFluidHatch> FLUID_OUTPUT_HATCH_VACUUM = BLOCKS.register("fluidoutputhatch_" + FluidHatchSize.VACUUM.getSerializedName(),
       () -> new BlockFluidOutputHatch(FluidHatchSize.VACUUM));
+
+  public static final DeferredBlock<BlockExperienceHatch> EXPERIENCE_INPUT_HATCH_TINY = BLOCKS.register("experienceinputhatch_" + ExperienceHatchSize.TINY.getSerializedName(),
+      () -> new BlockExperienceInputHatch(ExperienceHatchSize.TINY));
+  public static final DeferredBlock<BlockExperienceHatch> EXPERIENCE_INPUT_HATCH_SMALL = BLOCKS.register("experienceinputhatch_" + ExperienceHatchSize.SMALL.getSerializedName(),
+      () -> new BlockExperienceInputHatch(ExperienceHatchSize.SMALL));
+  public static final DeferredBlock<BlockExperienceHatch> EXPERIENCE_INPUT_HATCH_NORMAL = BLOCKS.register("experienceinputhatch_" + ExperienceHatchSize.NORMAL.getSerializedName(),
+      () -> new BlockExperienceInputHatch(ExperienceHatchSize.NORMAL));
+  public static final DeferredBlock<BlockExperienceHatch> EXPERIENCE_INPUT_HATCH_REINFORCED = BLOCKS.register("experienceinputhatch_" + ExperienceHatchSize.REINFORCED.getSerializedName(),
+      () -> new BlockExperienceInputHatch(ExperienceHatchSize.REINFORCED));
+  public static final DeferredBlock<BlockExperienceHatch> EXPERIENCE_INPUT_HATCH_BIG = BLOCKS.register("experienceinputhatch_" + ExperienceHatchSize.BIG.getSerializedName(),
+      () -> new BlockExperienceInputHatch(ExperienceHatchSize.BIG));
+  public static final DeferredBlock<BlockExperienceHatch> EXPERIENCE_INPUT_HATCH_HUGE = BLOCKS.register("experienceinputhatch_" + ExperienceHatchSize.HUGE.getSerializedName(),
+      () -> new BlockExperienceInputHatch(ExperienceHatchSize.HUGE));
+  public static final DeferredBlock<BlockExperienceHatch> EXPERIENCE_INPUT_HATCH_LUDICROUS = BLOCKS.register("experienceinputhatch_" + ExperienceHatchSize.LUDICROUS.getSerializedName(),
+      () -> new BlockExperienceInputHatch(ExperienceHatchSize.LUDICROUS));
+  public static final DeferredBlock<BlockExperienceHatch> EXPERIENCE_INPUT_HATCH_VACUUM = BLOCKS.register("experienceinputhatch_" + ExperienceHatchSize.VACUUM.getSerializedName(),
+      () -> new BlockExperienceInputHatch(ExperienceHatchSize.VACUUM));
+
+  public static final DeferredBlock<BlockExperienceHatch> EXPERIENCE_OUTPUT_HATCH_TINY = BLOCKS.register("experienceoutputhatch_" + ExperienceHatchSize.TINY.getSerializedName(),
+      () -> new BlockExperienceOutputHatch(ExperienceHatchSize.TINY));
+  public static final DeferredBlock<BlockExperienceHatch> EXPERIENCE_OUTPUT_HATCH_SMALL = BLOCKS.register("experienceoutputhatch_" + ExperienceHatchSize.SMALL.getSerializedName(),
+      () -> new BlockExperienceOutputHatch(ExperienceHatchSize.SMALL));
+  public static final DeferredBlock<BlockExperienceHatch> EXPERIENCE_OUTPUT_HATCH_NORMAL = BLOCKS.register("experienceoutputhatch_" + ExperienceHatchSize.NORMAL.getSerializedName(),
+      () -> new BlockExperienceOutputHatch(ExperienceHatchSize.NORMAL));
+  public static final DeferredBlock<BlockExperienceHatch> EXPERIENCE_OUTPUT_HATCH_REINFORCED = BLOCKS.register("experienceoutputhatch_" + ExperienceHatchSize.REINFORCED.getSerializedName(),
+      () -> new BlockExperienceOutputHatch(ExperienceHatchSize.REINFORCED));
+  public static final DeferredBlock<BlockExperienceHatch> EXPERIENCE_OUTPUT_HATCH_BIG = BLOCKS.register("experienceoutputhatch_" + ExperienceHatchSize.BIG.getSerializedName(),
+      () -> new BlockExperienceOutputHatch(ExperienceHatchSize.BIG));
+  public static final DeferredBlock<BlockExperienceHatch> EXPERIENCE_OUTPUT_HATCH_HUGE = BLOCKS.register("experienceoutputhatch_" + ExperienceHatchSize.HUGE.getSerializedName(),
+      () -> new BlockExperienceOutputHatch(ExperienceHatchSize.HUGE));
+  public static final DeferredBlock<BlockExperienceHatch> EXPERIENCE_OUTPUT_HATCH_LUDICROUS = BLOCKS.register("experienceoutputhatch_" + ExperienceHatchSize.LUDICROUS.getSerializedName(),
+      () -> new BlockExperienceOutputHatch(ExperienceHatchSize.LUDICROUS));
+  public static final DeferredBlock<BlockExperienceHatch> EXPERIENCE_OUTPUT_HATCH_VACUUM = BLOCKS.register("experienceoutputhatch_" + ExperienceHatchSize.VACUUM.getSerializedName(),
+      () -> new BlockExperienceOutputHatch(ExperienceHatchSize.VACUUM));
 
   public static final DeferredBlock<BlockDimensionDetector> DIMENSIONAL_DETECTOR = BLOCKS.register("dimensional_detector", BlockDimensionDetector::new);
   public static final DeferredBlock<BlockBiomeReader> BIOME_READER = BLOCKS.register("biome_reader", BlockBiomeReader::new);

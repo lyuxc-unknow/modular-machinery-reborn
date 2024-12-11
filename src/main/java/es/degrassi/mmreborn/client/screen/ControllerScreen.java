@@ -49,7 +49,7 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
 
   @Override
   public ResourceLocation getTexture() {
-    return ResourceLocation.fromNamespaceAndPath(ModularMachineryReborn.MODID, "textures/gui/guicontroller.png");
+    return ModularMachineryReborn.rl("textures/gui/guicontroller.png");
   }
 
   @Override

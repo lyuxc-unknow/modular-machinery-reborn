@@ -67,6 +67,30 @@ public class MMRBlockTagProvider extends BlockTagsProvider {
             BlockRegistration.FLUID_OUTPUT_HATCH_VACUUM.get()
         );
 
+    tag(MMRTags.Blocks.EXPERIENCE_INPUT)
+        .add(
+            BlockRegistration.EXPERIENCE_INPUT_HATCH_TINY.get(),
+            BlockRegistration.EXPERIENCE_INPUT_HATCH_SMALL.get(),
+            BlockRegistration.EXPERIENCE_INPUT_HATCH_NORMAL.get(),
+            BlockRegistration.EXPERIENCE_INPUT_HATCH_REINFORCED.get(),
+            BlockRegistration.EXPERIENCE_INPUT_HATCH_BIG.get(),
+            BlockRegistration.EXPERIENCE_INPUT_HATCH_HUGE.get(),
+            BlockRegistration.EXPERIENCE_INPUT_HATCH_LUDICROUS.get(),
+            BlockRegistration.EXPERIENCE_INPUT_HATCH_VACUUM.get()
+        );
+
+    tag(MMRTags.Blocks.EXPERIENCE_OUTPUT)
+        .add(
+            BlockRegistration.EXPERIENCE_OUTPUT_HATCH_TINY.get(),
+            BlockRegistration.EXPERIENCE_OUTPUT_HATCH_SMALL.get(),
+            BlockRegistration.EXPERIENCE_OUTPUT_HATCH_NORMAL.get(),
+            BlockRegistration.EXPERIENCE_OUTPUT_HATCH_REINFORCED.get(),
+            BlockRegistration.EXPERIENCE_OUTPUT_HATCH_BIG.get(),
+            BlockRegistration.EXPERIENCE_OUTPUT_HATCH_HUGE.get(),
+            BlockRegistration.EXPERIENCE_OUTPUT_HATCH_LUDICROUS.get(),
+            BlockRegistration.EXPERIENCE_OUTPUT_HATCH_VACUUM.get()
+        );
+
     tag(MMRTags.Blocks.INPUT_BUS)
         .add(
             BlockRegistration.ITEM_INPUT_BUS_TINY.get(),
@@ -101,6 +125,10 @@ public class MMRBlockTagProvider extends BlockTagsProvider {
         .addTag(MMRTags.Blocks.FLUID_INPUT)
         .addTag(MMRTags.Blocks.FLUID_OUTPUT);
 
+    tag(MMRTags.Blocks.EXPERIENCE)
+        .addTag(MMRTags.Blocks.EXPERIENCE_INPUT)
+        .addTag(MMRTags.Blocks.EXPERIENCE_OUTPUT);
+
     tag(MMRTags.Blocks.CASINGS)
         .add(
             BlockRegistration.CASING_PLAIN.get(),
@@ -116,6 +144,7 @@ public class MMRBlockTagProvider extends BlockTagsProvider {
         .addTag(MMRTags.Blocks.ENERGY)
         .addTag(MMRTags.Blocks.ITEM)
         .addTag(MMRTags.Blocks.FLUID)
+        .addTag(MMRTags.Blocks.EXPERIENCE)
         .add(BlockRegistration.BIOME_READER.get())
         .add(BlockRegistration.DIMENSIONAL_DETECTOR.get())
         .add(BlockRegistration.WEATHER_SENSOR.get())

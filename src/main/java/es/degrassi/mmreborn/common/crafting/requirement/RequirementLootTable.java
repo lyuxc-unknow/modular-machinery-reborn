@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.crafting.requirement;
 
+import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentOutputRestrictor;
@@ -55,6 +56,14 @@ public class RequirementLootTable extends ComponentRequirement<ResourceLocation,
     this.lootTable = lootTable;
     this.luck = luck;
     LootTableHelper.addTable(lootTable);
+  }
+
+  @Override
+  public JsonObject asJson() {
+    JsonObject json = super.asJson();
+    json.addProperty("loot_table", lootTable.toString());
+    json.addProperty("luck", luck);
+    return json;
   }
 
   @Override

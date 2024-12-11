@@ -3,7 +3,6 @@ package es.degrassi.mmreborn.common.crafting.requirement;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentOutputRestrictor;
@@ -106,7 +105,6 @@ public class RequirementBiome extends ComponentRequirement<ResourceLocation, Req
   @Override
   public JsonObject asJson() {
     JsonObject json = super.asJson();
-    json.addProperty("type", ModularMachineryReborn.rl("biome").toString());
     json.addProperty("blacklist", blacklist);
     JsonArray array = new JsonArray();
     filter.stream().map(ResourceLocation::toString).forEach(array::add);

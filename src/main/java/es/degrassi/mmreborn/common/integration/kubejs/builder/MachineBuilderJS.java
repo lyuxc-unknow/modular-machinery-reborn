@@ -10,6 +10,7 @@ import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.util.MachineModelLocation;
+import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -62,7 +63,7 @@ public class MachineBuilderJS {
     DynamicMachine machine = new DynamicMachine(id);
     machine.setPattern(structure);
     machine.setControllerModel(Objects.requireNonNullElse(controllerModel, MachineModelLocation.DEFAULT));
-    machine.setLocalizedName(Optional.ofNullable(name).orElse(""));
+    machine.setLocalizedName(Optional.ofNullable(name));
     if (intColor != null)
       machine.setDefinedColor(intColor);
     else if(color != null)
@@ -70,7 +71,7 @@ public class MachineBuilderJS {
     return machine;
   }
 
-  @SuppressWarnings("LombokGetterMayBeUsed")
+  @Getter
   public static class MachineKubeEvent implements KubeEvent {
     private final List<MachineBuilderJS> builders = new LinkedList<>();
 
@@ -78,10 +79,6 @@ public class MachineBuilderJS {
       MachineBuilderJS builder = new MachineBuilderJS(id);
       builders.add(builder);
       return builder;
-    }
-
-    public List<MachineBuilderJS> getBuilders() {
-      return builders;
     }
   }
 }

@@ -2,7 +2,6 @@ package es.degrassi.mmreborn.common.crafting.requirement;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
-import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.codec.NamedMapCodec;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentOutputRestrictor;
@@ -35,7 +34,6 @@ public class RequirementEnergy extends ComponentRequirement<Long, RequirementEne
   @Override
   public JsonObject asJson() {
     JsonObject json = super.asJson();
-    json.addProperty("type", ModularMachineryReborn.rl("energy").toString());
     json.addProperty("amount", requirementPerTick);
     json.addProperty("activeIO", activeIO);
     return json;

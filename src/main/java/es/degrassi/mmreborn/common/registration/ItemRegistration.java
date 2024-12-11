@@ -3,6 +3,7 @@ package es.degrassi.mmreborn.common.registration;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.block.BlockCasing.CasingType;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
+import es.degrassi.mmreborn.common.block.prop.ExperienceHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
 import es.degrassi.mmreborn.common.item.BiomeReaderItem;
@@ -11,6 +12,7 @@ import es.degrassi.mmreborn.common.item.ChunkloaderItem;
 import es.degrassi.mmreborn.common.item.ControllerItem;
 import es.degrassi.mmreborn.common.item.DimensionalDetectorItem;
 import es.degrassi.mmreborn.common.item.EnergyHatchItem;
+import es.degrassi.mmreborn.common.item.ExperienceHatchItem;
 import es.degrassi.mmreborn.common.item.FluidHatchItem;
 import es.degrassi.mmreborn.common.item.InputBusItem;
 import es.degrassi.mmreborn.common.item.ItemBlueprint;
@@ -139,6 +141,40 @@ public class ItemRegistration {
     () -> new FluidHatchItem(BlockRegistration.FLUID_OUTPUT_HATCH_LUDICROUS.get(), FluidHatchSize.LUDICROUS));
   public static final DeferredItem<FluidHatchItem> FLUID_OUTPUT_HATCH_VACUUM = ITEMS.register("fluidoutputhatch_" + FluidHatchSize.VACUUM.getSerializedName(),
     () -> new FluidHatchItem(BlockRegistration.FLUID_OUTPUT_HATCH_VACUUM.get(), FluidHatchSize.VACUUM));
+
+  public static final DeferredItem<ExperienceHatchItem> EXPERIENCE_INPUT_HATCH_TINY = ITEMS.register("experienceinputhatch_" + ExperienceHatchSize.TINY.getSerializedName(),
+    () -> new ExperienceHatchItem(BlockRegistration.EXPERIENCE_INPUT_HATCH_TINY.get(), ExperienceHatchSize.TINY));
+  public static final DeferredItem<ExperienceHatchItem> EXPERIENCE_INPUT_HATCH_SMALL = ITEMS.register("experienceinputhatch_" + ExperienceHatchSize.SMALL.getSerializedName(),
+    () -> new ExperienceHatchItem(BlockRegistration.EXPERIENCE_INPUT_HATCH_SMALL.get(), ExperienceHatchSize.SMALL));
+  public static final DeferredItem<ExperienceHatchItem> EXPERIENCE_INPUT_HATCH_NORMAL = ITEMS.register("experienceinputhatch_" + ExperienceHatchSize.NORMAL.getSerializedName(),
+    () -> new ExperienceHatchItem(BlockRegistration.EXPERIENCE_INPUT_HATCH_NORMAL.get(), ExperienceHatchSize.NORMAL));
+  public static final DeferredItem<ExperienceHatchItem> EXPERIENCE_INPUT_HATCH_REINFORCED = ITEMS.register("experienceinputhatch_" + ExperienceHatchSize.REINFORCED.getSerializedName(),
+    () -> new ExperienceHatchItem(BlockRegistration.EXPERIENCE_INPUT_HATCH_REINFORCED.get(), ExperienceHatchSize.REINFORCED));
+  public static final DeferredItem<ExperienceHatchItem> EXPERIENCE_INPUT_HATCH_BIG = ITEMS.register("experienceinputhatch_" + ExperienceHatchSize.BIG.getSerializedName(),
+    () -> new ExperienceHatchItem(BlockRegistration.EXPERIENCE_INPUT_HATCH_BIG.get(), ExperienceHatchSize.BIG));
+  public static final DeferredItem<ExperienceHatchItem> EXPERIENCE_INPUT_HATCH_HUGE = ITEMS.register("experienceinputhatch_" + ExperienceHatchSize.HUGE.getSerializedName(),
+    () -> new ExperienceHatchItem(BlockRegistration.EXPERIENCE_INPUT_HATCH_HUGE.get(), ExperienceHatchSize.HUGE));
+  public static final DeferredItem<ExperienceHatchItem> EXPERIENCE_INPUT_HATCH_LUDICROUS = ITEMS.register("experienceinputhatch_" + ExperienceHatchSize.LUDICROUS.getSerializedName(),
+    () -> new ExperienceHatchItem(BlockRegistration.EXPERIENCE_INPUT_HATCH_LUDICROUS.get(), ExperienceHatchSize.LUDICROUS));
+  public static final DeferredItem<ExperienceHatchItem> EXPERIENCE_INPUT_HATCH_VACUUM = ITEMS.register("experienceinputhatch_" + ExperienceHatchSize.VACUUM.getSerializedName(),
+    () -> new ExperienceHatchItem(BlockRegistration.EXPERIENCE_INPUT_HATCH_VACUUM.get(), ExperienceHatchSize.VACUUM));
+
+  public static final DeferredItem<ExperienceHatchItem> EXPERIENCE_OUTPUT_HATCH_TINY = ITEMS.register("experienceoutputhatch_" + ExperienceHatchSize.TINY.getSerializedName(),
+    () -> new ExperienceHatchItem(BlockRegistration.EXPERIENCE_OUTPUT_HATCH_TINY.get(), ExperienceHatchSize.TINY));
+  public static final DeferredItem<ExperienceHatchItem> EXPERIENCE_OUTPUT_HATCH_SMALL = ITEMS.register("experienceoutputhatch_" + ExperienceHatchSize.SMALL.getSerializedName(),
+    () -> new ExperienceHatchItem(BlockRegistration.EXPERIENCE_OUTPUT_HATCH_SMALL.get(), ExperienceHatchSize.SMALL));
+  public static final DeferredItem<ExperienceHatchItem> EXPERIENCE_OUTPUT_HATCH_NORMAL = ITEMS.register("experienceoutputhatch_" + ExperienceHatchSize.NORMAL.getSerializedName(),
+    () -> new ExperienceHatchItem(BlockRegistration.EXPERIENCE_OUTPUT_HATCH_NORMAL.get(), ExperienceHatchSize.NORMAL));
+  public static final DeferredItem<ExperienceHatchItem> EXPERIENCE_OUTPUT_HATCH_REINFORCED = ITEMS.register("experienceoutputhatch_" + ExperienceHatchSize.REINFORCED.getSerializedName(),
+    () -> new ExperienceHatchItem(BlockRegistration.EXPERIENCE_OUTPUT_HATCH_REINFORCED.get(), ExperienceHatchSize.REINFORCED));
+  public static final DeferredItem<ExperienceHatchItem> EXPERIENCE_OUTPUT_HATCH_BIG = ITEMS.register("experienceoutputhatch_" + ExperienceHatchSize.BIG.getSerializedName(),
+    () -> new ExperienceHatchItem(BlockRegistration.EXPERIENCE_OUTPUT_HATCH_BIG.get(), ExperienceHatchSize.BIG));
+  public static final DeferredItem<ExperienceHatchItem> EXPERIENCE_OUTPUT_HATCH_HUGE = ITEMS.register("experienceoutputhatch_" + ExperienceHatchSize.HUGE.getSerializedName(),
+    () -> new ExperienceHatchItem(BlockRegistration.EXPERIENCE_OUTPUT_HATCH_HUGE.get(), ExperienceHatchSize.HUGE));
+  public static final DeferredItem<ExperienceHatchItem> EXPERIENCE_OUTPUT_HATCH_LUDICROUS = ITEMS.register("experienceoutputhatch_" + ExperienceHatchSize.LUDICROUS.getSerializedName(),
+    () -> new ExperienceHatchItem(BlockRegistration.EXPERIENCE_OUTPUT_HATCH_LUDICROUS.get(), ExperienceHatchSize.LUDICROUS));
+  public static final DeferredItem<ExperienceHatchItem> EXPERIENCE_OUTPUT_HATCH_VACUUM = ITEMS.register("experienceoutputhatch_" + ExperienceHatchSize.VACUUM.getSerializedName(),
+    () -> new ExperienceHatchItem(BlockRegistration.EXPERIENCE_OUTPUT_HATCH_VACUUM.get(), ExperienceHatchSize.VACUUM));
 
   public static final DeferredItem<DimensionalDetectorItem> DIMENSIONAL_DETECTOR = ITEMS.register("dimensional_detector",
     () -> new DimensionalDetectorItem(BlockRegistration.DIMENSIONAL_DETECTOR.get()));

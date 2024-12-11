@@ -2,7 +2,6 @@ package es.degrassi.mmreborn.common.crafting.requirement;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
-import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentOutputRestrictor;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
@@ -10,7 +9,6 @@ import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
 import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.machine.IOType;
-import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.machine.component.Chunkload;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
@@ -92,7 +90,6 @@ public class RequirementChunkload extends ComponentRequirement<Integer, Requirem
   @Override
   public JsonObject asJson() {
     JsonObject json = super.asJson();
-    json.addProperty("type", ModularMachineryReborn.rl("chunkload").toString());
     json.addProperty("radius", radius);
     return json;
   }
@@ -104,7 +101,7 @@ public class RequirementChunkload extends ComponentRequirement<Integer, Requirem
 
   @Override
   public CraftCheck resetIOTick(RecipeCraftingContext context) {
-    return null;
+    return CraftCheck.success();
   }
 
   @Override

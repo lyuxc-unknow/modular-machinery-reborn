@@ -75,6 +75,14 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
   public void setRecipe(@NotNull IRecipeLayoutBuilder builder, MachineRecipe recipe, @NotNull IFocusGroup focuses) {
     this.width = recipe.getWidth();
     this.height = recipe.getHeight();
+    recipe.textsToRender.clear();
+
+    recipe.textsToRender.add(
+        Component.translatable(
+            "modular_machinery_reborn.jei.ingredient.duration",
+            recipe.getRecipeTotalTickTime()
+        )
+    );
 
     recipe.getCraftingRequirements()
         .stream()
@@ -89,19 +97,11 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
     builder.addAnimatedRecipeArrow(20)
         .setPosition(recipe.getProgressPosition().x(), recipe.getProgressPosition().y());
 
-    final List<Component> textsToRender = new LinkedList<>();
-
-    textsToRender.add(
-        Component.translatable(
-            "modular_machinery_reborn.jei.ingredient.duration",
-            recipe.getRecipeTotalTickTime()
-        )
-    );
-
     Font font = Minecraft.getInstance().font;
     AtomicInteger nextHeight = new AtomicInteger(0);
     AtomicInteger toRemove = new AtomicInteger(0);
-    textsToRender.forEach(component -> {
+
+    recipe.textsToRender.forEach(component -> {
       nextHeight.set(recipe.getHeight() - gap - font.wordWrapHeight(component, recipe.getWidth() - 8) - toRemove.get());
       builder.addDrawable(new DrawableWrappedText(List.of(component), recipe.getWidth() - 8))
           .setPosition(initialX, nextHeight.get());
