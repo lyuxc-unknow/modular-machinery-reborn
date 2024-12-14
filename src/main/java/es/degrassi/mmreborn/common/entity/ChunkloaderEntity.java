@@ -8,6 +8,7 @@ import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.util.Chunkloader;
 import es.degrassi.mmreborn.common.util.ChunkloaderList;
 import lombok.Getter;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+@MethodsReturnNonnullByDefault
 public class ChunkloaderEntity extends BlockEntityRestrictedTick implements MachineComponentEntity {
   private final Chunkloader chunkloader;
   public ChunkloaderEntity(BlockPos pos, BlockState blockState) {
@@ -23,7 +25,7 @@ public class ChunkloaderEntity extends BlockEntityRestrictedTick implements Mach
   }
 
   @Override
-  public @Nullable Chunkload provideComponent() {
+  public Chunkload provideComponent() {
     return new Chunkload() {
       @Override
       public Chunkloader getContainerProvider() {

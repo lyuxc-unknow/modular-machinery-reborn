@@ -24,11 +24,12 @@ public class DynamicMachineComponentProvider implements IBlockComponentProvider 
 
   @Override
   public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
+    IElementHelper helper = IElementHelper.get();
     if (accessor.getBlockEntity() instanceof MachineControllerEntity) {
-      CompoundTag nbt = accessor.getServerData().getCompound(ModularMachineryReborn.MODID);
-      if (nbt.isEmpty()) return;
-      if (nbt.contains("status", Tag.TAG_COMPOUND)) {
-        CraftingStatus status = CraftingStatus.deserialize(nbt.getCompound("status"));
+      CompoundTag tag = accessor.getServerData().getCompound(ModularMachineryReborn.MODID);
+      if (tag.isEmpty()) return;
+      if (tag.contains("status", Tag.TAG_COMPOUND)) {
+        CraftingStatus status = CraftingStatus.deserialize(tag.getCompound("status"));
         MutableComponent message = Component.translatable(status.getUnlocMessage());
         switch (status.getStatus()) {
           case CRAFTING -> message.withStyle(ChatFormatting.GREEN);
@@ -37,9 +38,9 @@ public class DynamicMachineComponentProvider implements IBlockComponentProvider 
         }
         tooltip.add(message);
       }
-      if (nbt.contains("progress", Tag.TAG_DOUBLE) && nbt.contains("total", Tag.TAG_INT)) {
-        double ticks = nbt.getDouble("progress");
-        float total = nbt.getInt("total");
+      if (tag.contains("progress", Tag.TAG_DOUBLE) && tag.contains("total", Tag.TAG_INT)) {
+        double ticks = tag.getDouble("progress");
+        float total = tag.getInt("total");
         float progress = (float) (ticks / total);
         String ticksTotal = ticks + " / " + total;
         if (total >= 20) {
@@ -48,7 +49,6 @@ public class DynamicMachineComponentProvider implements IBlockComponentProvider 
         Component component = Component
             .literal(ticksTotal + " (" + Utils.decimalFormatWithPercentage(progress * 100) + ")")
             .withStyle(ChatFormatting.WHITE);
-        IElementHelper helper = IElementHelper.get();
         tooltip.add(helper.progress(progress, component, helper.progressStyle(), BoxStyle.getNestedBox(), true));
       }
     }

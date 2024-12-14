@@ -4,6 +4,7 @@ import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.entity.EnergyInputHatchEntity;
 import es.degrassi.mmreborn.common.entity.EnergyOutputHatchEntity;
 import es.degrassi.mmreborn.common.machine.IOType;
+import es.degrassi.mmreborn.common.machine.component.EnergyHatch;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateEnergyComponentPacket;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateFluidComponentPacket;
 import es.degrassi.mmreborn.common.util.IEnergyHandler;
@@ -21,21 +22,34 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import javax.annotation.Nullable;
+
 public abstract class EnergyHatchEntity extends ColorableMachineComponentEntity implements IEnergyStorage, IEnergyHandler, MachineComponentEntity {
 
   protected long energy = 0;
   protected EnergyHatchSize size;
-
-//    private GTEnergyContainer energyContainer;
+  protected final IOType ioType;
 
   public EnergyHatchEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
     super(type, pos, state);
+    ioType = null;
   }
 
   public EnergyHatchEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, EnergyHatchSize size, IOType ioType) {
     super(type, pos, state);
     this.size = size;
-//    this.energyContainer = new GTEnergyContainer(this, ioType);
+    this.ioType = ioType;
+  }
+
+  @Nullable
+  @Override
+  public EnergyHatch provideComponent() {
+    return new EnergyHatch(ioType) {
+      @Override
+      public IEnergyHandler getContainerProvider() {
+        return EnergyHatchEntity.this;
+      }
+    };
   }
 
   @Override
@@ -112,8 +126,6 @@ public abstract class EnergyHatchEntity extends ColorableMachineComponentEntity 
   protected int convertDownEnergy(long energy) {
     return energy >= Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) energy;
   }
-
-  //MM stuff
 
   public EnergyHatchSize getTier() {
     return size;

@@ -23,7 +23,6 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -94,7 +93,8 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
 
   @Override
   public void createRecipeExtras(IRecipeExtrasBuilder builder, @NotNull MachineRecipe recipe, @NotNull IFocusGroup focuses) {
-    builder.addAnimatedRecipeArrow(20)
+    if (recipe.isShouldRenderProgress())
+      builder.addAnimatedRecipeArrow(20)
         .setPosition(recipe.getProgressPosition().x(), recipe.getProgressPosition().y());
 
     Font font = Minecraft.getInstance().font;

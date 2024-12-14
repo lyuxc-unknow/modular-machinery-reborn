@@ -48,6 +48,7 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
     setValue(ModularMachineryRebornRecipeSchemas.PROGRESS_Y, progressY);
     setValue(ModularMachineryRebornRecipeSchemas.WIDTH, width);
     setValue(ModularMachineryRebornRecipeSchemas.HEIGHT, height);
+    setValue(ModularMachineryRebornRecipeSchemas.SHOULD_RENDER_PROGRESS, true);
   }
   @HideFromJS
   public MachineRecipeBuilderJS(ResourceLocation machine, int time, int width, int height) {
@@ -55,6 +56,7 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
     setValue(ModularMachineryRebornRecipeSchemas.TIME, new TickDuration(time));
     setValue(ModularMachineryRebornRecipeSchemas.WIDTH, width);
     setValue(ModularMachineryRebornRecipeSchemas.HEIGHT, height);
+    setValue(ModularMachineryRebornRecipeSchemas.SHOULD_RENDER_PROGRESS, true);
   }
 
   @HideFromJS
@@ -65,6 +67,7 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
     setValue(ModularMachineryRebornRecipeSchemas.PROGRESS_Y, 8);
     setValue(ModularMachineryRebornRecipeSchemas.WIDTH, 256);
     setValue(ModularMachineryRebornRecipeSchemas.HEIGHT, 256);
+    setValue(ModularMachineryRebornRecipeSchemas.SHOULD_RENDER_PROGRESS, true);
   }
 
   @HideFromJS
@@ -105,6 +108,7 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
     for (ComponentRequirement<?, ?> requirement : getValue(ModularMachineryRebornRecipeSchemas.REQUIREMENTS))
       builder.addRequirement(requirement);
 
+    builder.shouldRenderProgress(getValue(ModularMachineryRebornRecipeSchemas.SHOULD_RENDER_PROGRESS));
     builder.withPriority(getValue(ModularMachineryRebornRecipeSchemas.PRIORITY));
     builder.shouldVoidOnFailure(getValue(ModularMachineryRebornRecipeSchemas.VOID));
 
@@ -119,6 +123,11 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
     }
     if (this.json != null)
       this.json.addProperty("type", RecipeRegistration.RECIPE_TYPE.getId().toString());
+    return this;
+  }
+
+  public MachineRecipeBuilderJS renderProgress(boolean value) {
+    setValue(ModularMachineryRebornRecipeSchemas.SHOULD_RENDER_PROGRESS, value);
     return this;
   }
 

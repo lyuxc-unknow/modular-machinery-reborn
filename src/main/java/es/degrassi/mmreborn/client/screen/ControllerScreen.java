@@ -3,8 +3,6 @@ package es.degrassi.mmreborn.client.screen;
 import com.mojang.datafixers.util.Either;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.BlockIngredient;
-import es.degrassi.mmreborn.api.PartialBlockState;
-import es.degrassi.mmreborn.api.TagUtil;
 import es.degrassi.mmreborn.client.container.ControllerContainer;
 import es.degrassi.mmreborn.client.item.MMRItemTooltipComponent;
 import es.degrassi.mmreborn.client.screen.widget.StructurePlacerWidget;
@@ -18,15 +16,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
@@ -154,47 +148,14 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
               .forEach((key, amount) -> {
                 BlockIngredient ingredient = machine.getPattern().getPattern().asMap().get(key);
                 if (ingredient != null && amount > 0) {
-                  String k;
-                  String value;
-                  MMRItemTooltipComponent component;
-                  if (ingredient.isTag()) {
-                    k = "tag";
-                    value = ingredient.getTags()
-                        .stream()
-                        .map(TagKey::location)
-                        .map(ResourceLocation::toString)
-                        .map(s -> "#" + s)
-                        .toList()
-                        .toString();
-                    component = new MMRItemTooltipComponent(
-                        ingredient.getTags()
-                            .stream()
-                            .flatMap(TagUtil::getBlocks)
-                            .map(Block::asItem)
-                            .map(Item::getDefaultInstance)
-                            .map(stack -> stack.copyWithCount(Math.toIntExact(amount)))
-                            .toList()
-                    );
-                  } else {
-                    k = "block";
-                    value = ingredient.getAll()
-                        .stream()
-                        .map(PartialBlockState::toString)
-                        .toList()
-                        .toString();
-                    component = new MMRItemTooltipComponent(
-                        ingredient.getAll().stream()
-                            .map(PartialBlockState::getBlockState)
-                            .map(BlockState::getBlock)
-                            .map(Block::asItem)
-                            .map(Item::getDefaultInstance)
-                            .map(stack -> stack.copyWithCount(Math.toIntExact(amount)))
-                            .toList()
-                    );
-                  }
+                  List<ItemStack> stacks = ingredient.getStacks(Math.toIntExact(amount));
+                  MMRItemTooltipComponent component = new MMRItemTooltipComponent(stacks);
+                  String value = ingredient.getString();
+                  if (value.startsWith("[") && value.endsWith("]") && ((ingredient.isTag() && ingredient.getTags().size() == 1) || ingredient.getAll().size() == 1))
+                    value = value.substring(1, value.length() - 1);
                   component.setComponent(
                       Component.translatable(
-                          "modular_machinery_reborn.controller.required." + k,
+                          "modular_machinery_reborn.controller.required.block",
                           value
                       ).withStyle(ChatFormatting.GRAY)
                   );

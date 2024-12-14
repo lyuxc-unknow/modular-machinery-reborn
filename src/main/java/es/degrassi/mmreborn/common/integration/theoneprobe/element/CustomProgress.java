@@ -1,4 +1,4 @@
-package es.degrassi.mmreborn.common.integration.theoneprobe;
+package es.degrassi.mmreborn.common.integration.theoneprobe.element;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.util.Utils;

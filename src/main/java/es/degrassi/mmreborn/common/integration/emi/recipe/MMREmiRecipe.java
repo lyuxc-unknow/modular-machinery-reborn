@@ -63,7 +63,8 @@ public class MMREmiRecipe extends BasicEmiRecipe {
   @Override
   public void addWidgets(WidgetHolder widgets) {
     textsToRender.clear();
-    widgets.addFillingArrow(recipe.getProgressPosition().x(), recipe.getProgressPosition().y(), 1_000);
+    if (recipe.isShouldRenderProgress())
+      widgets.addFillingArrow(recipe.getProgressPosition().x(), recipe.getProgressPosition().y(), 1_000);
     Font font = Minecraft.getInstance().font;
     textsToRender.addAll(splitLines(font, List.of(Component.translatable(
         "modular_machinery_reborn.jei.ingredient.duration",

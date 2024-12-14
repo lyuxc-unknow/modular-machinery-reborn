@@ -1,4 +1,4 @@
-package es.degrassi.mmreborn.common.integration.theoneprobe;
+package es.degrassi.mmreborn.common.integration.theoneprobe.element;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;

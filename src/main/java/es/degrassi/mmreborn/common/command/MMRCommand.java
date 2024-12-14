@@ -4,18 +4,10 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.client.util.EnergyDisplayUtil;
-import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
-import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
-import es.degrassi.mmreborn.common.crafting.MachineRecipe;
+import es.degrassi.mmreborn.common.block.prop.ConfigLoaded;
 import es.degrassi.mmreborn.common.data.Config;
-import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.machine.MachineJsonReloadListener;
 import es.degrassi.mmreborn.common.network.server.SOpenFilePacket;
-import es.degrassi.mmreborn.common.registration.RecipeRegistration;
-import es.degrassi.mmreborn.common.util.MMRLogger;
-import java.io.File;
-import java.util.LinkedList;
-import java.util.concurrent.CompletableFuture;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -23,9 +15,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.profiling.InactiveProfiler;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+import java.util.concurrent.CompletableFuture;
 
 public class MMRCommand {
   public static LiteralArgumentBuilder<CommandSourceStack> register(String name) {
@@ -49,12 +43,17 @@ public class MMRCommand {
       .requires(cs -> cs.hasPermission(2))
       .executes(ctx -> {
         Config.load();
-        EnergyHatchSize.loadFromConfig();
-        FluidHatchSize.loadFromConfig();
+        ConfigLoaded.load();
+//        EnergyHatchSize.loadFromConfig((EnergyHatchSize size) -> {
+//          size.maxEnergy = MMRConfig.get().energySize(size);
+//          size.maxEnergy = MiscUtils.clamp(size.maxEnergy, 1, Long.MAX_VALUE);
+//          size.transferLimit = MMRConfig.get().energyLimit(size);
+//          size.transferLimit = MiscUtils.clamp(size.transferLimit, 1, Long.MAX_VALUE);
+//        });
+//        FluidHatchSize.loadFromConfig();
         EnergyDisplayUtil.loadFromConfig();
         if (ctx.getSource().getEntity() instanceof ServerPlayer player) {
           reloadMachines(player.server, player);
-//          reloadRecipes(player.server, player);
         }
         return 1;
       });
@@ -67,27 +66,4 @@ public class MMRCommand {
           player.sendSystemMessage(Component.translatable(ModularMachineryReborn.MODID + ".command.reload.machines").withStyle(ChatFormatting.GRAY));
       });
   }
-
-//  public static void reloadRecipes(MinecraftServer server, ServerPlayer player) {
-//    MachineRecipe.RECIPES.clear();
-//    MMRLogger.INSTANCE.info(
-//      "All recipes: {}",
-//      server
-//        .getRecipeManager()
-//        .getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get())
-//        .stream()
-//        .map(RecipeHolder::value)
-//        .map(MachineRecipe::asJson)
-//        .toList()
-//    );
-//    server.getRecipeManager().getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get()).forEach(holder -> {
-//      MachineRecipe recipe = holder.value();
-//      DynamicMachine machine = recipe.getOwningMachine();
-//      if (machine == null) return;
-//      MachineRecipe.RECIPES.computeIfAbsent(machine, list -> new LinkedList<>()).add(recipe);
-//    });
-//    MMRLogger.INSTANCE.info("reloaded recipes -> {}", MachineRecipe.RECIPES.values());
-//    if (player != null && !MachineRecipe.RECIPES.isEmpty())
-//      player.sendSystemMessage(Component.translatable(ModularMachineryReborn.MODID + ".command.reload.recipes").withStyle(ChatFormatting.GRAY));
-//  }
 }

@@ -1,11 +1,10 @@
 package es.degrassi.mmreborn.common.block.prop;
 
-import es.degrassi.mmreborn.common.data.MMRConfig;
 import net.minecraft.util.StringRepresentable;
 
 import java.util.Locale;
 
-public enum ItemBusSize implements StringRepresentable {
+public enum ItemBusSize implements StringRepresentable, ConfigLoaded {
   TINY(1),
   SMALL(4),
   NORMAL(6),
@@ -25,22 +24,21 @@ public enum ItemBusSize implements StringRepresentable {
 
   public static ItemBusSize value(String value) {
     return switch (value.toUpperCase(Locale.ROOT)) {
-      case "TINY" -> TINY;
       case "SMALL" -> SMALL;
       case "NORMAL" -> NORMAL;
       case "REINFORCED" -> REINFORCED;
       case "BIG" -> BIG;
       case "HUGE" -> HUGE;
       case "LUDICROUS" -> LUDICROUS;
-      default -> null;
+      default -> TINY;
     };
   }
 
-  public static void loadFromConfig() {
-    for (ItemBusSize size : ItemBusSize.values()) {
-      size.slots = MMRConfig.get().itemSize(size);
-    }
-  }
+//  public static void loadFromConfig() {
+//    for (ItemBusSize size : ItemBusSize.values()) {
+//      size.slots = MMRConfig.get().itemSize(size);
+//    }
+//  }
 
   public int getSlotCount() {
     return slots;

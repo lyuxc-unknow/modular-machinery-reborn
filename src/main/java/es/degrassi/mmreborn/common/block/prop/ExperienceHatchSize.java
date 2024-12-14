@@ -1,12 +1,11 @@
 package es.degrassi.mmreborn.common.block.prop;
 
-import es.degrassi.mmreborn.common.data.MMRConfig;
 import lombok.Getter;
 import net.minecraft.util.StringRepresentable;
 
 import java.util.Locale;
 
-public enum ExperienceHatchSize implements StringRepresentable {
+public enum ExperienceHatchSize implements StringRepresentable, ConfigLoaded {
   TINY(1_000),
   SMALL(4_000),
   NORMAL(10_000),
@@ -17,7 +16,7 @@ public enum ExperienceHatchSize implements StringRepresentable {
   VACUUM(320_000);
 
   @Getter
-  private int capacity;
+  public int capacity;
 
   public final int defaultCapacity;
 
@@ -42,9 +41,9 @@ public enum ExperienceHatchSize implements StringRepresentable {
       default -> TINY;
     };
   }
-  public static void loadFromConfig() {
-    for (ExperienceHatchSize size : values()) {
-      size.capacity = MMRConfig.get().experienceSize(size);
-    }
-  }
+//  public static void loadFromConfig() {
+//    for (ExperienceHatchSize size : values()) {
+//      size.capacity = MMRConfig.get().experienceSize(size);
+//    }
+//  }
 }

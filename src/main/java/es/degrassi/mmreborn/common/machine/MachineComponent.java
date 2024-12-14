@@ -1,6 +1,7 @@
 package es.degrassi.mmreborn.common.machine;
 
 import es.degrassi.mmreborn.common.crafting.ComponentType;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class MachineComponent<T> {
   private final IOType ioType;
@@ -15,5 +16,6 @@ public abstract class MachineComponent<T> {
 
   public abstract ComponentType getComponentType();
 
+  @Nullable
   public abstract T getContainerProvider();
 }

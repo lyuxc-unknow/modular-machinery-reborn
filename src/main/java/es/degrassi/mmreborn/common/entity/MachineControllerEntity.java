@@ -25,6 +25,7 @@ import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -41,14 +42,18 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 @Getter
 @Setter
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class MachineControllerEntity extends BlockEntityRestrictedTick {
   private CraftingStatus craftingStatus = CraftingStatus.MISSING_STRUCTURE;
 
   private ResourceLocation id = DynamicMachine.DUMMY.getRegistryName();
+  @Nullable
   private ActiveMachineRecipe activeRecipe = null;
 
   private int recipeTicks = -1;
@@ -108,6 +113,8 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
 
   private void useRecipe() {
     RecipeCraftingContext context = this.getFoundMachine().createContext(this.activeRecipe, this, this.foundComponents);
+    if (context == null) return;
+    if (activeRecipe == null) return;
     this.setCraftingStatus(this.activeRecipe.tick(context)); //handle energy IO and tick progression
 
     if (this.activeRecipe.getRecipe().doesCancelRecipeOnPerTickFailure() && this.craftingStatus.isFailure()) {
@@ -119,6 +126,12 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
       setRecipeTicks(-1);
       setCraftingStatus(CraftingStatus.NO_RECIPE);
       context = this.getFoundMachine().createContext(this.activeRecipe, this, this.foundComponents);
+      if (context == null) {
+        this.activeRecipe = null;
+        setRecipeTicks(-1);
+        setCraftingStatus(CraftingStatus.NO_RECIPE);
+        return;
+      }
       CraftingCheckResult result = context.canStartCrafting();
       if (result.isFailure()) {
         this.activeRecipe = null;
@@ -149,6 +162,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
     for (RecipeHolder<MachineRecipe> recipe : availableRecipes) {
       ActiveMachineRecipe aRecipe = new ActiveMachineRecipe(recipe, this);
       RecipeCraftingContext context = this.getFoundMachine().createContext(aRecipe, this, this.foundComponents);
+      if (context == null) continue;
       CraftingCheckResult result = context.canStartCrafting();
       if (!result.isFailure()) {
         this.activeRecipe = aRecipe;
@@ -197,7 +211,8 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
       ticksToUpdateComponent = 1;
     }
     if (level.getGameTime() % MMRConfig.get().checkStructureTicks.get() == 0) {
-      if (this.getFoundMachine() != null && this.getFoundMachine() != DynamicMachine.DUMMY) {
+      this.getFoundMachine();
+      if (this.getFoundMachine() != DynamicMachine.DUMMY) {
         if (!getFoundMachine().getPattern().match(getLevel(), getBlockPos(), getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING))) {
           distributeCasingColor(true);
           this.activeRecipe = null;
@@ -229,7 +244,8 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
     if (ModularMachineryReborn.MACHINES.get(id) != DynamicMachine.DUMMY) {
       distributeCasingColor(default_, getFoundMachine().getPattern().getBlocks(getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).keySet().toArray(BlockPos[]::new));
     } else {
-      if (getBlueprintMachine() != null && !getBlueprintMachine().getPattern().match(getLevel(), getBlockPos(), getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING))) {
+      getBlueprintMachine();
+      if (!getBlueprintMachine().getPattern().match(getLevel(), getBlockPos(), getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING))) {
         BlockPos[] blockPos = getBlueprintMachine().getPattern().getBlocks(getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).keySet().toArray(BlockPos[]::new);
         distributeCasingColor(true, blockPos);
         for (BlockPos pos : blockPos) {
@@ -251,7 +267,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
   }
 
   private void updateComponents() {
-    if (getFoundMachine() == null) return;
+    if (getFoundMachine() == DynamicMachine.DUMMY) return;
     if (level.getGameTime() % 20 == 0) {
       this.foundComponents.clear();
       for (BlockPos potentialPosition : this.getFoundMachine().getPattern().getBlocks(getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).keySet()) {
@@ -278,12 +294,10 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
     return this.activeRecipe != null && this.activeRecipe.getHolder() != null && this.activeRecipe.getRecipe() != null && this.recipeTicks > -1;
   }
 
-  @Nullable
   public DynamicMachine getFoundMachine() {
     return ModularMachineryReborn.MACHINES.getOrDefault(id, DynamicMachine.DUMMY);
   }
 
-  @Nullable
   public DynamicMachine getBlueprintMachine() {
     return getFoundMachine();
   }

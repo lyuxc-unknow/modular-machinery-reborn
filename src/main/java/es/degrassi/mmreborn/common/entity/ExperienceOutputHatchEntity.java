@@ -16,7 +16,6 @@ public class ExperienceOutputHatchEntity extends ExperienceHatchEntity {
 
   public ExperienceOutputHatchEntity(BlockPos pos, BlockState state) {
     super(EntityRegistration.EXPERIENCE_OUTPUT_HATCH.get(), pos, state);
-    this.size = null;
   }
 
   public ExperienceOutputHatchEntity(BlockPos pos, BlockState state, ExperienceHatchSize size) {

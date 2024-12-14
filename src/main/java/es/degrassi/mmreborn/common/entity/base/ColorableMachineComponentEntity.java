@@ -3,6 +3,7 @@ package es.degrassi.mmreborn.common.entity.base;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.network.server.SUpdateMachineColorPacket;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -12,6 +13,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ColorableMachineComponentEntity extends BlockEntitySynchronized implements ColorableMachineEntity {
   private int definedColor = Config.machineColor;
 

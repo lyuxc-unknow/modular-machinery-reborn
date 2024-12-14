@@ -5,7 +5,6 @@ import es.degrassi.mmreborn.client.util.EnergyDisplayUtil;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ExperienceHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
-import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
 import es.degrassi.mmreborn.common.util.LoggingLevel;
 import lombok.Getter;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -40,35 +39,27 @@ public class MMRConfig {
 
   public final ConfigValue<Integer> TINY_energy_size;
   public final ConfigValue<Integer> TINY_energy_transferRate;
-  public final ConfigValue<Integer> TINY_energy_ic2_tier;
 
   public final ConfigValue<Integer> SMALL_energy_size;
   public final ConfigValue<Integer> SMALL_energy_transferRate;
-  public final ConfigValue<Integer> SMALL_energy_ic2_tier;
 
   public final ConfigValue<Integer> NORMAL_energy_size;
   public final ConfigValue<Integer> NORMAL_energy_transferRate;
-  public final ConfigValue<Integer> NORMAL_energy_ic2_tier;
 
   public final ConfigValue<Integer> REINFORCED_energy_size;
   public final ConfigValue<Integer> REINFORCED_energy_transferRate;
-  public final ConfigValue<Integer> REINFORCED_energy_ic2_tier;
 
   public final ConfigValue<Integer> BIG_energy_size;
   public final ConfigValue<Integer> BIG_energy_transferRate;
-  public final ConfigValue<Integer> BIG_energy_ic2_tier;
 
   public final ConfigValue<Integer> HUGE_energy_size;
   public final ConfigValue<Integer> HUGE_energy_transferRate;
-  public final ConfigValue<Integer> HUGE_energy_ic2_tier;
 
   public final ConfigValue<Integer> LUDICROUS_energy_size;
   public final ConfigValue<Integer> LUDICROUS_energy_transferRate;
-  public final ConfigValue<Integer> LUDICROUS_energy_ic2_tier;
 
   public final ConfigValue<Integer> ULTIMATE_energy_size;
   public final ConfigValue<Integer> ULTIMATE_energy_transferRate;
-  public final ConfigValue<Integer> ULTIMATE_energy_ic2_tier;
 
   public final ConfigValue<Boolean> energy_displayFETooltip;
   public final ConfigValue<Boolean> energy_displayIC2EUTooltip;
@@ -89,20 +80,6 @@ public class MMRConfig {
   public final ConfigValue<Integer> LUDICROUS_fluid_size;
 
   public final ConfigValue<Integer> VACUUM_fluid_size;
-
-  public final ConfigValue<Integer> TINY_item_size;
-
-  public final ConfigValue<Integer> SMALL_item_size;
-
-  public final ConfigValue<Integer> NORMAL_item_size;
-
-  public final ConfigValue<Integer> REINFORCED_item_size;
-
-  public final ConfigValue<Integer> BIG_item_size;
-
-  public final ConfigValue<Integer> HUGE_item_size;
-
-  public final ConfigValue<Integer> LUDICROUS_item_size;
 
   public final ConfigValue<Integer> TINY_experience_size;
   public final ConfigValue<Integer> SMALL_experience_size;
@@ -184,13 +161,6 @@ public class MMRConfig {
       TINY_energy_transferRate = builder
           .comment("Defines the transfer limit for RF/FE things. \nIC2's transfer limit is defined by the voltage tier.")
           .defineInRange("transfer_rate", EnergyHatchSize.TINY.defaultConfigurationTransferLimit, 1, Integer.MAX_VALUE);
-      TINY_energy_ic2_tier = builder
-          .comment("""
-              Defines the IC2 output-voltage tier.\s
-              Only affects the power the output hatches will output \
-              power as.\s
-              0 = 'ULV' = 8 EU/t, 1 = 'LV' = 32 EU/t, 2 = 'MV' = 128 EU/t, ...""")
-          .defineInRange("ic2_tier", EnergyHatchSize.TINY.defaultIC2EnergyTier, 0, 12);
       builder.pop();
       builder.push(EnergyHatchSize.SMALL.getSerializedName());
       SMALL_energy_size = builder
@@ -200,9 +170,6 @@ public class MMRConfig {
           .comment("Defines the transfer limit for RF/FE things. \nIC2's transfer limit is defined by the voltage tier.")
           .defineInRange("transfer_rate", EnergyHatchSize.SMALL.defaultConfigurationTransferLimit, 1,
               Integer.MAX_VALUE);
-      SMALL_energy_ic2_tier = builder
-          .comment("Defines the IC2 output-voltage tier. \nOnly affects the power the output hatches will output power as. \n0 = 'ULV' = 8 EU/t, 1 = 'LV' = 32 EU/t, 2 = 'MV' = 128 EU/t, ...2")
-          .defineInRange("ic2_tier", EnergyHatchSize.SMALL.defaultIC2EnergyTier, 0, 12);
       builder.pop();
       builder.push(EnergyHatchSize.NORMAL.getSerializedName());
       NORMAL_energy_size = builder
@@ -212,13 +179,6 @@ public class MMRConfig {
           .comment("Defines the transfer limit for RF/FE things. \nIC2's transfer limit is defined by the voltage tier.")
           .defineInRange("transfer_rate", EnergyHatchSize.NORMAL.defaultConfigurationTransferLimit, 1,
               Integer.MAX_VALUE);
-      NORMAL_energy_ic2_tier = builder
-          .comment("""
-              Defines the IC2 output-voltage tier.\s
-              Only affects the power the output hatches will output \
-              power as.\s
-              0 = 'ULV' = 8 EU/t, 1 = 'LV' = 32 EU/t, 2 = 'MV' = 128 EU/t, ...""")
-          .defineInRange("ic2_tier", EnergyHatchSize.NORMAL.defaultIC2EnergyTier, 0, 12);
       builder.pop();
       builder.push(EnergyHatchSize.REINFORCED.getSerializedName());
       REINFORCED_energy_size = builder
@@ -228,13 +188,6 @@ public class MMRConfig {
           .comment("Defines the transfer limit for RF/FE things. \nIC2's transfer limit is defined by the voltage tier.")
           .defineInRange("transfer_rate", EnergyHatchSize.REINFORCED.defaultConfigurationTransferLimit, 1,
               Integer.MAX_VALUE);
-      REINFORCED_energy_ic2_tier = builder
-          .comment("""
-              Defines the IC2 output-voltage tier.\s
-              Only affects the power the output hatches will output \
-              power as.\s
-              0 = 'ULV' = 8 EU/t, 1 = 'LV' = 32 EU/t, 2 = 'MV' = 128 EU/t, ...""")
-          .defineInRange("ic2_tier", EnergyHatchSize.REINFORCED.defaultIC2EnergyTier, 0, 12);
       builder.pop();
       builder.push(EnergyHatchSize.BIG.getSerializedName());
       BIG_energy_size = builder
@@ -243,9 +196,6 @@ public class MMRConfig {
       BIG_energy_transferRate = builder
           .comment("Defines the transfer limit for RF/FE things. \nIC2's transfer limit is defined by the voltage tier.")
           .defineInRange("transfer_rate", EnergyHatchSize.BIG.defaultConfigurationTransferLimit, 1, Integer.MAX_VALUE);
-      BIG_energy_ic2_tier = builder
-          .comment("Defines the IC2 output-voltage tier. \nOnly affects the power the output hatches will output power as. \n0 = 'ULV' = 8 EU/t, 1 = 'LV' = 32 EU/t, 2 = 'MV' = 128 EU/t, ...")
-          .defineInRange("ic2_tier", EnergyHatchSize.BIG.defaultIC2EnergyTier, 0, 12);
       builder.pop();
       builder.push(EnergyHatchSize.HUGE.getSerializedName());
       HUGE_energy_size = builder
@@ -254,13 +204,6 @@ public class MMRConfig {
       HUGE_energy_transferRate = builder
           .comment("Defines the transfer limit for RF/FE things. \nIC2's transfer limit is defined by the voltage tier.")
           .defineInRange("transfer_rate", EnergyHatchSize.HUGE.defaultConfigurationTransferLimit, 1, Integer.MAX_VALUE);
-      HUGE_energy_ic2_tier = builder
-          .comment("""
-              Defines the IC2 output-voltage tier.\s
-              Only affects the power the output hatches will output \
-              power as.\s
-              0 = 'ULV' = 8 EU/t, 1 = 'LV' = 32 EU/t, 2 = 'MV' = 128 EU/t, ...""")
-          .defineInRange("ic2_tier", EnergyHatchSize.HUGE.defaultIC2EnergyTier, 0, 12);
       builder.pop();
       builder.push(EnergyHatchSize.LUDICROUS.getSerializedName());
       LUDICROUS_energy_size = builder
@@ -270,9 +213,6 @@ public class MMRConfig {
           .comment("Defines the transfer limit for RF/FE things. \nIC2's transfer limit is defined by the voltage tier.")
           .defineInRange("transfer_rate", EnergyHatchSize.LUDICROUS.defaultConfigurationTransferLimit, 1,
               Integer.MAX_VALUE);
-      LUDICROUS_energy_ic2_tier = builder
-          .comment("Defines the IC2 output-voltage tier. \nOnly affects the power the output hatches will output power as. \n0 = 'ULV' = 8 EU/t, 1 = 'LV' = 32 EU/t, 2 = 'MV' = 128 EU/t, ...")
-          .defineInRange("ic2_tier", EnergyHatchSize.LUDICROUS.defaultIC2EnergyTier, 0, 12);
       builder.pop();
       builder.push(EnergyHatchSize.ULTIMATE.getSerializedName());
       ULTIMATE_energy_size = builder
@@ -281,9 +221,6 @@ public class MMRConfig {
       ULTIMATE_energy_transferRate = builder
           .comment("Defines the transfer limit for RF/FE things. \nIC2's transfer limit is defined by the voltage tier.")
           .defineInRange("transfer_rate", EnergyHatchSize.ULTIMATE.defaultConfigurationTransferLimit, 1, Integer.MAX_VALUE);
-      ULTIMATE_energy_ic2_tier = builder
-          .comment("Defines the IC2 output-voltage tier. \nOnly affects the power the output hatches will output power as. \n0 = 'ULV' = 8 EU/t, 1 = 'LV' = 32 EU/t, 2 = 'MV' = 128 EU/t, ...")
-          .defineInRange("ic2_tier", EnergyHatchSize.ULTIMATE.defaultIC2EnergyTier, 0, 12);
       builder.pop();
       builder.push("Display");
       this.energy_displayFETooltip = builder
@@ -342,45 +279,10 @@ public class MMRConfig {
       builder.pop();
     }
     builder.pop();
-    builder.push("itemBus");
-    {
-      builder.push(ItemBusSize.TINY.getSerializedName());
-      TINY_item_size = builder
-          .comment("Slot number of the item bus")
-          .defineInRange("size", ItemBusSize.TINY.defaultConfigSize, 1, Integer.MAX_VALUE);
-      builder.pop();
-      builder.push(ItemBusSize.SMALL.getSerializedName());
-      SMALL_item_size = builder
-          .comment("Slot number of the item bus")
-          .defineInRange("size", ItemBusSize.SMALL.defaultConfigSize, 1, Integer.MAX_VALUE);
-      builder.pop();
-      builder.push(ItemBusSize.NORMAL.getSerializedName());
-      NORMAL_item_size = builder
-          .comment("Slot number of the item bus")
-          .defineInRange("size", ItemBusSize.NORMAL.defaultConfigSize, 1, Integer.MAX_VALUE);
-      builder.pop();
-      builder.push(ItemBusSize.REINFORCED.getSerializedName());
-      REINFORCED_item_size = builder
-          .comment("Slot number of the item bus")
-          .defineInRange("size", ItemBusSize.REINFORCED.defaultConfigSize, 1, Integer.MAX_VALUE);
-      builder.pop();
-      builder.push(ItemBusSize.BIG.getSerializedName());
-      BIG_item_size = builder
-          .comment("Slot number of the item bus")
-          .defineInRange("size", ItemBusSize.BIG.defaultConfigSize, 1, Integer.MAX_VALUE);
-      builder.pop();
-      builder.push(ItemBusSize.HUGE.getSerializedName());
-      HUGE_item_size = builder
-          .comment("Slot number of the item bus")
-          .defineInRange("size", ItemBusSize.HUGE.defaultConfigSize, 1, Integer.MAX_VALUE);
-      builder.pop();
-      builder.push(ItemBusSize.LUDICROUS.getSerializedName());
-      LUDICROUS_item_size = builder
-          .comment("Slot number of the item bus")
-          .defineInRange("size", ItemBusSize.LUDICROUS.defaultConfigSize, 1, Integer.MAX_VALUE);
-      builder.pop();
-    }
-    builder.pop();
+//    builder.push("itemBus");
+//    {
+//    }
+//    builder.pop();
     builder.push("experienceHatch");
     {
       builder.push(ExperienceHatchSize.TINY.getSerializedName());
@@ -427,18 +329,6 @@ public class MMRConfig {
     builder.pop();
   }
 
-  public int itemSize(ItemBusSize size) {
-    return switch(size) {
-      case TINY -> TINY_item_size.get();
-      case SMALL -> SMALL_item_size.get();
-      case NORMAL -> NORMAL_item_size.get();
-      case REINFORCED -> REINFORCED_item_size.get();
-      case BIG -> BIG_item_size.get();
-      case HUGE -> HUGE_item_size.get();
-      case LUDICROUS -> LUDICROUS_item_size.get();
-    };
-  }
-
   public int fluidSize(FluidHatchSize size) {
     return switch(size) {
       case TINY -> TINY_fluid_size.get();
@@ -475,19 +365,6 @@ public class MMRConfig {
       case HUGE -> HUGE_energy_transferRate.get();
       case LUDICROUS -> LUDICROUS_energy_transferRate.get();
       case ULTIMATE -> ULTIMATE_energy_transferRate.get();
-    };
-  }
-
-  public int energyTier(EnergyHatchSize size) {
-    return switch (size) {
-      case TINY -> TINY_energy_ic2_tier.get();
-      case SMALL -> SMALL_energy_ic2_tier.get();
-      case NORMAL -> NORMAL_energy_ic2_tier.get();
-      case REINFORCED -> REINFORCED_energy_ic2_tier.get();
-      case BIG -> BIG_energy_ic2_tier.get();
-      case HUGE -> HUGE_energy_ic2_tier.get();
-      case LUDICROUS -> LUDICROUS_energy_ic2_tier.get();
-      case ULTIMATE -> ULTIMATE_energy_ic2_tier.get();
     };
   }
 

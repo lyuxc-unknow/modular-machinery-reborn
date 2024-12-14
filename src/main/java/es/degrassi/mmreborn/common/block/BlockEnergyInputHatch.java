@@ -4,7 +4,6 @@ import es.degrassi.mmreborn.client.util.EnergyDisplayUtil;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.entity.EnergyInputHatchEntity;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
-import es.degrassi.mmreborn.common.util.Mods;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -49,28 +48,11 @@ public class BlockEnergyInputHatch extends BlockEnergyHatch {
       tooltip.add(Component.translatable("tooltip.energyhatch.in.accept", type.transferLimit).withStyle(ChatFormatting.GRAY));
       tooltip.add(Component.empty());
     }
-    if(Mods.IC2.isPresent() && EnergyDisplayUtil.displayIC2EUTooltip) {
-      tooltip.add(Component.translatable(
-        "tooltip.energyhatch.ic2.in.voltage",
-        Component.translatable("tooltip.energyhatch.ic2.any").withStyle(ChatFormatting.BLUE)
-      ).withStyle(ChatFormatting.GRAY));
-      tooltip.add(Component.translatable(
-        "tooltip.energyhatch.ic2.in.transfer",
-        Component.translatable("tooltip.energyhatch.ic2.any").withStyle(ChatFormatting.BLUE),
-        Component.translatable("tooltip.energyhatch.ic2.powerrate").withStyle(ChatFormatting.BLUE)
-      ));
-      tooltip.add(Component.empty());
-    }
-
-//        if (Mods.GREGTECH.isPresent() && EnergyDisplayUtil.displayGTEUTooltip) {
-//            addGTTooltip(tooltip, size);
-//            tooltip.add("");
-//        }
   }
 
   @Nullable
   @Override
   public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
-    return new EnergyInputHatchEntity(pos, state, type/*state.getValue(BUS_TYPE)*/);
+    return new EnergyInputHatchEntity(pos, state, type);
   }
 }

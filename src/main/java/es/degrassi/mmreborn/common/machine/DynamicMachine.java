@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -24,9 +25,9 @@ import java.util.Optional;
 public class DynamicMachine {
   public static final NamedCodec<DynamicMachine> CODEC = NamedCodec.record(instance -> instance.group(
       DefaultCodecs.RESOURCE_LOCATION.fieldOf("registryName").forGetter(DynamicMachine::getRegistryName),
-      NamedCodec.STRING.optionalFieldOf("localizedName").forGetter(machine -> machine.localizedName),
-      Structure.CODEC.fieldOf("structure").forGetter(machine -> machine.pattern),
-      DefaultCodecs.HEX.optionalFieldOf("color", Config.machineColor).forGetter(machine -> machine.definedColor),
+      NamedCodec.STRING.optionalFieldOf("localizedName").forGetter(machine -> Optional.of(machine.getLocalizedName())),
+      Structure.CODEC.fieldOf("structure").forGetter(DynamicMachine::getPattern),
+      DefaultCodecs.HEX.optionalFieldOf("color", Config.machineColor).forGetter(DynamicMachine::getMachineColor),
       MachineModelLocation.CODEC.optionalFieldOf("controller", MachineModelLocation.DEFAULT).forGetter(DynamicMachine::getControllerModel)
   ).apply(instance, (registryName, localizedName, pattern, color, controllerModel) -> {
     DynamicMachine machine = new DynamicMachine(registryName);
@@ -41,7 +42,7 @@ public class DynamicMachine {
 
   @Nonnull
   private ResourceLocation registryName;
-  private Optional<String> localizedName;
+  private Optional<String> localizedName = Optional.empty();
   private Structure pattern = Structure.EMPTY;
   private int definedColor = Config.machineColor;
   private MachineModelLocation controllerModel;
@@ -63,13 +64,16 @@ public class DynamicMachine {
     return definedColor;
   }
 
+  @Nullable
   public RecipeCraftingContext createContext(
-      ActiveMachineRecipe activeRecipe,
+      @Nullable ActiveMachineRecipe activeRecipe,
       MachineControllerEntity controller,
       Collection<MachineComponent<?>> taggedComponents
   ) {
+    if (activeRecipe == null) return null;
+    if (activeRecipe.getRecipe() == null) return null;
     if (!activeRecipe.getRecipe().getOwningMachineIdentifier().equals(getRegistryName())) {
-      throw new IllegalArgumentException("Tried to create context for a recipe that doesn't belong to the referenced machine!");
+      return null;
     }
     RecipeCraftingContext context = new RecipeCraftingContext(activeRecipe, controller);
     taggedComponents.forEach(context::addComponent);

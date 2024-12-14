@@ -1,6 +1,5 @@
 package es.degrassi.mmreborn.common.block.prop;
 
-import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.entity.base.BlockEntitySynchronized;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateFluidComponentPacket;
 import es.degrassi.mmreborn.common.util.HybridTank;
@@ -13,7 +12,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Locale;
 
-public enum FluidHatchSize implements StringRepresentable {
+public enum FluidHatchSize implements StringRepresentable, ConfigLoaded {
   TINY(100),
   SMALL(400),
   NORMAL(1000),
@@ -24,7 +23,7 @@ public enum FluidHatchSize implements StringRepresentable {
   VACUUM(32000);
 
   @Getter
-  private int size;
+  public int size;
 
   public final int defaultConfigurationValue;
 
@@ -47,13 +46,7 @@ public enum FluidHatchSize implements StringRepresentable {
 
   public HybridTank buildTank(BlockEntitySynchronized tileEntity, boolean canFill, boolean canDrain) {
     HybridTank tank;
-//    if(Mods.MEKANISM.isPresent()) {
-//      tank = buildMekTank(tileEntity);
-//    } else {
-      tank = buildDefaultTank(tileEntity);
-//    }
-//    tank.setCanFill(canFill);
-//    tank.setCanDrain(canDrain);
+    tank = buildDefaultTank(tileEntity);
     return tank;
   }
 
@@ -109,10 +102,10 @@ public enum FluidHatchSize implements StringRepresentable {
     return name().toLowerCase();
   }
 
-  public static void loadFromConfig() {
-    for (FluidHatchSize size : values()) {
-      size.size = MMRConfig.get().fluidSize(size);
-    }
-  }
+//  public static void loadFromConfig() {
+//    for (FluidHatchSize size : values()) {
+//      size.size = MMRConfig.get().fluidSize(size);
+//    }
+//  }
 
 }

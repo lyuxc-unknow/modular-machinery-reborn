@@ -21,15 +21,4 @@ public class FluidOutputHatchEntity extends FluidTankEntity implements MachineCo
   public FluidOutputHatchEntity(BlockPos pos, BlockState state, FluidHatchSize size) {
     super(EntityRegistration.FLUID_OUTPUT_HATCH.get(), pos, state, size, IOType.OUTPUT);
   }
-
-  @Nullable
-  @Override
-  public MachineComponent provideComponent() {
-    return new FluidHatch(IOType.OUTPUT) {
-      @Override
-      public HybridTank getContainerProvider() {
-        return getTank();
-      }
-    };
-  }
 }

@@ -2,6 +2,7 @@ package es.degrassi.mmreborn.common.entity.base;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -11,8 +12,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 @Getter
 @Setter
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class BlockEntitySynchronized extends BlockEntity {
   private static final String REQUEST_UPDATE_KEY = "requestModelUpdate";
   private static final String IN_STRUCTURE_KEY = "inStructure";

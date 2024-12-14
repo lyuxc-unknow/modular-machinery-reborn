@@ -37,7 +37,6 @@ import java.util.List;
 @Getter
 @Setter
 public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeInput> {
-
   public static final NamedMapCodec<MachineRecipeBuilder> CODEC = NamedCodec.record(instance -> instance.group(
       DefaultCodecs.RESOURCE_LOCATION.fieldOf("machine").forGetter(MachineRecipeBuilder::getMachine),
       NamedCodec.intRange(1, Integer.MAX_VALUE).fieldOf("time").forGetter(MachineRecipeBuilder::getTime),
@@ -46,41 +45,9 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
       NamedCodec.BOOL.optionalFieldOf("voidFailure", true).forGetter(MachineRecipeBuilder::isVoidF),
       NamedCodec.INT.optionalFieldOf("width", 256).forGetter(MachineRecipeBuilder::getWidth),
       NamedCodec.INT.optionalFieldOf("height", 256).forGetter(MachineRecipeBuilder::getHeight),
+      NamedCodec.BOOL.optionalFieldOf("renderProgress", true).forGetter(MachineRecipeBuilder::isShouldRenderProgress),
       PositionedRequirement.POSITION_CODEC.optionalFieldOf("progressPosition", new PositionedRequirement(74, 8)).forGetter(MachineRecipeBuilder::getProgressPosition)
   ).apply(instance, MachineRecipeBuilder::new), "Machine recipe");
-
-
-  public final List<Component> textsToRender = new LinkedList<>();
-
-  @Override
-  public boolean matches(@NotNull RecipeInput container, @NotNull Level level) {
-    return false;
-  }
-
-  @Override
-  public @NotNull ItemStack assemble(@NotNull RecipeInput container, HolderLookup.@NotNull Provider registryAccess) {
-    return ItemStack.EMPTY;
-  }
-
-  @Override
-  public boolean canCraftInDimensions(int i, int i1) {
-    return false;
-  }
-
-  @Override
-  public @NotNull ItemStack getResultItem(HolderLookup.@NotNull Provider registryAccess) {
-    return ItemStack.EMPTY;
-  }
-
-  @Override
-  public @NotNull RecipeSerializer<?> getSerializer() {
-    return RecipeRegistration.RECIPE_SERIALIZER.get();
-  }
-
-  @Override
-  public @NotNull RecipeType<?> getType() {
-    return RecipeRegistration.RECIPE_TYPE.get();
-  }
 
   private final ResourceLocation owningMachine;
   @Getter(AccessLevel.NONE)
@@ -90,17 +57,18 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
   private final boolean voidPerTickFailure;
   private final PositionedRequirement progressPosition;
   private final int width, height;
+  public final List<Component> textsToRender = new LinkedList<>();
+  private final boolean shouldRenderProgress;
 
-  public MachineRecipe(ResourceLocation owningMachine, int tickTime, int configuredPriority, boolean voidPerTickFailure, int width, int height, PositionedRequirement progressPosition) {
-    this(owningMachine, tickTime, configuredPriority, voidPerTickFailure, false, width, height, progressPosition);
-  }
-
-  public MachineRecipe(ResourceLocation owningMachine, int tickTime, int configuredPriority, boolean voidPerTickFailure, boolean copy, int width, int height, PositionedRequirement progressPosition) {
+  public MachineRecipe(ResourceLocation owningMachine, int tickTime, int configuredPriority,
+                       boolean voidPerTickFailure, int width, int height,
+                       boolean shouldRenderProgress, PositionedRequirement progressPosition) {
     this.owningMachine = owningMachine;
     this.tickTime = tickTime;
     this.configuredPriority = configuredPriority;
     this.voidPerTickFailure = voidPerTickFailure;
     this.progressPosition = progressPosition;
+    this.shouldRenderProgress = shouldRenderProgress;
     this.width = width;
     this.height = height;
   }
@@ -147,9 +115,9 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
         Math.round(RecipeModifier.applyModifiers(modifiers, RequirementTypeRegistration.DURATION.get(), null, this.getRecipeTotalTickTime(), false)),
         this.getConfiguredPriority(),
         this.doesCancelRecipeOnPerTickFailure(),
-        true,
         this.width,
         this.height,
+        this.shouldRenderProgress,
         this.progressPosition
     );
 
@@ -177,6 +145,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
     json.add("recipeRequirements", recipeRequirements);
     json.addProperty("configuredPriority", configuredPriority);
     json.addProperty("voidPerTickFailure", voidPerTickFailure);
+    json.addProperty("shouldRenderProgress", shouldRenderProgress);
     json.add("progressPosition", progressPosition.asJson());
     return json;
   }
@@ -186,6 +155,36 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
     return asJson().toString();
   }
 
+  @Override
+  public boolean matches(@NotNull RecipeInput container, @NotNull Level level) {
+    return false;
+  }
+
+  @Override
+  public @NotNull ItemStack assemble(@NotNull RecipeInput container, HolderLookup.@NotNull Provider registryAccess) {
+    return ItemStack.EMPTY;
+  }
+
+  @Override
+  public boolean canCraftInDimensions(int i, int i1) {
+    return false;
+  }
+
+  @Override
+  public @NotNull ItemStack getResultItem(HolderLookup.@NotNull Provider registryAccess) {
+    return ItemStack.EMPTY;
+  }
+
+  @Override
+  public @NotNull RecipeSerializer<?> getSerializer() {
+    return RecipeRegistration.RECIPE_SERIALIZER.get();
+  }
+
+  @Override
+  public @NotNull RecipeType<?> getType() {
+    return RecipeRegistration.RECIPE_TYPE.get();
+  }
+
   @Getter
   public static class MachineRecipeBuilder {
     private final ResourceLocation machine;
@@ -193,6 +192,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
     private final int time;
     private final int width, height;
     private int prio;
+    private boolean shouldRenderProgress;
     private final List<ComponentRequirement<?, ?>> requirements;
     private boolean voidF;
 
@@ -213,29 +213,39 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
       this.voidF = v;
     }
 
+    public void shouldRenderProgress(boolean v) {
+      this.shouldRenderProgress = v;
+    }
+
     public void addRequirement(ComponentRequirement<?, ?> requirement) {
       requirements.add(requirement);
     }
 
-    public MachineRecipeBuilder(ResourceLocation machine, int time, List<ComponentRequirement<?, ?>> requirements, int prio, boolean voidF, int width, int height, PositionedRequirement progressPosition) {
+    public MachineRecipeBuilder(ResourceLocation machine, int time, List<ComponentRequirement<?, ?>> requirements,
+                                int prio, boolean voidF, int width, int height,
+                                boolean shouldRenderProgress, PositionedRequirement progressPosition) {
       this.machine = machine;
       this.time = time;
       this.requirements = requirements;
       this.prio = prio;
       this.voidF = voidF;
       this.progressPosition = progressPosition;
+      this.shouldRenderProgress = shouldRenderProgress;
       this.width = width;
       this.height = height;
     }
 
     public MachineRecipeBuilder(MachineRecipe recipe) {
-      this(recipe.getOwningMachineIdentifier(), recipe.tickTime, recipe.recipeRequirements, recipe.configuredPriority, recipe.voidPerTickFailure, recipe.width, recipe.height, recipe.progressPosition);
+      this(recipe.getOwningMachineIdentifier(), recipe.tickTime, recipe.recipeRequirements, recipe.configuredPriority
+          , recipe.voidPerTickFailure, recipe.width, recipe.height, recipe.shouldRenderProgress,
+          recipe.progressPosition);
     }
 
     public MachineRecipe build() {
       try {
         MMRLogger.INSTANCE.info("Building recipe...");
-        MachineRecipe recipe = new MachineRecipe(machine, time, prio, voidF, width, height, progressPosition);
+        MachineRecipe recipe = new MachineRecipe(machine, time, prio, voidF, width, height, shouldRenderProgress,
+            progressPosition);
         requirements.forEach(recipe::addRequirement);
         MMRLogger.INSTANCE.info("Finished building recipe {}", recipe);
         return recipe;

@@ -3,6 +3,7 @@ package es.degrassi.mmreborn.common.integration.theoneprobe;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.crafting.helper.CraftingStatus;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
+import es.degrassi.mmreborn.common.integration.theoneprobe.element.CustomProgress;
 import es.degrassi.mmreborn.common.util.Utils;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -30,7 +31,7 @@ public class TOPInfoProvider implements IProbeInfoProvider, Function<ITheOneProb
 
   @Override
   public ResourceLocation getID() {
-    return ModularMachineryReborn.rl("controller_info_provider");
+    return ModularMachineryReborn.rl("mmr_info_provider");
   }
 
   @Override
@@ -49,7 +50,6 @@ public class TOPInfoProvider implements IProbeInfoProvider, Function<ITheOneProb
       case NO_RECIPE -> message.withStyle(ChatFormatting.GOLD);
       case MISSING_STRUCTURE, FAILURE -> message.withStyle(ChatFormatting.RED);
     }
-    ;
     info.mcText(message);
     if (tile.hasActiveRecipe()) {
       int ticks = tile.getRecipeTicks();
@@ -64,7 +64,7 @@ public class TOPInfoProvider implements IProbeInfoProvider, Function<ITheOneProb
                   .suffix(Component
                       .literal(
                           "/"
-                              + Utils.decimalFormat(total / 20d)
+                              + (seconds ? Utils.decimalFormat(total / 20d) : Utils.decimalFormat(total))
                               + (seconds ? "s" : "")
                               + " ("
                               + Utils.decimalFormatWithPercentage(progress * 100)

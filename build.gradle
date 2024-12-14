@@ -171,11 +171,11 @@ dependencies {
   compileOnly localRuntime("mekanism:Mekanism:${mekanism_version}")
 
   // Addons for testing
-//  localRuntime("es.degrassi:modular_machinery_reborn_energistics:${minecraft_version}-1.1.2")
+  localRuntime("es.degrassi:modular_machinery_reborn_energistics:${minecraft_version}-1.1.3")
   localRuntime("es.degrassi:modular_machinery_reborn_ars:${minecraft_version}-1.0.8")
   localRuntime("es.degrassi:modular_machinery_reborn_mekanism:${minecraft_version}-1.0.10")
   localRuntime("appeng:appliedenergistics2:19.0.22-beta")
-  localRuntime("es.degrassi:applied-experienced:${minecraft_version}-1.0.0")
+  localRuntime("es.degrassi:applied-experienced:${minecraft_version}-1.0.1")
   localRuntime("curse.maven:applied-mekanistics-574300:5664061")
   localRuntime("curse.maven:ars-energistique-905641:5891725")
   localRuntime("software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:4.6.6")

@@ -4,7 +4,6 @@ import es.degrassi.mmreborn.client.util.EnergyDisplayUtil;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.entity.EnergyOutputHatchEntity;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
-import es.degrassi.mmreborn.common.util.Mods;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -21,7 +20,6 @@ import java.util.List;
 
 public class BlockEnergyOutputHatch extends BlockEnergyHatch {
 
-//  public static final EnumProperty<EnergyHatchSize> BUS_TYPE = EnumProperty.create("size", EnergyHatchSize.class);
   public BlockEnergyOutputHatch(EnergyHatchSize type) {
     super(type);
   }
@@ -47,24 +45,7 @@ public class BlockEnergyOutputHatch extends BlockEnergyHatch {
       if (EnergyDisplayUtil.displayFETooltip) {
         tooltip.add(Component.translatable("tooltip.energyhatch.storage", type.maxEnergy).withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("tooltip.energyhatch.out.transfer", type.transferLimit).withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.empty());
       }
-      if (Mods.IC2.isPresent() && EnergyDisplayUtil.displayIC2EUTooltip) {
-        tooltip.add(Component.translatable(
-          "tooltip.energyhatch.ic2.out.voltage",
-          Component.translatable(type.getUnlocalizedEnergyDescriptor()).withStyle(ChatFormatting.BLUE)
-        ));
-        tooltip.add(Component.translatable(
-          "tooltip.energyhatch.ic2.out.transfer",
-          Component.literal(String.valueOf(type.getIC2EnergyTransmission())).withStyle(ChatFormatting.BLUE),
-          Component.translatable("tooltip.energyhatch.ic2.powerrate").withStyle(ChatFormatting.BLUE)
-        ));
-        tooltip.add(Component.empty());
-      }
-//            if (Mods.GREGTECH.isPresent() && EnergyDisplayUtil.displayGTEUTooltip) {
-//                addGTTooltip(tooltip, size);
-//                tooltip.add("");
-//            }
   }
 
   @Nullable
@@ -72,5 +53,4 @@ public class BlockEnergyOutputHatch extends BlockEnergyHatch {
   public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
     return new EnergyOutputHatchEntity(pos, state, type);
   }
-
 }

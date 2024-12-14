@@ -3,7 +3,6 @@ package es.degrassi.mmreborn.common.entity;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.entity.base.EnergyHatchEntity;
 import es.degrassi.mmreborn.common.machine.IOType;
-import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.machine.component.EnergyHatch;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.util.IEnergyHandler;
@@ -21,16 +20,5 @@ public class EnergyInputHatchEntity extends EnergyHatchEntity {
 
   public EnergyInputHatchEntity(BlockPos pos, BlockState state, EnergyHatchSize size) {
     super(EntityRegistration.ENERGY_INPUT_HATCH.get(), pos, state, size, IOType.INPUT);
-  }
-
-  @Nullable
-  @Override
-  public EnergyHatch provideComponent() {
-    return new EnergyHatch(IOType.INPUT) {
-      @Override
-      public IEnergyHandler getContainerProvider() {
-        return EnergyInputHatchEntity.this;
-      }
-    };
   }
 }

@@ -10,10 +10,15 @@ import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.util.IOInventory;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class ItemInputBusEntity extends TileItemBus implements MachineComponentEntity {
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class ItemInputBusEntity extends TileItemBus {
 
   public ItemInputBusEntity(BlockPos pos, BlockState state) {
     super(EntityRegistration.ITEM_INPUT_BUS.get(), pos, state);
@@ -30,17 +35,6 @@ public class ItemInputBusEntity extends TileItemBus implements MachineComponentE
       slots[i] = i;
     }
     return new IOInventory(tile, slots, new int[] {});
-  }
-
-  @Nullable
-  @Override
-  public MachineComponent provideComponent() {
-    return new ItemBus(IOType.INPUT) {
-      @Override
-      public IOInventory getContainerProvider() {
-        return ItemInputBusEntity.this.inventory;
-      }
-    };
   }
 
 }

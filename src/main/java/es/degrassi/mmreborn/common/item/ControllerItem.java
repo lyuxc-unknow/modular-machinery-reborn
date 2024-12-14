@@ -2,7 +2,6 @@ package es.degrassi.mmreborn.common.item;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.BlockIngredient;
-import es.degrassi.mmreborn.api.PartialBlockState;
 import es.degrassi.mmreborn.common.block.BlockController;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.registration.BlockRegistration;
@@ -15,7 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -64,22 +62,9 @@ public class ControllerItem extends ItemBlockMachineComponent {
             .forEach((key, amount) -> {
               BlockIngredient ingredient = machine.getPattern().getPattern().asMap().get(key);
               if (ingredient != null && amount > 0) {
-                String value;
-                if (ingredient.isTag()) {
-                  value = ingredient.getTags()
-                      .stream()
-                      .map(TagKey::location)
-                      .map(ResourceLocation::toString)
-                      .map(s -> "#" + s)
-                      .toList()
-                      .toString();
-                } else {
-                  value = ingredient.getAll()
-                      .stream()
-                      .map(PartialBlockState::toString)
-                      .toList()
-                      .toString();
-                }
+                String value = ingredient.getString();
+                if (value.startsWith("[") && value.endsWith("]") && ((ingredient.isTag() && ingredient.getTags().size() == 1) || ingredient.getAll().size() == 1))
+                  value = value.substring(1, value.length() - 1);
                 tooltipComponents.add(
                     Component.translatable(
                         "modular_machinery_reborn.controller.required.item",

@@ -14,23 +14,33 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import java.util.Locale;
-
 public abstract class ExperienceHatchEntity extends ColorableMachineComponentEntity implements MachineComponentEntity {
-  protected ExperienceHatchSize size;
+  protected final ExperienceHatchSize size;
+  protected final IOType ioType;
 
   private final BasicExperienceTank experienceTank;
 
   public ExperienceHatchEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
     super(type, pos, state);
-    this.experienceTank = new BasicExperienceTank(0, null);
+    this.size = null;
+    this.ioType = null;
+    this.experienceTank = buildTank();
   }
 
   public ExperienceHatchEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, ExperienceHatchSize size, IOType ioType) {
     super(type, pos, state);
     this.size = size;
-    this.experienceTank = new BasicExperienceTank(
-        size.getCapacity(),
+    this.ioType = ioType;
+    this.experienceTank = buildTank();
+  }
+
+  public BasicExperienceTank getTank() {
+    return experienceTank;
+  }
+
+  private BasicExperienceTank buildTank() {
+    return new BasicExperienceTank(
+        size == null ? 0 : size.getCapacity(),
         () -> {
           if (getLevel() != null && !getLevel().isClientSide)
             PacketDistributor.sendToPlayersTrackingChunk(
@@ -40,15 +50,14 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
             );
         }
     ) {
-
       @Override
       public boolean canExtract() {
-        return !ioType.isInput();
+        return ioType == null || !ioType.isInput();
       }
 
       @Override
       public boolean canReceive() {
-        return ioType.isInput();
+        return ioType == null || ioType.isInput();
       }
 
       @Override
@@ -73,10 +82,6 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
     };
   }
 
-  public BasicExperienceTank getTank() {
-    return experienceTank;
-  }
-
   @Override
   protected void loadAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
     super.loadAdditional(compound, pRegistries);
@@ -84,7 +89,6 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
     Tag experienceTank = compound.get("experience");
     if (experienceTank != null)
       this.experienceTank.deserializeNBT(pRegistries, experienceTank);
-    this.size = ExperienceHatchSize.value(compound.getString("hatchSize").toUpperCase(Locale.ROOT));
   }
 
   @Override
@@ -92,12 +96,5 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
     super.saveAdditional(compound, pRegistries);
 
     compound.put("experience", experienceTank.serializeNBT(pRegistries));
-    compound.putString("hatchSize", this.size.getSerializedName());
-  }
-
-  //MM stuff
-
-  public ExperienceHatchSize getTier() {
-    return size;
   }
 }

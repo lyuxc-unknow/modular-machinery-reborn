@@ -2,13 +2,18 @@ package es.degrassi.mmreborn.common.entity.base;
 
 import es.degrassi.mmreborn.common.util.IOInventory;
 import lombok.Getter;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 @Getter
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public abstract class TileInventory extends ColorableMachineComponentEntity {
 
   protected IOInventory inventory;

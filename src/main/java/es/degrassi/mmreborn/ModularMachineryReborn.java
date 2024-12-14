@@ -2,13 +2,14 @@ package es.degrassi.mmreborn;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.mojang.datafixers.util.Pair;
 import es.degrassi.experiencelib.api.capability.ExperienceLibCapabilities;
 import es.degrassi.mmreborn.client.util.EnergyDisplayUtil;
 import es.degrassi.mmreborn.common.block.BlockController;
+import es.degrassi.mmreborn.common.block.prop.ConfigLoaded;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ExperienceHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
-import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
 import es.degrassi.mmreborn.common.command.MMRCommand;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
@@ -25,6 +26,7 @@ import es.degrassi.mmreborn.common.registration.Registration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.LootTableHelper;
 import es.degrassi.mmreborn.common.util.MMRLogger;
+import es.degrassi.mmreborn.common.util.MiscUtils;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -62,6 +64,8 @@ public class ModularMachineryReborn {
   public ModularMachineryReborn(final ModContainer CONTAINER, final IEventBus MOD_BUS) {
     CONTAINER.registerConfig(ModConfig.Type.COMMON, MMRConfig.getSpec());
 
+    addConfigLoaders();
+
     Registration.register(MOD_BUS);
 
     MOD_BUS.addListener(this::commonSetup);
@@ -76,6 +80,23 @@ public class ModularMachineryReborn {
     GAME_BUS.addListener(this::registerReloadListener);
     GAME_BUS.addListener(this::registerCommands);
     GAME_BUS.addListener(this::onReloadStart);
+  }
+
+  private static void addConfigLoaders() {
+    ConfigLoaded.add(
+        Pair.of(EnergyHatchSize.class, (EnergyHatchSize size) -> {
+          size.maxEnergy = MMRConfig.get().energySize(size);
+          size.maxEnergy = MiscUtils.clamp(size.maxEnergy, 1, Long.MAX_VALUE);
+          size.transferLimit = MMRConfig.get().energyLimit(size);
+          size.transferLimit = MiscUtils.clamp(size.transferLimit, 1, Long.MAX_VALUE);
+        }),
+        Pair.of(FluidHatchSize.class, (FluidHatchSize size) -> {
+          size.size = MMRConfig.get().fluidSize(size);
+        }),
+        Pair.of(ExperienceHatchSize.class, (ExperienceHatchSize size) -> {
+          size.capacity = MMRConfig.get().experienceSize(size);
+        })
+    );
   }
 
   private void sendIMCMessages(final InterModEnqueueEvent event) {
@@ -105,10 +126,7 @@ public class ModularMachineryReborn {
     MMRLogger.init();
 
     Config.load();
-    EnergyHatchSize.loadFromConfig();
-    FluidHatchSize.loadFromConfig();
-    ItemBusSize.loadFromConfig();
-    ExperienceHatchSize.loadFromConfig();
+    ConfigLoaded.load();
     EnergyDisplayUtil.loadFromConfig();
   }
 
@@ -116,10 +134,7 @@ public class ModularMachineryReborn {
     if (event.getConfig().getSpec() == MMRConfig.getSpec()) {
       MMRLogger.setDebugLevel(MMRConfig.get().debugLevel.get().getLevel());
       Config.load();
-      EnergyHatchSize.loadFromConfig();
-      FluidHatchSize.loadFromConfig();
-      ItemBusSize.loadFromConfig();
-      ExperienceHatchSize.loadFromConfig();
+      ConfigLoaded.load();
       EnergyDisplayUtil.loadFromConfig();
     }
   }
@@ -189,10 +204,7 @@ public class ModularMachineryReborn {
     if (event.getParseResults().getReader().getString().equals("reload") && event.getParseResults().getContext().getSource().hasPermission(2)) {
       MMRLogger.reset();
       Config.load();
-      EnergyHatchSize.loadFromConfig();
-      FluidHatchSize.loadFromConfig();
-      ItemBusSize.loadFromConfig();
-      ExperienceHatchSize.loadFromConfig();
+      ConfigLoaded.load();
       EnergyDisplayUtil.loadFromConfig();
       if (event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayer player) {
         MMRCommand.reloadMachines(player.server, player);
