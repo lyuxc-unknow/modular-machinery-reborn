@@ -12,8 +12,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import javax.annotation.Nullable;
-
 @Getter
 @Setter
 public abstract class FluidTankEntity extends ColorableMachineComponentEntity implements MachineComponentEntity {
@@ -29,6 +27,7 @@ public abstract class FluidTankEntity extends ColorableMachineComponentEntity im
     super(type, pos, state);
     this.tank = size.buildTank(this, ioType == IOType.INPUT, ioType == IOType.OUTPUT);
     this.hatchSize = size;
+    this.ioType = ioType;
   }
 
   @Override
