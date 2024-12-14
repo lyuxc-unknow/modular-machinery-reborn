@@ -22,7 +22,8 @@ public interface ItemRendering extends StackHolder {
     EmiDrawContext context = EmiDrawContext.wrap(draw);
     int xOff = (getWidth() - 16) / 2;
     int yOff = (getHeight() - 16) / 2;
-    ItemStack stack = getStack().getItemStack();if ((flags & RENDER_ICON) != 0) {
+    ItemStack stack = getStack().getItemStack();
+    if ((flags & RENDER_ICON) != 0) {
       Lighting.setupFor3DItems();
       draw.renderFakeItem(stack, x + xOff, y + yOff);
       draw.renderItemDecorations(Minecraft.getInstance().font, stack, x + xOff, y + yOff, "");

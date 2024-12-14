@@ -265,6 +265,8 @@
   "modular_machinery_reborn.ingredient.chance.input": "Probabilidad de ser consumido: %s%s",
   "modular_machinery_reborn.ingredient.chance.output": "Probabilidad de ser producido: %s%s",
   "modular_machinery_reborn.ingredient.chance.not_consumed": "No se consume",
+  "modular_machinery_reborn.ingredient.chance": "%s%s",
+  "modular_machinery_reborn.ingredient.chance.nc": "NC",
 
   "modular_machinery_reborn.jei.ingredient.long": "%s",
 

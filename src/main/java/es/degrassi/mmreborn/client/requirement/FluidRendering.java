@@ -9,6 +9,7 @@ import net.minecraft.world.level.material.Fluid;
 
 public interface FluidRendering extends StackHolder, Position {
   default void renderFluid(GuiGraphics graphics) {
+    graphics.pose().pushPose();
     if (getStack().getKey() instanceof Fluid fluid) {
       FluidEmiStack fes = new FluidEmiStack(fluid, getStack().getComponentChanges(), getStack().getAmount());
       boolean floaty = EmiAgnos.isFloatyFluid(fes);
@@ -29,11 +30,7 @@ public interface FluidRendering extends StackHolder, Position {
           }
         }
       }
-//      if (fluid.isSame(Fluids.EMPTY)) {
-//        return;
-//      }
-//      FluidRenderer.renderFluid(graphics.pose(), 1, 1, getWidth(), getHeight(), new FluidStack(fluid,
-//          (int) getStack().getAmount()), (int) getStack().getAmount());
     }
+    graphics.pose().popPose();
   }
 }

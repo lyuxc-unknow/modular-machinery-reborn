@@ -29,6 +29,7 @@ public class MMRConfig {
   public final ConfigValue<Boolean> logFirstEitherError;
 
   public final ConfigValue<String> general_casing_color;
+  public final ConfigValue<String> chance_color;
   public final ConfigValue<Integer> checkStructureTicks;
   public final ConfigValue<Integer> checkRecipeTicks;
 
@@ -118,6 +119,9 @@ public class MMRConfig {
         this.general_casing_color = builder
             .comment("Defines the _default_ color for machine casings as items or blocks. (Hex color with alpha at start) Has to be defined both server and clientside!")
             .define("general_casing_color", "#FFFF4900");
+        this.chance_color = builder
+            .comment("Defines the _default_ color for EMI/JEI chance text color. (Hex color without alpha) Has to be defined both server and clientside!")
+            .define("chance_color", "#FFFFFF");
         this.checkStructureTicks = builder
             .comment("Defines the time in ticks that the machine should check for a structure update.\n20 ticks = 1 second. Default: 5")
             .defineInRange("check_structure_ticks", 5, 1, Integer.MAX_VALUE);

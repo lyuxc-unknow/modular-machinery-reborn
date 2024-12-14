@@ -4,6 +4,7 @@ import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.integration.jei.JeiComponentRegistry;
 import es.degrassi.mmreborn.common.integration.jei.MMRJeiPlugin;
+import es.degrassi.mmreborn.common.integration.jei.category.drawable.DrawableWrappedText;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import es.degrassi.mmreborn.common.registration.Registration;
@@ -15,7 +16,6 @@ import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.common.gui.elements.DrawableWrappedText;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
@@ -75,6 +75,7 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
     this.width = recipe.getWidth();
     this.height = recipe.getHeight();
     recipe.textsToRender.clear();
+    recipe.chanceTexts.clear();
 
     recipe.textsToRender.add(
         Component.translatable(
@@ -106,6 +107,17 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
       builder.addDrawable(new DrawableWrappedText(List.of(component), recipe.getWidth() - 8))
           .setPosition(initialX, nextHeight.get());
       toRemove.getAndAdd(font.wordWrapHeight(component, recipe.getWidth() - 8) + 2);
+    });
+
+    // TODO: fix chance rendering
+    recipe.chanceTexts.forEach(pair -> {
+      builder.addDrawable(
+          new DrawableWrappedText(List.of(pair.getSecond()), pair.getFirst().width())
+              .withScale(0.75f)
+              .withZIndex(200),
+          pair.getFirst().x(),
+          pair.getFirst().y()
+      );
     });
   }
 }

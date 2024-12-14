@@ -3,11 +3,13 @@ package es.degrassi.mmreborn.common.crafting;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.codec.NamedMapCodec;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
+import es.degrassi.mmreborn.common.crafting.requirement.PositionedSizedRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
 import es.degrassi.mmreborn.common.crafting.requirement.PositionedRequirement;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
@@ -33,6 +35,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -58,6 +61,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
   private final PositionedRequirement progressPosition;
   private final int width, height;
   public final List<Component> textsToRender = new LinkedList<>();
+  public final List<Pair<PositionedSizedRequirement, Component>> chanceTexts = new LinkedList<>();
   private final boolean shouldRenderProgress;
 
   public MachineRecipe(ResourceLocation owningMachine, int tickTime, int configuredPriority,

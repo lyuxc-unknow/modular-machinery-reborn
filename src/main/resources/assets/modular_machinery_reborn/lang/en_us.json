@@ -263,8 +263,10 @@
   "config.jade.plugin_modular_machinery_reborn.machine_component_provider": "Modular Machinery Reborn provider",
 
   "modular_machinery_reborn.ingredient.chance.input": "Chance to be consumed: %s%s",
+  "modular_machinery_reborn.ingredient.chance": "%s%s",
   "modular_machinery_reborn.ingredient.chance.output": "Chance to be produced: %s%s",
   "modular_machinery_reborn.ingredient.chance.not_consumed": "Not Consumed",
+  "modular_machinery_reborn.ingredient.chance.nc": "NC",
 
   "modular_machinery_reborn.jei.ingredient.long": "%s",
 
