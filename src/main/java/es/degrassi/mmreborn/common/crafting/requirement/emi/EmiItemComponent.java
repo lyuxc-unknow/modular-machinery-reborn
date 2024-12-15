@@ -5,9 +5,10 @@ import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.EmiStackInteraction;
 import dev.emi.emi.screen.EmiScreenManager;
+import es.degrassi.mmreborn.client.requirement.ChanceRendering;
 import es.degrassi.mmreborn.client.requirement.ItemRendering;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementItem;
-import es.degrassi.mmreborn.common.util.Utils;
+import es.degrassi.mmreborn.common.machine.IOType;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -15,9 +16,8 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
-public class EmiItemComponent extends EmiComponent<ItemStack, RequirementItem> implements SlotTooltip, ItemRendering {
+public class EmiItemComponent extends EmiComponent<ItemStack, RequirementItem> implements SlotTooltip, ItemRendering, ChanceRendering {
   private int item;
   @Getter
   private int width = 16, height = 16;
@@ -50,18 +50,23 @@ public class EmiItemComponent extends EmiComponent<ItemStack, RequirementItem> i
     width -= 2;
     height -= 2;
     drawStack(guiGraphics, 1, 1, -1);
+    drawChance(guiGraphics, true);
+  }
+
+  @Override
+  public float getChance() {
+    return requirement.chance;
+  }
+
+  @Override
+  public IOType getActionType() {
+    return requirement.getActionType();
   }
 
   @Override
   public List<Component> getTooltip() {
     List<Component> list = Lists.newArrayList();
-    String chance = Utils.decimalFormat(requirement.chance * 100);
-    if (requirement.chance > 0 && requirement.chance < 1)
-      list.add(Component.translatable("modular_machinery_reborn.ingredient.chance." + requirement.getActionType().name().toLowerCase(Locale.ROOT), chance, "%"));
-    else if (requirement.chance == 0)
-      list.add(Component.translatable("modular_machinery_reborn.ingredient.chance.not_consumed"));
-    else if (requirement.chance == 1)
-      list.add(Component.translatable("modular_machinery_reborn.jei.ingredient.item." + requirement.getActionType().name().toLowerCase(Locale.ROOT)));
+    addChanceTooltips(list);
     if (getStack().isEmpty()) {
       return list;
     }

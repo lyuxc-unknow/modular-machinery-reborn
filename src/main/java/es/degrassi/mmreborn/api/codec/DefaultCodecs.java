@@ -208,7 +208,7 @@ public class DefaultCodecs {
       if (!validHex.contains(c))
         return DataResult.error(() -> "Invalid character: \"" + c + "\", valid characters are: " + validHex);
     }
-    return DataResult.success(Config.toInt(encoded));
+    return DataResult.success(Config.toInt(encoded, 0xffffffff));
   }
 
   public static String encodeHexColor(Integer color) {

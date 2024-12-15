@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.integration.jei.category;
 
+import com.mojang.datafixers.util.Pair;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.integration.jei.JeiComponentRegistry;
@@ -104,20 +105,14 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
 
     recipe.textsToRender.forEach(component -> {
       nextHeight.set(recipe.getHeight() - gap - font.wordWrapHeight(component, recipe.getWidth() - 8) - toRemove.get());
-      builder.addDrawable(new DrawableWrappedText(List.of(component), recipe.getWidth() - 8))
+      builder.addDrawable(new DrawableWrappedText(List.of(component), recipe.getWidth() - 8, false))
           .setPosition(initialX, nextHeight.get());
       toRemove.getAndAdd(font.wordWrapHeight(component, recipe.getWidth() - 8) + 2);
     });
 
-    // TODO: fix chance rendering
-    recipe.chanceTexts.forEach(pair -> {
-      builder.addDrawable(
-          new DrawableWrappedText(List.of(pair.getSecond()), pair.getFirst().width())
-              .withScale(0.75f)
-              .withZIndex(200),
-          pair.getFirst().x(),
-          pair.getFirst().y()
-      );
-    });
+    recipe.chanceTexts.stream()
+        .map(Pair::getSecond)
+        .map(DrawableWrappedText.class::cast)
+        .forEach(builder::addDrawable);
   }
 }

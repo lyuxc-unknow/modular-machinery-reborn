@@ -61,7 +61,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
   private final PositionedRequirement progressPosition;
   private final int width, height;
   public final List<Component> textsToRender = new LinkedList<>();
-  public final List<Pair<PositionedSizedRequirement, Component>> chanceTexts = new LinkedList<>();
+  public final List<Pair<PositionedSizedRequirement, Object>> chanceTexts = new LinkedList<>();
   private final boolean shouldRenderProgress;
 
   public MachineRecipe(ResourceLocation owningMachine, int tickTime, int configuredPriority,

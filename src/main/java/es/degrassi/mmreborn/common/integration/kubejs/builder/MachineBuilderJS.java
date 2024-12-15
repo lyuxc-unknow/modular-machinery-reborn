@@ -67,7 +67,7 @@ public class MachineBuilderJS {
     if (intColor != null)
       machine.setDefinedColor(intColor);
     else if(color != null)
-      machine.setDefinedColor(DefaultCodecs.HEX.decode(JsonOps.INSTANCE, new JsonPrimitive(color)).result().orElse(new Pair<>(Config.toInt(MMRConfig.get().general_casing_color.get()), null)).getFirst());
+      machine.setDefinedColor(DefaultCodecs.HEX.decode(JsonOps.INSTANCE, new JsonPrimitive(color)).result().orElse(new Pair<>(Config.toInt(MMRConfig.get().general_casing_color.get(), 0xFF4900), null)).getFirst());
     return machine;
   }
 

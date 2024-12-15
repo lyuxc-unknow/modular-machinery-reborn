@@ -5,19 +5,20 @@ import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.EmiStackInteraction;
 import dev.emi.emi.screen.EmiScreenManager;
+import es.degrassi.mmreborn.client.requirement.ChanceRendering;
 import es.degrassi.mmreborn.client.requirement.FluidRendering;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementFluid;
+import es.degrassi.mmreborn.common.machine.IOType;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.LinkedList;
 import java.util.List;
 
 @Getter
-public class EmiFluidComponent extends EmiComponent<FluidStack, RequirementFluid> implements SlotTooltip, FluidRendering {
+public class EmiFluidComponent extends EmiComponent<FluidStack, RequirementFluid> implements SlotTooltip, FluidRendering, ChanceRendering {
   private EmiRecipe recipe;
   private int width = 16;
   private int height = 16;
@@ -39,6 +40,17 @@ public class EmiFluidComponent extends EmiComponent<FluidStack, RequirementFluid
     width -= 2;
     height -= 2;
     renderFluid(guiGraphics);
+    drawChance(guiGraphics, false);
+  }
+
+  @Override
+  public float getChance() {
+    return requirement.getChance();
+  }
+
+  @Override
+  public IOType getActionType() {
+    return requirement.getActionType();
   }
 
   @Override
@@ -46,21 +58,7 @@ public class EmiFluidComponent extends EmiComponent<FluidStack, RequirementFluid
     List<Component> tooltip = new LinkedList<>();
     String mode = requirement.getActionType().isInput() ? "input" : "output";
     tooltip.add(Component.translatable("modular_machinery_reborn.jei.ingredient.fluid." + mode, requirement.required.asFluidStack().getHoverName(), requirement.required.asFluidStack().getAmount()));
-    if (requirement.chance < 1F && requirement.chance >= 0F) {
-      String keyNever = requirement.getActionType().isInput() ? "tooltip.machinery.chance.in.never" : "tooltip.machinery.chance.out.never";
-      String keyChance = requirement.getActionType().isInput() ? "tooltip.machinery.chance.in" : "tooltip.machinery.chance.out";
-
-      String chanceStr = String.valueOf(Mth.floor(requirement.chance * 100F));
-      if (requirement.chance == 0F) {
-        tooltip.add(Component.translatable(keyNever));
-      } else {
-        if (requirement.chance < 0.01F) {
-          chanceStr = "< 1";
-        }
-        chanceStr += "%";
-        tooltip.add(Component.translatable(keyChance, chanceStr));
-      }
-    }
+    addChanceTooltips(tooltip);
     return tooltip;
   }
 

@@ -145,7 +145,7 @@ dependencies {
   compileOnly "org.projectlombok:lombok:${project.lombok_version}"
   annotationProcessor "org.projectlombok:lombok:${project.lombok_version}"
   implementation "net.neoforged:neoforge:${neo_version}"
-  implementation "es.degrassi:experiencelib:${minecraft_version}-${experiencelib_version}"
+  compileOnly localRuntime ("es.degrassi:experiencelib:${minecraft_version}-${experiencelib_version}")
 
   // ProbeJS
   localRuntime("curse.maven:probejs-585406:5820894")
@@ -156,7 +156,7 @@ dependencies {
 
   // EMI
   compileOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}:api")
-  compileOnly runtimeOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}")
+  compileOnly localRuntime("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}")
 
   // KubeJS
   compileOnly localRuntime("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
