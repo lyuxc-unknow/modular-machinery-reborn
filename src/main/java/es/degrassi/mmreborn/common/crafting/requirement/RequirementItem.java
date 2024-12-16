@@ -139,10 +139,10 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
     return switch (getActionType()) {
       case INPUT -> {
         int amt = Math.round(RecipeModifier.applyModifiers(context, this, ingredient.count(), false));
-        for (ItemStack stack : ingredient.getItems()) {
-          if (ItemUtils.consumeFromInventory(handler, stack.copyWithCount(amt), true)) {
+        for (int i = 0; i < handler.getSlots(); i++) {
+          ItemStack stack = handler.getStackInSlot(i).copyWithCount(amt);
+          if (ingredient.test(stack))
             yield CraftCheck.success();
-          }
         }
         yield CraftCheck.failure("craftcheck.failure.item.input");
       }
@@ -178,12 +178,12 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
       int required = Math.round(RecipeModifier.applyModifiers(context, this, this.ingredient.count(), false));
       for (ItemStack stack : ingredient.getItems()) {
         stack = stack.copyWithCount(required);
-        boolean can = ItemUtils.consumeFromInventory(handler, stack, true);
+        boolean can = ItemUtils.consumeFromInventory(handler, stack, true, false);
         if (chance.canProduce(productionChance)) {
           return can;
         }
         if (can)
-          return ItemUtils.consumeFromInventory(handler, stack, false);
+          return ItemUtils.consumeFromInventory(handler, stack, false, false);
       }
     }
     return false;

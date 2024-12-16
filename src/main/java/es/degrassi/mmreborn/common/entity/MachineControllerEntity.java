@@ -3,6 +3,7 @@ package es.degrassi.mmreborn.common.entity;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.ModularMachineryReborn;
+import es.degrassi.mmreborn.api.controller.ComponentMapper;
 import es.degrassi.mmreborn.client.model.ControllerBakedModel;
 import es.degrassi.mmreborn.common.crafting.ActiveMachineRecipe;
 import es.degrassi.mmreborn.common.crafting.helper.CraftingStatus;
@@ -43,13 +44,15 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MachineControllerEntity extends BlockEntityRestrictedTick {
+public class MachineControllerEntity extends BlockEntityRestrictedTick implements ComponentMapper {
   private CraftingStatus craftingStatus = CraftingStatus.MISSING_STRUCTURE;
 
   private ResourceLocation id = DynamicMachine.DUMMY.getRegistryName();
@@ -334,5 +337,21 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick {
 
   public void refreshClientData() {
     requestModelDataUpdate();
+  }
+
+  @Override
+  public Map<BlockPos, MachineComponent<?>> getFoundComponentsMap() {
+    Map<BlockPos, MachineComponent<?>> map = new LinkedHashMap<>();
+    for(BlockPos potentialPosition : getFoundMachine().getPattern().getBlocks(this.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).keySet()) {
+      BlockPos realPos = this.getBlockPos().offset(potentialPosition);
+      BlockEntity te = this.getLevel().getBlockEntity(realPos);
+      if (te instanceof MachineComponentEntity entity) {
+        MachineComponent<?> component = entity.provideComponent();
+        if (component != null) {
+          map.put(realPos, component);
+        }
+      }
+    }
+    return map;
   }
 }

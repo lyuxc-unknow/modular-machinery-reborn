@@ -190,26 +190,6 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
     );
 
     return ingredients.toString();
-//    return states.toString();
-//    if (isTag)
-//      states.addAll(tags.stream().map(TagKey::location).map(ResourceLocation::toString).map(s -> "#" + s).toList());
-//    states.addAll(getAll().stream().map(PartialBlockState::toString).toList());
-//    return states
-//        .stream()
-//        .filter(state -> {
-//          AtomicBoolean contains = new AtomicBoolean(false);
-//          tags.stream()
-//              .flatMap(TagUtil::getBlocks)
-//              .map(PartialBlockState::new)
-//              .map(PartialBlockState::toString)
-//              .forEach(tagState -> {
-//                if (contains.get()) return;
-//                if (tagState.equals(state)) contains.set(true);
-//              });
-//          return !contains.get();
-//        })
-//        .toList()
-//        .toString();
   }
 
   @Override

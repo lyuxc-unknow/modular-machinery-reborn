@@ -44,7 +44,11 @@ public class ItemUtils {
   }
 
   public static boolean consumeFromInventory(IItemHandlerModifiable handler, ItemStack toConsume, boolean simulate) {
-    Map<Integer, ItemStack> contents = findItemsIndexedInInventory(handler, toConsume, true);
+    return consumeFromInventory(handler, toConsume, simulate, true);
+  }
+
+  public static boolean consumeFromInventory(IItemHandlerModifiable handler, ItemStack toConsume, boolean simulate, boolean strict) {
+    Map<Integer, ItemStack> contents = findItemsIndexedInInventory(handler, toConsume, strict);
     if (contents.isEmpty()) return false;
 
     int cAmt = toConsume.getCount();

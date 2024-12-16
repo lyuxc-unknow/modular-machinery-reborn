@@ -86,9 +86,8 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
   protected void loadAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
     super.loadAdditional(compound, pRegistries);
 
-    Tag experienceTank = compound.get("experience");
-    if (experienceTank != null)
-      this.experienceTank.deserializeNBT(pRegistries, experienceTank);
+    if (compound.contains("experience", Tag.TAG_COMPOUND))
+      this.experienceTank.deserializeNBT(pRegistries, compound.getCompound("experience"));
   }
 
   @Override
