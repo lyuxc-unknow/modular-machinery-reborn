@@ -311,6 +311,7 @@
   "modular_machinery_reborn.controller.required.block": "%s",
 
   "modular_machinery_reborn.gui.structure_placer_button": "Click para tratar de colocar la estructura",
+  "modular_machinery_reborn.gui.structure_break_button": "Click para romper la estrcutura actual",
 
   "mmr.place.non_air": "Se ha tratado de colocar %s en %s pero se encontró con algún bloque que no es válido en la estructura",
   "mmr.place.no_item": "Se ha tratado de colocar %s en %s pero no se pudo encontrar el item %s en el inventario del jugador"

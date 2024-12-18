@@ -5,6 +5,7 @@ import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.BlockIngredient;
 import es.degrassi.mmreborn.client.container.ControllerContainer;
 import es.degrassi.mmreborn.client.item.MMRItemTooltipComponent;
+import es.degrassi.mmreborn.client.screen.widget.StructureBreakWidget;
 import es.degrassi.mmreborn.client.screen.widget.StructurePlacerWidget;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
@@ -30,9 +31,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ControllerScreen extends BaseScreen<ControllerContainer, MachineControllerEntity> {
-  StructurePlacerWidget widget;
+  StructurePlacerWidget placeWidget;
+  StructureBreakWidget breakWidget;
   private final List<Either<FormattedText, TooltipComponent>> components;
-  private boolean addedWidget = false;
+  private boolean addedPlaceWidget = false;
 
   public ControllerScreen(ControllerContainer pMenu, Inventory pPlayerInventory, Component pTitle) {
     super(pMenu, pPlayerInventory, pTitle);
@@ -51,12 +53,16 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
     // render image background
     super.renderBg(guiGraphics, partialTick, mouseX, mouseY);
     clearWidgets();
-    widget = addRenderableWidget(new StructurePlacerWidget(leftPos + imageWidth - 5, topPos,
-        getMenu().getEntity().getId(), getMenu().getEntity().getBlockPos()));
-    widget.setTooltip(widget.getTooltip());
-    if (!addedWidget) {
-      components.addFirst(Either.left(widget.component));
-      addedWidget = true;
+    placeWidget = addRenderableWidget(new StructurePlacerWidget(leftPos + imageWidth - 5, topPos,
+        getMenu().getEntity().getId(), getMenu().getEntity().getBlockPos(), false));
+    breakWidget = addRenderableWidget(new StructureBreakWidget(leftPos + imageWidth - 5,
+        topPos + placeWidget.getHeight(),
+        getMenu().getEntity().getId(), getMenu().getEntity().getBlockPos(), true));
+    placeWidget.setTooltip(placeWidget.getTooltip());
+    breakWidget.setTooltip(breakWidget.getTooltip());
+    if (!addedPlaceWidget) {
+      components.addFirst(Either.left(placeWidget.component));
+      addedPlaceWidget = true;
     }
 
     guiGraphics.pose().pushPose();
@@ -65,20 +71,6 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
     guiGraphics.pose().scale(scale, scale, scale);
     int offsetX = 12;
     int offsetY = 12;
-
-    int redstone = RedstoneHelper.getRedstoneLevel(entity);
-    if (redstone > 0) {
-      // render if redstone paused the machine
-      Component drawnStop = Component.translatable("gui.controller.status.redstone_stopped");
-      List<FormattedCharSequence> out = font.split(drawnStop, Mth.floor(135 * (1 / scale)));
-      for (FormattedCharSequence draw : out) {
-        offsetY += 10;
-        guiGraphics.drawString(font, draw, offsetX, offsetY, 0xFFFFFF);
-        offsetY += 10;
-      }
-      guiGraphics.pose().popPose();
-      return;
-    }
 
     DynamicMachine machine = entity.getFoundMachine();
     if (machine != DynamicMachine.DUMMY) {
@@ -95,6 +87,19 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
       guiGraphics.drawString(font, drawnHead, offsetX, offsetY, 0xFFFFFF);
     }
     offsetY += 15;
+
+    if (entity.isPaused()) {
+      // render if redstone paused the machine
+      Component drawnStop = Component.translatable("gui.controller.status.redstone_stopped");
+      List<FormattedCharSequence> out = font.split(drawnStop, Mth.floor(135 * (1 / scale)));
+      for (FormattedCharSequence draw : out) {
+        offsetY += 10;
+        guiGraphics.drawString(font, draw, offsetX, offsetY, 0xFFFFFF);
+        offsetY += 10;
+      }
+      guiGraphics.pose().popPose();
+      return;
+    }
 
     // render the current status
     Component status = Component.translatable("gui.controller.status");
@@ -124,13 +129,21 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
   @Override
   protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
     super.renderTooltip(guiGraphics, x, y);
-    if (widget != null && widget.isMouseOver(x, y)) {
+    if (placeWidget != null && placeWidget.isMouseOver(x, y)) {
       guiGraphics.renderComponentTooltipFromElements(
           Minecraft.getInstance().font,
           components,
           x,
           y,
           ItemStack.EMPTY
+      );
+    }
+    if (breakWidget != null && breakWidget.isMouseOver(x, y)) {
+      guiGraphics.renderTooltip(
+          Minecraft.getInstance().font,
+          List.of(breakWidget.component.getVisualOrderText()),
+          x,
+          y
       );
     }
   }

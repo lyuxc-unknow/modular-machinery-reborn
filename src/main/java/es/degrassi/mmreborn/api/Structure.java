@@ -7,6 +7,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
+import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
@@ -104,7 +105,25 @@ public class Structure {
           );
         continue;
       }
+      if (worldPos.equals(controllerPos)) continue;
       setBlock(level, worldPos, ingredient.getAll().get((int) (Math.random() * ingredient.getAll().size())));
+    }
+  }
+
+  public static void breakStructure(DynamicMachine machine, BlockPos controllerPos, Level level, ServerPlayer player) {
+    boolean isCreative = player.isCreative();
+    Direction direction = level.getBlockState(controllerPos).getValue(BlockStateProperties.HORIZONTAL_FACING);
+    Map<BlockPos, BlockIngredient> blocks = machine.getPattern().getBlocks(direction);
+    BlockPos.MutableBlockPos worldPos = new BlockPos.MutableBlockPos();
+    for (BlockPos pos : blocks.keySet()) {
+      BlockIngredient ingredient = blocks.get(pos);
+      worldPos.set(pos.getX() + controllerPos.getX(), pos.getY() + controllerPos.getY(),
+          pos.getZ() + controllerPos.getZ());
+      BlockInWorld info = new BlockInWorld(level, worldPos, false);
+      if (info.getState().isAir()) continue;
+      if (info.getEntity() instanceof MachineControllerEntity) continue;
+      if (ingredient.getAll().stream().noneMatch(state -> state.test(info))) continue;
+      level.destroyBlock(worldPos.immutable(), !isCreative);
     }
   }
 

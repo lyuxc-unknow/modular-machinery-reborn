@@ -4,33 +4,22 @@ import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.entity.base.EnergyHatchEntity;
 import es.degrassi.mmreborn.common.entity.base.ExperienceHatchEntity;
 import es.degrassi.mmreborn.common.entity.base.FluidTankEntity;
-import es.degrassi.mmreborn.common.entity.base.MachineComponentEntity;
 import es.degrassi.mmreborn.common.entity.base.TileInventory;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class RedstoneHelper {
   public static int getRedstoneLevel(@Nullable BlockEntity sync) {
     if (sync == null) return 0;
     return switch (sync) {
       case MachineControllerEntity entity -> {
-        Level level = entity.getLevel();
-        AtomicInteger redstone = new AtomicInteger(0);
-        AtomicInteger counter = new AtomicInteger(0);
-        entity.getFoundComponentsMap().keySet().forEach(pos -> {
-          BlockEntity be = level.getBlockEntity(pos);
-          if (be instanceof MachineComponentEntity) {
-            redstone.getAndAdd(getRedstoneLevel(be));
-            counter.getAndIncrement();
-          }
-        });
-        yield redstone.get() / counter.get();
+        if (entity.getCraftingStatus().isCrafting()) yield 15;
+        if (!entity.getCraftingStatus().isMissingStructure()) yield 1;
+        yield 0;
       }
       case TileInventory entity -> ItemHandlerHelper.calcRedstoneFromInventory(entity.getInventory());
       case FluidTankEntity ft -> {
@@ -49,6 +38,18 @@ public class RedstoneHelper {
         float cur = entity.getTank().getExperience();
         yield Mth.clamp(Math.round(15F * (cur / cap)), 0, 15);
       }
+      default -> 0;
+    };
+  }
+
+  public static int getReceivingRedstone(@Nullable BlockEntity sync) {
+    if (sync == null) return 0;
+    return switch (sync) {
+      case MachineControllerEntity entity -> entity.getLevel().getBestNeighborSignal(entity.getBlockPos());
+      case TileInventory entity -> entity.getLevel().getBestNeighborSignal(entity.getBlockPos());
+      case FluidTankEntity entity -> entity.getLevel().getBestNeighborSignal(entity.getBlockPos());
+      case EnergyHatchEntity entity -> entity.getLevel().getBestNeighborSignal(entity.getBlockPos());
+      case ExperienceHatchEntity entity -> entity.getLevel().getBestNeighborSignal(entity.getBlockPos());
       default -> 0;
     };
   }
