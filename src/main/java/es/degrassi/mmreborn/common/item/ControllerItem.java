@@ -25,8 +25,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -52,6 +56,29 @@ public class ControllerItem extends ItemBlockMachineComponent {
     getMachine(stack).ifPresentOrElse(machine -> {
       if (tooltipFlag.hasShiftDown()) {
         tooltipComponents.add(Component.translatable("modular_machinery_reborn.controller.required").withStyle(ChatFormatting.GRAY));
+
+//        machine.getPattern()
+//            .getPattern()
+//            .asMap()
+//            .values()
+//            .stream()
+//            .filter(BlockIngredient::isNotAir)
+//            .filter(BlockIngredient::isNotMachine)
+//            .filter(BlockIngredient::isNotAny)
+//            .map(BlockIngredient::getNamesUnified)
+//            .map(Component::getString)
+//            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+//            .forEach((key, amount) -> {
+//              if (amount > 0)
+//                tooltipComponents.add(
+//                    Component.translatable(
+//                        "modular_machinery_reborn.controller.required.item",
+//                        Component.literal(String.format("%dx", amount)).withStyle(ChatFormatting.GOLD),
+//                        Component.literal(key).withStyle(ChatFormatting.GRAY)
+//                    )
+//                );
+//            });
+
         machine.getPattern()
             .getPattern()
             .asList()
@@ -59,21 +86,41 @@ public class ControllerItem extends ItemBlockMachineComponent {
             .flatMap(List::stream)
             .flatMap(s -> s.chars().mapToObj(c -> (char) c))
             .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
-            .forEach((key, amount) -> {
-              BlockIngredient ingredient = machine.getPattern().getPattern().asMap().get(key);
-              if (ingredient != null && amount > 0) {
-                String value = ingredient.getString();
-                if (value.startsWith("[") && value.endsWith("]") && ((ingredient.isTag() && ingredient.getTags().size() == 1) || ingredient.getAll().size() == 1))
-                  value = value.substring(1, value.length() - 1);
+            .entrySet()
+            .stream()
+            .map(entry -> {
+              BlockIngredient ingredient = machine.getPattern().getPattern().asMap().get(entry.getKey());
+              if (ingredient == null) return null;
+              HashMap<BlockIngredient, Long> ing = new HashMap<>();
+              ing.put(ingredient, entry.getValue());
+              return ing.entrySet();
+            })
+            .filter(Objects::nonNull)
+            .flatMap(Set::stream)
+            .collect(Collectors.groupingBy(entry -> entry.getKey().getNamesUnified(), Collectors.summingLong(Map.Entry::getValue)))
+            .forEach((component, amount) -> {
+              if (component != null && amount > 0) {
                 tooltipComponents.add(
                     Component.translatable(
                         "modular_machinery_reborn.controller.required.item",
                         Component.literal(String.format("%dx", amount)).withStyle(ChatFormatting.GOLD),
-                        Component.literal(value).withStyle(ChatFormatting.GRAY)
+                        component.withStyle(ChatFormatting.GRAY)
                     )
                 );
               }
             });
+//            .forEach((key, amount) -> {
+//              BlockIngredient ingredient = machine.getPattern().getPattern().asMap().get(key);
+//              if (ingredient != null && amount > 0) {
+//                tooltipComponents.add(
+//                    Component.translatable(
+//                        "modular_machinery_reborn.controller.required.item",
+//                        Component.literal(String.format("%dx", amount)).withStyle(ChatFormatting.GOLD),
+//                        ingredient.getNamesUnified().withStyle(ChatFormatting.GRAY)
+//                    )
+//                );
+//              }
+//            });
       } else {
         tooltipComponents.add(
             Component.empty()

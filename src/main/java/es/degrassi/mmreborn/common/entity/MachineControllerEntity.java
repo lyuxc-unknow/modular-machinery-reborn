@@ -6,9 +6,9 @@ import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.controller.ComponentMapper;
 import es.degrassi.mmreborn.client.model.ControllerBakedModel;
 import es.degrassi.mmreborn.common.crafting.ActiveMachineRecipe;
-import es.degrassi.mmreborn.common.crafting.helper.CraftingStatus;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.helper.CraftingCheckResult;
+import es.degrassi.mmreborn.common.crafting.helper.CraftingStatus;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.data.MMRConfig;
@@ -94,11 +94,11 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
   @Override
   public void doRestrictedTick() {
     pause();
+    checkStructure();
+
     if (isPaused()) {
       return;
     }
-
-    checkStructure();
 
     if (craftingStatus.isMissingStructure()) return;
 
