@@ -15,6 +15,8 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -24,12 +26,14 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class BlockIngredient implements IIngredient<PartialBlockState> {
@@ -152,7 +156,29 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
   }
 
   public List<ItemStack> getStacks(int amount) {
-    List<ItemStack> stacks = Lists.newArrayList(
+    List<ItemStack> stacks = getTagStacks(amount);
+    stacks.addAll(getNonTagStacks(amount));
+    return stacks
+        .stream()
+        .collect(Collectors.groupingBy(ItemStack::getItem, Collectors.summingInt(ItemStack::getCount)))
+        .entrySet()
+        .stream()
+        .map(entry -> new ItemStack(entry.getKey(), entry.getValue()))
+        .toList();
+  }
+
+  public List<ItemStack> getNonTagStacks(int amount) {
+    return uniqueStates()
+        .map(PartialBlockState::getBlockState)
+        .map(BlockState::getBlock)
+        .map(Block::asItem)
+        .map(Item::getDefaultInstance)
+        .map(stack -> stack.copyWithCount(amount))
+        .toList();
+  }
+
+  public List<ItemStack> getTagStacks(int amount) {
+    return Lists.newArrayList(
         getTags()
             .stream()
             .flatMap(TagUtil::getBlocks)
@@ -161,22 +187,57 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
             .map(stack -> stack.copyWithCount(amount))
             .iterator()
     );
-    stacks.addAll(
-        uniqueStates()
-            .map(PartialBlockState::getBlockState)
-            .map(BlockState::getBlock)
-            .map(Block::asItem)
-            .map(Item::getDefaultInstance)
-            .map(stack -> stack.copyWithCount(amount))
-            .toList()
-    );
-    return stacks;
   }
 
   public Stream<PartialBlockState> uniqueStates() {
     return getAll()
         .stream()
         .filter(state -> tags.stream().noneMatch(tag -> state.getBlockState().is(tag)));
+  }
+
+  public List<Component> getNames() {
+    List<Component> ingredients = new LinkedList<>();
+    ingredients.addAll(this.tags.stream().map(TagKey::location).map(ResourceLocation::toString).map(s -> "#" + s).map(Component::literal).toList());
+
+    ingredients.addAll(
+        uniqueStates()
+            .map(PartialBlockState::getName)
+            .toList()
+    );
+
+    return ingredients;
+  }
+
+  public boolean isNotAir() {
+    return !this.equals(BlockIngredient.AIR) && this.getAll().stream().noneMatch(state -> state.equals(PartialBlockState.AIR));
+  }
+
+  public boolean isNotAny() {
+    return !this.equals(BlockIngredient.ANY) && this.getAll().stream().noneMatch(state -> state.equals(PartialBlockState.ANY));
+  }
+
+  public boolean isNotMachine() {
+    return !this.equals(BlockIngredient.MACHINE) && this.getAll().stream().noneMatch(state -> state.equals(PartialBlockState.MACHINE));
+  }
+
+  public MutableComponent getNamesUnified() {
+    MutableComponent name = Component.empty();
+    MutableComponent last = Component.empty();
+    Component current;
+    Iterator<Component> iterator = getNames().iterator();
+    if (getNames().size() > 1) {
+      name.append("[");
+      last.append("]");
+    }
+    while (iterator.hasNext()) {
+      current = iterator.next();
+      name.append(current);
+      if (iterator.hasNext()) {
+        name.append(", ");
+      }
+    }
+    name.append(last);
+    return name;
   }
 
   public String getString() {
@@ -188,6 +249,10 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
             .map(PartialBlockState::toString)
             .toList()
     );
+
+    if (ingredients.size() == 1) {
+      return ingredients.get(0);
+    }
 
     return ingredients.toString();
   }
