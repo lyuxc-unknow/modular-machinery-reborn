@@ -20,10 +20,12 @@ import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.network.server.SMachineUpdatePacket;
+import es.degrassi.mmreborn.common.network.server.SSyncPauseStatePacket;
 import es.degrassi.mmreborn.common.network.server.SUpdateCraftingStatusPacket;
 import es.degrassi.mmreborn.common.network.server.SUpdateRecipePacket;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
+import es.degrassi.mmreborn.common.util.RedstoneHelper;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -54,6 +56,7 @@ import java.util.Map;
 @MethodsReturnNonnullByDefault
 public class MachineControllerEntity extends BlockEntityRestrictedTick implements ComponentMapper {
   private CraftingStatus craftingStatus = CraftingStatus.MISSING_STRUCTURE;
+  private boolean isPaused = false;
 
   private ResourceLocation id = DynamicMachine.DUMMY.getRegistryName();
   @Nullable
@@ -76,9 +79,22 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
         .build();
   }
 
+  public boolean isPaused() {
+    return isPaused;
+  }
+
+  public void pause() {
+    this.isPaused = RedstoneHelper.getReceivingRedstone(this) > 0;
+    if (!getLevel().isClientSide) {
+      PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) getLevel(), new ChunkPos(getBlockPos()),
+          new SSyncPauseStatePacket(isPaused, getBlockPos()));
+    }
+  }
+
   @Override
   public void doRestrictedTick() {
-    if (getBlockState().getAnalogOutputSignal(getLevel(), getBlockPos()) > 0) {
+    pause();
+    if (isPaused()) {
       return;
     }
 
