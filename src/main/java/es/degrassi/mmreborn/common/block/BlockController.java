@@ -2,12 +2,13 @@ package es.degrassi.mmreborn.common.block;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.client.container.ControllerContainer;
-import es.degrassi.mmreborn.client.entity.renderer.ControllerRenderer;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.item.ControllerItem;
 import es.degrassi.mmreborn.common.item.ItemBlueprint;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
+import es.degrassi.mmreborn.common.network.server.SAddControllerRenderer;
 import es.degrassi.mmreborn.common.network.server.SMachineUpdatePacket;
+import es.degrassi.mmreborn.common.network.server.SRemoveControllerRenderer;
 import es.degrassi.mmreborn.common.util.RedstoneHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -106,7 +107,7 @@ public class BlockController extends BlockMachineComponent {
   public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
     BlockEntity te = level.getBlockEntity(pos);
     if (te instanceof MachineControllerEntity entity) {
-      ControllerRenderer.renderers.remove(entity.getBlockPos());
+      PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, new ChunkPos(pos), new SRemoveControllerRenderer(pos));
     }
     super.playerDestroy(level, player, pos, state, blockEntity, tool);
   }
@@ -114,7 +115,7 @@ public class BlockController extends BlockMachineComponent {
   @Override
   public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
     if (player.getAbilities().instabuild && level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof MachineControllerEntity entity) {
-      ControllerRenderer.renderers.remove(entity.getBlockPos());
+      PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(pos), new SRemoveControllerRenderer(pos));
     }
     return super.playerWillDestroy(level, pos, state, player);
   }
@@ -146,7 +147,9 @@ public class BlockController extends BlockMachineComponent {
         if (player.getItemInHand(hand).getItem() instanceof ItemBlueprint) {
           DynamicMachine machine = controller.getFoundMachine();
           if (machine == null) return ItemInteractionResult.FAIL;
-          ControllerRenderer.add(machine, pos);
+          PacketDistributor.sendToPlayersTrackingChunk(serverPlayer.serverLevel(),
+              new ChunkPos(pos), new SAddControllerRenderer(pos));
+//          ControllerRenderer.add(machine, pos);
           return ItemInteractionResult.SUCCESS;
         }
         ControllerContainer.open(serverPlayer, controller);
