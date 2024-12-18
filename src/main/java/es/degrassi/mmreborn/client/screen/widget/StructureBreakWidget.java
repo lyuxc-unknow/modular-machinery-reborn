@@ -13,22 +13,21 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
+import static es.degrassi.mmreborn.client.screen.BaseScreen.TAB;
+import static es.degrassi.mmreborn.client.screen.BaseScreen.TAB_HOVERED;
+
 public class StructureBreakWidget extends AbstractWidget {
-  private static final ResourceLocation TAB = ModularMachineryReborn.rl("textures/gui/widget/base_tab.png");
-  private static final ResourceLocation TAB_BOTTOM = ModularMachineryReborn.rl("textures/gui/widget/base_tab_to_bottom.png");
   private static final ResourceLocation TEXTURE = ModularMachineryReborn.rl("textures/gui/structure_breaker.png");
 
   private final ResourceLocation machine;
   private final BlockPos controllerPos;
-  private final boolean bottom;
 
   public final Component component = Component.translatable("modular_machinery_reborn.gui.structure_break_button");
 
-  public StructureBreakWidget(int x, int y, ResourceLocation machine, BlockPos controllerPos, boolean bottom) {
-    super(x, y, TextureSizeHelper.getWidth(bottom ? TAB_BOTTOM : TAB), TextureSizeHelper.getHeight(bottom ? TAB_BOTTOM : TAB), Component.literal("structure breaker"));
+  public StructureBreakWidget(int x, int y, ResourceLocation machine, BlockPos controllerPos) {
+    super(x, y, TextureSizeHelper.getWidth(TAB), TextureSizeHelper.getHeight(TAB), Component.literal("structure breaker"));
     this.machine = machine;
     this.controllerPos = controllerPos;
-    this.bottom = bottom;
   }
 
   @Override
@@ -38,9 +37,17 @@ public class StructureBreakWidget extends AbstractWidget {
 
   @Override
   protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-    int width = TextureSizeHelper.getWidth(TEXTURE), height = TextureSizeHelper.getHeight(TEXTURE);
-    guiGraphics.blit(bottom ? TAB_BOTTOM : TAB, getX(), getY(), 0, 0, getWidth(), getHeight(), getWidth(), getHeight());
-    guiGraphics.blit(TEXTURE, getX() + 10, getY() + 5, 0, 0, width, height, width, height);
+    ResourceLocation tab = isHoveredOrFocused() ? TAB_HOVERED : TAB;
+    int x = getX() - (isHoveredOrFocused() ? 2 : 0);
+    int y = getY();
+    int width = TextureSizeHelper.getWidth(tab), height = TextureSizeHelper.getHeight(tab);
+    this.width = width;
+    this.height = height;
+    guiGraphics.blit(tab, x, y, 0, 0, width, height, width, height);
+    width = TextureSizeHelper.getWidth(TEXTURE);
+    height = TextureSizeHelper.getHeight(TEXTURE);
+    x += isHoveredOrFocused() ? 2 : 0;
+    guiGraphics.blit(TEXTURE, x + 5, y + 5, 0, 0, width, height, width, height);
   }
 
   @Override
