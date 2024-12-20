@@ -18,7 +18,7 @@ public class ExperienceWidget extends AbstractWidget {
   private final ExperienceHatchEntity entity;
 
   public ExperienceWidget(int x, int y, int screenWidth, ExperienceHatchEntity entity) {
-    super(x + 10, y, screenWidth - 16, 16, Component.empty());
+    super(x + 8, y, screenWidth - 16, 16, Component.empty());
     this.entity = entity;
   }
 

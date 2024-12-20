@@ -60,7 +60,7 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
     placeWidget = addRenderableWidget(new StructurePlacerWidget(leftPos + imageWidth, topPos,
         getMenu().getEntity().getId(), getMenu().getEntity().getBlockPos()));
     breakWidget = addRenderableWidget(new StructureBreakWidget(leftPos + imageWidth,
-        topPos + placeWidget.getHeight(),
+        topPos + placeWidget.getHeight() - 1,
         getMenu().getEntity().getId(), getMenu().getEntity().getBlockPos()));
     placeWidget.setTooltip(placeWidget.getTooltip());
     breakWidget.setTooltip(breakWidget.getTooltip());

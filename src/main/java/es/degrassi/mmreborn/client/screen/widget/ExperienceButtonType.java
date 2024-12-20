@@ -9,12 +9,17 @@ import java.util.List;
 import java.util.Locale;
 
 public enum ExperienceButtonType implements StringRepresentable {
-  EXTRACT_1,
-  EXTRACT_10,
-  EXTRACT_ALL,
-  INSERT_1,
-  INSERT_10,
-  INSERT_ALL;
+  EXTRACT_1(Icon.XP_EXTRACT_1),
+  EXTRACT_10(Icon.XP_EXTRACT_10),
+  EXTRACT_ALL(Icon.XP_EXTRACT_100),
+  INSERT_1(Icon.XP_INSERT_1),
+  INSERT_10(Icon.XP_INSERT_10),
+  INSERT_ALL(Icon.XP_INSERT_100);
+
+  private final Icon icon;
+  ExperienceButtonType(Icon icon) {
+    this.icon = icon;
+  }
 
   @Override
   public String getSerializedName() {
@@ -40,16 +45,8 @@ public enum ExperienceButtonType implements StringRepresentable {
     return List.of(INSERT_1, INSERT_10, INSERT_ALL);
   }
 
-  public ResourceLocation base() {
-    return ModularMachineryReborn.rl("textures/gui/widget/experience_button_" + getSerializedName() + ".png");
-  }
-
-  public ResourceLocation disabled() {
-    return ModularMachineryReborn.rl("textures/gui/widget/experience_button_disabled_" + getSerializedName() + ".png");
-  }
-
-  public ResourceLocation hovered() {
-    return ModularMachineryReborn.rl("textures/gui/widget/experience_button_hovered_" + getSerializedName() + ".png");
+  public Icon icon() {
+    return this.icon;
   }
 
   public int getAmount(boolean extraction) {

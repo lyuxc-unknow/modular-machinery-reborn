@@ -40,14 +40,14 @@ public class ExperienceHatchScreen extends BaseScreen<ExperienceHatchContainer, 
     super.renderBg(guiGraphics, partialTick, mouseX, mouseY);
     clearWidgets();
     experienceWidget = addRenderableWidget(new ExperienceWidget(getGuiLeft(), getGuiTop() + 20, imageWidth, getMenu().getEntity()));
-    AtomicInteger x = new AtomicInteger(9 + getGuiLeft());
+    AtomicInteger x = new AtomicInteger(8 + getGuiLeft());
     if (getMenu().getEntity() instanceof ExperienceInputHatchEntity e) {
       for (ExperienceButtonType type : ExperienceButtonType.insertions()) {
         experienceButtons.put(
             type,
             new ExperienceButton(
                 x.getAndAdd(18),
-                50 + getGuiTop(),
+                45 + getGuiTop(),
                 t -> PacketDistributor.sendToServer(new CExperienceButtonClickedPacket(e.getBlockPos(), t, t.extract())),
                 type
             )
@@ -57,12 +57,13 @@ public class ExperienceHatchScreen extends BaseScreen<ExperienceHatchContainer, 
       }
       x.getAndAdd(16);
     } else if (getMenu().getEntity() instanceof ExperienceOutputHatchEntity e) {
-      for (ExperienceButtonType type : ExperienceButtonType.extractions()) {
+      x.set(getGuiLeft() + imageWidth - 8 - 17);
+      for (ExperienceButtonType type : ExperienceButtonType.extractions().reversed()) {
         experienceButtons.put(
             type,
             new ExperienceButton(
-                x.getAndAdd(18),
-                50 + getGuiTop(),
+                x.getAndAdd(-18),
+                45 + getGuiTop(),
                 t -> PacketDistributor.sendToServer(new CExperienceButtonClickedPacket(e.getBlockPos(), t, t.extract())),
                 type
             )
@@ -83,7 +84,7 @@ public class ExperienceHatchScreen extends BaseScreen<ExperienceHatchContainer, 
 
     for (ExperienceButton button : experienceButtons.values()) {
       if (button.isHovered()) {
-        guiGraphics.renderTooltip(font, button.getTooltipMessage(), x, y);
+        guiGraphics.renderTooltip(font, button.getTooltipMessage().stream().map(Component::getVisualOrderText).toList(), x, y);
       }
     }
   }

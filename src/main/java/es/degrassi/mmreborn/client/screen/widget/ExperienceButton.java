@@ -1,12 +1,7 @@
 package es.degrassi.mmreborn.client.screen.widget;
 
-import es.degrassi.mmreborn.common.util.TextureSizeHelper;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -20,30 +15,13 @@ public class ExperienceButton extends IconButton {
   }
 
   public ExperienceButton(int x, int y, OnPressT onPress, ExperienceButtonType type) {
-    super(
-        x,
-        y,
-        TextureSizeHelper.getWidth(type.base()),
-        TextureSizeHelper.getHeight(type.base()),
-        Component.literal(type.getSerializedName()),
-        btn -> onPress.onPress(type),
-        DEFAULT_NARRATION
-    );
+    super(x, y, btn -> onPress.onPress(type));
     setTooltip(Tooltip.create(type.component()));
+    setIcon(type.icon());
     this.type = type;
   }
 
-  @Override
-  protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-    ResourceLocation texture = !isActive() ? type.disabled() : (isHoveredOrFocused() ? type.hovered() : type.base());
-    int width = TextureSizeHelper.getWidth(texture);
-    int height = TextureSizeHelper.getHeight(texture);
-    guiGraphics.blit(texture, this.getX(), this.getY(), 0, 0, width, height, width, height);
-  }
-
-  public List<FormattedCharSequence> getTooltipMessage() {
-    return Stream.of(type.component())
-        .map(Component::getVisualOrderText)
-        .toList();
+  public List<Component> getTooltipMessage() {
+    return Stream.of(type.component()).toList();
   }
 }

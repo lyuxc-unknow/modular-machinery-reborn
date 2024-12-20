@@ -187,6 +187,11 @@ dependencies {
   localRuntime("vazkii.patchouli:Patchouli:1.21-88-NEOFORGE-SNAPSHOT")
   localRuntime("top.theillusivec4.curios:curios-neoforge:9.0.12+1.21")
   localRuntime("com.hollingsworth.ars_nouveau:ars_nouveau-${project.minecraft_version}:5.3.3.841")
+
+  // experiencias
+  localRuntime("curse.maven:mob-grinding-utils-254241:${project.MGU}")
+  localRuntime("curse.maven:titanium-287342:${titanium}")
+  localRuntime("curse.maven:industrial-foregoing-266515:${project.IF}")
 }
 
 tasks.withType(ProcessResources).configureEach {
