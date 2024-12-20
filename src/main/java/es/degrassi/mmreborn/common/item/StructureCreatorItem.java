@@ -1,7 +1,7 @@
 /**
- * This item is mainly copied from <url>https://github.com/Frinn38/Custom-Machinery/blob/1.21/src/main/java/fr/frinn/custommachinery/common/init/StructureCreatorItem.java</url>
+ * This item is mainly copied from
+ * <url>https://github.com/Frinn38/Custom-Machinery/blob/1.21/src/main/java/fr/frinn/custommachinery/common/init/StructureCreatorItem.java</url>
  */
-
 package es.degrassi.mmreborn.common.item;
 
 import com.google.common.collect.HashBiMap;
@@ -16,6 +16,7 @@ import es.degrassi.mmreborn.api.PartialBlockState;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.block.BlockController;
+import es.degrassi.mmreborn.common.registration.KeyMappings;
 import es.degrassi.mmreborn.common.registration.Registration;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -67,37 +68,80 @@ public class StructureCreatorItem extends Item {
     BlockPos pos = context.getClickedPos();
     BlockState state = context.getLevel().getBlockState(pos);
     ItemStack stack = context.getItemInHand();
-    if (state.getBlock() instanceof BlockController) {
-      if (!context.getLevel().isClientSide())
-        finishStructure(stack, pos, state.getValue(BlockStateProperties.HORIZONTAL_FACING), (ServerPlayer) context.getPlayer());
-      return InteractionResult.SUCCESS;
-    } else if (!getSelectedBlocks(stack).contains(pos)) {
-      addSelectedBlock(stack, pos);
-      return InteractionResult.SUCCESS;
-    } else if (getSelectedBlocks(stack).contains(pos)) {
-      removeSelectedBlock(stack, pos);
-      return InteractionResult.SUCCESS;
+
+    StructureCreatorItemMode currentMode = getCurrentMode(stack);
+
+    if (currentMode.isSingle()) {
+      if (state.getBlock() instanceof BlockController) {
+        if (!context.getLevel().isClientSide())
+          finishStructure(stack, pos, state.getValue(BlockStateProperties.HORIZONTAL_FACING), (ServerPlayer) context.getPlayer());
+        return InteractionResult.SUCCESS;
+      } else if (!getSelectedBlocks(stack).contains(pos)) {
+        addSelectedBlock(stack, pos);
+        return InteractionResult.SUCCESS;
+      } else if (getSelectedBlocks(stack).contains(pos)) {
+        removeSelectedBlock(stack, pos);
+        return InteractionResult.SUCCESS;
+      }
+    } else if (currentMode.isBox()) {
+      if (state.getBlock() instanceof BlockController) {
+        if (!context.getLevel().isClientSide())
+          finishStructure(stack, pos, state.getValue(BlockStateProperties.HORIZONTAL_FACING), (ServerPlayer) context.getPlayer());
+        return InteractionResult.SUCCESS;
+      } else {
+        if (isFirst(stack)) {
+          selectFirst(stack, pos);
+          setSecond(stack);
+        } else {
+          selectSecond(stack, pos);
+          setFirst(stack);
+        }
+      }
     }
+
+
     return super.useOn(context);
   }
 
   @Override
   public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    tooltip.add(
+        Component.translatable("modular_machinery_reborn.structure_creator.mode", getCurrentMode(stack).component())
+    );
+    tooltip.add(
+        Component.translatable("modular_machinery_reborn.structure_creator.mode.change.tooltip",
+            KeyMappings.STRUCTURE_MODE_CHANGE.get().getKey().getDisplayName()));
+    if (getCurrentMode(stack).isBox()) {
+      if (isFirst(stack)) {
+        tooltip.add(Component.empty());
+        tooltip.add(Component.translatable("modular_machinery_reborn.structure_creator.mode.box.first").withStyle(ChatFormatting.GRAY));
+      } else {
+        tooltip.add(Component.empty());
+        tooltip.add(Component.translatable("modular_machinery_reborn.structure_creator.mode.box.second").withStyle(ChatFormatting.GRAY));
+      }
+      tooltip.add(Component.empty());
+    }
+
     int amount = getSelectedBlocks(stack).size();
     if (amount == 0)
       tooltip.add(Component.translatable("modular_machinery_reborn.structure_creator.no_blocks").withStyle(ChatFormatting.RED));
     else
-      tooltip.add(Component.translatable("modular_machinery_reborn.structure_creator.amount", getSelectedBlocks(stack).size()).withStyle(ChatFormatting.BLUE));
-    tooltip.add(Component.translatable("modular_machinery_reborn.structure_creator.select").withStyle(ChatFormatting.GREEN));
+      tooltip.add(Component.translatable("modular_machinery_reborn.structure_creator.amount", getSelectedBlocks(stack).size())
+          .withStyle(ChatFormatting.BLUE));
+    tooltip.add(Component.empty());
+    if (getCurrentMode(stack).isSingle())
+      tooltip.add(Component.translatable("modular_machinery_reborn.structure_creator.select").withStyle(ChatFormatting.GREEN));
     tooltip.add(Component.translatable("modular_machinery_reborn.structure_creator.reset").withStyle(ChatFormatting.GOLD));
     tooltip.add(Component.translatable("modular_machinery_reborn.structure_creator.finish").withStyle(ChatFormatting.YELLOW));
   }
 
   @Override
   public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-    if (player.isCrouching() && player.getItemInHand(hand).getItem() == this) {
-      ItemStack stack = player.getItemInHand(hand);
+    ItemStack stack = player.getItemInHand(hand);
+    if (player.isCrouching() && stack.getItem() == this) {
       stack.remove(Registration.STRUCTURE_CREATOR_DATA);
+      stack.remove(Registration.STRUCTURE_CREATOR_BOX);
+      stack.remove(Registration.STRUCTURE_CREATOR_BOX_CURRENT);
       return InteractionResultHolder.success(stack);
     }
     return super.use(level, player, hand);
@@ -105,6 +149,68 @@ public class StructureCreatorItem extends Item {
 
   public static List<BlockPos> getSelectedBlocks(ItemStack stack) {
     return Optional.ofNullable(stack.get(Registration.STRUCTURE_CREATOR_DATA)).orElse(new ArrayList<>());
+  }
+
+  public static StructureCreatorItemMode getCurrentMode(ItemStack stack) {
+    return Optional.ofNullable(stack.get(Registration.STRUCTURE_CREATOR_MODE)).orElse(StructureCreatorItemMode.SINGLE);
+  }
+
+  public static void nextMode(ItemStack stack) {
+    stack.update(Registration.STRUCTURE_CREATOR_MODE, StructureCreatorItemMode.SINGLE, StructureCreatorItemMode::next);
+  }
+
+  public static boolean isFirst(ItemStack stack) {
+    return stack.getOrDefault(Registration.STRUCTURE_CREATOR_BOX_CURRENT, true);
+  }
+
+  public static void setSecond(ItemStack stack) {
+    stack.update(
+        Registration.STRUCTURE_CREATOR_BOX_CURRENT,
+        true,
+        current -> false
+    );
+  }
+
+  public static void setFirst(ItemStack stack) {
+    stack.update(
+        Registration.STRUCTURE_CREATOR_BOX_CURRENT,
+        true,
+        current -> true
+    );
+  }
+
+  public static BlockPos getBox(ItemStack stack) {
+    return stack.getOrDefault(Registration.STRUCTURE_CREATOR_BOX, new BlockPos(0, 0, 0));
+  }
+
+  public static void selectFirst(ItemStack stack, BlockPos pos) {
+    stack.update(
+        Registration.STRUCTURE_CREATOR_BOX,
+        new BlockPos(0, 0, 0),
+        box -> pos.immutable()
+    );
+    addSelectedBlock(stack, pos);
+  }
+
+  public static void selectSecond(ItemStack stack, BlockPos pos) {
+    BlockPos stored = getBox(stack);
+    int minX = Math.min(stored.getX(), pos.getX()),
+        maxX = Math.max(stored.getX(), pos.getX()),
+        minY = Math.min(stored.getY(), pos.getY()),
+        maxY = Math.max(stored.getY(), pos.getY()),
+        minZ = Math.min(stored.getZ(), pos.getZ()),
+        maxZ = Math.max(stored.getZ(), pos.getZ());
+    BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+    for (int x = minX; x <= maxX; ++x) {
+      for (int y = minY; y <= maxY; ++y) {
+        for (int z = minZ; z <= maxZ; ++z) {
+          mutable.set(x, y, z);
+          if (getSelectedBlocks(stack).contains(mutable.immutable())) continue;
+          addSelectedBlock(stack, mutable.immutable());
+        }
+      }
+    }
+    stack.remove(Registration.STRUCTURE_CREATOR_BOX);
   }
 
   public static void addSelectedBlock(ItemStack stack, BlockPos pos) {

@@ -1,10 +1,9 @@
 package es.degrassi.mmreborn.common.registration;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
-
-import java.util.List;
-import java.util.function.Supplier;
-
+import es.degrassi.mmreborn.api.codec.DefaultCodecs;
+import es.degrassi.mmreborn.api.codec.NamedCodec;
+import es.degrassi.mmreborn.common.item.StructureCreatorItemMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
@@ -13,8 +12,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.List;
+import java.util.function.Supplier;
 
 public class Registration {
 
@@ -35,6 +38,30 @@ public class Registration {
   public static final Supplier<DataComponentType<List<BlockPos>>> STRUCTURE_CREATOR_DATA = DATA_COMPONENTS.register("structure_creator", () -> DataComponentType.<List<BlockPos>>builder()
       .persistent(BlockPos.CODEC.listOf())
       .networkSynchronized(BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list()))
+      .build()
+  );
+
+  public static final Supplier<DataComponentType<StructureCreatorItemMode>> STRUCTURE_CREATOR_MODE =
+      DATA_COMPONENTS.register(
+      "structure_creator_mode", () -> DataComponentType.<StructureCreatorItemMode>builder()
+      .persistent(StructureCreatorItemMode.CODEC)
+      .networkSynchronized(StructureCreatorItemMode.STREAM_CODEC)
+      .build()
+  );
+
+  public static final Supplier<DataComponentType<BlockPos>> STRUCTURE_CREATOR_BOX =
+      DATA_COMPONENTS.register(
+      "structure_creator_selected_corner", () -> DataComponentType.<BlockPos>builder()
+      .persistent(BlockPos.CODEC)
+      .networkSynchronized(BlockPos.STREAM_CODEC)
+      .build()
+  );
+
+  public static final Supplier<DataComponentType<Boolean>> STRUCTURE_CREATOR_BOX_CURRENT =
+      DATA_COMPONENTS.register(
+      "structure_creator_box_current", () -> DataComponentType.<Boolean>builder()
+      .persistent(NamedCodec.BOOL.codec())
+      .networkSynchronized(ByteBufCodecs.BOOL)
       .build()
   );
 

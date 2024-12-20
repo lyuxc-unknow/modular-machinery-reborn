@@ -11,11 +11,16 @@ import com.mojang.serialization.MapLike;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.machine.MachineJsonReloadListener;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.ResourceLocationException;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -37,6 +42,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class DefaultCodecs {
@@ -137,6 +143,17 @@ public class DefaultCodecs {
     else
       return DataResult.error(() -> Arrays.toString(arr) + " is not an array of 3 or 6 elements");
   }, aabb -> DoubleStream.of(aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ), "Box");
+  public static final StreamCodec<ByteBuf, AABB> STREAM_BOX = ByteBufCodecs.fromCodec(BOX.codec());
+
+  public static final NamedCodec<BlockPos[]> PAIR_BLOCK_POS_CODEC = NamedCodec.INT_STREAM.comapFlatMap(stream -> {
+    int[] arr = stream.toArray();
+    if (arr.length == 6)
+      return DataResult.success(new BlockPos[]{ new BlockPos(arr[0], arr[1], arr[2]),
+          new BlockPos(arr[3], arr[4], arr[5]) });
+    return DataResult.error(() -> Arrays.toString(arr) + " is not an array of 6 elements");
+  }, arr -> IntStream.of(arr[0].getX(), arr[0].getY(), arr[0].getZ(), arr[1].getX(), arr[1].getY(), arr[1].getZ()), "BlockPos box");
+
+  public static final StreamCodec<ByteBuf, BlockPos[]> STREAM_PAIR_BLOCK_POS_CODEC = ByteBufCodecs.fromCodec(PAIR_BLOCK_POS_CODEC.codec());
 
   public static final NamedCodec<Integer> HEX = NamedCodec.STRING.comapFlatMap(DefaultCodecs::decodeHexColor, DefaultCodecs::encodeHexColor, "Hex color");
 

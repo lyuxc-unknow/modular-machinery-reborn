@@ -5,6 +5,13 @@
   "modular_machinery_reborn.command.reload.machines": "Maquinaria de Modular Machinery recargada satisfactoriamente !",
   "modular_machinery_reborn.command.reload.recipes": "Recetas de Modular Machinery recargadas satisfactoriamente !",
 
+  "modular_machinery_reborn.structure_creator.mode.change.tooltip": "Presiona [%s] con el item en la mano(NO GUI) para cambiar el modo",
+  "modular_machinery_reborn.structure_creator.mode.change": "Cambiado el modo de %s a %s",
+  "modular_machinery_reborn.structure_creator.mode.single": "Único",
+  "modular_machinery_reborn.structure_creator.mode.box": "Caja",
+  "modular_machinery_reborn.structure_creator.mode.box.first": "Selecciona primera esquina",
+  "modular_machinery_reborn.structure_creator.mode.box.second": "Selecciona segunda esquina",
+  "modular_machinery_reborn.structure_creator.mode": "Modo Actual: %s",
   "modular_machinery_reborn.structure_creator.no_blocks": "Sin bloques selecionados",
   "modular_machinery_reborn.structure_creator.amount": "%s bloques seleccionados",
   "modular_machinery_reborn.structure_creator.select": "Click derecho en un bloque para añadir o removerlo. Si el bloque tiene una GUI shift click para añadir o removerlo.",
@@ -314,5 +321,8 @@
   "modular_machinery_reborn.gui.structure_break_button": "Click para romper la estrcutura actual",
 
   "mmr.place.non_air": "Se ha tratado de colocar %s en %s pero se encontró con algún bloque que no es válido en la estructura",
-  "mmr.place.no_item": "Se ha tratado de colocar %s en %s pero no se pudo encontrar el item %s en el inventario del jugador"
+  "mmr.place.no_item": "Se ha tratado de colocar %s en %s pero no se pudo encontrar el item %s en el inventario del jugador",
+
+  "key.categories.modular_machinery_reborn": "Modular Machinery Reborn",
+  "key.modular_machinery_reborn.structure_mode_change": "Modo del Creador de estructuras"
 }
