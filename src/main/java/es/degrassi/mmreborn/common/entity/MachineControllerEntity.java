@@ -4,6 +4,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.controller.ComponentMapper;
+import es.degrassi.mmreborn.api.controller.ControllerAccessible;
 import es.degrassi.mmreborn.client.model.ControllerBakedModel;
 import es.degrassi.mmreborn.common.crafting.ActiveMachineRecipe;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
@@ -64,7 +65,6 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
 
   private int recipeTicks = -1;
   private int ticksToUpdateComponent = 0;
-  private boolean structureChecked = false;
 
   private final List<MachineComponent<?>> foundComponents = Lists.newArrayList();
 
@@ -229,15 +229,14 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
       setCraftingStatus(CraftingStatus.NO_RECIPE);
       ticksToUpdateComponent = 1;
     }
+    ticksToUpdateComponent++;
     if (level.getGameTime() % MMRConfig.get().checkStructureTicks.get() == 0) {
-      this.getFoundMachine();
       if (this.getFoundMachine() != DynamicMachine.DUMMY) {
         if (!getFoundMachine().getPattern().match(getLevel(), getBlockPos(), getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING))) {
           distributeCasingColor(true);
           this.activeRecipe = null;
           setRecipeTicks(-1);
           setCraftingStatus(CraftingStatus.MISSING_STRUCTURE);
-          structureChecked = false;
         } else {
           distributeCasingColor(false);
         }
@@ -245,7 +244,6 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
         setChanged();
       }
     }
-    ticksToUpdateComponent++;
   }
 
   public void distributeCasingColor(boolean default_, BlockPos... poss) {
@@ -289,16 +287,17 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
     if (getFoundMachine() == DynamicMachine.DUMMY) return;
     if (level.getGameTime() % 20 == 0) {
       this.foundComponents.clear();
-      for (BlockPos potentialPosition : this.getFoundMachine().getPattern().getBlocks(getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).keySet()) {
-        BlockPos realPos = getBlockPos().offset(potentialPosition);
-        BlockEntity te = getLevel().getBlockEntity(realPos);
-        if (te instanceof MachineComponentEntity entity) {
-          MachineComponent<?> component = entity.provideComponent();
-          if (component != null) {
-            this.foundComponents.add(component);
-          }
-        }
-      }
+      this.foundComponents.addAll(getFoundComponentsMap().values());
+//      for (BlockPos potentialPosition : this.getFoundMachine().getPattern().getBlocks(getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).keySet()) {
+//        BlockPos realPos = getBlockPos().offset(potentialPosition);
+//        BlockEntity te = getLevel().getBlockEntity(realPos);
+//        if (te instanceof MachineComponentEntity entity) {
+//          MachineComponent<?> component = entity.provideComponent();
+//          if (component != null) {
+//            this.foundComponents.add(component);
+//          }
+//        }
+//      }
     }
     setChanged();
   }
@@ -364,6 +363,9 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
       if (te instanceof MachineComponentEntity entity) {
         MachineComponent<?> component = entity.provideComponent();
         if (component != null) {
+          if (entity instanceof ControllerAccessible accessible) {
+            accessible.setControllerPos(getBlockPos());
+          }
           map.put(realPos, component);
         }
       }

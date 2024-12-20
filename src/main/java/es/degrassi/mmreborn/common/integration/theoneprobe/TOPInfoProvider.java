@@ -38,6 +38,10 @@ public class TOPInfoProvider implements IProbeInfoProvider, Function<ITheOneProb
   public void addProbeInfo(ProbeMode mode, IProbeInfo info, Player player, Level level, BlockState state, IProbeHitData data) {
     BlockEntity tile = level.getBlockEntity(data.getPos());
     if (tile instanceof MachineControllerEntity controller) {
+      if (controller.isPaused()) {
+        info.mcText(Component.translatable("gui.controller.status.paused").withStyle(ChatFormatting.DARK_RED));
+        return;
+      }
       showCraftingInfo(controller, info);
     }
   }

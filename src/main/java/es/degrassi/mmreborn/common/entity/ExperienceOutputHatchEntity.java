@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 public class ExperienceOutputHatchEntity extends ExperienceHatchEntity {
 
   public ExperienceOutputHatchEntity(BlockPos pos, BlockState state) {
-    super(EntityRegistration.EXPERIENCE_OUTPUT_HATCH.get(), pos, state);
+    super(EntityRegistration.EXPERIENCE_OUTPUT_HATCH.get(), pos, state, ExperienceHatchSize.TINY, IOType.OUTPUT);
   }
 
   public ExperienceOutputHatchEntity(BlockPos pos, BlockState state, ExperienceHatchSize size) {

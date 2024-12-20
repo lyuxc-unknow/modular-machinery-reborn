@@ -19,10 +19,6 @@ public abstract class FluidTankEntity extends ColorableMachineComponentEntity im
   private IOType ioType;
   private FluidHatchSize hatchSize;
 
-  public FluidTankEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-    super(type, pos, state);
-  }
-
   public FluidTankEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, FluidHatchSize size, IOType ioType) {
     super(type, pos, state);
     this.tank = size.buildTank(this, ioType == IOType.INPUT, ioType == IOType.OUTPUT);

@@ -28,6 +28,12 @@ public class DynamicMachineComponentProvider implements IBlockComponentProvider 
     if (accessor.getBlockEntity() instanceof MachineControllerEntity) {
       CompoundTag tag = accessor.getServerData().getCompound(ModularMachineryReborn.MODID);
       if (tag.isEmpty()) return;
+      if (tag.contains("paused")) {
+        tooltip.add(
+            Component.translatable("gui.controller.status.paused").withStyle(ChatFormatting.DARK_RED)
+        );
+        return;
+      }
       if (tag.contains("status", Tag.TAG_COMPOUND)) {
         CraftingStatus status = CraftingStatus.deserialize(tag.getCompound("status"));
         MutableComponent message = Component.translatable(status.getUnlocMessage());

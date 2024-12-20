@@ -11,7 +11,7 @@ import net.minecraft.util.FormattedCharSequence;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class ExperienceButton extends Button {
+public class ExperienceButton extends IconButton {
 
   private final ExperienceButtonType type;
 

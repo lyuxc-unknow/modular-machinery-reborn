@@ -20,13 +20,6 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
 
   private final BasicExperienceTank experienceTank;
 
-  public ExperienceHatchEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-    super(type, pos, state);
-    this.size = null;
-    this.ioType = null;
-    this.experienceTank = buildTank();
-  }
-
   public ExperienceHatchEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, ExperienceHatchSize size, IOType ioType) {
     super(type, pos, state);
     this.size = size;

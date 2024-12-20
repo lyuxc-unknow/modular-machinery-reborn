@@ -29,6 +29,7 @@
   "gui.controller.structure": "Estrcutura encontrada: %s",
   "gui.controller.structure.none": "Ninguna",
   "gui.controller.status": "Estado:",
+  "gui.controller.status.paused": "Pausado",
   "gui.controller.status.redstone_stopped": "Máquina parada por una señal de redstone recibida",
   "gui.controller.status.missing_structure": "Sin estructura",
   "gui.controller.status.no_recipe": "Sin receta encontrada",

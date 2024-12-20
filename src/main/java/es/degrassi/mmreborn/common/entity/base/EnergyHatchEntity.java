@@ -1,8 +1,6 @@
 package es.degrassi.mmreborn.common.entity.base;
 
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
-import es.degrassi.mmreborn.common.entity.EnergyInputHatchEntity;
-import es.degrassi.mmreborn.common.entity.EnergyOutputHatchEntity;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.component.EnergyHatch;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateEnergyComponentPacket;
@@ -11,8 +9,6 @@ import es.degrassi.mmreborn.common.util.MiscUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NumericTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -28,11 +24,6 @@ public abstract class EnergyHatchEntity extends ColorableMachineComponentEntity 
   protected long energy = 0;
   protected EnergyHatchSize size;
   protected final IOType ioType;
-
-  public EnergyHatchEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-    super(type, pos, state);
-    ioType = null;
-  }
 
   public EnergyHatchEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, EnergyHatchSize size, IOType ioType) {
     super(type, pos, state);
@@ -95,22 +86,18 @@ public abstract class EnergyHatchEntity extends ColorableMachineComponentEntity 
 
   @Override
   public boolean canExtract() {
-    return this instanceof EnergyOutputHatchEntity;
+    return ioType != null && !ioType.isInput();
   }
 
   @Override
   public boolean canReceive() {
-    return this instanceof EnergyInputHatchEntity;
+    return ioType != null && ioType.isInput();
   }
 
   @Override
   protected void loadAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
     super.loadAdditional(compound, pRegistries);
-
-    Tag energyTag = compound.get("energy");
-    if (energyTag instanceof NumericTag) {
-      this.energy = ((NumericTag) energyTag).getAsLong();
-    }
+    this.energy = compound.getLong("energy");
     this.size = EnergyHatchSize.value(compound.getString("hatchSize").toUpperCase(Locale.ROOT));
   }
 
