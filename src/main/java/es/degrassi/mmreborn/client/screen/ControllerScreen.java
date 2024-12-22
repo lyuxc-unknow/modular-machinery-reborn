@@ -40,6 +40,8 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
   private final List<Either<FormattedText, TooltipComponent>> components;
   private boolean addedPlaceWidget = false;
 
+  private static final int screenWidth = 158;
+
   public ControllerScreen(ControllerContainer pMenu, Inventory pPlayerInventory, Component pTitle) {
     super(pMenu, pPlayerInventory, pTitle);
     List<Either<FormattedText, TooltipComponent>> components = new LinkedList<>();
@@ -73,53 +75,54 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
     guiGraphics.pose().translate(this.leftPos, this.topPos, 0);
     float scale = 0.72f;
     guiGraphics.pose().scale(scale, scale, scale);
-    int offsetX = 12;
-    int offsetY = 12;
+    int offsetX = 14;
+    int offsetY = 14;
 
     DynamicMachine machine = entity.getFoundMachine();
     if (machine != DynamicMachine.DUMMY) {
       // render if the structure of machine is not null
-      List<FormattedCharSequence> out = font.split(Component.literal(machine.getLocalizedName()), Mth.floor(135 * (1 / scale)));
+      List<FormattedCharSequence> out = font.split(Component.literal(machine.getLocalizedName()), Mth.floor(screenWidth * (1 / scale)));
       for (FormattedCharSequence draw : out) {
         guiGraphics.drawString(font, draw, offsetX, offsetY, 0xFFFFFF);
-        offsetY += 10;
+        offsetY += 7;
       }
-      offsetY -= 10;
+      offsetY -= 7;
     } else {
       // render if the structure of machine is null
       Component drawnHead = Component.translatable("gui.controller.structure", Component.translatable("gui.controller.structure.none"));
       guiGraphics.drawString(font, drawnHead, offsetX, offsetY, 0xFFFFFF);
     }
-    offsetY += 15;
+    offsetY += 10;
 
     if (entity.isPaused()) {
       // render if redstone paused the machine
       Component drawnStop = Component.translatable("gui.controller.status.redstone_stopped");
-      List<FormattedCharSequence> out = font.split(drawnStop, Mth.floor(135 * (1 / scale)));
+      List<FormattedCharSequence> out = font.split(drawnStop, Mth.floor(screenWidth * (1 / scale)));
       for (FormattedCharSequence draw : out) {
-        offsetY += 10;
+        offsetY += 7;
         guiGraphics.drawString(font, draw, offsetX, offsetY, 0xFFFFFF);
-        offsetY += 10;
+        offsetY += 7;
       }
       guiGraphics.pose().popPose();
       return;
     }
 
     // render the current status
-    Component status = Component.translatable("gui.controller.status");
-    guiGraphics.drawString(font, status, offsetX, offsetY, 0xFFFFFF);
+    MutableComponent status = Component.translatable("gui.controller.status");
     String statusKey = entity.getCraftingStatus().getUnlocMessage();
-
-    List<FormattedCharSequence> out = font.split(Component.translatable(statusKey), Mth.floor(135 * (1 / scale)));
+    List<FormattedCharSequence> out = font.split(status.append(Component.translatable(statusKey)), Mth.floor(screenWidth * (1 / scale)));
     for (FormattedCharSequence draw : out) {
-      offsetY += 10;
+      offsetY += 7;
       guiGraphics.drawString(font, draw, offsetX, offsetY, 0xFFFFFF);
+      offsetY += 7;
     }
-    offsetY += 15;
+    offsetY -= 7;
+    offsetY += 10;
     if (entity.hasActiveRecipe()) {
       // render if the recipe of machine is not null
       String percProgress = Utils.decimalFormatWithPercentage(Mth.clamp(entity.getCurrentActiveRecipeProgress() * 100F, 0, 100));
       Component progressStr = Component.translatable("gui.controller.status.crafting.progress", percProgress);
+      offsetY += 7;
       guiGraphics.drawString(font, progressStr, offsetX, offsetY, 0xFFFFFF);
     }
 
