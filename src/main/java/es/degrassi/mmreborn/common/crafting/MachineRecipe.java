@@ -9,9 +9,9 @@ import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.codec.NamedMapCodec;
 import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
+import es.degrassi.mmreborn.common.crafting.requirement.PositionedRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.PositionedSizedRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
-import es.degrassi.mmreborn.common.crafting.requirement.PositionedRequirement;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
@@ -26,7 +26,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +34,6 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -180,7 +178,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
   }
 
   @Override
-  public @NotNull RecipeSerializer<?> getSerializer() {
+  public @NotNull MachineRecipeSerializer getSerializer() {
     return RecipeRegistration.RECIPE_SERIALIZER.get();
   }
 
@@ -240,16 +238,15 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
     }
 
     public MachineRecipeBuilder(MachineRecipe recipe) {
-      this(recipe.getOwningMachineIdentifier(), recipe.tickTime, recipe.recipeRequirements, recipe.configuredPriority
-          , recipe.voidPerTickFailure, recipe.width, recipe.height, recipe.shouldRenderProgress,
+      this(recipe.getOwningMachineIdentifier(), recipe.tickTime, recipe.recipeRequirements, recipe.configuredPriority,
+          recipe.voidPerTickFailure, recipe.width, recipe.height, recipe.shouldRenderProgress,
           recipe.progressPosition);
     }
 
     public MachineRecipe build() {
       try {
         MMRLogger.INSTANCE.info("Building recipe...");
-        MachineRecipe recipe = new MachineRecipe(machine, time, prio, voidF, width, height, shouldRenderProgress,
-            progressPosition);
+        MachineRecipe recipe = new MachineRecipe(machine, time, prio, voidF, width, height, shouldRenderProgress, progressPosition);
         requirements.forEach(recipe::addRequirement);
         MMRLogger.INSTANCE.info("Finished building recipe {}", recipe);
         return recipe;

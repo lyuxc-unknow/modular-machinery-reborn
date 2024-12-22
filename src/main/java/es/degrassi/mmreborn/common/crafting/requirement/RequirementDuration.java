@@ -35,11 +35,6 @@ public class RequirementDuration extends ComponentRequirement<Integer, Requireme
     return json;
   }
 
-  @Override
-  public String toString() {
-    return asJson().toString();
-  }
-
   public RequirementDuration(int time, PositionedRequirement position) {
     super(RequirementTypeRegistration.DURATION.get(), IOType.INPUT, position);
     this.time = time;

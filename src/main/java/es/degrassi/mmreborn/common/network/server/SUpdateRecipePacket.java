@@ -12,7 +12,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -41,12 +40,12 @@ public record SUpdateRecipePacket(ResourceLocation recipe, Integer ticks, BlockP
       context.enqueueWork(() -> {
         if (context.player().level().getBlockEntity(packet.pos) instanceof MachineControllerEntity entity) {
           RecipeHolder<MachineRecipe> recipe = (RecipeHolder<MachineRecipe>) context.player().level().getRecipeManager().byKey(packet.recipe).orElse(null);
-          entity.setActiveRecipe(new ActiveMachineRecipe(recipe, entity));
-          entity.setRecipeTicks(packet.ticks);
+          entity.getCraftingManager().setActiveRecipe(new ActiveMachineRecipe(recipe, entity));
+          entity.getCraftingManager().setRecipeTicks(packet.ticks);
           if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.containerMenu instanceof ControllerContainer menu &&
           menu.getEntity().getBlockPos().equals(packet.pos)) {
-            entity.setActiveRecipe(new ActiveMachineRecipe(recipe, entity));
-            entity.setRecipeTicks(packet.ticks);
+            entity.getCraftingManager().setActiveRecipe(new ActiveMachineRecipe(recipe, entity));
+            entity.getCraftingManager().setRecipeTicks(packet.ticks);
           }
         }
       });

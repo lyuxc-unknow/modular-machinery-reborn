@@ -1,8 +1,10 @@
 package es.degrassi.mmreborn.common.entity.base;
 
+import es.degrassi.experiencelib.api.capability.IExperienceHandler;
 import es.degrassi.experiencelib.impl.capability.BasicExperienceTank;
 import es.degrassi.mmreborn.common.block.prop.ExperienceHatchSize;
 import es.degrassi.mmreborn.common.machine.IOType;
+import es.degrassi.mmreborn.common.machine.component.ExperienceHatch;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateExperienceComponentPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -13,6 +15,9 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
 
 public abstract class ExperienceHatchEntity extends ColorableMachineComponentEntity implements MachineComponentEntity {
   protected final ExperienceHatchSize size;
@@ -29,6 +34,17 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
 
   public BasicExperienceTank getTank() {
     return experienceTank;
+  }
+
+  @Nullable
+  @Override
+  public ExperienceHatch provideComponent() {
+    return new ExperienceHatch(ioType) {
+      @Override
+      public @NotNull IExperienceHandler getContainerProvider() {
+        return experienceTank;
+      }
+    };
   }
 
   private BasicExperienceTank buildTank() {

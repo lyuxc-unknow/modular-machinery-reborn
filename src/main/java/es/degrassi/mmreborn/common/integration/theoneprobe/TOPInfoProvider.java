@@ -56,8 +56,8 @@ public class TOPInfoProvider implements IProbeInfoProvider, Function<ITheOneProb
     }
     info.mcText(message);
     if (tile.hasActiveRecipe()) {
-      int ticks = tile.getRecipeTicks();
-      int total = tile.getActiveRecipe().getRecipe().getRecipeTotalTickTime();
+      int ticks = tile.getCraftingManager().getTicks();
+      int total = tile.getCraftingManager().getRecipeTicks();
       float progress = (float) ticks / total;
       boolean seconds = total >= 20;
       info.element(

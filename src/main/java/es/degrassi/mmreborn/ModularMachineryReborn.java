@@ -90,12 +90,8 @@ public class ModularMachineryReborn {
           size.transferLimit = MMRConfig.get().energyLimit(size);
           size.transferLimit = MiscUtils.clamp(size.transferLimit, 1, Long.MAX_VALUE);
         }),
-        Pair.of(FluidHatchSize.class, (FluidHatchSize size) -> {
-          size.size = MMRConfig.get().fluidSize(size);
-        }),
-        Pair.of(ExperienceHatchSize.class, (ExperienceHatchSize size) -> {
-          size.capacity = MMRConfig.get().experienceSize(size);
-        })
+        Pair.of(FluidHatchSize.class, (FluidHatchSize size) -> size.size = MMRConfig.get().fluidSize(size)),
+        Pair.of(ExperienceHatchSize.class, (ExperienceHatchSize size) -> size.capacity = MMRConfig.get().experienceSize(size))
     );
   }
 

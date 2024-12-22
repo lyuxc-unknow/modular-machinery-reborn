@@ -11,6 +11,7 @@ import java.util.Locale;
 
 public class CraftingStatus {
   public static final CraftingStatus SUCCESS = new CraftingStatus(Type.CRAFTING, "");
+  public static final CraftingStatus DONE = new CraftingStatus(Type.DONE, "");
   public static final CraftingStatus MISSING_STRUCTURE = new CraftingStatus(Type.MISSING_STRUCTURE, "");
   public static final CraftingStatus NO_RECIPE = new CraftingStatus(Type.NO_RECIPE, "");
 
@@ -43,11 +44,15 @@ public class CraftingStatus {
   }
 
   public boolean isCrafting() {
-    return this.status == Type.CRAFTING;
+    return this.status.isCrafting();
   }
 
   public boolean isFailure() {
-    return this.status == Type.FAILURE;
+    return this.status.isFailure();
+  }
+
+  public boolean isDone() {
+    return this.status.isDone();
   }
 
   public boolean isMissingStructure() {
@@ -60,6 +65,10 @@ public class CraftingStatus {
 
   public static CraftingStatus failure(String unlocMessage) {
     return new CraftingStatus(Type.FAILURE, unlocMessage);
+  }
+
+  public static CraftingStatus done() {
+    return DONE;
   }
 
   public CompoundTag serializeNBT() {
@@ -85,6 +94,7 @@ public class CraftingStatus {
 
   public enum Type implements StringRepresentable {
     MISSING_STRUCTURE,
+    DONE,
     NO_RECIPE,
     FAILURE,
     CRAFTING;
@@ -93,10 +103,18 @@ public class CraftingStatus {
       return switch (value.toLowerCase(Locale.ROOT)) {
         case "missing_structure" -> MISSING_STRUCTURE;
         case "crafting" -> CRAFTING;
-        case "no_recipe" -> NO_RECIPE;
         case "failure" -> FAILURE;
-        default -> null;
+        case "done" -> DONE;
+        default -> NO_RECIPE;
       };
+    }
+
+    public boolean isDone() {
+      return this == DONE;
+    }
+
+    public boolean isCrafting() {
+      return this == CRAFTING;
     }
 
     public boolean isFailure() {

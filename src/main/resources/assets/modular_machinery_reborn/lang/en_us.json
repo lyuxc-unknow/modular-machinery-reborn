@@ -28,7 +28,7 @@
   "gui.controller.blueprint.none": "None",
   "gui.controller.structure": "Structure Found: %s",
   "gui.controller.structure.none": "None",
-  "gui.controller.status": "Status:",
+  "gui.controller.status": "Status: ",
   "gui.controller.status.paused": "Paused",
   "gui.controller.status.redstone_stopped": "Machine stopped by incoming redstone signal",
   "gui.controller.status.missing_structure": "Missing structure",

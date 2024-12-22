@@ -21,7 +21,7 @@
   "gui.controller.blueprint.none": "无",
   "gui.controller.structure": "已找到结构: %s",
   "gui.controller.structure.none": "无",
-  "gui.controller.status": "当前状态:",
+  "gui.controller.status": "当前状态: ",
   "gui.controller.status.redstone_stopped": "机器因红石信号停止工作",
   "gui.controller.status.missing_structure": "结构不完整",
   "gui.controller.status.no_recipe": "没有相匹配的配方",

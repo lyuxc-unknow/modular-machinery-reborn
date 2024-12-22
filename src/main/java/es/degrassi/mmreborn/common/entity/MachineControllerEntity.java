@@ -4,7 +4,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.controller.ComponentMapper;
-import es.degrassi.mmreborn.api.controller.ControllerAccessible;
 import es.degrassi.mmreborn.client.model.ControllerBakedModel;
 import es.degrassi.mmreborn.common.crafting.ActiveMachineRecipe;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
@@ -16,10 +15,11 @@ import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.entity.base.BlockEntityRestrictedTick;
 import es.degrassi.mmreborn.common.entity.base.BlockEntitySynchronized;
 import es.degrassi.mmreborn.common.entity.base.ColorableMachineComponentEntity;
-import es.degrassi.mmreborn.common.entity.base.MachineComponentEntity;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
+import es.degrassi.mmreborn.common.manager.ComponentManager;
+import es.degrassi.mmreborn.common.manager.CraftingManager;
 import es.degrassi.mmreborn.common.network.server.SMachineUpdatePacket;
 import es.degrassi.mmreborn.common.network.server.SSyncPauseStatePacket;
 import es.degrassi.mmreborn.common.network.server.SUpdateCraftingStatusPacket;
@@ -33,10 +33,8 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -47,7 +45,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,9 +64,13 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
   private int ticksToUpdateComponent = 0;
 
   private final List<MachineComponent<?>> foundComponents = Lists.newArrayList();
+  private final CraftingManager craftingManager;
+  private final ComponentManager componentManager;
 
   public MachineControllerEntity(BlockPos pos, BlockState state) {
     super(EntityRegistration.CONTROLLER.get(), pos, state);
+    craftingManager = new CraftingManager(this);
+    componentManager = new ComponentManager(this);
   }
 
   @Override
@@ -97,28 +98,32 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
     checkStructure();
 
     if (isPaused()) {
+      craftingManager.pause();
       return;
     }
-
-    if (craftingStatus.isMissingStructure()) return;
-
-    updateComponents();
-
-    if (this.activeRecipe == null) {
-      if (level.getGameTime() % MMRConfig.get().checkRecipeTicks.get() == 0) {
-        searchAndUpdateRecipe();
-      }
-    } else if (this.recipeTicks > -1) {
-      if (!this.activeRecipe.isInitialized()) this.activeRecipe.init();
-      if (this.activeRecipe.getHolder() == null && !this.craftingStatus.isCrafting() && !this.craftingStatus.isFailure()) {
-        this.setActiveRecipe(null);
-        this.setRecipeTicks(-1);
-        this.setCraftingStatus(CraftingStatus.NO_RECIPE);
-        setChanged();
-      } else if (this.activeRecipe.getHolder() != null) {
-        useRecipe();
-      }
+    craftingManager.resume();
+    if (craftingStatus.isMissingStructure()) {
+      craftingManager.reset();
+      return;
     }
+    componentManager.updateComponents();
+    craftingManager.serverTick();
+
+//    if (this.activeRecipe == null) {
+//      if (level.getGameTime() % MMRConfig.get().checkRecipeTicks.get() == 0) {
+//        searchAndUpdateRecipe();
+//      }
+//    } else if (this.recipeTicks > -1) {
+//      if (!this.activeRecipe.isInitialized()) this.activeRecipe.init();
+//      if (this.activeRecipe.getHolder() == null && !this.craftingStatus.isCrafting() && !this.craftingStatus.isFailure()) {
+//        this.setActiveRecipe(null);
+//        this.setRecipeTicks(-1);
+//        this.setCraftingStatus(CraftingStatus.NO_RECIPE);
+//        setChanged();
+//      } else if (this.activeRecipe.getHolder() != null) {
+//        useRecipe();
+//      }
+//    }
     setChanged();
   }
 
@@ -288,28 +293,20 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
     if (level.getGameTime() % 20 == 0) {
       this.foundComponents.clear();
       this.foundComponents.addAll(getFoundComponentsMap().values());
-//      for (BlockPos potentialPosition : this.getFoundMachine().getPattern().getBlocks(getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).keySet()) {
-//        BlockPos realPos = getBlockPos().offset(potentialPosition);
-//        BlockEntity te = getLevel().getBlockEntity(realPos);
-//        if (te instanceof MachineComponentEntity entity) {
-//          MachineComponent<?> component = entity.provideComponent();
-//          if (component != null) {
-//            this.foundComponents.add(component);
-//          }
-//        }
-//      }
     }
     setChanged();
   }
 
   public float getCurrentActiveRecipeProgress() {
-    if (this.activeRecipe == null || this.recipeTicks < 0 || this.getActiveRecipe().getRecipe() == null) return 0F;
-    float maxTick = this.activeRecipe.getRecipe().getRecipeTotalTickTime();
-    return Mth.clamp(this.recipeTicks / maxTick, 0F, 1F);
+    return craftingManager.getCurrentActiveRecipeProgress();
+//    if (this.activeRecipe == null || this.recipeTicks < 0 || this.getActiveRecipe().getRecipe() == null) return 0F;
+//    float maxTick = this.activeRecipe.getRecipe().getRecipeTotalTickTime();
+//    return Mth.clamp(this.recipeTicks / maxTick, 0F, 1F);
   }
 
   public boolean hasActiveRecipe() {
-    return this.activeRecipe != null && this.activeRecipe.getHolder() != null && this.activeRecipe.getRecipe() != null && this.recipeTicks > -1;
+    return craftingManager.hasActiveRecipe();
+//    return this.activeRecipe != null && this.activeRecipe.getHolder() != null && this.activeRecipe.getRecipe() != null && this.recipeTicks > -1;
   }
 
   public DynamicMachine getFoundMachine() {
@@ -323,20 +320,19 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
   @Override
   protected void loadAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
     super.loadAdditional(compound, pRegistries);
-
     this.craftingStatus = CraftingStatus.deserialize(compound.getCompound("status"));
-
     this.id = ResourceLocation.parse(compound.getString("machine"));
+    craftingManager.deserializeNBT(pRegistries, compound.getCompound("craftingManager"));
 
-    if (compound.contains("tick", Tag.TAG_INT))
-      this.recipeTicks = compound.getInt("tick");
-
-    if (compound.contains("recipe")) {
-      CompoundTag tag = compound.getCompound("recipe");
-      this.activeRecipe = new ActiveMachineRecipe(tag, this);
-    } else {
-      this.activeRecipe = null;
-    }
+//    if (compound.contains("tick", Tag.TAG_INT))
+//      this.recipeTicks = compound.getInt("tick");
+//
+//    if (compound.contains("recipe")) {
+//      CompoundTag tag = compound.getCompound("recipe");
+//      this.activeRecipe = new ActiveMachineRecipe(tag, this);
+//    } else {
+//      this.activeRecipe = null;
+//    }
   }
 
   @Override
@@ -344,32 +340,38 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
     super.saveAdditional(compound, pRegistries);
     compound.put("status", this.craftingStatus.serializeNBT());
     compound.putString("machine", id.toString());
-    compound.putInt("tick", this.recipeTicks);
-    if (this.activeRecipe != null) {
-      compound.put("recipe", this.activeRecipe.serialize());
-    }
+    compound.put("craftingManager", craftingManager.serializeNBT(pRegistries));
+//    compound.putInt("tick", this.recipeTicks);
+//    if (this.activeRecipe != null) {
+//      compound.put("recipe", this.activeRecipe.serialize());
+//    }
   }
 
   public void refreshClientData() {
     requestModelDataUpdate();
   }
 
+  public List<MachineComponent<?>> getFoundComponents() {
+    return componentManager.getFoundComponentsList();
+  }
+
   @Override
   public Map<BlockPos, MachineComponent<?>> getFoundComponentsMap() {
-    Map<BlockPos, MachineComponent<?>> map = new LinkedHashMap<>();
-    for(BlockPos potentialPosition : getFoundMachine().getPattern().getBlocks(this.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).keySet()) {
-      BlockPos realPos = this.getBlockPos().offset(potentialPosition);
-      BlockEntity te = this.getLevel().getBlockEntity(realPos);
-      if (te instanceof MachineComponentEntity entity) {
-        MachineComponent<?> component = entity.provideComponent();
-        if (component != null) {
-          if (entity instanceof ControllerAccessible accessible) {
-            accessible.setControllerPos(getBlockPos());
-          }
-          map.put(realPos, component);
-        }
-      }
-    }
-    return map;
+    return componentManager.getFoundComponentsMap();
+//    Map<BlockPos, MachineComponent<?>> map = new LinkedHashMap<>();
+//    for(BlockPos potentialPosition : getFoundMachine().getPattern().getBlocks(this.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).keySet()) {
+//      BlockPos realPos = this.getBlockPos().offset(potentialPosition);
+//      BlockEntity te = this.getLevel().getBlockEntity(realPos);
+//      if (te instanceof MachineComponentEntity entity) {
+//        MachineComponent<?> component = entity.provideComponent();
+//        if (component != null) {
+//          if (entity instanceof ControllerAccessible accessible) {
+//            accessible.setControllerPos(getBlockPos());
+//          }
+//          map.put(realPos, component);
+//        }
+//      }
+//    }
+//    return map;
   }
 }

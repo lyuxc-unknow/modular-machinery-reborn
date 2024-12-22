@@ -86,9 +86,11 @@ public class RequirementEnergy extends ComponentRequirement<Long, RequirementEne
   @Override
   public boolean isValidComponent(ProcessingComponent<?> component, RecipeCraftingContext ctx) {
     MachineComponent<?> cmp = component.component();
+    if (cmp.getContainerProvider() == null) return false;
     return cmp.getComponentType().equals(ComponentRegistration.COMPONENT_ENERGY.get()) &&
-        cmp instanceof EnergyHatch &&
-        cmp.getIOType() == this.getActionType();
+        cmp instanceof EnergyHatch e &&
+        cmp.getIOType() == this.getActionType()
+        && e.getContainerProvider().getCurrentEnergy() > requirementPerTick;
   }
 
   @Nonnull
@@ -163,10 +165,5 @@ public class RequirementEnergy extends ComponentRequirement<Long, RequirementEne
     }
     //This is neither input nor output? when do we actually end up in this case down here?
     return CraftCheck.skipComponent();
-  }
-
-  @Override
-  public String toString() {
-    return asJson().toString();
   }
 }

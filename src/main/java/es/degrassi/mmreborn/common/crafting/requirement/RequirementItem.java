@@ -3,6 +3,7 @@ package es.degrassi.mmreborn.common.crafting.requirement;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
@@ -38,11 +39,7 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
           NamedCodec.floatRange(0, 1).optionalFieldOf("chance", 1f).forGetter(req -> req.chance),
           PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
       ).apply(instance, (item, mode, chance, position) -> {
-        RequirementItem requirementItem = new RequirementItem(
-            mode,
-            new SizedIngredient(item.ingredient(), item.count()),
-            position
-        );
+        RequirementItem requirementItem = new RequirementItem(mode, item, position);
         requirementItem.setChance(chance);
 
         return requirementItem;
@@ -219,10 +216,5 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
       return CraftCheck.failure("craftcheck.failure.item.output.space");
     }
     return CraftCheck.skipComponent();
-  }
-
-  @Override
-  public String toString() {
-    return asJson().toString();
   }
 }

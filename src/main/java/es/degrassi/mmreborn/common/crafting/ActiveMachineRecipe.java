@@ -66,15 +66,13 @@ public class ActiveMachineRecipe {
     if (!initialized) init();
     //Skip per-tick logic until controller can finish the recipe
     if (this.isCompleted(context)) {
-      return CraftingStatus.working();
+      return CraftingStatus.done();
     }
 
     CraftingCheckResult check;
     if (!(check = context.ioTick(entity.getRecipeTicks())).isFailure()) {
-      entity.setRecipeTicks(entity.getRecipeTicks() + 1);
       return CraftingStatus.working();
     } else {
-      entity.setRecipeTicks(-1);
       return CraftingStatus.failure(
         Iterables.getFirst(check.getUnlocalizedErrorMessages(), ""));
     }

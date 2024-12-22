@@ -5,8 +5,8 @@ import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.codec.NamedMapCodec;
 import es.degrassi.mmreborn.api.codec.RegistrarCodec;
-import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
 import es.degrassi.mmreborn.common.crafting.requirement.PositionedRequirement;
+import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.util.ResultChance;
@@ -58,13 +58,12 @@ public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, 
   }
 
   /**
-   * Return true here to indicate the passed {@link ProcessingComponent} is valid for the methods:
-   * - {@link #startCrafting(ProcessingComponent, RecipeCraftingContext, ResultChance)}
-   * - {@link #finishCrafting(ProcessingComponent, RecipeCraftingContext, ResultChance)}
-   * - {@link #canStartCrafting(ProcessingComponent, RecipeCraftingContext, List)}
+   * Return true here to indicate the passed {@link ProcessingComponent} is valid for the methods: -
+   * {@link #startCrafting(ProcessingComponent, RecipeCraftingContext, ResultChance)} -
+   * {@link #finishCrafting(ProcessingComponent, RecipeCraftingContext, ResultChance)} -
+   * {@link #canStartCrafting(ProcessingComponent, RecipeCraftingContext, List)}
    * <p>
-   * and for {@link PerTick} instances:
-   * - {@link PerTick#doIOTick(ProcessingComponent, RecipeCraftingContext)}
+   * and for {@link PerTick} instances: - {@link PerTick#doIOTick(ProcessingComponent, RecipeCraftingContext)}
    *
    * @param component The component to test
    * @param ctx       The context to test in
@@ -104,10 +103,6 @@ public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, 
     return asJson().toString();
   }
 
-  //Be sure, that if you specify a new object here as type that you register that along with a helper and renderer
-  //in the JEI Integration! Otherwise JEI will complain about not having proper handling for this
-  //Also, be sure that this generic T is the *only one* with that type otherwise internally stuff might break...
-
   public JsonObject asJson() {
     JsonObject json = new JsonObject();
     json.addProperty("actionType", actionType.name());
@@ -116,7 +111,21 @@ public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, 
     return json;
   }
 
-//  public abstract <J extends JeiComponent<T, V>> J jeiComponent();
+//  public JsonObject asJson() {
+//    try {
+//    return CODEC.encodeStart(
+//            MMRRegistryOps.INSTANCE.nbt().withParent(MMRRegistryOps.INSTANCE.json()),
+//            this
+//        )
+//        .getOrThrow().getAsJsonObject();
+//
+//    } catch (Exception e) {
+//      MMRLogger.INSTANCE.warn("Error serializing requirement: {} with error message: {}", getId(), e.getMessage());
+//    }
+//    JsonObject defaultedRequirement = new JsonObject();
+//    defaultedRequirement.addProperty("type", getId().toString());
+//    return defaultedRequirement;
+//  }
 
   @Override
   public int compareTo(@NotNull ComponentRequirement<?, ?> o) {
@@ -139,6 +148,7 @@ public abstract class ComponentRequirement<T, V extends ComponentRequirement<T, 
 
   public interface ChancedRequirement {
     void setChance(float chance);
+
     float getChance();
   }
 

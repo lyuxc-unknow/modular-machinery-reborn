@@ -48,9 +48,11 @@ public class RequirementExperience extends ComponentRequirement<Long, Requiremen
   @Override
   public boolean isValidComponent(ProcessingComponent<?> component, RecipeCraftingContext ctx) {
     MachineComponent<?> cmp = component.component();
+    if (cmp.getContainerProvider() == null) return false;
     return cmp.getComponentType().equals(ComponentRegistration.COMPONENT_EXPERIENCE.get()) &&
-        cmp instanceof ExperienceHatch &&
-        cmp.getIOType() == this.getActionType();
+        cmp instanceof ExperienceHatch e &&
+        cmp.getIOType() == this.getActionType()
+        && e.getContainerProvider().getExperience() > required;
   }
 
   @Override
