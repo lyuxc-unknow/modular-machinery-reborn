@@ -1,6 +1,7 @@
 package es.degrassi.mmreborn.common.entity.base;
 
 import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
+import es.degrassi.mmreborn.common.entity.FluidInputHatchEntity;
 import es.degrassi.mmreborn.common.entity.ItemInputBusEntity;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.component.ItemBus;
@@ -19,10 +20,6 @@ public abstract class TileItemBus extends TileInventory implements MachineCompon
 
   private ItemBusSize size;
   private IOType ioType;
-
-  public TileItemBus(BlockEntityType<?> entityType, BlockPos pos, BlockState blockState) {
-    super(entityType, pos, blockState);
-  }
 
   public TileItemBus(BlockEntityType<?> entityType, BlockPos pos, BlockState blockState, ItemBusSize size, IOType ioType) {
     super(entityType, pos, blockState, size.getSlotCount());

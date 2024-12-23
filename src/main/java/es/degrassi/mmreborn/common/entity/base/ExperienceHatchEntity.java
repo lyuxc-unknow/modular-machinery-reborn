@@ -2,7 +2,10 @@ package es.degrassi.mmreborn.common.entity.base;
 
 import es.degrassi.experiencelib.api.capability.IExperienceHandler;
 import es.degrassi.experiencelib.impl.capability.BasicExperienceTank;
+import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ExperienceHatchSize;
+import es.degrassi.mmreborn.common.entity.ExperienceInputHatchEntity;
+import es.degrassi.mmreborn.common.entity.FluidInputHatchEntity;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.component.ExperienceHatch;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateExperienceComponentPacket;
@@ -18,10 +21,11 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.Locale;
 
 public abstract class ExperienceHatchEntity extends ColorableMachineComponentEntity implements MachineComponentEntity {
-  protected final ExperienceHatchSize size;
-  protected final IOType ioType;
+  protected ExperienceHatchSize size;
+  protected IOType ioType;
 
   private final BasicExperienceTank experienceTank;
 
@@ -94,14 +98,22 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
   @Override
   protected void loadAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
     super.loadAdditional(compound, pRegistries);
+    this.size = ExperienceHatchSize.value(compound.getString("hatchSize").toUpperCase(Locale.ROOT));
+    this.ioType = IOType.getByString(compound.getString("ioType"));
 
     if (compound.contains("experience", Tag.TAG_COMPOUND))
       this.experienceTank.deserializeNBT(pRegistries, compound.getCompound("experience"));
+    experienceTank.setCapacity(size.getCapacity());
   }
 
   @Override
   protected void saveAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
     super.saveAdditional(compound, pRegistries);
+    compound.putString("hatchSize", this.size.getSerializedName());
+    if (ioType == null) {
+      ioType = this instanceof ExperienceInputHatchEntity ? IOType.INPUT : IOType.OUTPUT;
+    }
+    compound.putString("ioType", ioType.getSerializedName());
 
     compound.put("experience", experienceTank.serializeNBT(pRegistries));
   }

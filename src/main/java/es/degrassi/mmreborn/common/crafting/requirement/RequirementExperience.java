@@ -52,7 +52,13 @@ public class RequirementExperience extends ComponentRequirement<Long, Requiremen
     return cmp.getComponentType().equals(ComponentRegistration.COMPONENT_EXPERIENCE.get()) &&
         cmp instanceof ExperienceHatch e &&
         cmp.getIOType() == this.getActionType()
-        && e.getContainerProvider().getExperience() > required;
+        && validRecipe(e.getContainerProvider());
+  }
+
+  private boolean validRecipe(IExperienceHandler handler) {
+    return
+        (getActionType().isInput() && handler.getExperience() >= required) ||
+        (!getActionType().isInput() && handler.getExperience() + required <= handler.getExperienceCapacity());
   }
 
   @Override

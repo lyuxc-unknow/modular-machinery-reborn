@@ -27,6 +27,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -43,6 +44,7 @@ public class CraftingManager implements INBTSerializable<CompoundTag> {
   private Phase phase;
   private CraftingStatus current;
   private Integer currentTick = null;
+  private final List<RecipeHolder<MachineRecipe>> recipes = new LinkedList<>();
 
   public CraftingManager(MachineControllerEntity entity) {
     controller = entity;
@@ -101,13 +103,15 @@ public class CraftingManager implements INBTSerializable<CompoundTag> {
       return;
     }
     if (activeRecipe == null && phase.isWaiting()) {
-      if (level.getGameTime() % MMRConfig.get().checkRecipeTicks.get() == 0)
+      if (level.getGameTime() % MMRConfig.get().checkRecipeTicks.get() == 0) {
         this.phase = Phase.SEARCHING;
+        updateRecipes(level);
+      }
       return;
     }
     if (!current.isMissingStructure() && !current.isFailure())
       switch (phase) {
-        case SEARCHING -> searchRecipe(level);
+        case SEARCHING -> searchRecipe();
         case STARTING -> start(createContext());
         case PROCESSING -> recipeTick(createContext());
         case ENDING -> endCraft(createContext());
@@ -116,6 +120,20 @@ public class CraftingManager implements INBTSerializable<CompoundTag> {
     controller.setCraftingStatus(current);
     if (activeRecipe != null && activeRecipe.getHolder() != null && currentTick != null)
       changed();
+  }
+
+  private void updateRecipes(@Nullable Level level) {
+    recipes.clear();
+    if (level == null) return;
+    recipes.addAll(
+        level
+            .getRecipeManager()
+            .getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get())
+            .stream()
+            .filter(recipe -> recipe.value().getOwningMachineIdentifier() != null)
+            .filter(recipe -> recipe.value().getOwningMachineIdentifier().equals(controller.getId()))
+            .toList()
+    );
   }
 
   public void setActiveRecipe(ActiveMachineRecipe recipe) {
@@ -152,18 +170,9 @@ public class CraftingManager implements INBTSerializable<CompoundTag> {
     }
   }
 
-  public void searchRecipe(Level level) {
-    List<RecipeHolder<MachineRecipe>> availableRecipes =
-        level
-            .getRecipeManager()
-            .getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get())
-            .stream()
-            .filter(recipe -> recipe.value().getOwningMachineIdentifier() != null)
-            .filter(recipe -> recipe.value().getOwningMachineIdentifier().equals(controller.getId()))
-            .toList();
-
+  public void searchRecipe() {
     validity = 0F;
-    for (RecipeHolder<MachineRecipe> recipe : availableRecipes) {
+    for (RecipeHolder<MachineRecipe> recipe : recipes) {
       ActiveMachineRecipe aRecipe = new ActiveMachineRecipe(recipe, controller);
       RecipeCraftingContext context = controller.getFoundMachine().createContext(aRecipe, controller,
           controller.getFoundComponents());
@@ -178,6 +187,10 @@ public class CraftingManager implements INBTSerializable<CompoundTag> {
         highestValidityResult = result;
         validity = result.getValidity();
       }
+    }
+
+    if (!phase.isStarting()) {
+      phase = Phase.WAITING;
     }
 
     if (activeRecipe == null) {
@@ -294,6 +307,7 @@ public class CraftingManager implements INBTSerializable<CompoundTag> {
     currentTick = nbt.contains("currentTick", Tag.TAG_INT) ? nbt.getInt("currentTick") : null;
     current = nbt.contains("current", Tag.TAG_COMPOUND) ? CraftingStatus.deserialize(nbt.getCompound("current")) : null;
     try {
+      updateRecipes(controller.getLevel());
       if (!nbt.contains("recipe", Tag.TAG_COMPOUND)) throw new IllegalArgumentException("");
       activeRecipe = new ActiveMachineRecipe(nbt.getCompound("recipe"), controller);
       currentTick = currentTick != null ? currentTick : 0;
@@ -320,6 +334,10 @@ public class CraftingManager implements INBTSerializable<CompoundTag> {
 
     public boolean isWaiting() {
       return this == WAITING;
+    }
+
+    public boolean isStarting() {
+      return this == STARTING;
     }
 
     public static Phase value(String v) {

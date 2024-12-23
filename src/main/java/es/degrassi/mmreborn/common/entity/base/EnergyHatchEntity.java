@@ -1,6 +1,9 @@
 package es.degrassi.mmreborn.common.entity.base;
 
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
+import es.degrassi.mmreborn.common.entity.EnergyInputHatchEntity;
+import es.degrassi.mmreborn.common.entity.EnergyOutputHatchEntity;
+import es.degrassi.mmreborn.common.entity.FluidInputHatchEntity;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.component.EnergyHatch;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateEnergyComponentPacket;
@@ -23,7 +26,7 @@ public abstract class EnergyHatchEntity extends ColorableMachineComponentEntity 
 
   protected long energy = 0;
   protected EnergyHatchSize size;
-  protected final IOType ioType;
+  protected IOType ioType;
 
   public EnergyHatchEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, EnergyHatchSize size, IOType ioType) {
     super(type, pos, state);
@@ -98,6 +101,7 @@ public abstract class EnergyHatchEntity extends ColorableMachineComponentEntity 
   protected void loadAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
     super.loadAdditional(compound, pRegistries);
     this.energy = compound.getLong("energy");
+    this.ioType = IOType.getByString(compound.getString("ioType"));
     this.size = EnergyHatchSize.value(compound.getString("hatchSize").toUpperCase(Locale.ROOT));
   }
 
@@ -107,6 +111,10 @@ public abstract class EnergyHatchEntity extends ColorableMachineComponentEntity 
 
     compound.putLong("energy", this.energy);
     compound.putString("hatchSize", this.size.getSerializedName());
+    if (ioType == null) {
+      ioType = this instanceof EnergyInputHatchEntity ? IOType.INPUT : IOType.OUTPUT;
+    }
+    compound.putString("ioType", ioType.getSerializedName());
   }
 
   protected int convertDownEnergy(long energy) {

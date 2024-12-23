@@ -1,6 +1,7 @@
 package es.degrassi.mmreborn.common.entity.base;
 
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
+import es.degrassi.mmreborn.common.entity.FluidInputHatchEntity;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.component.FluidHatch;
 import es.degrassi.mmreborn.common.util.HybridTank;
@@ -39,7 +40,7 @@ public abstract class FluidTankEntity extends ColorableMachineComponentEntity im
   @Override
   protected void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
     super.loadAdditional(compound, provider);
-    this.ioType = compound.getBoolean("input") ? IOType.INPUT : IOType.OUTPUT;
+    this.ioType = IOType.getByString(compound.getString("ioType"));
     this.hatchSize = FluidHatchSize.value(compound.getString("size"));
     HybridTank newTank = hatchSize.buildTank(this, ioType == IOType.INPUT, ioType == IOType.OUTPUT);
     CompoundTag tankTag = compound.getCompound("tank");
@@ -50,7 +51,10 @@ public abstract class FluidTankEntity extends ColorableMachineComponentEntity im
   @Override
   protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
     super.saveAdditional(compound, provider);
-    compound.putBoolean("input", ioType == IOType.INPUT);
+    if (ioType == null) {
+      ioType = this instanceof FluidInputHatchEntity ? IOType.INPUT : IOType.OUTPUT;
+    }
+    compound.putString("ioType", ioType.getSerializedName());
     compound.putString("size", this.hatchSize.getSerializedName());
     CompoundTag tankTag = new CompoundTag();
     this.tank.writeToNBT(provider, tankTag);

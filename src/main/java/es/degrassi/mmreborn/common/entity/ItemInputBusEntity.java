@@ -17,7 +17,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ItemInputBusEntity extends TileItemBus {
 
   public ItemInputBusEntity(BlockPos pos, BlockState state) {
-    super(EntityRegistration.ITEM_INPUT_BUS.get(), pos, state);
+    super(EntityRegistration.ITEM_INPUT_BUS.get(), pos, state, ItemBusSize.TINY, IOType.INPUT);
   }
 
   public ItemInputBusEntity(BlockPos pos, BlockState state, ItemBusSize type) {

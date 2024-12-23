@@ -22,6 +22,11 @@ public class ComponentManager {
     this.controller = entity;
   }
 
+  public final void reset() {
+    foundComponents.clear();
+    controller.setChanged();
+  }
+
   public final void updateComponents() {
     if (controller.getFoundMachine() == DynamicMachine.DUMMY) return;
     if (controller.getLevel().getGameTime() % 20 == 0) {
