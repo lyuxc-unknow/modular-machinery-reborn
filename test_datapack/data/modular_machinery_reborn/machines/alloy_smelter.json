@@ -18,5 +18,20 @@
       "x": "#modular_machinery_reborn:fluidinputhatch"
     }
   },
-  "controller": "minecraft:furnace"
+  "controller": "minecraft:furnace",
+  "modifiers": [
+    {
+      "replacement": "same as in keys",
+      "modifiers": [
+        {
+          "target": "see kubejs example to see the possible values",
+          "mode": "not mandatory, default: INPUT, possible values: INPUT, OUTPUT",
+          "modifier": 7,
+          "operation": 0 /* 0 = addition, 1 = multiplication*/,
+          "chance": true // default false
+        }
+      ],
+      "position": [0, 1, 0] // x, y, z
+    }
+  ]
 }

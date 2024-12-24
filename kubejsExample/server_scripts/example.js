@@ -183,6 +183,67 @@ MMREvents.machines(event => {
                 )
         )
         .controllerModel(ControllerModel.of("<namespace>:<path under assets/models/(controller|controllers)>")) // Ex: minecraft:furnace, mekanism:chemical_infuser, etc
+        .addModifier(
+                MMRModifierReplacement.create()
+                    // same as the key definition right side, can be tags, blocks, blockstates
+                    // or array of tags/block/blockstates
+                    // not recommended use a defined block in the same position, it will be merged to check for that
+                    // blocks in the structure and validate it, ex:
+                    /*
+                        pattern: [
+                            [
+                                " m ",
+                                "aba"
+                            ]
+                        ],
+                        keys: {
+                            "a": "block1",
+                            "b": block2
+                        }
+
+                        modifiers: [
+                            {
+                                ...other props,
+                                ingredient: "block2,
+                                position: {
+                                    x: 0,
+                                    y: 1,
+                                    z: 0
+                                }
+                            }
+                        ]
+                    */
+                    .ingredient("minecraft:diamond_block")
+                    // can be in any position, event if it is not defined in the pattern/structure (if it is not defined
+                    // it can only be AIR or the defined ingredient
+                    // The position is relative to the controller (x, y, z)
+                    .position(0, 1, 0)
+                    // min no modifiers
+                    .addModifier(
+                        MMRRecipeModifier.create()
+                            // modifier target, can be:
+                            // - modular_machinery_reborn:duration
+                            // - modular_machinery_reborn:item
+                            // - modular_machinery_reborn:fluid
+                            // - modular_machinery_reborn:energy
+                            // - modular_machinery_reborn:loot_table -> only affects the luck
+                            // - modular_machinery_reborn:experience
+                            // - modular_machinery_reborn:chemical //not tested
+                            // - modular_machinery_reborn:source // not tested
+                            .target("modular_machinery_reborn:item")
+                            // if this is not present acts like input(), you can specify it if needed
+                            .output()
+                            // multiplies the input/output by the modifier, if not present acts like add(), only the
+                            // very last of add()/multiply() will be processed
+                            .multiply()
+                            // the value of the modifier between negative infinity to positive infinity(not recomended
+                            // negatives for multipliers
+                            .modifier(7)
+                            // by default does not affect chanced requirements [.notAffectsChance()]
+                            // same as multiply/add, only the last one will be processed
+                            // to affect the chance use .affectsChance()
+                    )
+            )
 
     // To create an empty machine (just the controller to make the multiblocks easier with the structure builder tool
     event.create("mmr:empty")

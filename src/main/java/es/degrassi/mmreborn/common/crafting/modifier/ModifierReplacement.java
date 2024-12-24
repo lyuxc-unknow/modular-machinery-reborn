@@ -9,7 +9,6 @@ import es.degrassi.mmreborn.api.codec.NamedCodec;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 
 import java.util.Collections;
 import java.util.LinkedList;
