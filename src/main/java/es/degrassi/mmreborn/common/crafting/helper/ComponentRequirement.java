@@ -8,7 +8,7 @@ import es.degrassi.mmreborn.api.codec.RegistrarCodec;
 import es.degrassi.mmreborn.common.crafting.requirement.PositionedRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
 import es.degrassi.mmreborn.common.machine.IOType;
-import es.degrassi.mmreborn.common.modifier.RecipeModifier;
+import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.util.ResultChance;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;

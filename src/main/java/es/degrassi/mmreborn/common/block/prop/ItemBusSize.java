@@ -34,12 +34,6 @@ public enum ItemBusSize implements StringRepresentable, ConfigLoaded {
     };
   }
 
-//  public static void loadFromConfig() {
-//    for (ItemBusSize size : ItemBusSize.values()) {
-//      size.slots = MMRConfig.get().itemSize(size);
-//    }
-//  }
-
   public int getSlotCount() {
     return slots;
   }

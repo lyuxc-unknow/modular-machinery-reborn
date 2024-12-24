@@ -7,6 +7,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
+import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import lombok.Getter;
@@ -52,7 +53,7 @@ public class Structure {
     Structure structure = machine.getPattern();
     BlockState blockState = level.getBlockState(controllerPos);
     Direction facing = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
-    Map<BlockPos, BlockIngredient> blocks = structure.getBlocks(facing);
+    Map<BlockPos, BlockIngredient> blocks = structure.getBlocksFiltered(facing);
     BlockPos.MutableBlockPos worldPos = new BlockPos.MutableBlockPos();
     blockSearch:
     for (BlockPos pos : blocks.keySet()) {
@@ -147,6 +148,10 @@ public class Structure {
 
   public Map<BlockPos, BlockIngredient> getBlocks(Direction direction) {
     return pattern.get(direction);
+  }
+
+  public Map<BlockPos, BlockIngredient> getBlocksFiltered(Direction direction) {
+    return pattern.getFiltered(direction);
   }
 
   public boolean match(LevelReader world, BlockPos machinePos, Direction machineFacing) {

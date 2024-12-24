@@ -43,12 +43,4 @@ public enum EnergyHatchSize implements StringRepresentable, ConfigLoaded {
     return name().toLowerCase();
   }
 
-//  public static void loadFromConfig() {
-//    for (EnergyHatchSize size : values()) {
-//      size.maxEnergy = MMRConfig.get().energySize(size);
-//      size.maxEnergy = MiscUtils.clamp(size.maxEnergy, 1, Long.MAX_VALUE);
-//      size.transferLimit = MMRConfig.get().energyLimit(size);
-//      size.transferLimit = MiscUtils.clamp(size.transferLimit, 1, Long.MAX_VALUE);
-//    }
-//  }
 }

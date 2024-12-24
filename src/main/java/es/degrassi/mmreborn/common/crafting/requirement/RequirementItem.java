@@ -3,7 +3,6 @@ package es.degrassi.mmreborn.common.crafting.requirement;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
@@ -16,7 +15,7 @@ import es.degrassi.mmreborn.common.crafting.helper.restriction.RestrictionInvent
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.machine.component.ItemBus;
-import es.degrassi.mmreborn.common.modifier.RecipeModifier;
+import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.IOInventory;

@@ -1,12 +1,6 @@
 package es.degrassi.mmreborn.common.crafting;
 
-import com.google.common.collect.Iterables;
-import es.degrassi.mmreborn.common.crafting.helper.CraftingCheckResult;
-import es.degrassi.mmreborn.common.crafting.helper.CraftingStatus;
-import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
-import es.degrassi.mmreborn.common.modifier.RecipeModifier;
-import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -56,28 +50,6 @@ public class ActiveMachineRecipe {
     this.futureRecipeId = null;
   }
 
-  public void reset() {
-    entity.setRecipeTicks(-1);
-    entity.setCraftingStatus(CraftingStatus.NO_RECIPE);
-  }
-
-  @Nonnull
-  public CraftingStatus tick(RecipeCraftingContext context) {
-    if (!initialized) init();
-    //Skip per-tick logic until controller can finish the recipe
-    if (this.isCompleted(context)) {
-      return CraftingStatus.done();
-    }
-
-    CraftingCheckResult check;
-    if (!(check = context.ioTick(entity.getRecipeTicks())).isFailure()) {
-      return CraftingStatus.working();
-    } else {
-      return CraftingStatus.failure(
-        Iterables.getFirst(check.getUnlocalizedErrorMessages(), ""));
-    }
-  }
-
   @Nonnull
   public Map<ResourceLocation, CompoundTag> getData() {
     return dataMap;
@@ -86,23 +58,6 @@ public class ActiveMachineRecipe {
   @Nonnull
   public CompoundTag getOrCreateData(ResourceLocation key) {
     return dataMap.computeIfAbsent(key, k -> new CompoundTag());
-  }
-
-  public boolean isCompleted(RecipeCraftingContext context) {
-    int time = this.recipe.value().getRecipeTotalTickTime();
-    //Not sure which a user will use... let's try both.
-    time = Math.round(RecipeModifier.applyModifiers(context.getModifiers(RequirementTypeRegistration.DURATION.get()), RequirementTypeRegistration.DURATION.get(), null, time, false));
-    return entity.getRecipeTicks() >= time;
-  }
-
-  public void start(RecipeCraftingContext context) {
-    entity.setRecipeTicks(0);
-    entity.setCraftingStatus(CraftingStatus.working());
-    context.startCrafting();
-  }
-
-  public void complete(RecipeCraftingContext context) {
-    context.finishCrafting();
   }
 
   public CompoundTag serialize() {

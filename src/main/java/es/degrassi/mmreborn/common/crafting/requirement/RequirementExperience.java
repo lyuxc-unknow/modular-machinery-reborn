@@ -12,7 +12,7 @@ import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.machine.component.ExperienceHatch;
-import es.degrassi.mmreborn.common.modifier.RecipeModifier;
+import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.ResultChance;

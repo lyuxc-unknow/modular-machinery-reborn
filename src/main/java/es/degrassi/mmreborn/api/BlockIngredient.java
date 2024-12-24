@@ -267,6 +267,7 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
   }
 
   public BlockIngredient merge(BlockIngredient other) {
+    if (other == null) return AIR.merge(this);
     List<PartialBlockState> ingredients = Lists.newArrayList();
     ingredients.addAll(getAll());
     ingredients.addAll(other.getAll());

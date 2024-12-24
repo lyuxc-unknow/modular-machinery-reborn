@@ -8,7 +8,7 @@ import es.degrassi.mmreborn.common.crafting.helper.CraftingStatus;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
-import es.degrassi.mmreborn.common.modifier.RecipeModifier;
+import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.network.server.SUpdateRecipePacket;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;

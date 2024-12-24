@@ -3,8 +3,13 @@ package es.degrassi.mmreborn.api;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
+import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelReader;
@@ -20,6 +25,13 @@ public class Pattern {
   private final Map<BlockPos, BlockIngredient> pattern_south;
   private final Map<BlockPos, BlockIngredient> pattern_east;
   private final Map<BlockPos, BlockIngredient> pattern_west;
+
+  @Getter
+  private final List<ModifierReplacement> modifiers = new LinkedList<>();
+  private final Map<BlockPos, ModifierReplacement> modifiers_north = new LinkedHashMap<>();
+  private final Map<BlockPos, ModifierReplacement> modifiers_south = new LinkedHashMap<>();
+  private final Map<BlockPos, ModifierReplacement> modifiers_east = new LinkedHashMap<>();
+  private final Map<BlockPos, ModifierReplacement> modifiers_west = new LinkedHashMap<>();
 
   public Pattern(Map<BlockPos, BlockIngredient> pattern, List<List<String>> strings, Map<Character, BlockIngredient> keys) {
     this.pattern = pattern;
@@ -38,6 +50,58 @@ public class Pattern {
       case SOUTH -> pattern_south;
       default -> pattern_north;
     };
+  }
+
+  private Rotation fromDirection(Direction direction) {
+    return switch (direction) {
+      case NORTH, UP, DOWN -> Rotation.NONE;
+      case EAST -> Rotation.CLOCKWISE_90;
+      case WEST -> Rotation.COUNTERCLOCKWISE_90;
+      case SOUTH -> Rotation.CLOCKWISE_180;
+    };
+  }
+
+  public Map<BlockPos, BlockIngredient> getFiltered(Direction direction) {
+    return rotate(fromDirection(direction));
+  }
+
+  public Map<BlockPos, ModifierReplacement> getModifiers(Direction direction) {
+    return switch (direction) {
+      case WEST -> modifiers_west;
+      case EAST -> modifiers_east;
+      case SOUTH -> modifiers_south;
+      default -> modifiers_north;
+    };
+  }
+
+  public void addModifiers(List<ModifierReplacement> modifiers) {
+    modifiers.forEach(modifier -> {
+      BlockPos pos = modifier.getPosition();
+      BlockIngredient ing = modifier.getIngredient();
+      this.modifiers.add(modifier);
+      for (Rotation rotation : Rotation.values()) {
+        BlockPos modifiedPos = pos.rotate(rotation);
+        BlockIngredient modifiedIng = ing.copyWithRotation(rotation);
+        switch (rotation) {
+          case NONE -> {
+            pattern_north.put(modifiedPos, modifiedIng.merge(pattern_north.get(modifiedPos)));
+            modifiers_north.put(pos, modifier);
+          }
+          case CLOCKWISE_180 -> {
+            pattern_south.put(modifiedPos, modifiedIng.merge(pattern_south.get(modifiedPos)));
+            modifiers_south.put(pos, modifier);
+          }
+          case COUNTERCLOCKWISE_90 -> {
+            pattern_west.put(modifiedPos, modifiedIng.merge(pattern_west.get(modifiedPos)));
+            modifiers_west.put(pos, modifier);
+          }
+          case CLOCKWISE_90 -> {
+            pattern_east.put(modifiedPos, modifiedIng.merge(pattern_east.get(modifiedPos)));
+            modifiers_east.put(pos, modifier);
+          }
+        }
+      }
+    });
   }
 
   private Map<BlockPos, BlockIngredient> rotate(Rotation rotation) {

@@ -317,6 +317,10 @@
   "modular_machinery_reborn.controller.required.item": "%s %s",
   "modular_machinery_reborn.controller.required.tag": "%s",
   "modular_machinery_reborn.controller.required.block": "%s",
+  "modular_machinery_reborn.controller.required.block.key": "Press [%s] to show full info",
+  "modular_machinery_reborn.controller.required.shift": "SHIFT",
+  "modular_machinery_reborn.controller.required.control": "CTRL",
+  "modular_machinery_reborn.controller.modifier": "Modificadores:",
 
   "modular_machinery_reborn.gui.structure_placer_button": "Click para tratar de colocar la estructura",
   "modular_machinery_reborn.gui.structure_break_button": "Click para romper la estrcutura actual",

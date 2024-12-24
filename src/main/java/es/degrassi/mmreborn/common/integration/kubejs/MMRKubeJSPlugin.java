@@ -9,6 +9,7 @@ import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.ScriptManager;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
 import es.degrassi.mmreborn.common.integration.kubejs.builder.MachineBuilderJS.MachineKubeEvent;
+import es.degrassi.mmreborn.common.integration.kubejs.builder.ModifierBuilderJS;
 import es.degrassi.mmreborn.common.integration.kubejs.builder.StructureBuilderJS;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import es.degrassi.mmreborn.common.util.IntRange;
@@ -26,6 +27,8 @@ public class MMRKubeJSPlugin implements KubeJSPlugin {
   @Override
   public void registerBindings(BindingRegistry registry) {
     registry.add("MMRStructureBuilder", StructureBuilderJS.class);
+    registry.add("MMRModifierReplacement", ModifierBuilderJS.class);
+    registry.add("MMRRecipeModifier", ModifierBuilderJS.RecipeModifierBuilderJS.class);
     registry.add("ControllerModel", MachineModelLocation.class);
   }
 

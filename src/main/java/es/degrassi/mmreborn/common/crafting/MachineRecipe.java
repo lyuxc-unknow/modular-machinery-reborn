@@ -13,7 +13,7 @@ import es.degrassi.mmreborn.common.crafting.requirement.PositionedRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.PositionedSizedRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
-import es.degrassi.mmreborn.common.modifier.RecipeModifier;
+import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.MMRLogger;

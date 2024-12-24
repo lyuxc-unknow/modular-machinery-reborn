@@ -8,8 +8,8 @@ import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
-import es.degrassi.mmreborn.common.modifier.ModifierReplacement;
-import es.degrassi.mmreborn.common.modifier.RecipeModifier;
+import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
+import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.ResultChance;
 import lombok.Getter;
@@ -54,7 +54,8 @@ public class RecipeCraftingContext {
 
   public float getDurationMultiplier() {
     float dur = this.getParentRecipe().getRecipeTotalTickTime();
-    float result = RecipeModifier.applyModifiers(getModifiers(RequirementTypeRegistration.DURATION.get()), RequirementTypeRegistration.DURATION.get(), null, dur, false);
+    float result = RecipeModifier.applyModifiers(getModifiers(RequirementTypeRegistration.DURATION.get()),
+        RequirementTypeRegistration.DURATION.get(), IOType.INPUT, dur, false);
     return dur / result;
   }
 
@@ -204,11 +205,7 @@ public class RecipeCraftingContext {
   public void addModifier(ModifierReplacement modifier) {
     List<RecipeModifier> modifiers = modifier.getModifiers();
     for (RecipeModifier mod : modifiers) {
-      RequirementType<?> target = mod.getTarget();
-      if (target == null) {
-        target = RequirementTypeRegistration.DURATION.get();
-      }
-      this.modifiers.computeIfAbsent(target, t -> new LinkedList<>()).add(mod);
+      this.modifiers.computeIfAbsent(mod.getTarget(), t -> new LinkedList<>()).add(mod);
     }
   }
 }

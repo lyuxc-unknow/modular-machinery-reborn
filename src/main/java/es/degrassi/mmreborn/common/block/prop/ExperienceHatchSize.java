@@ -41,9 +41,4 @@ public enum ExperienceHatchSize implements StringRepresentable, ConfigLoaded {
       default -> TINY;
     };
   }
-//  public static void loadFromConfig() {
-//    for (ExperienceHatchSize size : values()) {
-//      size.capacity = MMRConfig.get().experienceSize(size);
-//    }
-//  }
 }

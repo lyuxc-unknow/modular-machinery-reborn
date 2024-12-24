@@ -313,10 +313,16 @@
   "modular_machinery_reborn.controller.no_machine": "No machine provided",
   "modular_machinery_reborn.controller.shift": "[SHIFT]",
   "modular_machinery_reborn.controller.shift.blocks": "to show the required blocks",
+  "modular_machinery_reborn.controller.control": "[CTRL]",
+  "modular_machinery_reborn.controller.control.blocks": "to show the modifier blocks",
   "modular_machinery_reborn.controller.required": "Required:",
   "modular_machinery_reborn.controller.required.item": "%s %s",
   "modular_machinery_reborn.controller.required.tag": "%s",
   "modular_machinery_reborn.controller.required.block": "%s",
+  "modular_machinery_reborn.controller.required.block.key": "Press [%s] to show full info",
+  "modular_machinery_reborn.controller.required.shift": "SHIFT",
+  "modular_machinery_reborn.controller.required.control": "CTRL",
+  "modular_machinery_reborn.controller.modifier": "Modifiers:",
 
   "modular_machinery_reborn.gui.structure_placer_button": "Click to try place structure",
   "modular_machinery_reborn.gui.structure_break_button": "Click to break the current structure",
@@ -325,5 +331,18 @@
   "mmr.place.no_item": "Tryied to place %s in %s but couldn't find the item %s in the player inventory",
 
   "key.categories.modular_machinery_reborn": "Modular Machinery Reborn",
-  "key.modular_machinery_reborn.structure_mode_change": "Structure Creator Mode"
+  "key.modular_machinery_reborn.structure_mode_change": "Structure Creator Mode",
+
+  "mmr.recipe.modifier.duration.add": " (%s the duration of the recipe)",
+  "mmr.recipe.modifier.duration.multiply": " (x%s the duration of the recipe)",
+  "mmr.recipe.modifier.item.add": " (%s item(s) %s to recipe, affects chance: %s)",
+  "mmr.recipe.modifier.item.multiply": " (x%s item %s of recipe, affects chance: %s)",
+  "mmr.recipe.modifier.fluid.add": " (%s fluid mB(s) %s to recipe, affects chance: %s)",
+  "mmr.recipe.modifier.fluid.multiply": " (x%s fluid %s of recipe, affects chance: %s)",
+  "mmr.recipe.modifier.energy.add": " (%s energy %s to recipe, affects chance: %s)",
+  "mmr.recipe.modifier.energy.multiply": " (x%s energy %s of recipe, affects chance: %s)",
+  "mmr.recipe.modifier.loot_table.add": " (%s loot table luck to recipe)",
+  "mmr.recipe.modifier.loot_table.multiply": " (x%s loot table luck of recipe)",
+  "mmr.recipe.modifier.experience.add": " (%s experience %s to recipe, affects chance: %s)",
+  "mmr.recipe.modifier.experience.multiply": " (x%s experience %s of recipe, affects chance: %s)"
 }

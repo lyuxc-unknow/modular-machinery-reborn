@@ -14,6 +14,7 @@ import es.degrassi.mmreborn.common.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
@@ -38,7 +39,6 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
   StructurePlacerWidget placeWidget;
   StructureBreakWidget breakWidget;
   private final List<Either<FormattedText, TooltipComponent>> components;
-  private boolean addedPlaceWidget = false;
 
   private static final int screenWidth = 158;
 
@@ -59,6 +59,9 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
     // render image background
     super.renderBg(guiGraphics, partialTick, mouseX, mouseY);
     clearWidgets();
+    List<Either<FormattedText, TooltipComponent>> components = new LinkedList<>();
+    gatherComponents(components);
+    this.components.clear();
     placeWidget = addRenderableWidget(new StructurePlacerWidget(leftPos + imageWidth, topPos,
         getMenu().getEntity().getId(), getMenu().getEntity().getBlockPos()));
     breakWidget = addRenderableWidget(new StructureBreakWidget(leftPos + imageWidth,
@@ -66,10 +69,8 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
         getMenu().getEntity().getId(), getMenu().getEntity().getBlockPos()));
     placeWidget.setTooltip(placeWidget.getTooltip());
     breakWidget.setTooltip(breakWidget.getTooltip());
-    if (!addedPlaceWidget) {
-      components.addFirst(Either.left(placeWidget.component));
-      addedPlaceWidget = true;
-    }
+    components.addFirst(Either.left(placeWidget.component));
+    this.components.addAll(components);
 
     guiGraphics.pose().pushPose();
     guiGraphics.pose().translate(this.leftPos, this.topPos, 0);
@@ -156,59 +157,96 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
   }
 
   private void gatherComponents(List<Either<FormattedText, TooltipComponent>> components) {
-    Optional.of(entity.getFoundMachine()).ifPresentOrElse(machine -> {
-          components.add(Either.left(Component.translatable("modular_machinery_reborn.controller.required").withStyle(ChatFormatting.GRAY)));
-          Map<MutableComponent, List<ItemStack>> map = new LinkedHashMap<>();
-          machine.getPattern()
-              .getPattern()
-              .asList()
-              .stream()
-              .flatMap(List::stream)
-              .flatMap(s -> s.chars().mapToObj(c -> (char) c))
-              .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
-              .entrySet()
-              .stream()
-              .map(entry -> {
-                BlockIngredient ingredient = machine.getPattern().getPattern().asMap().get(entry.getKey());
-                if (ingredient == null) return null;
-                return Pair.of(ingredient.getStacks(entry.getValue().intValue()), ingredient.getNamesUnified());
-              })
-              .filter(Objects::nonNull)
-              .forEachOrdered(pair -> {
-                List<ItemStack> stacks = pair.getFirst();
-                MutableComponent component = pair.getSecond();
-                List<ItemStack> s2 = new LinkedList<>();
-                if (map.containsKey(component)) {
-                  stacks.forEach(stack -> {
-                    map.forEach((c, s) -> {
-                      if (c.getString().equals(component.getString())) {
-                        s.forEach(s1 -> {
-                          if (s1.is(stack.getItem())) {
-                            s1.grow(stack.getCount());
-                          }
-                          s2.add(s1);
-                        });
-                      }
+    Optional.of(entity.getFoundMachine())
+        .ifPresentOrElse(machine -> {
+          if (Screen.hasShiftDown()) {
+            components.add(Either.left(Component.translatable("modular_machinery_reborn.controller.required").withStyle(ChatFormatting.GRAY)));
+            Map<MutableComponent, List<ItemStack>> map = new LinkedHashMap<>();
+            machine.getPattern()
+                .getPattern()
+                .asList()
+                .stream()
+                .flatMap(List::stream)
+                .flatMap(s -> s.chars().mapToObj(c -> (char) c))
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet()
+                .stream()
+                .map(entry -> {
+                  BlockIngredient ingredient = machine.getPattern().getPattern().asMap().get(entry.getKey());
+                  if (ingredient == null) return null;
+                  return Pair.of(ingredient.getStacks(entry.getValue().intValue()), ingredient.getNamesUnified());
+                })
+                .filter(Objects::nonNull)
+                .forEachOrdered(pair -> {
+                  List<ItemStack> stacks = pair.getFirst();
+                  MutableComponent component = pair.getSecond();
+                  List<ItemStack> s2 = new LinkedList<>();
+                  if (map.containsKey(component)) {
+                    stacks.forEach(stack -> {
+                      map.forEach((c, s) -> {
+                        if (c.getString().equals(component.getString())) {
+                          s.forEach(s1 -> {
+                            if (s1.is(stack.getItem())) {
+                              s1.grow(stack.getCount());
+                            }
+                            s2.add(s1);
+                          });
+                        }
+                      });
                     });
-                  });
-                } else {
-                  s2.addAll(stacks);
-                }
+                  } else {
+                    s2.addAll(stacks);
+                  }
 
-                map.put(component, s2);
+                  map.put(component, s2);
+                });
+            map.forEach((c, stacks) -> {
+              if (c != null && !stacks.isEmpty()) {
+                MMRItemTooltipComponent component = new MMRItemTooltipComponent(stacks);
+                component.setComponent(
+                    Component.translatable(
+                        "modular_machinery_reborn.controller.required.block",
+                        c
+                    ).withStyle(ChatFormatting.GRAY)
+                );
+                components.add(Either.right(component));
+              }
+            });
+          } else {
+            components.add(Either.left(Component.translatable("modular_machinery_reborn.controller.required.block.key",
+                Component.translatable("modular_machinery_reborn.controller.required.shift").withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.GRAY)));
+          }
+
+          if (Screen.hasControlDown() && !Screen.hasShiftDown()) {
+            components.add(Either.left(Component.translatable("modular_machinery_reborn.controller.modifier").withStyle(ChatFormatting.GRAY)));
+            Map<MutableComponent, List<ItemStack>> modifierMap = new LinkedHashMap<>();
+            machine.getPattern()
+                .getPattern()
+                .getModifiers()
+                .forEach(ingredient -> {
+                  MutableComponent component = Component.empty();
+                  ingredient.getDescriptionLines().forEach(component::append);
+                  modifierMap.put(component, ingredient.getIngredient().getStacks(1));
+                });
+
+            if (!modifierMap.isEmpty()) {
+              modifierMap.forEach((c, stacks) -> {
+                if (c != null && !stacks.isEmpty()) {
+                  MMRItemTooltipComponent component = new MMRItemTooltipComponent(stacks);
+                  component.setComponent(
+                      Component.translatable(
+                          "modular_machinery_reborn.controller.required.block",
+                          c
+                      ).withStyle(ChatFormatting.GRAY)
+                  );
+                  components.add(Either.right(component));
+                }
               });
-          map.forEach((c, stacks) -> {
-            if (c != null && !stacks.isEmpty()) {
-              MMRItemTooltipComponent component = new MMRItemTooltipComponent(stacks);
-              component.setComponent(
-                  Component.translatable(
-                      "modular_machinery_reborn.controller.required.block",
-                      c
-                  ).withStyle(ChatFormatting.GRAY)
-              );
-              components.add(Either.right(component));
             }
-          });
+          } else {
+            components.add(Either.left(Component.translatable("modular_machinery_reborn.controller.required.block.key",
+                Component.translatable("modular_machinery_reborn.controller.required.control").withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.GRAY)));
+          }
         },
         () -> components.add(Either.left(Component.translatable("modular_machinery_reborn.controller.no_machine").withStyle(ChatFormatting.GRAY))));
   }

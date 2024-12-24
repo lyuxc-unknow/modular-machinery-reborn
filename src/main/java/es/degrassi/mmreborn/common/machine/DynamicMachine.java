@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.machine;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.Structure;
@@ -7,6 +8,7 @@ import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.crafting.ActiveMachineRecipe;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
+import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.util.MachineModelLocation;
@@ -18,6 +20,8 @@ import net.minecraft.resources.ResourceLocation;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 @Getter
@@ -28,13 +32,16 @@ public class DynamicMachine {
       NamedCodec.STRING.optionalFieldOf("localizedName").forGetter(machine -> Optional.of(machine.getLocalizedName())),
       Structure.CODEC.fieldOf("structure").forGetter(DynamicMachine::getPattern),
       DefaultCodecs.HEX.optionalFieldOf("color", Config.machineColor).forGetter(DynamicMachine::getMachineColor),
-      MachineModelLocation.CODEC.optionalFieldOf("controller", MachineModelLocation.DEFAULT).forGetter(DynamicMachine::getControllerModel)
-  ).apply(instance, (registryName, localizedName, pattern, color, controllerModel) -> {
+      MachineModelLocation.CODEC.optionalFieldOf("controller", MachineModelLocation.DEFAULT).forGetter(DynamicMachine::getControllerModel),
+      ModifierReplacement.CODEC.listOf().optionalFieldOf("modifiers", new LinkedList<>()).forGetter(DynamicMachine::getModifiers)
+  ).apply(instance, (registryName, localizedName, pattern, color, controllerModel, modifiers) -> {
     DynamicMachine machine = new DynamicMachine(registryName);
+    pattern.getPattern().addModifiers(modifiers);
     machine.setPattern(pattern);
     machine.setLocalizedName(localizedName);
     machine.setDefinedColor(color);
     machine.setControllerModel(controllerModel);
+    machine.setModifiers(modifiers);
     return machine;
   }), "Dynamic Machine");
 
@@ -46,6 +53,7 @@ public class DynamicMachine {
   private Structure pattern = Structure.EMPTY;
   private int definedColor = Config.machineColor;
   private MachineModelLocation controllerModel;
+  private List<ModifierReplacement> modifiers;
 
   public DynamicMachine(@Nonnull ResourceLocation registryName) {
     this.registryName = registryName;
@@ -77,6 +85,7 @@ public class DynamicMachine {
     }
     RecipeCraftingContext context = new RecipeCraftingContext(activeRecipe, controller);
     taggedComponents.forEach(context::addComponent);
+    controller.getFoundModifiers().forEach(context::addModifier);
     return context;
   }
 
@@ -86,6 +95,11 @@ public class DynamicMachine {
     json.addProperty("localizedName", localizedName.orElse("null"));
     json.add("pattern", pattern.asJson());
     json.addProperty("definedColor", definedColor);
+    if (controllerModel != null && controllerModel.getLoc() != null)
+      json.addProperty("controllerModel", controllerModel.toString());
+    JsonArray mods = new JsonArray();
+    modifiers.stream().map(ModifierReplacement::asJson).forEachOrdered(mods::add);
+    json.add("modifiers", mods);
     return json;
   }
 

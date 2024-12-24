@@ -14,7 +14,7 @@ import es.degrassi.mmreborn.common.integration.ingredient.HybridFluid;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.machine.component.FluidHatch;
-import es.degrassi.mmreborn.common.modifier.RecipeModifier;
+import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.HybridTank;
@@ -70,11 +70,7 @@ public class RequirementFluid extends ComponentRequirement<FluidStack, Requireme
   }
 
   public RequirementFluid(IOType ioType, FluidIngredient fluid, int amount, PositionedRequirement position) {
-    this(RequirementTypeRegistration.FLUID.get(), ioType, fluid, amount, position);
-  }
-
-  private RequirementFluid(RequirementType<RequirementFluid> type, IOType ioType, FluidIngredient fluid, int amount, PositionedRequirement position) {
-    super(type, ioType, position);
+    super(RequirementTypeRegistration.FLUID.get(), ioType, position);
     this.ingredient = fluid;
     this.required = new HybridFluid(new FluidStack(fluid.getAll().getFirst(), amount));
     this.amount = amount;

@@ -6,6 +6,7 @@ import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.kubejs.event.KubeEvent;
 import es.degrassi.mmreborn.api.Structure;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
+import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
@@ -27,9 +28,11 @@ public class MachineBuilderJS {
   private Integer intColor;
   private Structure structure;
   private MachineModelLocation controllerModel;
+  private final List<ModifierReplacement> modifiers;
 
   public MachineBuilderJS(@NotNull ResourceLocation id) {
     this.id = id;
+    modifiers = new LinkedList<>();
   }
 
   public MachineBuilderJS name(String name) {
@@ -57,6 +60,11 @@ public class MachineBuilderJS {
     return this;
   }
 
+  public MachineBuilderJS addModifier(ModifierBuilderJS modifier) {
+    this.modifiers.add(modifier.build());
+    return this;
+  }
+
   public DynamicMachine build() {
     if (structure == null)
       structure = Structure.EMPTY;
@@ -68,6 +76,9 @@ public class MachineBuilderJS {
       machine.setDefinedColor(intColor);
     else if(color != null)
       machine.setDefinedColor(DefaultCodecs.HEX.decode(JsonOps.INSTANCE, new JsonPrimitive(color)).result().orElse(new Pair<>(Config.toInt(MMRConfig.get().general_casing_color.get(), 0xFF4900), null)).getFirst());
+
+    machine.setModifiers(modifiers);
+
     return machine;
   }
 

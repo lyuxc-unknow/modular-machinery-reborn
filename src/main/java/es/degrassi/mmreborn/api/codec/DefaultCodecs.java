@@ -52,6 +52,7 @@ public class DefaultCodecs {
   public static final NamedCodec<SoundEvent> SOUND_EVENT = RESOURCE_LOCATION.xmap(SoundEvent::createVariableRangeEvent, SoundEvent::getLocation, "Sound event");
 
   public static final NamedCodec<Direction> DIRECTION = NamedCodec.enumCodec(Direction.class);
+  public static final NamedCodec<BlockPos> BLOCK_POS = NamedCodec.of(BlockPos.CODEC);
 
   public static <A> Codec<Optional<A>> optionalEmptyMap(final Codec<A> pCodec) {
     return new Codec<>() {

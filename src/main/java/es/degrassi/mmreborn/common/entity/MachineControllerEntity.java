@@ -1,11 +1,10 @@
 package es.degrassi.mmreborn.common.entity;
 
-import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.controller.ComponentMapper;
 import es.degrassi.mmreborn.client.model.ControllerBakedModel;
-import es.degrassi.mmreborn.common.crafting.ActiveMachineRecipe;
 import es.degrassi.mmreborn.common.crafting.helper.CraftingStatus;
+import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.entity.base.BlockEntityRestrictedTick;
@@ -18,7 +17,6 @@ import es.degrassi.mmreborn.common.manager.CraftingManager;
 import es.degrassi.mmreborn.common.network.server.SMachineUpdatePacket;
 import es.degrassi.mmreborn.common.network.server.SSyncPauseStatePacket;
 import es.degrassi.mmreborn.common.network.server.SUpdateCraftingStatusPacket;
-import es.degrassi.mmreborn.common.network.server.SUpdateRecipePacket;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.util.RedstoneHelper;
 import lombok.Getter;
@@ -36,7 +34,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
@@ -50,13 +47,9 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
   private boolean isPaused = false;
 
   private ResourceLocation id = DynamicMachine.DUMMY.getRegistryName();
-  @Nullable
-  private ActiveMachineRecipe activeRecipe = null;
 
-  private int recipeTicks = -1;
   private int ticksToUpdateComponent = 0;
 
-  private final List<MachineComponent<?>> foundComponents = Lists.newArrayList();
   private final CraftingManager craftingManager;
   private final ComponentManager componentManager;
 
@@ -105,14 +98,6 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
     setChanged();
   }
 
-  public void setRecipeTicks(int recipeTicks) {
-    setRequestModelUpdate(true);
-    setChanged();
-    this.recipeTicks = recipeTicks;
-    if (getLevel() instanceof ServerLevel l && activeRecipe != null)
-      PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getBlockPos()), new SUpdateRecipePacket(activeRecipe.getHolder().id(), recipeTicks, getBlockPos()));
-  }
-
   public void setCraftingStatus(CraftingStatus status) {
     this.craftingStatus = status;
     if (getLevel() instanceof ServerLevel l)
@@ -140,8 +125,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
       if (this.getFoundMachine() != DynamicMachine.DUMMY) {
         if (!getFoundMachine().getPattern().match(getLevel(), getBlockPos(), getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING))) {
           distributeCasingColor(true);
-          this.activeRecipe = null;
-          setRecipeTicks(-1);
+          craftingManager.reset(CraftingStatus.MISSING_STRUCTURE);
           setCraftingStatus(CraftingStatus.MISSING_STRUCTURE);
         } else {
           distributeCasingColor(false);
@@ -232,5 +216,9 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
   @Override
   public Map<BlockPos, MachineComponent<?>> getFoundComponentsMap() {
     return componentManager.getFoundComponentsMap();
+  }
+
+  public List<ModifierReplacement> getFoundModifiers() {
+    return componentManager.getFoundModifiersList();
   }
 }

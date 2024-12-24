@@ -11,6 +11,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -56,29 +57,6 @@ public class ControllerItem extends ItemBlockMachineComponent {
     getMachine(stack).ifPresentOrElse(machine -> {
       if (tooltipFlag.hasShiftDown()) {
         tooltipComponents.add(Component.translatable("modular_machinery_reborn.controller.required").withStyle(ChatFormatting.GRAY));
-
-//        machine.getPattern()
-//            .getPattern()
-//            .asMap()
-//            .values()
-//            .stream()
-//            .filter(BlockIngredient::isNotAir)
-//            .filter(BlockIngredient::isNotMachine)
-//            .filter(BlockIngredient::isNotAny)
-//            .map(BlockIngredient::getNamesUnified)
-//            .map(Component::getString)
-//            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
-//            .forEach((key, amount) -> {
-//              if (amount > 0)
-//                tooltipComponents.add(
-//                    Component.translatable(
-//                        "modular_machinery_reborn.controller.required.item",
-//                        Component.literal(String.format("%dx", amount)).withStyle(ChatFormatting.GOLD),
-//                        Component.literal(key).withStyle(ChatFormatting.GRAY)
-//                    )
-//                );
-//            });
-
         machine.getPattern()
             .getPattern()
             .asList()
@@ -109,24 +87,28 @@ public class ControllerItem extends ItemBlockMachineComponent {
                 );
               }
             });
-//            .forEach((key, amount) -> {
-//              BlockIngredient ingredient = machine.getPattern().getPattern().asMap().get(key);
-//              if (ingredient != null && amount > 0) {
-//                tooltipComponents.add(
-//                    Component.translatable(
-//                        "modular_machinery_reborn.controller.required.item",
-//                        Component.literal(String.format("%dx", amount)).withStyle(ChatFormatting.GOLD),
-//                        ingredient.getNamesUnified().withStyle(ChatFormatting.GRAY)
-//                    )
-//                );
-//              }
-//            });
+      } else if (tooltipFlag.hasControlDown()) {
+        tooltipComponents.add(Component.translatable("modular_machinery_reborn.controller.modifier").withStyle(ChatFormatting.GRAY));
+        machine.getPattern()
+            .getPattern()
+            .getModifiers()
+            .forEach(ingredient -> {
+              MutableComponent component = Component.empty();
+              ingredient.getDescriptionLines().forEach(component::append);
+              tooltipComponents.add(component);
+            });
       } else {
         tooltipComponents.add(
             Component.empty()
-                .append(Component.translatable("modular_machinery_reborn.controller.shift").withStyle(ChatFormatting.AQUA))
+                .append(Component.translatable("modular_machinery_reborn.controller.shift").withStyle(ChatFormatting.YELLOW))
                 .append(" ")
                 .append(Component.translatable("modular_machinery_reborn.controller.shift.blocks").withStyle(ChatFormatting.GRAY))
+        );
+        tooltipComponents.add(
+            Component.empty()
+                .append(Component.translatable("modular_machinery_reborn.controller.control").withStyle(ChatFormatting.YELLOW))
+                .append(" ")
+                .append(Component.translatable("modular_machinery_reborn.controller.control.modifier").withStyle(ChatFormatting.GRAY))
         );
       }
     }, () -> tooltipComponents.add(Component.translatable("modular_machinery_reborn.controller.no_machine").withStyle(ChatFormatting.GRAY)));

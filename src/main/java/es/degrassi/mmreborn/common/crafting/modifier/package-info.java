@@ -1,6 +1,6 @@
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-package es.degrassi.mmreborn.common.modifier;
+package es.degrassi.mmreborn.common.crafting.modifier;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 
