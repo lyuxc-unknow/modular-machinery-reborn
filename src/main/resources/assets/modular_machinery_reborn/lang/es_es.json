@@ -329,5 +329,18 @@
   "mmr.place.no_item": "Se ha tratado de colocar %s en %s pero no se pudo encontrar el item %s en el inventario del jugador",
 
   "key.categories.modular_machinery_reborn": "Modular Machinery Reborn",
-  "key.modular_machinery_reborn.structure_mode_change": "Modo del Creador de estructuras"
+  "key.modular_machinery_reborn.structure_mode_change": "Modo del Creador de estructuras",
+
+  "mmr.recipe.modifier.duration.add": " (%s la duración de la receta)",
+  "mmr.recipe.modifier.duration.multiply": " (x%s la duración de la receta)",
+  "mmr.recipe.modifier.item.add": " (%s item(s) %s a la receta, afecta probabilidad: %s)",
+  "mmr.recipe.modifier.item.multiply": " (x%s item %s de la receta, afecta probabilidad: %s)",
+  "mmr.recipe.modifier.fluid.add": " (%s líquido mB(s) %s a la receta, afecta probabilidad: %s)",
+  "mmr.recipe.modifier.fluid.multiply": " (x%s líquido %s de la receta, afecta probabilidad: %s)",
+  "mmr.recipe.modifier.energy.add": " (%s energía %s a la receta, afecta probabilidad: %s)",
+  "mmr.recipe.modifier.energy.multiply": " (x%s energía %s de la receta, afecta probabilidad: %s)",
+  "mmr.recipe.modifier.loot_table.add": " (%s suerte de la loot table a la receta)",
+  "mmr.recipe.modifier.loot_table.multiply": " (x%s suerte de la loot table de la receta)",
+  "mmr.recipe.modifier.experience.add": " (%s experiencia %s a la receta, afecta probabilidad: %s)",
+  "mmr.recipe.modifier.experience.multiply": " (x%s experiencia %s de la receta, afecta probabilidad: %s)"
 }
