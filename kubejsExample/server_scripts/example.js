@@ -222,7 +222,7 @@ MMREvents.machines(event => {
                     .addModifier(
                         MMRRecipeModifier.create()
                             // modifier target, can be:
-                            // - modular_machinery_reborn:duration
+                            // - modular_machinery_reborn:duration -> needs to be on input() or nothing `json -> "mode": "input"`
                             // - modular_machinery_reborn:item
                             // - modular_machinery_reborn:fluid
                             // - modular_machinery_reborn:energy

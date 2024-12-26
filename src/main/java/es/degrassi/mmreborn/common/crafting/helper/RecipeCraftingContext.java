@@ -32,7 +32,6 @@ public class RecipeCraftingContext {
   private final ActiveMachineRecipe activeRecipe;
   private final MachineControllerEntity machineController;
 
-  private int currentCraftingTick = 0;
   private List<ProcessingComponent<?>> typeComponents = new LinkedList<>();
   private Map<RequirementType<?>, List<RecipeModifier>> modifiers = new HashMap<>();
 
@@ -69,7 +68,7 @@ public class RecipeCraftingContext {
         .toList();
   }
 
-  public CraftingCheckResult ioTick(int currentTick) {
+  public CraftingCheckResult ioTick() {
     float durMultiplier = this.getDurationMultiplier();
 
     for (ComponentRequirement<?, ?> requirement : this.getParentRecipe().getCraftingRequirements()) {

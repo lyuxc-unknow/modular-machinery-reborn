@@ -6,9 +6,10 @@ import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.helper.CraftingCheckResult;
 import es.degrassi.mmreborn.common.crafting.helper.CraftingStatus;
 import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
+import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
-import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
+import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.network.server.SUpdateRecipePacket;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
@@ -68,15 +69,17 @@ public class CraftingManager implements INBTSerializable<CompoundTag> {
   }
 
   public int getRecipeTicks() {
-    if (activeRecipe != null) {
-      return activeRecipe.getRecipe().getRecipeTotalTickTime();
-    }
-    return 0;
+    if (this.activeRecipe == null || this.currentTick == null || activeRecipe.getRecipe() == null) return 0;
+    RecipeCraftingContext context = controller.getFoundMachine().createContext(activeRecipe, controller, controller.getFoundComponents());
+    if (context == null) return 0;
+    float modified = RecipeModifier.applyModifiers(context.getModifiers(RequirementTypeRegistration.DURATION.get()),
+        RequirementTypeRegistration.DURATION.get(), IOType.INPUT, activeRecipe.getRecipe().getRecipeTotalTickTime(), false);
+    return Math.round(modified);
   }
 
   public float getCurrentActiveRecipeProgress() {
     if (this.activeRecipe == null || this.currentTick == null || activeRecipe.getRecipe() == null) return 0F;
-    float maxTick = this.activeRecipe.getRecipe().getRecipeTotalTickTime();
+    float maxTick = getRecipeTicks();
     return Mth.clamp(this.currentTick / maxTick, 0F, 1F);
   }
 
@@ -229,12 +232,12 @@ public class CraftingManager implements INBTSerializable<CompoundTag> {
       return;
     }
     //Skip per-tick logic until controller can finish the recipe
-    if (isCompleted(context)) {
+    if (isCompleted()) {
       current = CraftingStatus.done();
     } else {
       currentTick++;
       CraftingCheckResult check;
-      if (!(check = context.ioTick(currentTick)).isFailure()) {
+      if (!(check = context.ioTick()).isFailure()) {
         current = CraftingStatus.working();
         return;
       } else {
@@ -260,11 +263,8 @@ public class CraftingManager implements INBTSerializable<CompoundTag> {
     }
   }
 
-  private boolean isCompleted(RecipeCraftingContext context) {
-    int time = activeRecipe.getRecipe().getRecipeTotalTickTime();
-    //Not sure which a user will use... let's try both.
-    time = Math.round(RecipeModifier.applyModifiers(context.getModifiers(RequirementTypeRegistration.DURATION.get()), RequirementTypeRegistration.DURATION.get(), null, time, false));
-    return currentTick >= time;
+  private boolean isCompleted() {
+    return currentTick >= getRecipeTicks();
   }
 
   public void endCraft(@Nullable RecipeCraftingContext context) {
