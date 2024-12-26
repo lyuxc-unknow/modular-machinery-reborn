@@ -26,7 +26,7 @@ if (transformer.exists()) {
   minecraft.accessTransformers.file transformer
 }
 
-// TODO: add to mmr mek, mmr ars, appex, experiencelib, cm botania, cm ars
+// TODO: add to appex, experiencelib, cm botania, cm ars
 tasks.build {
   finalizedBy(tasks.publishToMavenLocal)
 }
@@ -177,8 +177,8 @@ dependencies {
 
   // Addons for testing
   localRuntime("es.degrassi:modular_machinery_reborn_energistics:${minecraft_version}-1.1.4")
-  localRuntime("es.degrassi:modular_machinery_reborn_ars:${minecraft_version}-1.0.8")
-  localRuntime("es.degrassi:modular_machinery_reborn_mekanism:${minecraft_version}-1.0.10")
+  localRuntime("es.degrassi:modular_machinery_reborn_ars:${minecraft_version}-1.0.9")
+  localRuntime("es.degrassi:modular_machinery_reborn_mekanism:${minecraft_version}-1.0.11")
   localRuntime("appeng:appliedenergistics2:19.0.27")
   localRuntime("es.degrassi:applied-experienced:${minecraft_version}-1.0.1")
   localRuntime("curse.maven:applied-mekanistics-574300:5978711")
@@ -186,7 +186,7 @@ dependencies {
   localRuntime("software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:4.6.6")
   localRuntime("vazkii.patchouli:Patchouli:1.21-88-NEOFORGE-SNAPSHOT")
   localRuntime("top.theillusivec4.curios:curios-neoforge:9.0.12+1.21")
-  localRuntime("com.hollingsworth.ars_nouveau:ars_nouveau-${project.minecraft_version}:5.3.3.841")
+  localRuntime("com.hollingsworth.ars_nouveau:ars_nouveau-${project.minecraft_version}:5.3.6.856")
 
   // experiencias
   localRuntime("curse.maven:mob-grinding-utils-254241:${project.MGU}")
