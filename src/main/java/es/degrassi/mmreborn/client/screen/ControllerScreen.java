@@ -10,6 +10,7 @@ import es.degrassi.mmreborn.client.screen.widget.StructureBreakWidget;
 import es.degrassi.mmreborn.client.screen.widget.StructurePlacerWidget;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
+import es.degrassi.mmreborn.common.util.CycleTimer;
 import es.degrassi.mmreborn.common.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -41,6 +42,7 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
   private final List<Either<FormattedText, TooltipComponent>> components;
 
   private static final int screenWidth = 158;
+  private static final CycleTimer timer = new CycleTimer(() -> 1000, true);
 
   public ControllerScreen(ControllerContainer pMenu, Inventory pPlayerInventory, Component pTitle) {
     super(pMenu, pPlayerInventory, pTitle);
@@ -79,11 +81,15 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
     int offsetX = 14;
     int offsetY = 14;
 
+    timer.onDraw();
+
     DynamicMachine machine = entity.getFoundMachine();
     if (machine != DynamicMachine.DUMMY) {
       // render if the structure of machine is not null
       List<FormattedCharSequence> out = font.split(Component.literal(machine.getLocalizedName()), Mth.floor(screenWidth * (1 / scale)));
+      offsetY -= 7;
       for (FormattedCharSequence draw : out) {
+        offsetY += 7;
         guiGraphics.drawString(font, draw, offsetX, offsetY, 0xFFFFFF);
         offsetY += 7;
       }
@@ -202,7 +208,7 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
                 });
             map.forEach((c, stacks) -> {
               if (c != null && !stacks.isEmpty()) {
-                MMRItemTooltipComponent component = new MMRItemTooltipComponent(stacks);
+                MMRItemTooltipComponent component = new MMRItemTooltipComponent(stacks, timer);
                 component.setComponent(
                     Component.translatable(
                         "modular_machinery_reborn.controller.required.block",
@@ -232,7 +238,7 @@ public class ControllerScreen extends BaseScreen<ControllerContainer, MachineCon
             if (!modifierMap.isEmpty()) {
               modifierMap.forEach((c, stacks) -> {
                 if (c != null && !stacks.isEmpty()) {
-                  MMRItemTooltipComponent component = new MMRItemTooltipComponent(stacks);
+                  MMRItemTooltipComponent component = new MMRItemTooltipComponent(stacks, timer);
                   component.setComponent(
                       Component.translatable(
                           "modular_machinery_reborn.controller.required.block",

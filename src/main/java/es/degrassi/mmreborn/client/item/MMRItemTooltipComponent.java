@@ -1,18 +1,15 @@
 package es.degrassi.mmreborn.client.item;
 
 import es.degrassi.mmreborn.common.util.CycleTimer;
-import es.degrassi.mmreborn.common.util.MMRLogger;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Getter
@@ -22,10 +19,9 @@ public class MMRItemTooltipComponent implements TooltipComponent {
   private Component component = Component.empty();
   private final CycleTimer timer;
 
-  public MMRItemTooltipComponent(List<ItemStack> stack) {
+  public MMRItemTooltipComponent(List<ItemStack> stack, CycleTimer timer) {
     this.item = stack;
-    this.timer = new CycleTimer(() -> 1000);
-    timer.setIgnoreShift(true);
+    this.timer = timer;
   }
 
   public boolean isCompleted() {
@@ -33,10 +29,10 @@ public class MMRItemTooltipComponent implements TooltipComponent {
     List<ItemStack> invStacks = inv.items
         .stream()
         .filter(stack -> !stack.isEmpty())
-        .collect(Collectors.groupingBy(Function.identity(), Collectors.summingInt(ItemStack::getCount)))
+        .collect(Collectors.groupingBy(ItemStack::getItemHolder, Collectors.summingInt(ItemStack::getCount)))
         .entrySet()
         .stream()
-        .map(entry -> entry.getKey().copyWithCount(entry.getValue()))
+        .map(entry -> new ItemStack(entry.getKey(), entry.getValue()))
         .toList();
     for (ItemStack invStack : invStacks) {
       for (ItemStack stack : this.item) {
@@ -49,7 +45,7 @@ public class MMRItemTooltipComponent implements TooltipComponent {
   }
 
   public ItemStack getItem() {
-    this.timer.onDraw();
+//    this.timer.onDraw();
     return timer.getOrDefault(this.item, ItemStack.EMPTY);
   }
 }

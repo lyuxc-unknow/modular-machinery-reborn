@@ -84,6 +84,7 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -315,7 +316,7 @@ public class ModularMachineryRebornClient {
     ModularMachineryReborn.MACHINES_BLOCK.values().forEach(block -> event.register(ModularMachineryRebornClient::itemColor, block));
   }
 
-  public static int blockColor(BlockState state, BlockAndTintGetter level, BlockPos pos, int tintIndex) {
+  public static int blockColor(BlockState state, @Nullable  BlockAndTintGetter level, @Nullable BlockPos pos, int tintIndex) {
     if (level == null || pos == null)
       return 0;
     switch (tintIndex) {
