@@ -314,7 +314,7 @@
   "modular_machinery_reborn.controller.shift": "[SHIFT]",
   "modular_machinery_reborn.controller.shift.blocks": "to show the required blocks",
   "modular_machinery_reborn.controller.control": "[CTRL]",
-  "modular_machinery_reborn.controller.control.blocks": "to show the modifier blocks",
+  "modular_machinery_reborn.controller.control.modifier": "to show the modifier blocks",
   "modular_machinery_reborn.controller.required": "Required:",
   "modular_machinery_reborn.controller.required.item": "%s %s",
   "modular_machinery_reborn.controller.required.tag": "%s",

@@ -313,6 +313,8 @@
   "modular_machinery_reborn.controller.no_machine": "No se ha podido encontrar la máquina",
   "modular_machinery_reborn.controller.shift": "[SHIFT]",
   "modular_machinery_reborn.controller.shift.blocks": "para mostrar los bloques requeridos",
+  "modular_machinery_reborn.controller.control": "[CTRL]",
+  "modular_machinery_reborn.controller.control.modifier": "para mostrar los modificadores",
   "modular_machinery_reborn.controller.required": "Requerimientos:",
   "modular_machinery_reborn.controller.required.item": "%s %s",
   "modular_machinery_reborn.controller.required.tag": "%s",
