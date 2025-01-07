@@ -2,8 +2,10 @@ package es.degrassi.mmreborn.common.crafting.requirement.emi;
 
 import com.google.common.collect.Lists;
 import dev.emi.emi.api.widget.WidgetHolder;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
 import es.degrassi.mmreborn.common.integration.emi.recipe.MMREmiRecipe;
+import es.degrassi.mmreborn.common.machine.component.EnergyComponent;
 import es.degrassi.mmreborn.common.util.Utils;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;
@@ -13,12 +15,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Getter
-public class EmiEnergyComponent extends EmiComponent<Long, RequirementEnergy> {
+public class EmiEnergyComponent extends EmiComponent<Long, RecipeRequirement<EnergyComponent, RequirementEnergy>> {
   private int width = 16;
   private int height = 52;
   private int recipeTime;
 
-  public EmiEnergyComponent(RequirementEnergy requirement) {
+  public EmiEnergyComponent(RecipeRequirement<EnergyComponent, RequirementEnergy> requirement) {
     super(requirement, 18, 0);
   }
 
@@ -34,7 +36,7 @@ public class EmiEnergyComponent extends EmiComponent<Long, RequirementEnergy> {
 
   @Override
   public List<Long> ingredients() {
-    return Lists.newArrayList(requirement.getRequiredEnergyPerTick());
+    return Lists.newArrayList(requirement.requirement().getRequiredEnergyPerTick());
   }
 
   @Override
@@ -49,12 +51,12 @@ public class EmiEnergyComponent extends EmiComponent<Long, RequirementEnergy> {
   @Override
   public List<Component> getTooltip() {
     List<Component> tooltip = new LinkedList<>();
-    String mode = requirement.getActionType().isInput() ? "input" : "output";
+    String mode = requirement.requirement().getMode().isInput() ? "input" : "output";
     tooltip.add(
         Component.translatable(
           "modular_machinery_reborn.jei.ingredient.energy.total." + mode,
-          Utils.format(requirement.requirementPerTick * recipeTime),
-          Utils.format(requirement.requirementPerTick)
+          Utils.format(requirement.requirement().requirementPerTick * recipeTime),
+          Utils.format(requirement.requirement().requirementPerTick)
       )
     );
     return tooltip;

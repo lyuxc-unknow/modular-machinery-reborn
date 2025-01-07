@@ -4,8 +4,10 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import es.degrassi.mmreborn.ModularMachineryReborn;
+import es.degrassi.mmreborn.api.network.DataType;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
+import es.degrassi.mmreborn.common.manager.crafting.ProcessorType;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -29,12 +31,13 @@ public class RegistrarCodec<V> implements NamedCodec<V> {
   /**
    * MMR registries
    **/
-  public static final NamedCodec<RequirementType<?>> REQUIREMENT = of(ModularMachineryReborn.getRequirementRegistrar(), true);
+  public static final NamedCodec<RequirementType<?>> REQUIREMENT_NEW =
+      of(ModularMachineryReborn.getRequirementRegistrar(), true);
   public static final NamedCodec<ComponentType> COMPONENT = of(ModularMachineryReborn.getComponentRegistrar(), true);
 //    public static final NamedCodec<GuiElementType<?>> GUI_ELEMENT = of(ICustomMachineryAPI.INSTANCE.guiElementRegistrar(), true);
 //    public static final NamedCodec<MachineAppearanceProperty<?>> APPEARANCE_PROPERTY = of(ICustomMachineryAPI.INSTANCE.appearancePropertyRegistrar(), true);
-//    public static final NamedCodec<DataType<?, ?>> DATA = of(ICustomMachineryAPI.INSTANCE.dataRegistrar(), true);
-//    public static final NamedCodec<ProcessorType<?>> CRAFTING_PROCESSOR = of(ICustomMachineryAPI.INSTANCE.processorRegistrar(), true);
+  public static final NamedCodec<DataType<?, ?>> DATA = of(ModularMachineryReborn.dataRegistrar(), true);
+  public static final NamedCodec<ProcessorType<?>> CRAFTING_PROCESSOR = of(ModularMachineryReborn.processorRegistrar(), true);
 
   public static final NamedCodec<ResourceLocation> MMR_LOC_CODEC = NamedCodec.STRING.comapFlatMap(
     s -> {

@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import dev.emi.emi.api.stack.EmiStack;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.TagUtil;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.api.integration.emi.RegisterEmiComponentEvent;
 import es.degrassi.mmreborn.api.integration.emi.RegisterEmiRequirementToStackEvent;
 import es.degrassi.mmreborn.api.integration.jei.RegisterJeiComponentEvent;
@@ -40,7 +41,7 @@ import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiWeatherComponent;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
-import es.degrassi.mmreborn.common.entity.base.ColorableMachineComponentEntity;
+import es.degrassi.mmreborn.common.entity.base.ColorableMachineEntity;
 import es.degrassi.mmreborn.common.entity.base.EnergyHatchEntity;
 import es.degrassi.mmreborn.common.entity.base.ExperienceHatchEntity;
 import es.degrassi.mmreborn.common.entity.base.FluidTankEntity;
@@ -49,6 +50,7 @@ import es.degrassi.mmreborn.common.integration.emi.EmiComponentRegistry;
 import es.degrassi.mmreborn.common.integration.emi.EmiStackRegistry;
 import es.degrassi.mmreborn.common.integration.jei.JeiComponentRegistry;
 import es.degrassi.mmreborn.common.item.ItemDynamicColor;
+import es.degrassi.mmreborn.common.machine.component.ItemComponent;
 import es.degrassi.mmreborn.common.registration.BlockRegistration;
 import es.degrassi.mmreborn.common.registration.ContainerRegistration;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
@@ -93,7 +95,7 @@ import java.util.Map;
 @SuppressWarnings("unused")
 @Mod(value = ModularMachineryReborn.MODID, dist = Dist.CLIENT)
 public class ModularMachineryRebornClient {
-  public static ClientScheduler clientScheduler = new ClientScheduler();
+  public static final ClientScheduler clientScheduler = new ClientScheduler();
   private static Map<ModelResourceLocation, BakedModel> models;
   private static final List<Block> blockModelsToRegister = Lists.newLinkedList();
   private static final List<Item> itemModelsToRegister = Lists.newLinkedList();
@@ -325,7 +327,7 @@ public class ModularMachineryRebornClient {
       case 3 -> level.getBlockTint(pos, BiomeColors.FOLIAGE_COLOR_RESOLVER);
       case 4 -> {
         BlockEntity tile = level.getBlockEntity(pos);
-        if (tile instanceof ColorableMachineComponentEntity machineTile) {
+        if (tile instanceof ColorableMachineEntity machineTile) {
           return machineTile.getMachineColor();
         }
       }
@@ -410,12 +412,12 @@ public class ModularMachineryRebornClient {
     );
     event.register(
         RequirementTypeRegistration.FLUID.get(),
-        requirement -> List.of(EmiStack.of(requirement.required.asFluidStack().getFluid(), requirement.amount))
+        requirement -> List.of(EmiStack.of(requirement.requirement().required.asFluidStack().getFluid(), requirement.requirement().amount))
     );
     event.register(
         RequirementTypeRegistration.LOOT_TABLE.get(),
         requirement -> LootTableHelper
-            .getLootsForTable(requirement.getLootTable())
+            .getLootsForTable(requirement.requirement().getLootTable())
             .stream()
             .map(LootTableHelper.LootData::stack)
             .map(EmiStack::of)
@@ -423,15 +425,15 @@ public class ModularMachineryRebornClient {
     );
   }
 
-  private List<EmiStack> emiStackFromItemRequirement(RequirementItem requirement) {
+  private List<EmiStack> emiStackFromItemRequirement(RecipeRequirement<ItemComponent, RequirementItem> requirement) {
     List<EmiStack> stacks = new ArrayList<>();
-    for (Ingredient.Value value : requirement.getIngredient().ingredient().values) {
+    for (Ingredient.Value value : requirement.requirement().getIngredient().ingredient().values) {
       if (value instanceof Ingredient.TagValue(TagKey<Item> tag)) {
         for (Item stack : TagUtil.getItems(tag).toList()) {
-          stacks.add(EmiStack.of(stack, requirement.ingredient.count()));
+          stacks.add(EmiStack.of(stack, requirement.requirement().ingredient.count()));
         }
       } else if (value instanceof Ingredient.ItemValue(ItemStack item)) {
-        stacks.add(EmiStack.of(item, requirement.ingredient.count()));
+        stacks.add(EmiStack.of(item, requirement.requirement().ingredient.count()));
       }
     }
     return stacks;

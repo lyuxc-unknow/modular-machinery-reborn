@@ -5,10 +5,12 @@ import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.EmiStackInteraction;
 import dev.emi.emi.screen.EmiScreenManager;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.client.requirement.ChanceRendering;
 import es.degrassi.mmreborn.client.requirement.ItemRendering;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementItem;
 import es.degrassi.mmreborn.common.machine.IOType;
+import es.degrassi.mmreborn.common.machine.component.ItemComponent;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -17,13 +19,13 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Arrays;
 import java.util.List;
 
-public class EmiItemComponent extends EmiComponent<ItemStack, RequirementItem> implements SlotTooltip, ItemRendering, ChanceRendering {
+public class EmiItemComponent extends EmiComponent<ItemStack, RecipeRequirement<ItemComponent, RequirementItem>> implements SlotTooltip, ItemRendering, ChanceRendering {
   private int item;
   @Getter
   private int width = 16, height = 16;
   @Getter
   private EmiRecipe recipe;
-  public EmiItemComponent(RequirementItem requirement) {
+  public EmiItemComponent(RecipeRequirement<ItemComponent, RequirementItem> requirement) {
     super(requirement, 36, 0);
   }
 
@@ -38,7 +40,7 @@ public class EmiItemComponent extends EmiComponent<ItemStack, RequirementItem> i
 
   @Override
   public List<ItemStack> ingredients() {
-    return Arrays.stream(requirement.getIngredient().getItems()).map(ItemStack::copy).toList();
+    return Arrays.stream(requirement.requirement().getIngredient().getItems()).map(ItemStack::copy).toList();
   }
 
   @Override
@@ -55,12 +57,12 @@ public class EmiItemComponent extends EmiComponent<ItemStack, RequirementItem> i
 
   @Override
   public float getChance() {
-    return requirement.chance;
+    return requirement.chance();
   }
 
   @Override
   public IOType getActionType() {
-    return requirement.getActionType();
+    return requirement.requirement().getMode();
   }
 
   @Override

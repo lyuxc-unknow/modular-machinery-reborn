@@ -48,7 +48,7 @@ public class TOPInfoProvider implements IProbeInfoProvider, Function<ITheOneProb
 
   private void showCraftingInfo(MachineControllerEntity tile, IProbeInfo info) {
     CraftingStatus status = tile.getCraftingStatus();
-    MutableComponent message = Component.translatable(status.getUnlocMessage());
+    MutableComponent message = status.getUnlocMessage().copy();
     switch (status.getStatus()) {
       case CRAFTING -> message.withStyle(ChatFormatting.GREEN);
       case NO_RECIPE -> message.withStyle(ChatFormatting.GOLD);
@@ -56,9 +56,9 @@ public class TOPInfoProvider implements IProbeInfoProvider, Function<ITheOneProb
     }
     info.mcText(message);
     if (tile.hasActiveRecipe()) {
-      int ticks = tile.getCraftingManager().getTicks();
-      int total = tile.getCraftingManager().getRecipeTicks();
-      float progress = (float) ticks / total;
+      float ticks = tile.getProcessor().core().getRecipeProgressTime();
+      int total = (int) tile.getProcessor().core().getRecipeTotalTime();
+      float progress = ticks / total;
       boolean seconds = total >= 20;
       info.element(
           new CustomProgress(

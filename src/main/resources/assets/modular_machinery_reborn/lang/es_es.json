@@ -41,8 +41,8 @@
   "craftcheck.failure.item.output.space": "No hay suficiente espacio en el inventario para la salida de item(s)!",
   "craftcheck.failure.fluid.input": "Sin líquido de entrada!",
   "craftcheck.failure.fluid.output.space": "No hay suficiente espacio en el tanque para salida de líquido(s)!",
-  "craftcheck.failure.energy.input": "No hay suficiente energía!",
-  "craftcheck.failure.energy.output": "No hay suficiente espacio para la salida de energía!",
+  "craftcheck.failure.energy.input": "No hay suficiente energía! Se necesita %s FE pero se encontró %s FE",
+  "craftcheck.failure.energy.output": "No hay suficiente espacio para la salida de energía!, Se necesita %s FE, pero se encontró %s FE de espacio",
   "craftcheck.failure.experience.input": "Not enough experience!",
   "craftcheck.failure.experience.output": "Not enough space for experience output!",
   "craftcheck.failure.dimension.false": "No está en la dimensión correcta, se esperaba estar en: %s, estando en: %s",
@@ -344,5 +344,16 @@
   "mmr.recipe.modifier.loot_table.add": " (%s suerte de la loot table a la receta)",
   "mmr.recipe.modifier.loot_table.multiply": " (x%s suerte de la loot table de la receta)",
   "mmr.recipe.modifier.experience.add": " (%s experiencia %s a la receta, afecta probabilidad: %s)",
-  "mmr.recipe.modifier.experience.multiply": " (x%s experiencia %s de la receta, afecta probabilidad: %s)"
+  "mmr.recipe.modifier.experience.multiply": " (x%s experiencia %s de la receta, afecta probabilidad: %s)",
+
+  "mmr.gui.structure.break": "¿Está seguro de que desea romper la estructura actual?",
+
+  "mmr.gui.structure.place.modifier": "¿Quieres colocar la estructura con o sin modificadores?",
+  "mmr.gui.structure.place.modifier.true": "¿Estás seguro de que quieres colocar la estructura con modificadores?",
+  "mmr.gui.structure.place.modifier.false": "¿Estás seguro de que quieres colocar la estructura sin modificadores?",
+  "mmr.gui.structure.place.confirm.modifier": "Con modificadores",
+  "mmr.gui.structure.place.cancel.modifier": "Sin modificadores",
+
+  "mmr.gui.popup.confirm": "Confirmar",
+  "mmr.gui.popup.cancel": "Cancelar"
 }

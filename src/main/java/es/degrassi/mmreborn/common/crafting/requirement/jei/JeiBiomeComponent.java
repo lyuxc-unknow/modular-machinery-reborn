@@ -1,8 +1,10 @@
 package es.degrassi.mmreborn.common.crafting.requirement.jei;
 
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementBiome;
 import es.degrassi.mmreborn.common.integration.jei.category.MMRRecipeCategory;
+import es.degrassi.mmreborn.common.machine.component.BiomeComponent;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.recipe.IFocusGroup;
@@ -13,8 +15,8 @@ import org.apache.commons.compress.utils.Lists;
 
 import java.util.List;
 
-public class JeiBiomeComponent extends JeiComponent<ResourceLocation, RequirementBiome> {
-  public JeiBiomeComponent(RequirementBiome requirement) {
+public class JeiBiomeComponent extends JeiComponent<ResourceLocation, RecipeRequirement<BiomeComponent, RequirementBiome>> {
+  public JeiBiomeComponent(RecipeRequirement<BiomeComponent, RequirementBiome> requirement) {
     super(requirement, 0, 0);
   }
 
@@ -30,7 +32,7 @@ public class JeiBiomeComponent extends JeiComponent<ResourceLocation, Requiremen
 
   @Override
   public List<ResourceLocation> ingredients() {
-    return Lists.newArrayList(requirement.filter().iterator());
+    return Lists.newArrayList(requirement.requirement().filter().iterator());
   }
 
   @Override
@@ -45,7 +47,7 @@ public class JeiBiomeComponent extends JeiComponent<ResourceLocation, Requiremen
         .addRichTooltipCallback((view, tooltip) -> {
           tooltip.clear();
           tooltip.add(Component.translatable(
-              "modular_machinery_reborn.jei.ingredient.biome." + requirement.blacklist(),
+              "modular_machinery_reborn.jei.ingredient.biome." + requirement.requirement().blacklist(),
               biomes.toString()
           ));
         });

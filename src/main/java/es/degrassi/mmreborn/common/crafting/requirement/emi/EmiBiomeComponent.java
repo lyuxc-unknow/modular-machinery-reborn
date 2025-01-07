@@ -1,8 +1,10 @@
 package es.degrassi.mmreborn.common.crafting.requirement.emi;
 
 import dev.emi.emi.api.stack.EmiStack;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.client.requirement.ItemRendering;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementBiome;
+import es.degrassi.mmreborn.common.machine.component.BiomeComponent;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -12,8 +14,8 @@ import org.apache.commons.compress.utils.Lists;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class EmiBiomeComponent extends EmiComponent<ResourceLocation, RequirementBiome> implements ItemRendering {
-  public EmiBiomeComponent(RequirementBiome requirement) {
+public class EmiBiomeComponent extends EmiComponent<ResourceLocation, RecipeRequirement<BiomeComponent, RequirementBiome>> implements ItemRendering {
+  public EmiBiomeComponent(RecipeRequirement<BiomeComponent, RequirementBiome> requirement) {
     super(requirement, 0, 0, false);
   }
 
@@ -33,7 +35,7 @@ public class EmiBiomeComponent extends EmiComponent<ResourceLocation, Requiremen
 
   @Override
   public List<ResourceLocation> ingredients() {
-    return Lists.newArrayList(requirement.filter().iterator());
+    return Lists.newArrayList(requirement.requirement().filter().iterator());
   }
 
   @Override
@@ -56,7 +58,7 @@ public class EmiBiomeComponent extends EmiComponent<ResourceLocation, Requiremen
     if (index >= biomes.length() - 1)
       biomes.deleteCharAt(index);
     return List.of(Component.translatable(
-        "modular_machinery_reborn.jei.ingredient.biome." + requirement.blacklist(),
+        "modular_machinery_reborn.jei.ingredient.biome." + requirement.requirement().blacklist(),
         biomes.toString()
     ));
   }

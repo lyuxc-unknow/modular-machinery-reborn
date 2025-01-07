@@ -9,8 +9,8 @@ import dev.latvian.mods.kubejs.recipe.RecipeKey;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.kubejs.util.TickDuration;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
-import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.PositionedRequirement;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.BiomeRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.ChunkloadRequirementJS;
@@ -105,7 +105,7 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
         )
     );
 
-    for (ComponentRequirement<?, ?> requirement : getValue(ModularMachineryRebornRecipeSchemas.REQUIREMENTS))
+    for (RecipeRequirement<?, ?> requirement : getValue(ModularMachineryRebornRecipeSchemas.REQUIREMENTS))
       builder.addRequirement(requirement);
 
     builder.shouldRenderProgress(getValue(ModularMachineryRebornRecipeSchemas.SHOULD_RENDER_PROGRESS));
@@ -163,7 +163,7 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
 
   @Override
   @HideFromJS
-  public MachineRecipeBuilderJS addRequirement(ComponentRequirement<?, ?> requirement) {
+  public MachineRecipeBuilderJS addRequirement(RecipeRequirement<?, ?> requirement) {
     setValue(ModularMachineryRebornRecipeSchemas.REQUIREMENTS, addToList(ModularMachineryRebornRecipeSchemas.REQUIREMENTS, requirement));
     return this;
   }

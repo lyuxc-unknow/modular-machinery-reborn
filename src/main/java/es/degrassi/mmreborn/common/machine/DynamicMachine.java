@@ -6,11 +6,8 @@ import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.Structure;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
-import es.degrassi.mmreborn.common.crafting.ActiveMachineRecipe;
-import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
 import es.degrassi.mmreborn.common.data.Config;
-import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.util.MachineModelLocation;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,8 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -70,23 +65,6 @@ public class DynamicMachine {
 
   public int getMachineColor() {
     return definedColor;
-  }
-
-  @Nullable
-  public RecipeCraftingContext createContext(
-      @Nullable ActiveMachineRecipe activeRecipe,
-      MachineControllerEntity controller,
-      Collection<MachineComponent<?>> taggedComponents
-  ) {
-    if (activeRecipe == null) return null;
-    if (activeRecipe.getRecipe() == null) return null;
-    if (!activeRecipe.getRecipe().getOwningMachineIdentifier().equals(getRegistryName())) {
-      return null;
-    }
-    RecipeCraftingContext context = new RecipeCraftingContext(activeRecipe, controller);
-    taggedComponents.forEach(context::addComponent);
-    controller.getFoundModifiers().forEach(context::addModifier);
-    return context;
   }
 
   public JsonObject asJson() {

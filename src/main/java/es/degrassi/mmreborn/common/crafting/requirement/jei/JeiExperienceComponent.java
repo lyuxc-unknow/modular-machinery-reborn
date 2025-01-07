@@ -2,9 +2,11 @@ package es.degrassi.mmreborn.common.crafting.requirement.jei;
 
 import com.google.common.collect.Lists;
 import es.degrassi.experiencelib.util.ExperienceUtils;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementExperience;
 import es.degrassi.mmreborn.common.integration.jei.category.MMRRecipeCategory;
+import es.degrassi.mmreborn.common.machine.component.ExperienceComponent;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.recipe.IFocusGroup;
 import net.minecraft.client.gui.GuiGraphics;
@@ -14,8 +16,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class JeiExperienceComponent extends JeiComponent<Long, RequirementExperience> {
-  public JeiExperienceComponent(RequirementExperience requirement) {
+public class JeiExperienceComponent extends JeiComponent<Long, RecipeRequirement<ExperienceComponent, RequirementExperience>> {
+  public JeiExperienceComponent(RecipeRequirement<ExperienceComponent, RequirementExperience> requirement) {
     super(requirement, 0, 0);
   }
 
@@ -42,15 +44,15 @@ public class JeiExperienceComponent extends JeiComponent<Long, RequirementExperi
 
   @Override
   public List<Long> ingredients() {
-    return Lists.newArrayList(requirement.getRequired());
+    return Lists.newArrayList(requirement.requirement().getRequired());
   }
 
   @Override
   public void setRecipe(MMRRecipeCategory category, IRecipeLayoutBuilder builder, MachineRecipe recipe, IFocusGroup focuses) {
-    String literal = String.format("%s XP", ExperienceUtils.format(requirement.getRequired()));
-    String level =  ExperienceUtils.format(ExperienceUtils.getLevelFromXp(requirement.getRequired()));
+    String literal = String.format("%s XP", ExperienceUtils.format(requirement.requirement().getRequired()));
+    String level =  ExperienceUtils.format(ExperienceUtils.getLevelFromXp(requirement.requirement().getRequired()));
     recipe.textsToRender.add(
-        Component.translatable("mmr.gui.element.experience.tooltip." + requirement.getActionType().getSerializedName(),
+        Component.translatable("mmr.gui.element.experience.tooltip." + requirement.requirement().getMode().getSerializedName(),
             literal,
             Component.translatable("mmr.gui.element.experience.level", level)
         )

@@ -1,6 +1,8 @@
 package es.degrassi.mmreborn.common.util;
 
-public interface IEnergyHandler {
+import net.neoforged.neoforge.energy.IEnergyStorage;
+
+public interface IEnergyHandler extends IEnergyStorage {
 
   long getCurrentEnergy();
 
@@ -11,4 +13,7 @@ public interface IEnergyHandler {
   default long getRemainingCapacity() {
     return getMaxEnergy() - getCurrentEnergy();
   }
+
+  void setCanExtract(boolean b);
+  void setCanInsert(boolean b);
 }

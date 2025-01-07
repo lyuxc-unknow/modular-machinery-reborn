@@ -2,8 +2,7 @@ package es.degrassi.mmreborn.common.entity;
 
 import es.degrassi.mmreborn.common.entity.base.BlockEntityRestrictedTick;
 import es.degrassi.mmreborn.common.entity.base.MachineComponentEntity;
-import es.degrassi.mmreborn.common.machine.MachineComponent;
-import es.degrassi.mmreborn.common.machine.component.Chunkload;
+import es.degrassi.mmreborn.common.machine.component.ChunkloadComponent;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.util.Chunkloader;
 import es.degrassi.mmreborn.common.util.ChunkloaderList;
@@ -14,10 +13,10 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
 @MethodsReturnNonnullByDefault
-public class ChunkloaderEntity extends BlockEntityRestrictedTick implements MachineComponentEntity {
+@Getter
+public class ChunkloaderEntity extends BlockEntityRestrictedTick implements MachineComponentEntity<ChunkloadComponent> {
   private final Chunkloader chunkloader;
   public ChunkloaderEntity(BlockPos pos, BlockState blockState) {
     super(EntityRegistration.CHUNKLOADER.get(), pos, blockState);
@@ -25,13 +24,8 @@ public class ChunkloaderEntity extends BlockEntityRestrictedTick implements Mach
   }
 
   @Override
-  public Chunkload provideComponent() {
-    return new Chunkload() {
-      @Override
-      public Chunkloader getContainerProvider() {
-        return chunkloader;
-      }
-    };
+  public ChunkloadComponent provideComponent() {
+    return new ChunkloadComponent(this);
   }
 
   @Override

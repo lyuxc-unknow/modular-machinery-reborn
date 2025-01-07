@@ -1,9 +1,11 @@
 package es.degrassi.mmreborn.common.crafting.requirement.jei;
 
 import com.google.common.collect.Lists;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementLootTable;
 import es.degrassi.mmreborn.common.integration.jei.category.MMRRecipeCategory;
+import es.degrassi.mmreborn.common.machine.component.ItemComponent;
 import es.degrassi.mmreborn.common.util.LootTableHelper;
 import es.degrassi.mmreborn.common.util.LootTableHelper.LootData;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -18,8 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class JeiLootTableComponent extends JeiComponent<ResourceLocation, RequirementLootTable> {
-  public JeiLootTableComponent(RequirementLootTable requirement) {
+public class JeiLootTableComponent extends JeiComponent<ResourceLocation, RecipeRequirement<ItemComponent, RequirementLootTable>> {
+  public JeiLootTableComponent(RecipeRequirement<ItemComponent, RequirementLootTable> requirement) {
     super(requirement, 36, 0);
   }
 
@@ -35,12 +37,12 @@ public class JeiLootTableComponent extends JeiComponent<ResourceLocation, Requir
 
   @Override
   public List<ResourceLocation> ingredients() {
-    return Collections.singletonList(requirement.getLootTable());
+    return Collections.singletonList(requirement.requirement().getLootTable());
   }
 
   @Override
   public void setRecipe(MMRRecipeCategory category, IRecipeLayoutBuilder builder, MachineRecipe recipe, IFocusGroup focuses) {
-    List<LootData> loots = LootTableHelper.getLootsForTable(requirement.getLootTable());
+    List<LootData> loots = LootTableHelper.getLootsForTable(requirement.requirement().getLootTable());
     List<ItemStack> ingredients = Lists.newArrayList(loots.stream().map(LootData::stack).toList());
     builder.addSlot(role(), getPosition().x(), getPosition().y())
         .addItemStacks(ingredients)
@@ -53,13 +55,13 @@ public class JeiLootTableComponent extends JeiComponent<ResourceLocation, Requir
           if (data.chance() != 1) {
             double percentage = data.chance() * 100;
             if (percentage < 0.01F)
-              tooltips.add(Component.translatable("modular_machinery_reborn.ingredient.chance." + requirement.getActionType().name().toLowerCase(Locale.ROOT), "<0.01", "%"));
+              tooltips.add(Component.translatable("modular_machinery_reborn.ingredient.chance." + requirement.requirement().getMode().name().toLowerCase(Locale.ROOT), "<0.01", "%"));
             else {
               BigDecimal decimal = BigDecimal.valueOf(percentage).setScale(2, RoundingMode.HALF_UP);
               if (decimal.scale() <= 0 || decimal.signum() == 0 || decimal.stripTrailingZeros().scale() <= 0)
-                tooltips.add(Component.translatable("modular_machinery_reborn.ingredient.chance." + requirement.getActionType().name().toLowerCase(Locale.ROOT), decimal.intValue(), "%"));
+                tooltips.add(Component.translatable("modular_machinery_reborn.ingredient.chance." + requirement.requirement().getMode().name().toLowerCase(Locale.ROOT), decimal.intValue(), "%"));
               else
-                tooltips.add(Component.translatable("modular_machinery_reborn.ingredient.chance." + requirement.getActionType().name().toLowerCase(Locale.ROOT), decimal.doubleValue(), "%"));
+                tooltips.add(Component.translatable("modular_machinery_reborn.ingredient.chance." + requirement.requirement().getMode().name().toLowerCase(Locale.ROOT), decimal.doubleValue(), "%"));
             }
             if (!data.rolls().isEmpty())
               tooltips.add(Component.literal(data.rolls()));

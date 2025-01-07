@@ -1,8 +1,10 @@
 package es.degrassi.mmreborn.common.crafting.requirement.jei;
 
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementChunkload;
 import es.degrassi.mmreborn.common.integration.jei.category.MMRRecipeCategory;
+import es.degrassi.mmreborn.common.machine.component.ChunkloadComponent;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.recipe.IFocusGroup;
@@ -11,8 +13,8 @@ import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
-public class JeiChunkloadComponent extends JeiComponent<Integer, RequirementChunkload> {
-  public JeiChunkloadComponent(RequirementChunkload requirement) {
+public class JeiChunkloadComponent extends JeiComponent<Integer, RecipeRequirement<ChunkloadComponent, RequirementChunkload>> {
+  public JeiChunkloadComponent(RecipeRequirement<ChunkloadComponent, RequirementChunkload> requirement) {
     super(requirement, 0, 0);
   }
 
@@ -28,7 +30,7 @@ public class JeiChunkloadComponent extends JeiComponent<Integer, RequirementChun
 
   @Override
   public List<Integer> ingredients() {
-    return List.of(requirement.radius());
+    return List.of(requirement.requirement().radius());
   }
 
   @Override
@@ -39,7 +41,7 @@ public class JeiChunkloadComponent extends JeiComponent<Integer, RequirementChun
           tooltip.clear();
           tooltip.add(Component.translatable(
               "modular_machinery_reborn.jei.ingredient.chunkload",
-              requirement.radius()
+              requirement.requirement().radius()
           ));
         });
   }

@@ -8,7 +8,7 @@ import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class FluidOutputHatchEntity extends FluidTankEntity implements MachineComponentEntity {
+public class FluidOutputHatchEntity extends FluidTankEntity {
 
   public FluidOutputHatchEntity(BlockPos pos, BlockState state) {
     super(EntityRegistration.FLUID_OUTPUT_HATCH.get(), pos, state, FluidHatchSize.TINY, IOType.OUTPUT);

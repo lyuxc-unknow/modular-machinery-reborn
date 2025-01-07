@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.entity.base;
 
+import es.degrassi.mmreborn.common.util.IEntitySynchronizable;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -18,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @Setter
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BlockEntitySynchronized extends BlockEntity {
+public class BlockEntitySynchronized extends BlockEntity implements IEntitySynchronizable {
   private static final String REQUEST_UPDATE_KEY = "requestModelUpdate";
   private static final String IN_STRUCTURE_KEY = "inStructure";
   private boolean requestModelUpdate = false;
@@ -64,8 +65,7 @@ public class BlockEntitySynchronized extends BlockEntity {
 
   public void markForUpdate() {
     if (requestModelUpdate) requestModelDataUpdate();
-    requestModelUpdate = false;
-//    le.notifyBlockUpdate(pos, thisState, thisState, 3);
+    setRequestModelUpdate(false);
     getLevel().setBlockAndUpdate(getBlockPos(), getBlockState());
     setChanged();
   }

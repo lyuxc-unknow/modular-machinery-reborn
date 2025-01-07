@@ -1,9 +1,15 @@
 package es.degrassi.mmreborn.common.util;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
+@Getter
+@Setter
 public class HybridTank extends FluidTank {
+
+  private InventoryUpdateListener listener;
 
   public HybridTank(int capacity) {
     super(capacity);
@@ -18,5 +24,12 @@ public class HybridTank extends FluidTank {
     }
     builder.append("]}");
     return builder.toString();
+  }
+
+  @Override
+  protected void onContentsChanged() {
+    super.onContentsChanged();
+    if (listener != null)
+      listener.onChange();
   }
 }

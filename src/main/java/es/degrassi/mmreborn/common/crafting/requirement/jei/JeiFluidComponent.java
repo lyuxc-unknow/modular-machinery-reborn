@@ -2,6 +2,7 @@ package es.degrassi.mmreborn.common.crafting.requirement.jei;
 
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.requirement.PositionedSizedRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementFluid;
@@ -9,6 +10,7 @@ import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.integration.jei.MMRJeiPlugin;
 import es.degrassi.mmreborn.common.integration.jei.category.MMRRecipeCategory;
 import es.degrassi.mmreborn.common.integration.jei.category.drawable.DrawableWrappedText;
+import es.degrassi.mmreborn.common.machine.component.FluidComponent;
 import es.degrassi.mmreborn.common.util.Utils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.recipe.IFocusGroup;
@@ -23,8 +25,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Locale;
 
-public class JeiFluidComponent extends JeiComponent<FluidStack, RequirementFluid> {
-  public JeiFluidComponent(RequirementFluid requirement) {
+public class JeiFluidComponent extends JeiComponent<FluidStack, RecipeRequirement<FluidComponent, RequirementFluid>> {
+  public JeiFluidComponent(RecipeRequirement<FluidComponent, RequirementFluid> requirement) {
     super(requirement, 0, 0);
   }
 
@@ -40,25 +42,26 @@ public class JeiFluidComponent extends JeiComponent<FluidStack, RequirementFluid
 
   @Override
   public List<FluidStack> ingredients() {
-    return Lists.newArrayList(requirement.required.asFluidStack());
+    return Lists.newArrayList(requirement.requirement().required.asFluidStack());
   }
 
   @Override
   @SuppressWarnings("removal")
   public @NotNull List<Component> getTooltip(@NotNull FluidStack ingredient, @NotNull TooltipFlag tooltipFlag) {
     List<Component> tooltip = super.getTooltip(ingredient, tooltipFlag);
-    String mode = requirement.getActionType().isInput() ? "input" : "output";
+    String mode = requirement.requirement().getMode().isInput() ? "input" : "output";
     tooltip.add(Component.translatable("modular_machinery_reborn.jei.ingredient.fluid." + mode, ingredient.getHoverName(), ingredient.getAmount()));
 
-    if (requirement.chance < 1F && requirement.chance >= 0F) {
-      String keyNever = requirement.getActionType().isInput() ? "tooltip.machinery.chance.in.never" : "tooltip.machinery.chance.out.never";
-      String keyChance = requirement.getActionType().isInput() ? "tooltip.machinery.chance.in" : "tooltip.machinery.chance.out";
+    if (requirement.chance() < 1F && requirement.chance() >= 0F) {
+      String keyNever = requirement.requirement().getMode().isInput() ? "tooltip.machinery.chance.in.never" : "tooltip" +
+          ".machinery.chance.out.never";
+      String keyChance = requirement.requirement().getMode().isInput() ? "tooltip.machinery.chance.in" : "tooltip.machinery.chance.out";
 
-      String chanceStr = String.valueOf(Mth.floor(requirement.chance * 100F));
-      if (requirement.chance == 0F) {
+      String chanceStr = String.valueOf(Mth.floor(requirement.chance() * 100F));
+      if (requirement.chance() == 0F) {
         tooltip.add(Component.translatable(keyNever));
       } else {
-        if (requirement.chance < 0.01F) {
+        if (requirement.chance() < 0.01F) {
           chanceStr = "< 1";
         }
         chanceStr += "%";
@@ -71,10 +74,10 @@ public class JeiFluidComponent extends JeiComponent<FluidStack, RequirementFluid
   @Override
   public void setRecipe(MMRRecipeCategory category, IRecipeLayoutBuilder builder, MachineRecipe recipe, IFocusGroup focuses) {
     Component component = Component.empty();
-    String chance = Utils.decimalFormat(requirement.chance * 100);
-    if (requirement.chance > 0 && requirement.chance < 1)
+    String chance = Utils.decimalFormat(requirement.chance() * 100);
+    if (requirement.chance() > 0 && requirement.chance() < 1)
       component = Component.translatable("modular_machinery_reborn.ingredient.chance", chance, "%").withColor(Config.chanceColor);
-    else if (requirement.chance == 0)
+    else if (requirement.chance() == 0)
       component = Component.translatable("modular_machinery_reborn.ingredient.chance.nc").withColor(Config.chanceColor);
     Font font = Minecraft.getInstance().font;
     recipe.chanceTexts.add(
@@ -105,15 +108,15 @@ public class JeiFluidComponent extends JeiComponent<FluidStack, RequirementFluid
             -1,
             -1
         )
-        .setFluidRenderer(getRequirement().amount, false, getWidth(), getHeight())
-        .addFluidStack(getRequirement().required.asFluidStack().getFluid(), getRequirement().amount)
+        .setFluidRenderer(getRequirement().requirement().amount, false, getWidth(), getHeight())
+        .addFluidStack(getRequirement().requirement().required.asFluidStack().getFluid(), getRequirement().requirement().amount)
         .addRichTooltipCallback((view, tooltip) -> {
-          if (requirement.chance > 0 && requirement.chance < 1)
-            tooltip.add(Component.translatable("modular_machinery_reborn.ingredient.chance." + requirement.getActionType().name().toLowerCase(Locale.ROOT), chance, "%"));
-          else if (requirement.chance == 0)
+          if (requirement.chance() > 0 && requirement.chance() < 1)
+            tooltip.add(Component.translatable("modular_machinery_reborn.ingredient.chance." + requirement.requirement().getMode().name().toLowerCase(Locale.ROOT), chance, "%"));
+          else if (requirement.chance() == 0)
             tooltip.add(Component.translatable("modular_machinery_reborn.ingredient.chance.not_consumed"));
-          else if (requirement.chance == 1)
-            tooltip.add(Component.translatable("modular_machinery_reborn.jei.ingredient.item." + requirement.getActionType().name().toLowerCase(Locale.ROOT)));
+          else if (requirement.chance() == 1)
+            tooltip.add(Component.translatable("modular_machinery_reborn.jei.ingredient.item." + requirement.requirement().getMode().name().toLowerCase(Locale.ROOT)));
         });
   }
 }

@@ -37,7 +37,7 @@ public class Pattern {
     this.pattern = pattern;
     this.strings = strings;
     this.keys = keys;
-    this.pattern_north = pattern;
+    this.pattern_north = rotate(Rotation.NONE);
     this.pattern_south = rotate(Rotation.CLOCKWISE_180);
     this.pattern_west = rotate(Rotation.COUNTERCLOCKWISE_90);
     this.pattern_east = rotate(Rotation.CLOCKWISE_90);
@@ -54,10 +54,10 @@ public class Pattern {
 
   private Rotation fromDirection(Direction direction) {
     return switch (direction) {
-      case NORTH, UP, DOWN -> Rotation.NONE;
       case EAST -> Rotation.CLOCKWISE_90;
       case WEST -> Rotation.COUNTERCLOCKWISE_90;
       case SOUTH -> Rotation.CLOCKWISE_180;
+      default -> Rotation.NONE;
     };
   }
 

@@ -46,6 +46,7 @@ public class Chunkloader implements INBTSerializable<CompoundTag> {
     if(nbt.contains("radius", CompoundTag.TAG_INT))
       this.radius = nbt.getInt("radius");
   }
+
   private static final TicketType<BlockPos> MACHINE_CHUNKLOADER = TicketType.create("chunkloader", Vec3i::compareTo, 0);
 
   public void setActive(ServerLevel level, int radius) {

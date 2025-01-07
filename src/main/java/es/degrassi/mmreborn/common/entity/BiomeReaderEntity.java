@@ -1,38 +1,38 @@
 package es.degrassi.mmreborn.common.entity;
 
-import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.entity.base.ColorableMachineComponentEntity;
 import es.degrassi.mmreborn.common.entity.base.MachineComponentEntity;
-import es.degrassi.mmreborn.common.machine.IOType;
-import es.degrassi.mmreborn.common.machine.MachineComponent;
-import es.degrassi.mmreborn.common.registration.ComponentRegistration;
+import es.degrassi.mmreborn.common.machine.component.BiomeComponent;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 @MethodsReturnNonnullByDefault
-public class BiomeReaderEntity extends ColorableMachineComponentEntity implements MachineComponentEntity {
+@Getter
+@Setter
+public class BiomeReaderEntity extends ColorableMachineComponentEntity implements MachineComponentEntity<BiomeComponent> {
   public BiomeReaderEntity(BlockPos pos, BlockState blockState) {
     super(EntityRegistration.BIOME_READER.get(), pos, blockState);
   }
 
   @Override
-  public @Nullable MachineComponent<List<ResourceLocation>> provideComponent() {
-    return new MachineComponent<>(IOType.INPUT) {
-      @Override
-      public ComponentType getComponentType() {
-        return ComponentRegistration.COMPONENT_BIOME.get();
-      }
+  public @Nullable BiomeComponent provideComponent() {
+    return new BiomeComponent(this);
+  }
 
-      @Override
-      public List<ResourceLocation> getContainerProvider() {
-        return List.of(getLevel().getBiome(getBlockPos()).unwrapKey().get().location());
-      }
-    };
+  @Override
+  protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider pRegistries) {
+    super.saveAdditional(nbt, pRegistries);
+  }
+
+  @Override
+  protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider pRegistries) {
+    super.loadAdditional(nbt, pRegistries);
   }
 }

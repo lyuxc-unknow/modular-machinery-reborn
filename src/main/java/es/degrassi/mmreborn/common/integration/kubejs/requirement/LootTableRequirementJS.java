@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.integration.kubejs.requirement;
 
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.PositionedRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementLootTable;
 import es.degrassi.mmreborn.common.integration.kubejs.MachineRecipeBuilderJS;
@@ -20,6 +21,6 @@ public interface LootTableRequirementJS extends RecipeJSBuilder {
   }
 
   default MachineRecipeBuilderJS lootTable(ResourceLocation lootTable, float luck, int x, int y) {
-    return this.addRequirement(new RequirementLootTable(lootTable, luck, new PositionedRequirement(x, y)));
+    return this.addRequirement(new RecipeRequirement<>(new RequirementLootTable(lootTable, luck, new PositionedRequirement(x, y))));
   }
 }

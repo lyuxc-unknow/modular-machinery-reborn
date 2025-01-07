@@ -1,8 +1,10 @@
 package es.degrassi.mmreborn.common.crafting.requirement.emi;
 
 import dev.emi.emi.api.stack.EmiStack;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.client.requirement.ItemRendering;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementChunkload;
+import es.degrassi.mmreborn.common.machine.component.ChunkloadComponent;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -11,8 +13,8 @@ import net.minecraft.resources.ResourceLocation;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class EmiChunkloadComponent extends EmiComponent<Integer, RequirementChunkload> implements ItemRendering {
-  public EmiChunkloadComponent(RequirementChunkload requirement) {
+public class EmiChunkloadComponent extends EmiComponent<Integer, RecipeRequirement<ChunkloadComponent, RequirementChunkload>> implements ItemRendering {
+  public EmiChunkloadComponent(RecipeRequirement<ChunkloadComponent, RequirementChunkload> requirement) {
     super(requirement, 0, 0, false);
   }
 
@@ -34,7 +36,7 @@ public class EmiChunkloadComponent extends EmiComponent<Integer, RequirementChun
 
   @Override
   public List<Integer> ingredients() {
-    return List.of(requirement.radius());
+    return List.of(requirement.requirement().radius());
   }
 
   public EmiStack getStack() {
@@ -51,7 +53,7 @@ public class EmiChunkloadComponent extends EmiComponent<Integer, RequirementChun
   public List<Component> getTooltip() {
     return List.of(Component.translatable(
         "modular_machinery_reborn.jei.ingredient.chunkload",
-        requirement.radius()
+        requirement.requirement().radius()
     ));
   }
 }

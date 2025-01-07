@@ -1,8 +1,11 @@
 package es.degrassi.mmreborn.common.crafting.requirement.jei;
 
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
+import es.degrassi.mmreborn.api.crafting.requirement.WeatherType;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementWeather;
 import es.degrassi.mmreborn.common.integration.jei.category.MMRRecipeCategory;
+import es.degrassi.mmreborn.common.machine.component.WeatherComponent;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.recipe.IFocusGroup;
@@ -12,8 +15,8 @@ import net.minecraft.network.chat.Component;
 import java.util.List;
 import java.util.Locale;
 
-public class JeiWeatherComponent extends JeiComponent<RequirementWeather.WeatherType, RequirementWeather> {
-  public JeiWeatherComponent(RequirementWeather requirement) {
+public class JeiWeatherComponent extends JeiComponent<WeatherType, RecipeRequirement<WeatherComponent, RequirementWeather>> {
+  public JeiWeatherComponent(RecipeRequirement<WeatherComponent, RequirementWeather> requirement) {
     super(requirement, 0, 0);
   }
 
@@ -28,8 +31,8 @@ public class JeiWeatherComponent extends JeiComponent<RequirementWeather.Weather
   }
 
   @Override
-  public List<RequirementWeather.WeatherType> ingredients() {
-    return List.of(requirement.weather());
+  public List<WeatherType> ingredients() {
+    return List.of(requirement.requirement().weather());
   }
 
   @Override
@@ -40,7 +43,7 @@ public class JeiWeatherComponent extends JeiComponent<RequirementWeather.Weather
           tooltip.clear();
           tooltip.add(Component.translatable(
               "modular_machinery_reborn.jei.ingredient.weather",
-              requirement.weather().name().toLowerCase(Locale.ROOT)
+              requirement.requirement().weather().name().toLowerCase(Locale.ROOT)
           ));
         });
   }

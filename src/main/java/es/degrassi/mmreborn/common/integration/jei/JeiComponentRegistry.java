@@ -1,9 +1,11 @@
 package es.degrassi.mmreborn.common.integration.jei;
 
+import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.api.integration.jei.JeiComponentFactory;
 import es.degrassi.mmreborn.api.integration.jei.RegisterJeiComponentEvent;
-import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
+import es.degrassi.mmreborn.common.machine.MachineComponent;
 import net.neoforged.fml.ModLoader;
 
 import java.util.Map;
@@ -22,7 +24,7 @@ public class JeiComponentRegistry {
   }
 
   @SuppressWarnings("unchecked")
-  public static <C extends ComponentRequirement<T, C>, T> JeiComponentFactory<C, T> getJeiComponent(RequirementType<C> requirement) {
-    return (JeiComponentFactory<C, T>) components.get(requirement);
+  public static <R extends RecipeRequirement<C, T>, C extends MachineComponent<?>, T extends IRequirement<C>, X> JeiComponentFactory<R, X> getJeiComponent(RequirementType<T> requirement) {
+    return (JeiComponentFactory<R, X>) components.get(requirement);
   }
 }

@@ -4,12 +4,13 @@ import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
-import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
-import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
+import es.degrassi.mmreborn.api.crafting.ICraftingContext;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import lombok.Getter;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -77,13 +78,13 @@ public class RecipeModifier {
     return chance;
   }
 
-  public static float applyModifiers(RecipeCraftingContext context, ComponentRequirement<?, ?> in, float value, boolean isChance) {
-    RequirementType<?> target = in.getRequirementType();
-    return applyModifiers(context.getModifiers(target), target, in.getActionType(), value, isChance);
+  public static float applyModifiers(ICraftingContext context, RecipeRequirement<?, ?> in, float value, boolean isChance) {
+    RequirementType<?> target = in.getType();
+    return applyModifiers(context.getModifiers(target), target, in.requirement().getMode(), value, isChance);
   }
 
-  public static float applyModifiers(Collection<RecipeModifier> modifiers, ComponentRequirement<?, ?> in, float value, boolean isChance) {
-    return applyModifiers(modifiers, in.getRequirementType(), in.getActionType(), value, isChance);
+  public static float applyModifiers(Collection<RecipeModifier> modifiers, RecipeRequirement<?, ?> in, float value, boolean isChance) {
+    return applyModifiers(modifiers, in.getType(), in.requirement().getMode(), value, isChance);
   }
 
   public static float applyModifiers(Collection<RecipeModifier> modifiers, RequirementType<?> target, IOType ioType, float value, boolean isChance) {
@@ -118,6 +119,19 @@ public class RecipeModifier {
     json.addProperty("operation", operation());
     json.addProperty("chance", chance);
     return json;
+  }
+
+  public CompoundTag asTag() {
+    CompoundTag tag = new CompoundTag();
+    ResourceLocation key = ModularMachineryReborn.getRequirementRegistrar().getKey(target);
+    if (key == null)
+      key = ModularMachineryReborn.rl("duration");
+    tag.putString("target", key.toString());
+    tag.putString("mode", ioTarget.getSerializedName());
+    tag.putFloat("modifier", modifier);
+    tag.putString("operation", operation());
+    tag.putBoolean("chance", chance);
+    return tag;
   }
 
   private String getTargetValue() {

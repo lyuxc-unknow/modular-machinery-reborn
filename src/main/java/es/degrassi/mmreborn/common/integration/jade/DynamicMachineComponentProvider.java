@@ -35,8 +35,8 @@ public class DynamicMachineComponentProvider implements IBlockComponentProvider 
         return;
       }
       if (tag.contains("status", Tag.TAG_COMPOUND)) {
-        CraftingStatus status = CraftingStatus.deserialize(tag.getCompound("status"));
-        MutableComponent message = Component.translatable(status.getUnlocMessage());
+        CraftingStatus status = CraftingStatus.deserialize(tag.getCompound("status"), accessor.getLevel().registryAccess());
+        MutableComponent message = status.getUnlocMessage().copy();
         switch (status.getStatus()) {
           case CRAFTING -> message.withStyle(ChatFormatting.GREEN);
           case NO_RECIPE -> message.withStyle(ChatFormatting.GOLD);

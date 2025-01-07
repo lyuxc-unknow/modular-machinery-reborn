@@ -85,11 +85,11 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
         )
     );
 
-    recipe.getCraftingRequirements()
+    recipe.getRequirements()
         .stream()
-        .filter(component -> JeiComponentRegistry.hasJeiComponent(component.getRequirementType()))
-        .map(component -> component.getRequirementType().castRequirement(component))
-        .map(component -> JeiComponentRegistry.getJeiComponent(component.getRequirementType()).create(component))
+        .filter(component -> JeiComponentRegistry.hasJeiComponent(component.getType()))
+        .map(requirement -> requirement.castRequirement(requirement))
+        .map(component -> JeiComponentRegistry.getJeiComponent(component.getType()).create(component))
         .forEach(requirement -> requirement.setRecipe(this, builder, recipe, focuses));
   }
 

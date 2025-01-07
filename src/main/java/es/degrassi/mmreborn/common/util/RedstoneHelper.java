@@ -8,7 +8,6 @@ import es.degrassi.mmreborn.common.entity.base.TileInventory;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
 
@@ -17,11 +16,11 @@ public class RedstoneHelper {
     if (sync == null) return 0;
     return switch (sync) {
       case MachineControllerEntity entity -> {
-        if (entity.getCraftingStatus().isCrafting()) yield 15;
-        if (!entity.getCraftingStatus().isMissingStructure()) yield 1;
+        if (entity.getStatus().isCrafting()) yield 15;
+        if (!entity.getStatus().isMissingStructure()) yield 1;
         yield 0;
       }
-      case TileInventory entity -> ItemHandlerHelper.calcRedstoneFromInventory(entity.getInventory());
+      case TileInventory entity -> entity.getInventory().calcRedstoneFromInventory();
       case FluidTankEntity ft -> {
         FluidTank tank = ft.getTank();
         float cap = tank.getCapacity();
@@ -43,7 +42,7 @@ public class RedstoneHelper {
   }
 
   public static int getReceivingRedstone(@Nullable BlockEntity sync) {
-    if (sync == null) return 0;
+    if (sync == null || sync.getLevel() == null) return 0;
     return switch (sync) {
       case MachineControllerEntity entity -> entity.getLevel().getBestNeighborSignal(entity.getBlockPos());
       case TileInventory entity -> entity.getLevel().getBestNeighborSignal(entity.getBlockPos());

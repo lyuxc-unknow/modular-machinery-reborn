@@ -1,9 +1,10 @@
 package es.degrassi.mmreborn.common.entity.base;
 
+import es.degrassi.mmreborn.api.controller.ControllerAccessible;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
 import es.degrassi.mmreborn.common.entity.FluidInputHatchEntity;
 import es.degrassi.mmreborn.common.machine.IOType;
-import es.degrassi.mmreborn.common.machine.component.FluidHatch;
+import es.degrassi.mmreborn.common.machine.component.FluidComponent;
 import es.degrassi.mmreborn.common.util.HybridTank;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,26 +16,27 @@ import net.minecraft.world.level.block.state.BlockState;
 
 @Getter
 @Setter
-public abstract class FluidTankEntity extends ColorableMachineComponentEntity implements MachineComponentEntity {
+public abstract class FluidTankEntity extends ColorableMachineComponentEntity implements MachineComponentEntity<FluidComponent>, ControllerAccessible {
   private HybridTank tank;
   private IOType ioType;
   private FluidHatchSize hatchSize;
+  private BlockPos controllerPos;
 
   public FluidTankEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, FluidHatchSize size, IOType ioType) {
     super(type, pos, state);
     this.tank = size.buildTank(this, ioType == IOType.INPUT, ioType == IOType.OUTPUT);
     this.hatchSize = size;
     this.ioType = ioType;
+
+    this.tank.setListener(() -> {
+      if (getController() != null)
+        getController().getProcessor().setMachineInventoryChanged();
+    });
   }
 
   @Override
-  public FluidHatch provideComponent() {
-    return new FluidHatch(ioType) {
-      @Override
-      public HybridTank getContainerProvider() {
-        return getTank();
-      }
-    };
+  public FluidComponent provideComponent() {
+    return new FluidComponent(this.getTank(), ioType);
   }
 
   @Override
@@ -46,6 +48,14 @@ public abstract class FluidTankEntity extends ColorableMachineComponentEntity im
     CompoundTag tankTag = compound.getCompound("tank");
     newTank.readFromNBT(provider, tankTag);
     this.tank = newTank;
+    if (compound.contains("controllerPos")) {
+      controllerPos = BlockPos.of(compound.getLong("controllerPos"));
+    }
+
+    this.tank.setListener(() -> {
+      if (getController() != null)
+        getController().getProcessor().setMachineInventoryChanged();
+    });
   }
 
   @Override
@@ -59,5 +69,12 @@ public abstract class FluidTankEntity extends ColorableMachineComponentEntity im
     CompoundTag tankTag = new CompoundTag();
     this.tank.writeToNBT(provider, tankTag);
     compound.put("tank", tankTag);
+    if (controllerPos != null)
+      compound.putLong("controllerPos", controllerPos.asLong());
+  }
+
+  @Override
+  public void setControllerPos(BlockPos pos) {
+    this.controllerPos = pos;
   }
 }

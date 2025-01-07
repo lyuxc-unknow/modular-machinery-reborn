@@ -10,7 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
 @MethodsReturnNonnullByDefault
-public class FluidInputHatchEntity extends FluidTankEntity implements MachineComponentEntity {
+public class FluidInputHatchEntity extends FluidTankEntity {
 
   public FluidInputHatchEntity(BlockPos pos, BlockState state) {
     super(EntityRegistration.FLUID_INPUT_HATCH.get(), pos, state, FluidHatchSize.TINY, IOType.INPUT);

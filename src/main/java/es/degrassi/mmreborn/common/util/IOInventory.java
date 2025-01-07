@@ -1,14 +1,6 @@
 package es.degrassi.mmreborn.common.util;
 
 import es.degrassi.mmreborn.common.entity.base.BlockEntitySynchronized;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.Nonnull;
-
-import es.degrassi.mmreborn.common.network.server.SMachineUpdatePacket;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateItemComponentPacket;
 import lombok.Getter;
 import net.minecraft.core.Direction;
@@ -23,29 +15,32 @@ import net.minecraft.world.level.ChunkPos;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class IOInventory implements IItemHandlerModifiable {
 
   public boolean allowAnySlots = false;
-  @Getter
-  private final BlockEntitySynchronized owner;
 
-  private Map<Integer, Integer> slotLimits = new HashMap<>(); //Value not present means default, aka 64.
-  private Map<Integer, SlotStackHolder> inventory = new HashMap<>();
+  private final Map<Integer, Integer> slotLimits = new HashMap<>(); //Value not present means default, aka 64.
+  private final Map<Integer, SlotStackHolder> inventory = new HashMap<>();
   private int[] inSlots = new int[0], outSlots = new int[0], miscSlots = new int[0];
 
-  private InventoryUpdateListener listener = null;
+  private IOInventoryChangedListener listener = null;
   public List<Direction> accessibleSides = new ArrayList<>();
 
-  private IOInventory(BlockEntitySynchronized owner) {
-    this.owner = owner;
+  private IOInventory() {
   }
 
-  public IOInventory(BlockEntitySynchronized owner, int[] inSlots, int[] outSlots) {
-    this(owner, inSlots, outSlots, Direction.values());
+  public IOInventory(int[] inSlots, int[] outSlots) {
+    this(inSlots, outSlots, Direction.values());
   }
 
-  public IOInventory(BlockEntitySynchronized owner, int[] inSlots, int[] outSlots, Direction... accessibleFrom) {
-    this.owner = owner;
+  public IOInventory(int[] inSlots, int[] outSlots, Direction... accessibleFrom) {
     this.inSlots = inSlots;
     this.outSlots = outSlots;
     for (Integer slot : inSlots) {
@@ -72,7 +67,7 @@ public class IOInventory implements IItemHandlerModifiable {
     return this;
   }
 
-  public IOInventory setListener(InventoryUpdateListener listener) {
+  public IOInventory setListener(IOInventoryChangedListener listener) {
     this.listener = listener;
     return this;
   }
@@ -85,12 +80,9 @@ public class IOInventory implements IItemHandlerModifiable {
   public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
     if(this.inventory.containsKey(slot)) {
       this.inventory.get(slot).itemStack = stack;
-      getOwner().markForUpdate();
       if(listener != null) {
-        listener.onChange();
+        listener.onChange(slot, stack);
       }
-      if (getOwner().getLevel() instanceof ServerLevel l)
-        PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getOwner().getBlockPos()), new SUpdateItemComponentPacket(slot, stack, getOwner().getBlockPos()));
     }
   }
 
@@ -138,12 +130,9 @@ public class IOInventory implements IItemHandlerModifiable {
       int movable = Math.min(max - existing.getCount(), stack.getCount());
       if (!simulate) {
         holder.itemStack.grow(movable);
-        getOwner().markForUpdate();
         if(listener != null) {
-          listener.onChange();
+          listener.onChange(slot, holder.itemStack);
         }
-        if (getOwner().getLevel() instanceof ServerLevel l)
-          PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getOwner().getBlockPos()), new SUpdateItemComponentPacket(slot, holder.itemStack, getOwner().getBlockPos()));
       }
       if (movable >= stack.getCount()) {
         return ItemStack.EMPTY;
@@ -157,12 +146,9 @@ public class IOInventory implements IItemHandlerModifiable {
       if (max >= stack.getCount()) {
         if (!simulate) {
           holder.itemStack = stack.copy();
-          getOwner().markForUpdate();
           if(listener != null) {
-            listener.onChange();
+            listener.onChange(slot, holder.itemStack);
           }
-          if (getOwner().getLevel() instanceof ServerLevel l)
-            PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getOwner().getBlockPos()), new SUpdateItemComponentPacket(slot, holder.itemStack, getOwner().getBlockPos()));
         }
         return ItemStack.EMPTY;
       } else {
@@ -170,12 +156,9 @@ public class IOInventory implements IItemHandlerModifiable {
         copy.setCount(max);
         if (!simulate) {
           holder.itemStack = copy;
-          getOwner().markForUpdate();
           if(listener != null) {
-            listener.onChange();
+            listener.onChange(slot, holder.itemStack);
           }
-          if (getOwner().getLevel() instanceof ServerLevel l)
-            PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getOwner().getBlockPos()), new SUpdateItemComponentPacket(slot, holder.itemStack, getOwner().getBlockPos()));
         }
         copy = stack.copy();
         copy.shrink(max);
@@ -199,10 +182,9 @@ public class IOInventory implements IItemHandlerModifiable {
     if(!simulate) {
       holder.itemStack = copyWithSize(holder.itemStack, holder.itemStack.getCount() - extract.getCount());
       if(listener != null) {
-        listener.onChange();
+        listener.onChange(slot, holder.itemStack);
       }
     }
-    getOwner().markForUpdate();
     return extract;
   }
 
@@ -273,7 +255,9 @@ public class IOInventory implements IItemHandlerModifiable {
     }
 
     if(listener != null) {
-      listener.onChange();
+      for (int i = 0; i < inventory.size(); i++) {
+        listener.onChange(i, getStackInSlot(i));
+      }
     }
   }
 
@@ -284,21 +268,10 @@ public class IOInventory implements IItemHandlerModifiable {
     return ItemStack.isSameItem(stack, other) && ItemStack.isSameItemSameComponents(stack, other) && stack.getCount() + other.getCount() <= stack.getMaxStackSize();
   }
 
-  public static IOInventory deserialize(BlockEntitySynchronized owner, CompoundTag tag, HolderLookup.Provider pRegistries) {
-    IOInventory inv = new IOInventory(owner);
+  public static IOInventory deserialize(CompoundTag tag, HolderLookup.Provider pRegistries) {
+    IOInventory inv = new IOInventory();
     inv.readNBT(tag, pRegistries);
     return inv;
-  }
-
-  public boolean hasCapability(Direction facing) {
-    return facing == null || accessibleSides.contains(facing);
-  }
-
-  public IItemHandlerModifiable getCapability(Direction facing) {
-    if(hasCapability(facing)) {
-      return this;
-    }
-    return null;
   }
 
   public int calcRedstoneFromInventory() {
@@ -317,7 +290,22 @@ public class IOInventory implements IItemHandlerModifiable {
   }
 
   public static IOInventory mergeBuild(BlockEntitySynchronized tile, IOInventory... inventories) {
-    IOInventory merged = new IOInventory(tile);
+    IOInventory merged = new IOInventory();
+    int slotOffset = 0;
+    for (IOInventory inventory : inventories) {
+      for (Integer key : inventory.inventory.keySet()) {
+        merged.inventory.put(key + slotOffset, inventory.inventory.get(key));
+      }
+      for (Integer key : inventory.slotLimits.keySet()) {
+        merged.slotLimits.put(key + slotOffset, inventory.slotLimits.get(key));
+      }
+      slotOffset += inventory.inventory.size();
+    }
+    return merged;
+  }
+
+  public static IOInventory mergeBuild(IOInventory... inventories) {
+    IOInventory merged = new IOInventory();
     int slotOffset = 0;
     for (IOInventory inventory : inventories) {
       for (Integer key : inventory.inventory.keySet()) {
@@ -402,4 +390,10 @@ public class IOInventory implements IItemHandlerModifiable {
     }
   }
 
+  public interface IOInventoryChangedListener extends InventoryUpdateListener {
+    void onChange(int slot, ItemStack stack);
+
+    @Override
+    default void onChange() {}
+  }
 }
