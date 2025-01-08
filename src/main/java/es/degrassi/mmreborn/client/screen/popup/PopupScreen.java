@@ -2,6 +2,7 @@ package es.degrassi.mmreborn.client.screen.popup;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -58,7 +59,14 @@ public abstract class PopupScreen<T extends AbstractContainerMenu> extends BaseP
 
   @Override
   public boolean mouseClicked(double mouseX, double mouseY, int button) {
-    if (super.mouseClicked(mouseX, mouseY, button))
+    boolean onRenderable = false;
+    for (GuiEventListener renderable : this.children()) {
+      if (renderable.mouseClicked(mouseX, mouseY, button)) {
+        onRenderable = true;
+        break;
+      }
+    }
+    if (onRenderable || super.mouseClicked(mouseX, mouseY, button))
       return true;
     if (isMouseOver(mouseX, mouseY) && mouseY < this.y + 20) {
       this.dragging = true;
@@ -71,8 +79,15 @@ public abstract class PopupScreen<T extends AbstractContainerMenu> extends BaseP
 
   @Override
   public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    boolean onRenderable = false;
+    for (GuiEventListener renderable : this.children()) {
+      if (renderable.mouseReleased(mouseX, mouseY, button)) {
+        onRenderable = true;
+        break;
+      }
+    }
     this.dragging = false;
-    return super.mouseReleased(mouseX, mouseY, button);
+    return onRenderable || super.mouseReleased(mouseX, mouseY, button);
   }
 
   @Override
@@ -86,6 +101,13 @@ public abstract class PopupScreen<T extends AbstractContainerMenu> extends BaseP
 
   @Override
   public boolean isMouseOver(double mouseX, double mouseY) {
-    return this.parent.getPopupUnderMouse(mouseX, mouseY) == this;
+    boolean onRenderable = false;
+    for (GuiEventListener renderable : this.children()) {
+      if (renderable.isMouseOver(mouseX, mouseY)) {
+        onRenderable = true;
+        break;
+      }
+    }
+    return onRenderable || this.parent.getPopupUnderMouse(mouseX, mouseY) == this;
   }
 }

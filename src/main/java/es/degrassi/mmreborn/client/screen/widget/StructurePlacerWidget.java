@@ -76,12 +76,13 @@ public class StructurePlacerWidget extends AbstractWidget {
                 () -> PacketDistributor.sendToServer(new CPlaceStructurePacket(machine, controllerPos, true))
             )
                 .cancelCallback(() -> onClick(mouseX, mouseY, button))
-                .text(Component.translatable("mmr.gui.structure.place.modifier.true"), Component.empty(), Component.empty())
+                .text(Component.translatable("mmr.gui.structure.place.modifier.true"))
         )
     )
         .confirmText(Component.translatable("mmr.gui.structure.place.confirm.modifier"))
         .cancelText(Component.translatable("mmr.gui.structure.place.cancel.modifier"))
-        .text(Component.translatable("mmr.gui.structure.place.modifier"), Component.empty(), Component.empty())
+        .text(Component.translatable("mmr.gui.structure.place.modifier"))
+        .addCloseButton()
         .cancelCallback(() -> parentScreen.openPopup(
                 new ConfirmationPopup<>(
                     parentScreen,
@@ -90,7 +91,7 @@ public class StructurePlacerWidget extends AbstractWidget {
                     () -> PacketDistributor.sendToServer(new CPlaceStructurePacket(machine, controllerPos, false))
                 )
                     .cancelCallback(() -> onClick(mouseX, mouseY, button))
-                    .text(Component.translatable("mmr.gui.structure.place.modifier.false"), Component.empty(), Component.empty())
+                    .text(Component.translatable("mmr.gui.structure.place.modifier.false"))
             )
         ), "popup");
   }
