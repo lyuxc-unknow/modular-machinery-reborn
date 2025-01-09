@@ -8,15 +8,20 @@ import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
 import es.degrassi.mmreborn.common.data.Config;
+import es.degrassi.mmreborn.common.manager.crafting.MachineStatus;
 import es.degrassi.mmreborn.common.util.MachineModelLocation;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.level.block.SoundType;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Getter
@@ -28,8 +33,9 @@ public class DynamicMachine {
       Structure.CODEC.fieldOf("structure").forGetter(DynamicMachine::getPattern),
       DefaultCodecs.HEX.optionalFieldOf("color", Config.machineColor).forGetter(DynamicMachine::getMachineColor),
       MachineModelLocation.CODEC.optionalFieldOf("controller", MachineModelLocation.DEFAULT).forGetter(DynamicMachine::getControllerModel),
-      ModifierReplacement.CODEC.listOf().optionalFieldOf("modifiers", new LinkedList<>()).forGetter(DynamicMachine::getModifiers)
-  ).apply(instance, (registryName, localizedName, pattern, color, controllerModel, modifiers) -> {
+      ModifierReplacement.CODEC.listOf().optionalFieldOf("modifiers", new LinkedList<>()).forGetter(DynamicMachine::getModifiers),
+      NamedCodec.unboundedMap(MachineStatus.CODEC, Sounds.CODEC, "Sounds by status").optionalFieldOf("sound", new HashMap<>()).forGetter(DynamicMachine::getSounds)
+  ).apply(instance, (registryName, localizedName, pattern, color, controllerModel, modifiers, sounds) -> {
     DynamicMachine machine = new DynamicMachine(registryName);
     pattern.getPattern().addModifiers(modifiers);
     machine.setPattern(pattern);
@@ -37,6 +43,7 @@ public class DynamicMachine {
     machine.setDefinedColor(color);
     machine.setControllerModel(controllerModel);
     machine.setModifiers(modifiers);
+    machine.setSounds(sounds);
     return machine;
   }), "Dynamic Machine");
 
@@ -49,6 +56,7 @@ public class DynamicMachine {
   private int definedColor = Config.machineColor;
   private MachineModelLocation controllerModel;
   private List<ModifierReplacement> modifiers;
+  private Map<MachineStatus, Sounds> sounds;
 
   public DynamicMachine(@Nonnull ResourceLocation registryName) {
     this.registryName = registryName;
@@ -61,6 +69,14 @@ public class DynamicMachine {
   public Component getName() {
     String localizationKey = registryName.getNamespace() + "." + registryName.getPath();
     return Component.translatableWithFallback(localizationKey, localizedName.orElse(localizationKey));
+  }
+
+  public SoundEvent getAmbientSound(MachineStatus status) {
+    return Optional.ofNullable(sounds.get(status)).orElse(Sounds.DEFAULT).ambientSound();
+  }
+
+  public SoundType getInteractionSound(MachineStatus status) {
+    return Optional.ofNullable(this.sounds.get(status)).orElse(Sounds.DEFAULT).interaction();
   }
 
   public int getMachineColor() {

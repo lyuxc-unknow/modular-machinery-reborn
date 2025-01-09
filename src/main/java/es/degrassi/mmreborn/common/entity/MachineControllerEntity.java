@@ -18,6 +18,7 @@ import es.degrassi.mmreborn.common.entity.base.BlockEntitySynchronized;
 import es.degrassi.mmreborn.common.entity.base.ColorableMachineEntity;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
+import es.degrassi.mmreborn.common.machine.Sounds;
 import es.degrassi.mmreborn.common.manager.ComponentManager;
 import es.degrassi.mmreborn.common.manager.crafting.MachineProcessor;
 import es.degrassi.mmreborn.common.manager.crafting.MachineStatus;
@@ -26,6 +27,7 @@ import es.degrassi.mmreborn.common.network.server.SSyncPauseStatePacket;
 import es.degrassi.mmreborn.common.network.server.SUpdateCraftingStatusPacket;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.util.RedstoneHelper;
+import es.degrassi.mmreborn.common.util.SoundManager;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -37,6 +39,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -67,6 +70,8 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
   private final MachineProcessor processor;
 
   private int lastFocus;
+
+  private SoundManager soundManager;
 
   public MachineControllerEntity(BlockPos pos, BlockState state) {
     super(EntityRegistration.CONTROLLER.get(), pos, state);
@@ -131,6 +136,21 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
   }
 
   @Override
+  public void doClientTick() {
+    if(soundManager == null)
+      soundManager = new SoundManager(getBlockPos());
+    if(!getFoundMachine().getAmbientSound(status).getLocation().equals(soundManager.getSoundID())) {
+      if(getFoundMachine().getAmbientSound(status) == Sounds.DEFAULT.ambientSound())
+        soundManager.setSound(null);
+      else
+        soundManager.setSound(getFoundMachine().getAmbientSound(status));
+    }
+
+    if (!soundManager.isPlaying())
+      soundManager.play();
+  }
+
+  @Override
   public void doRestrictedTick() {
     pause();
     checkStructure();
@@ -150,6 +170,13 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
     } catch (ComponentNotFoundException e) {
       ModularMachineryReborn.LOGGER.error(e.getMessage());
     }
+  }
+
+  @Override
+  public void setRemoved() {
+    if(this.level != null && this.level.isClientSide() && this.soundManager != null)
+      this.soundManager.stop();
+    super.setRemoved();
   }
 
   public void setMachine(ResourceLocation machine) {
@@ -280,5 +307,9 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
     container.accept(NbtSyncable.create(() -> craftingStatus.serializeNBT(getLevel().registryAccess()), s -> craftingStatus = CraftingStatus.deserialize(s, getLevel().registryAccess())));
     container.accept(StringSyncable.create(() -> this.status.toString(), status -> this.status = MachineStatus.value(status)));
     container.accept(StringSyncable.create(() -> Component.Serializer.toJson(this.errorMessage, registries), errorMessage -> this.errorMessage = Component.Serializer.fromJson(errorMessage, registries)));
+  }
+
+  public SoundType getInteractionSound() {
+    return getFoundMachine().getInteractionSound(status);
   }
 }

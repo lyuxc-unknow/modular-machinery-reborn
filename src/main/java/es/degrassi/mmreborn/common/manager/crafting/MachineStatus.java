@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.manager.crafting;
 
+import es.degrassi.mmreborn.api.codec.NamedCodec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +29,8 @@ public enum MachineStatus implements StringRepresentable {
    * The machine is paused.
    */
   PAUSED;
+
+  public static final NamedCodec<MachineStatus> CODEC = NamedCodec.enumCodec(MachineStatus.class);
 
   public boolean isMissingStructure() {
     return this == MISSING_STRUCTURE;

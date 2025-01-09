@@ -33,5 +33,19 @@
       ],
       "position": [0, 1, 0] // x, y, z
     }
-  ]
+  ],
+  "sound": { // see kubejs example to full info, the one below is one of the available types
+    "RUNNING": {
+      "ambient": "mekanism:tile.machine.laser",
+      "interaction": {
+        "volume": 1,
+        "pitch": 1,
+        "break": "mekanism:tile.machine.laser",
+        "step": "mekanism:tile.machine.laser",
+        "place": "mekanism:tile.machine.laser",
+        "hit": "mekanism:tile.machine.laser",
+        "fall": "mekanism:tile.machine.laser"
+      }
+    }
+  }
 }

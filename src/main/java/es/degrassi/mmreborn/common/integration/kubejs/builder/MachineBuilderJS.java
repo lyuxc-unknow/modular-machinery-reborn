@@ -10,13 +10,17 @@ import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
+import es.degrassi.mmreborn.common.machine.Sounds;
+import es.degrassi.mmreborn.common.manager.crafting.MachineStatus;
 import es.degrassi.mmreborn.common.util.MachineModelLocation;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -29,10 +33,12 @@ public class MachineBuilderJS {
   private Structure structure;
   private MachineModelLocation controllerModel;
   private final List<ModifierReplacement> modifiers;
+  private final Map<MachineStatus, Sounds> sounds;
 
   public MachineBuilderJS(@NotNull ResourceLocation id) {
     this.id = id;
     modifiers = new LinkedList<>();
+    sounds = new EnumMap<>(MachineStatus.class);
   }
 
   public MachineBuilderJS name(String name) {
@@ -65,6 +71,11 @@ public class MachineBuilderJS {
     return this;
   }
 
+  public MachineBuilderJS sound(MachineStatus status, Sounds sounds) {
+    this.sounds.put(status, sounds);
+    return this;
+  }
+
   public DynamicMachine build() {
     if (structure == null)
       structure = Structure.EMPTY;
@@ -78,6 +89,7 @@ public class MachineBuilderJS {
       machine.setDefinedColor(DefaultCodecs.HEX.decode(JsonOps.INSTANCE, new JsonPrimitive(color)).result().orElse(new Pair<>(Config.toInt(MMRConfig.get().general_casing_color.get(), 0xFF4900), null)).getFirst());
 
     machine.setModifiers(modifiers);
+    machine.setSounds(sounds);
 
     return machine;
   }

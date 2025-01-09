@@ -6,7 +6,6 @@ import com.mojang.serialization.DataResult;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.block.BlockController;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
-import es.degrassi.mmreborn.common.registration.BlockRegistration;
 import lombok.Getter;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.Direction;
@@ -47,7 +46,7 @@ public class PartialBlockState implements Predicate<BlockInWorld> {
     }
   };
 
-  public static final PartialBlockState MACHINE = new PartialBlockState(BlockRegistration.CONTROLLER.get().defaultBlockState(), Collections.emptyList(), null) {
+  public static final PartialBlockState MACHINE = new PartialBlockState(Blocks.AIR.defaultBlockState(), Collections.emptyList(), null) {
     @Override
     public boolean test(BlockInWorld cachedBlockInfo) {
       return cachedBlockInfo.getState().getBlock() instanceof BlockController || cachedBlockInfo.getEntity() instanceof MachineControllerEntity;
