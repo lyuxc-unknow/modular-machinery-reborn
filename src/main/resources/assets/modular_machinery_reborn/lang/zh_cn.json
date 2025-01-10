@@ -40,6 +40,7 @@
   "craftcheck.failure.item.input": "缺少物品输入!",
   "craftcheck.failure.item.output.space": "没有足够的库存空间用于物品输出！",
   "craftcheck.failure.fluid.input": "缺少液体输入！",
+  "craftcheck.failure.fluid.output.fluid": "与容器中已有流体不匹配，需求: %s 但找到: %s!",
   "craftcheck.failure.fluid.output.space": "没有足够的库存空间用于流体输出！",
   "craftcheck.failure.energy.input": "缺少能量输入！",
   "craftcheck.failure.energy.output": "能源仓已满！",
@@ -314,7 +315,7 @@
   "modular_machinery_reborn.controller.shift": "[SHIFT]",
   "modular_machinery_reborn.controller.shift.blocks": "显示需求的方块",
   "modular_machinery_reborn.controller.control": "[CTRL]",
-  "modular_machinery_reborn.controller.control.blocks": "显示机器调节器",
+  "modular_machinery_reborn.controller.control.modifier": "显示调节器方块",
   "modular_machinery_reborn.controller.required": "需要: ",
   "modular_machinery_reborn.controller.required.item": "%s %s",
   "modular_machinery_reborn.controller.required.tag": "%s",
@@ -344,5 +345,16 @@
   "mmr.recipe.modifier.loot_table.add": " (为配方增加 %s 战利品幸运值)",
   "mmr.recipe.modifier.loot_table.multiply": " (为配方提供 %s 倍战利品幸运值)",
   "mmr.recipe.modifier.experience.add": " (为配方增加 %s 经验 %s, 是否影响概率: %s)",
-  "mmr.recipe.modifier.experience.multiply": " (为配方提供%s 倍经验 %s, 是否影响概率: %s)"
+  "mmr.recipe.modifier.experience.multiply": " (为配方提供%s 倍经验 %s, 是否影响概率: %s)",
+
+  "mmr.gui.structure.break": "你确定要破坏当前的结构吗？",
+
+  "mmr.gui.structure.place.modifier": "调节器是否与结构一同放置？",
+  "mmr.gui.structure.place.modifier.true": "你确定放置结构和调节器吗？",
+  "mmr.gui.structure.place.modifier.false": "你确定仅放置结构吗？",
+  "mmr.gui.structure.place.confirm.modifier": "与结构一同放置",
+  "mmr.gui.structure.place.cancel.modifier": "仅放置结构",
+
+  "mmr.gui.popup.confirm": "确认",
+  "mmr.gui.popup.cancel": "取消"
 }
