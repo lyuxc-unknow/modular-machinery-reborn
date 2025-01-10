@@ -44,4 +44,10 @@ public abstract class MachineComponent<T> {
   public String toString() {
     return asTag().toString();
   }
+
+  public abstract <C extends MachineComponent<?>> C merge(C c);
+
+  public <C extends MachineComponent<?>> boolean canMerge(C c) {
+    return c.getIOType().equals(getIOType());
+  }
 }

@@ -26,4 +26,10 @@ public class BiomeComponent extends MachineComponent<List<ResourceLocation>> {
   public List<ResourceLocation> getContainerProvider() {
     return List.of(entity.getLevel().getBiome(entity.getBlockPos()).unwrapKey().get().location());
   }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public <C extends MachineComponent<?>> C merge(C c) {
+    return (C) this;
+  }
 }

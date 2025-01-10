@@ -22,4 +22,10 @@ public class WeatherComponent extends MachineComponent<WeatherType> {
   public @Nullable WeatherType getContainerProvider() {
     return null;
   }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public <C extends MachineComponent<?>> C merge(C c) {
+    return (C) this;
+  }
 }

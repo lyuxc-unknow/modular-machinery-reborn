@@ -24,4 +24,10 @@ public class DimensionComponent extends MachineComponent<ResourceLocation> {
   public ResourceLocation getContainerProvider() {
     return entity.getLevel().dimension().location();
   }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public <C extends MachineComponent<?>> C merge(C c) {
+    return (C) this;
+  }
 }

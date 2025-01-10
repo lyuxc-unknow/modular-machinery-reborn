@@ -24,4 +24,14 @@ public class ItemComponent extends MachineComponent<IOInventory> {
   public IOInventory getContainerProvider() {
     return handler;
   }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public <C extends MachineComponent<?>> C merge(C c) {
+    ItemComponent comp = (ItemComponent) c;
+    return (C) new ItemComponent(
+        IOInventory.mergeBuild(handler, comp.handler),
+        getIOType()
+    );
+  }
 }

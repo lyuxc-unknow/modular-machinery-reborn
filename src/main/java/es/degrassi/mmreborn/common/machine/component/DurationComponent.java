@@ -20,4 +20,10 @@ public class DurationComponent extends MachineComponent<Void> {
   public @Nullable Void getContainerProvider() {
     return null;
   }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public <C extends MachineComponent<?>> C merge(C c) {
+    return (C) this;
+  }
 }

@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 @ParametersAreNonnullByDefault
 public class ComponentManager implements INBTSerializable<CompoundTag> {
@@ -143,13 +144,22 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
   @SuppressWarnings("unchecked")
   public <C extends MachineComponent<?>> Optional<C> getComponent(IRequirement<C> requirement, ICraftingContext context) {
     if (foundComponentsValues.isEmpty()) updateComponents();
-    return Optional.ofNullable(foundComponentsValues.get(requirement.getComponentType()))
+    AtomicReference<C> merged = new AtomicReference<>(null);
+    Optional.ofNullable(foundComponentsValues.get(requirement.getComponentType()))
         .map(m -> m.get(requirement.getMode()))
         .stream()
         .flatMap(List::stream)
         .map(m -> (C) m)
         .filter(m -> requirement.test(m, context) || requirement.isComponentValid(m, context))
-        .findFirst();
+        .forEachOrdered(c -> {
+          if (merged.get() == null)
+            merged.set(c);
+          else if (c.getIOType().isInput()) {
+            if (merged.get().canMerge(c))
+              merged.set(merged.get().merge(c));
+          }
+        });
+    return Optional.ofNullable(merged.get());
   }
 
   @Override

@@ -22,4 +22,10 @@ public class TimeComponent extends MachineComponent<IntRange> {
   public @Nullable IntRange getContainerProvider() {
     return null;
   }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public <C extends MachineComponent<?>> C merge(C c) {
+    return (C) this;
+  }
 }

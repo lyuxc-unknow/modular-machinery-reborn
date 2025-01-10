@@ -24,4 +24,10 @@ public class ChunkloadComponent extends MachineComponent<Chunkloader> {
   public Chunkloader getContainerProvider() {
     return entity.getChunkloader();
   }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public <C extends MachineComponent<?>> C merge(C c) {
+    return (C) this;
+  }
 }

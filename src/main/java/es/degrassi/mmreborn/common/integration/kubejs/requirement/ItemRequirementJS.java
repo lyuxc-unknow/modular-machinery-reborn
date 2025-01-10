@@ -40,6 +40,8 @@ public interface ItemRequirementJS extends RecipeJSBuilder {
   default MachineRecipeBuilderJS produceItem(SizedIngredient stack, float chance, int x, int y) {
     if(stack.getItems().length == 0)
       return this.error("Invalid empty item in item output requirement");
+    if (stack.getItems().length > 1)
+      return this.error("Item Requirement cant use tags or multiple outputs");
     if (chance < 0)
       return this.error("Chance can not bellow 0");
     if (chance > 1)
