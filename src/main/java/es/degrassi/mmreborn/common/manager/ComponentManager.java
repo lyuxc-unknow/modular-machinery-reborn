@@ -52,7 +52,9 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
   }
 
   public final void updateComponents() {
-    if (controller.getFoundMachine() == DynamicMachine.DUMMY || controller.hasActiveRecipe()) return;
+    if (controller.getFoundMachine() == DynamicMachine.DUMMY) return;
+    if (controller.hasActiveRecipe()) return;
+    if (controller.getLevel() == null) return;
     if (controller.getLevel().getGameTime() % 20 == 0) {
       reset();
       foundComponents.putAll(gatherComponents());

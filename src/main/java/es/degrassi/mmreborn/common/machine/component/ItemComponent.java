@@ -5,7 +5,6 @@ import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.util.IOInventory;
-import org.jetbrains.annotations.Nullable;
 
 public class ItemComponent extends MachineComponent<IOInventory> {
   private final IOInventory handler;

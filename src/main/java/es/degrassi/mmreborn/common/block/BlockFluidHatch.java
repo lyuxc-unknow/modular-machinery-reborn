@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class BlockFluidHatch extends BlockMachineComponent {
   protected final FluidHatchSize size;
   public BlockFluidHatch(FluidHatchSize size) {
