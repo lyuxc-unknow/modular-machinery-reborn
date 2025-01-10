@@ -5,8 +5,10 @@ import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.EmiStackInteraction;
 import dev.emi.emi.screen.EmiScreenManager;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.client.requirement.ItemRendering;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementLootTable;
+import es.degrassi.mmreborn.common.machine.component.ItemComponent;
 import es.degrassi.mmreborn.common.util.LootTableHelper;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;
@@ -20,7 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class EmiLootTableComponent extends EmiComponent<ResourceLocation, RequirementLootTable> implements SlotTooltip,
+public class EmiLootTableComponent extends EmiComponent<ResourceLocation,
+    RecipeRequirement<ItemComponent, RequirementLootTable>> implements SlotTooltip,
     ItemRendering {
   private int item;
   @Getter
@@ -29,9 +32,9 @@ public class EmiLootTableComponent extends EmiComponent<ResourceLocation, Requir
   private EmiRecipe recipe;
   private final List<ItemStack> loots;
 
-  public EmiLootTableComponent(RequirementLootTable requirement) {
+  public EmiLootTableComponent(RecipeRequirement<ItemComponent, RequirementLootTable> requirement) {
     super(requirement, 36, 0);
-    List<LootTableHelper.LootData> loots = LootTableHelper.getLootsForTable(requirement.getLootTable());
+    List<LootTableHelper.LootData> loots = LootTableHelper.getLootsForTable(requirement.requirement().getLootTable());
     this.loots = Lists.newArrayList(loots.stream().map(LootTableHelper.LootData::stack).toList());
   }
 
@@ -46,7 +49,7 @@ public class EmiLootTableComponent extends EmiComponent<ResourceLocation, Requir
 
   @Override
   public List<ResourceLocation> ingredients() {
-    return Collections.singletonList(requirement.getLootTable());
+    return Collections.singletonList(requirement.requirement().getLootTable());
   }
 
   private List<ItemStack> loots() {
@@ -67,7 +70,7 @@ public class EmiLootTableComponent extends EmiComponent<ResourceLocation, Requir
   @Override
   public List<Component> getTooltip() {
     List<Component> list = Lists.newArrayList();
-    List<LootTableHelper.LootData> loots = LootTableHelper.getLootsForTable(requirement.getLootTable());
+    List<LootTableHelper.LootData> loots = LootTableHelper.getLootsForTable(requirement.requirement().getLootTable());
     LootTableHelper.LootData data = loots
         .stream()
         .filter(lootData -> ItemStack.isSameItemSameComponents(lootData.stack(), loots().get(item))).findFirst()
@@ -77,13 +80,13 @@ public class EmiLootTableComponent extends EmiComponent<ResourceLocation, Requir
     if (data.chance() != 1) {
       double percentage = data.chance() * 100;
       if (percentage < 0.01F)
-        list.add(Component.translatable("modular_machinery_reborn.ingredient.chance." + requirement.getActionType().name().toLowerCase(Locale.ROOT), "<0.01", "%"));
+        list.add(Component.translatable("modular_machinery_reborn.ingredient.chance." + requirement.requirement().getMode().name().toLowerCase(Locale.ROOT), "<0.01", "%"));
       else {
         BigDecimal decimal = BigDecimal.valueOf(percentage).setScale(2, RoundingMode.HALF_UP);
         if (decimal.scale() <= 0 || decimal.signum() == 0 || decimal.stripTrailingZeros().scale() <= 0)
-          list.add(Component.translatable("modular_machinery_reborn.ingredient.chance." + requirement.getActionType().name().toLowerCase(Locale.ROOT), decimal.intValue(), "%"));
+          list.add(Component.translatable("modular_machinery_reborn.ingredient.chance." + requirement.requirement().getMode().name().toLowerCase(Locale.ROOT), decimal.intValue(), "%"));
         else
-          list.add(Component.translatable("modular_machinery_reborn.ingredient.chance." + requirement.getActionType().name().toLowerCase(Locale.ROOT), decimal.doubleValue(), "%"));
+          list.add(Component.translatable("modular_machinery_reborn.ingredient.chance." + requirement.requirement().getMode().name().toLowerCase(Locale.ROOT), decimal.doubleValue(), "%"));
       }
       if (!data.rolls().isEmpty())
         list.add(Component.literal(data.rolls()));

@@ -1,8 +1,12 @@
 package es.degrassi.mmreborn.common.crafting.requirement.emi;
 
 import dev.emi.emi.api.stack.EmiStack;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.client.requirement.ItemRendering;
+import es.degrassi.mmreborn.common.crafting.requirement.RequirementChunkload;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementDimension;
+import es.degrassi.mmreborn.common.machine.component.ChunkloadComponent;
+import es.degrassi.mmreborn.common.machine.component.DimensionComponent;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -12,8 +16,8 @@ import org.apache.commons.compress.utils.Lists;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class EmiDimensionComponent extends EmiComponent<ResourceLocation, RequirementDimension> implements ItemRendering {
-  public EmiDimensionComponent(RequirementDimension requirement) {
+public class EmiDimensionComponent extends EmiComponent<ResourceLocation, RecipeRequirement<DimensionComponent, RequirementDimension>> implements ItemRendering {
+  public EmiDimensionComponent(RecipeRequirement<DimensionComponent, RequirementDimension> requirement) {
     super(requirement, 0, 0, false);
   }
 
@@ -35,7 +39,7 @@ public class EmiDimensionComponent extends EmiComponent<ResourceLocation, Requir
 
   @Override
   public List<ResourceLocation> ingredients() {
-    return Lists.newArrayList(requirement.filter().iterator());
+    return Lists.newArrayList(requirement.requirement().filter().iterator());
   }
 
   public EmiStack getStack() {
@@ -56,7 +60,7 @@ public class EmiDimensionComponent extends EmiComponent<ResourceLocation, Requir
     if (index >= dimensions.length() - 1)
       dimensions.deleteCharAt(index);
     return List.of(Component.translatable(
-        "modular_machinery_reborn.jei.ingredient.dimension." + requirement.blacklist(),
+        "modular_machinery_reborn.jei.ingredient.dimension." + requirement.requirement().blacklist(),
         dimensions.toString()
     ));
   }

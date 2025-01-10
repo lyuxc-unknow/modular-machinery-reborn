@@ -6,22 +6,23 @@ import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.Structure;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
-import es.degrassi.mmreborn.common.crafting.ActiveMachineRecipe;
-import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
 import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
 import es.degrassi.mmreborn.common.data.Config;
-import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
+import es.degrassi.mmreborn.common.manager.crafting.MachineStatus;
 import es.degrassi.mmreborn.common.util.MachineModelLocation;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.level.block.SoundType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Getter
@@ -33,9 +34,10 @@ public class DynamicMachine {
       Structure.CODEC.fieldOf("structure").forGetter(DynamicMachine::getPattern),
       DefaultCodecs.HEX.optionalFieldOf("color", Config.machineColor).forGetter(DynamicMachine::getMachineColor),
       MachineModelLocation.CODEC.optionalFieldOf("controller", MachineModelLocation.DEFAULT).forGetter(DynamicMachine::getControllerModel),
-      ModifierReplacement.CODEC.listOf().optionalFieldOf("modifiers", new LinkedList<>()).forGetter(DynamicMachine::getModifiers)
-  ).apply(instance, (registryName, localizedName, pattern, color, controllerModel, modifiers) -> {
-    DynamicMachine machine = new DynamicMachine(registryName);
+      ModifierReplacement.CODEC.listOf().optionalFieldOf("modifiers", new LinkedList<>()).forGetter(DynamicMachine::getModifiers),
+      NamedCodec.unboundedMap(MachineStatus.CODEC, Sounds.CODEC, "Sounds by status").optionalFieldOf("sound", new HashMap<>()).forGetter(DynamicMachine::getSounds)
+  ).apply(instance, (registryName, localizedName, pattern, color, controllerModel, modifiers, sounds) -> {
+    DynamicMachine machine = new DynamicMachine(registryName, sounds);
     pattern.getPattern().addModifiers(modifiers);
     machine.setPattern(pattern);
     machine.setLocalizedName(localizedName);
@@ -45,7 +47,14 @@ public class DynamicMachine {
     return machine;
   }), "Dynamic Machine");
 
-  public static final DynamicMachine DUMMY = new DynamicMachine(ModularMachineryReborn.rl("dummy"));
+  public static final DynamicMachine DUMMY;
+  static {
+    Map<MachineStatus, Sounds> sounds = new HashMap<>();
+    for (MachineStatus status : MachineStatus.values()) {
+      sounds.put(status, Sounds.DEFAULT);
+    }
+    DUMMY = new DynamicMachine(ModularMachineryReborn.rl("dummy"), sounds);
+  }
 
   @Nonnull
   private ResourceLocation registryName;
@@ -54,9 +63,11 @@ public class DynamicMachine {
   private int definedColor = Config.machineColor;
   private MachineModelLocation controllerModel;
   private List<ModifierReplacement> modifiers;
+  private final Map<MachineStatus, Sounds> sounds;
 
-  public DynamicMachine(@Nonnull ResourceLocation registryName) {
+  public DynamicMachine(@Nonnull ResourceLocation registryName, Map<MachineStatus, Sounds> sounds) {
     this.registryName = registryName;
+    this.sounds = sounds;
   }
 
   public String getLocalizedName() {
@@ -68,25 +79,17 @@ public class DynamicMachine {
     return Component.translatableWithFallback(localizationKey, localizedName.orElse(localizationKey));
   }
 
-  public int getMachineColor() {
-    return definedColor;
+  @Nullable
+  public SoundEvent getAmbientSound(MachineStatus status) {
+    return Optional.ofNullable(sounds.get(status)).map(Sounds::ambientSound).orElse(null);
   }
 
-  @Nullable
-  public RecipeCraftingContext createContext(
-      @Nullable ActiveMachineRecipe activeRecipe,
-      MachineControllerEntity controller,
-      Collection<MachineComponent<?>> taggedComponents
-  ) {
-    if (activeRecipe == null) return null;
-    if (activeRecipe.getRecipe() == null) return null;
-    if (!activeRecipe.getRecipe().getOwningMachineIdentifier().equals(getRegistryName())) {
-      return null;
-    }
-    RecipeCraftingContext context = new RecipeCraftingContext(activeRecipe, controller);
-    taggedComponents.forEach(context::addComponent);
-    controller.getFoundModifiers().forEach(context::addModifier);
-    return context;
+  public SoundType getInteractionSound(MachineStatus status) {
+    return Optional.ofNullable(this.sounds.get(status)).orElse(Sounds.DEFAULT).interaction();
+  }
+
+  public int getMachineColor() {
+    return definedColor;
   }
 
   public JsonObject asJson() {

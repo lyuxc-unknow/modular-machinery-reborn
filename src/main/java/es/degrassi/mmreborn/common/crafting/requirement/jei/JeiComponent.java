@@ -1,7 +1,7 @@
 package es.degrassi.mmreborn.common.crafting.requirement.jei;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
-import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.util.TextureSizeHelper;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,13 +18,14 @@ import java.util.List;
 
 @Getter
 @Setter
-public abstract class JeiComponent<C, T extends ComponentRequirement<C, T>> implements IIngredientRenderer<C>, IJeiRequirement<C, T> {
+public abstract class JeiComponent<X, R extends RecipeRequirement<?, ?>> implements IIngredientRenderer<X>,
+    IJeiRequirement<R> {
   protected static final ResourceLocation LOCATION_JEI_ICONS = ResourceLocation.fromNamespaceAndPath(ModularMachineryReborn.MODID, "textures/gui/jeirecipeicons.png");
 
-  protected T requirement;
+  protected R requirement;
   protected final int uOffset, vOffset;
 
-  protected JeiComponent(T requirement, int uOffset, int vOffset) {
+  protected JeiComponent(R requirement, int uOffset, int vOffset) {
     this.requirement = requirement;
     this.uOffset = uOffset;
     this.vOffset = vOffset;
@@ -39,20 +40,20 @@ public abstract class JeiComponent<C, T extends ComponentRequirement<C, T>> impl
   }
 
   @Override
-  public void render(GuiGraphics guiGraphics, @NotNull C ingredient) {
+  public void render(GuiGraphics guiGraphics, @NotNull X ingredient) {
     guiGraphics.blit(texture(), -1, -1, 0, uOffset, vOffset, getWidth(), getHeight(), TextureSizeHelper.getWidth(texture()), TextureSizeHelper.getHeight(texture()));
   }
 
   @Override
   @SuppressWarnings("removal")
-  public @NotNull List<Component> getTooltip(@NotNull C ingredient, @NotNull TooltipFlag tooltipFlag) {
+  public @NotNull List<Component> getTooltip(@NotNull X ingredient, @NotNull TooltipFlag tooltipFlag) {
     return new LinkedList<>();
   }
 
-  public abstract List<C> ingredients();
+  public abstract List<X> ingredients();
 
   public RecipeIngredientRole role() {
     if (requirement == null) return RecipeIngredientRole.RENDER_ONLY;
-    return requirement.getActionType().isInput() ? RecipeIngredientRole.INPUT : RecipeIngredientRole.OUTPUT;
+    return requirement.requirement().getMode().isInput() ? RecipeIngredientRole.INPUT : RecipeIngredientRole.OUTPUT;
   }
 }

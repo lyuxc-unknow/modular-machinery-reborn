@@ -1,6 +1,8 @@
 package es.degrassi.mmreborn.client.screen.widget;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
+import es.degrassi.mmreborn.client.screen.ControllerScreen;
+import es.degrassi.mmreborn.client.screen.popup.ConfirmationPopup;
 import es.degrassi.mmreborn.common.network.client.CBreakStructurePacket;
 import es.degrassi.mmreborn.common.util.TextureSizeHelper;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,13 +21,22 @@ import static es.degrassi.mmreborn.client.screen.BaseScreen.TAB_HOVERED;
 public class StructureBreakWidget extends AbstractWidget {
   private static final ResourceLocation TEXTURE = ModularMachineryReborn.rl("textures/gui/structure_breaker.png");
 
+  private final ControllerScreen parentScreen;
+
   private final ResourceLocation machine;
   private final BlockPos controllerPos;
 
   public final Component component = Component.translatable("modular_machinery_reborn.gui.structure_break_button");
 
-  public StructureBreakWidget(int x, int y, ResourceLocation machine, BlockPos controllerPos) {
-    super(x, y, TextureSizeHelper.getWidth(TAB), TextureSizeHelper.getHeight(TAB), Component.literal("structure breaker"));
+  public StructureBreakWidget(ControllerScreen parentScreen, int x, int y, ResourceLocation machine,
+                              BlockPos controllerPos) {
+    super(x,
+        y - TextureSizeHelper.getHeight(TAB),
+        TextureSizeHelper.getWidth(TAB),
+        TextureSizeHelper.getHeight(TAB),
+        Component.literal("structure breaker")
+    );
+    this.parentScreen = parentScreen;
     this.machine = machine;
     this.controllerPos = controllerPos;
   }
@@ -38,7 +49,7 @@ public class StructureBreakWidget extends AbstractWidget {
   @Override
   protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
     ResourceLocation tab = isHoveredOrFocused() ? TAB_HOVERED : TAB;
-    int x = getX() - (isHoveredOrFocused() ? 2 : 0);
+    int x = getX();
     int y = getY();
     int width = TextureSizeHelper.getWidth(tab), height = TextureSizeHelper.getHeight(tab);
     this.width = width;
@@ -46,13 +57,20 @@ public class StructureBreakWidget extends AbstractWidget {
     guiGraphics.blit(tab, x, y, 0, 0, width, height, width, height);
     width = TextureSizeHelper.getWidth(TEXTURE);
     height = TextureSizeHelper.getHeight(TEXTURE);
-    x += isHoveredOrFocused() ? 2 : 0;
     guiGraphics.blit(TEXTURE, x + 5, y + 5, 0, 0, width, height, width, height);
   }
 
   @Override
   public void onClick(double mouseX, double mouseY, int button) {
-    PacketDistributor.sendToServer(new CBreakStructurePacket(machine, controllerPos));
+    parentScreen.setFocused(this);
+    parentScreen.getMenu().getEntity().setLastFocus(1);
+    parentScreen.openPopup(new ConfirmationPopup<>(
+        parentScreen,
+        180,
+        96,
+        () -> PacketDistributor.sendToServer(new CBreakStructurePacket(machine, controllerPos))
+    )
+        .text(Component.translatable("mmr.gui.structure.break"), Component.empty(), Component.empty()), "popup");
   }
 
   @Override

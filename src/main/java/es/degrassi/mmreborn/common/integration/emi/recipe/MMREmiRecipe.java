@@ -35,28 +35,28 @@ public class MMREmiRecipe extends BasicEmiRecipe {
     super(category, recipe.id(), recipe.value().getWidth(), recipe.value().getHeight());
     this.recipe = recipe.value();
     this.inputs = this.recipe
-        .getCraftingRequirements()
+        .getRequirements()
         .stream()
-        .filter(requirement -> requirement.getActionType().isInput())
-        .filter(requirement -> EmiStackRegistry.hasEmiStack(requirement.getRequirementType()))
-        .map(requirement -> requirement.getRequirementType().castRequirement(requirement))
-        .map(requirement -> EmiStackRegistry.getStack(requirement.getRequirementType()).create(requirement))
+        .filter(requirement -> requirement.requirement().getMode().isInput())
+        .filter(requirement -> EmiStackRegistry.hasEmiStack(requirement.getType()))
+        .map(requirement -> requirement.castRequirement(requirement))
+        .map(requirement -> EmiStackRegistry.getStack(requirement.getType()).create(requirement))
         .collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll);
     this.outputs = this.recipe
-        .getCraftingRequirements()
+        .getRequirements()
         .stream()
-        .filter(requirement -> !requirement.getActionType().isInput())
-        .filter(requirement -> EmiStackRegistry.hasEmiStack(requirement.getRequirementType()))
-        .map(requirement -> requirement.getRequirementType().castRequirement(requirement))
-        .map(requirement -> EmiStackRegistry.getStack(requirement.getRequirementType()).create(requirement))
+        .filter(requirement -> !requirement.requirement().getMode().isInput())
+        .filter(requirement -> EmiStackRegistry.hasEmiStack(requirement.getType()))
+        .map(requirement -> requirement.castRequirement(requirement))
+        .map(requirement -> EmiStackRegistry.getStack(requirement.getType()).create(requirement))
         .collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll);
     this.catalysts = this.recipe
-        .getCraftingRequirements()
+        .getRequirements()
         .stream()
-        .filter(requirement -> requirement.getActionType().isInput())
-        .filter(requirement -> EmiStackRegistry.hasEmiStack(requirement.getRequirementType()))
-        .map(requirement -> requirement.getRequirementType().castRequirement(requirement))
-        .map(requirement -> EmiStackRegistry.getStack(requirement.getRequirementType()).create(requirement))
+        .filter(requirement -> requirement.requirement().getMode().isInput())
+        .filter(requirement -> EmiStackRegistry.hasEmiStack(requirement.getType()))
+        .map(requirement -> requirement.castRequirement(requirement))
+        .map(requirement -> EmiStackRegistry.getStack(requirement.getType()).create(requirement))
         .collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll);
   }
 
@@ -71,11 +71,11 @@ public class MMREmiRecipe extends BasicEmiRecipe {
         recipe.getRecipeTotalTickTime()
     )), recipe.getWidth() - 8).getFirst());
 
-    recipe.getCraftingRequirements()
+    recipe.getRequirements()
         .stream()
-        .filter(component -> EmiComponentRegistry.hasEmiComponent(component.getRequirementType()))
-        .map(component -> component.getRequirementType().castRequirement(component))
-        .map(component -> EmiComponentRegistry.getEmiComponent(component.getRequirementType()).create(component))
+        .filter(component -> EmiComponentRegistry.hasEmiComponent(component.getType()))
+        .map(requirement -> requirement.castRequirement(requirement))
+        .map(component -> EmiComponentRegistry.getEmiComponent(component.getType()).create(component))
         .forEach(requirement -> requirement.addWidgets(widgets, this));
 
     Language language = Language.getInstance();

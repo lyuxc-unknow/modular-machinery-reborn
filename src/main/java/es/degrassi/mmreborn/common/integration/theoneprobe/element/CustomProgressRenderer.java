@@ -136,7 +136,7 @@ public class CustomProgressRenderer {
         int lvl = (int)(stack == null ? (double)0.0F : (double)stack.getAmount() / (double)max * (double)width);
         if (lvl > 0) {
           ResourceLocation stillTexture = IClientFluidTypeExtensions.of(stack.getFluid()).getStillTexture(stack);
-          TextureAtlasSprite liquidIcon = (TextureAtlasSprite)map.apply(stillTexture);
+          TextureAtlasSprite liquidIcon = map.apply(stillTexture);
           if (!Objects.equals(liquidIcon, map.apply(MissingTextureAtlasSprite.getLocation()))) {
             int color = IClientFluidTypeExtensions.of(stack.getFluid()).getTintColor(stack);
             RenderSystem.setShaderColor((float)(color >> 16 & 255) / 255.0F, (float)(color >> 8 & 255) / 255.0F, (float)(color & 255) / 255.0F, (float)(color >> 24 & 255) / 255.0F);

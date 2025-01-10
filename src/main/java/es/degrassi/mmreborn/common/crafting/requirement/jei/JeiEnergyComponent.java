@@ -1,10 +1,12 @@
 package es.degrassi.mmreborn.common.crafting.requirement.jei;
 
 import com.google.common.collect.Lists;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
 import es.degrassi.mmreborn.common.integration.jei.category.MMRRecipeCategory;
 import es.degrassi.mmreborn.common.integration.jei.ingredient.CustomIngredientTypes;
+import es.degrassi.mmreborn.common.machine.component.EnergyComponent;
 import es.degrassi.mmreborn.common.util.Utils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.recipe.IFocusGroup;
@@ -16,12 +18,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class JeiEnergyComponent extends JeiComponent<Long, RequirementEnergy> {
+public class JeiEnergyComponent extends JeiComponent<Long, RecipeRequirement<EnergyComponent, RequirementEnergy>> {
   private int width = 16;
   private int height = 52;
   private int recipeTime;
 
-  public JeiEnergyComponent(RequirementEnergy requirement) {
+  public JeiEnergyComponent(RecipeRequirement<EnergyComponent, RequirementEnergy> requirement) {
     super(requirement, 18, 0);
   }
 
@@ -37,7 +39,7 @@ public class JeiEnergyComponent extends JeiComponent<Long, RequirementEnergy> {
 
   @Override
   public List<Long> ingredients() {
-    return Lists.newArrayList(requirement.getRequiredEnergyPerTick());
+    return Lists.newArrayList(requirement.requirement().getRequiredEnergyPerTick());
   }
 
   @Override
@@ -53,12 +55,12 @@ public class JeiEnergyComponent extends JeiComponent<Long, RequirementEnergy> {
   @SuppressWarnings("removal")
   public @NotNull List<Component> getTooltip(@NotNull Long ingredient, @NotNull TooltipFlag tooltipFlag) {
     List<Component> tooltip = super.getTooltip(ingredient, tooltipFlag);
-    String mode = requirement.getActionType().isInput() ? "input" : "output";
+    String mode = requirement.requirement().getMode().isInput() ? "input" : "output";
     tooltip.add(
         Component.translatable(
             "modular_machinery_reborn.jei.ingredient.energy.total." + mode,
-            Utils.format(requirement.requirementPerTick * recipeTime),
-            Utils.format(requirement.requirementPerTick)
+            Utils.format(requirement.requirement().requirementPerTick * recipeTime),
+            Utils.format(requirement.requirement().requirementPerTick)
         )
     );
     return tooltip;

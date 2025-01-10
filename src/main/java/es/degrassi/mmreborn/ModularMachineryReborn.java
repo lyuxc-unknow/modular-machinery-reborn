@@ -4,6 +4,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.datafixers.util.Pair;
 import es.degrassi.experiencelib.api.capability.ExperienceLibCapabilities;
+import es.degrassi.mmreborn.api.network.DataType;
 import es.degrassi.mmreborn.client.util.EnergyDisplayUtil;
 import es.degrassi.mmreborn.common.block.BlockController;
 import es.degrassi.mmreborn.common.block.prop.ConfigLoaded;
@@ -18,10 +19,13 @@ import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.integration.theoneprobe.TOPInfoProvider;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.machine.MachineJsonReloadListener;
+import es.degrassi.mmreborn.common.manager.crafting.ProcessorType;
 import es.degrassi.mmreborn.common.network.server.SLootTablesPacket;
 import es.degrassi.mmreborn.common.network.server.SSyncMachinesPacket;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
+import es.degrassi.mmreborn.common.registration.DataRegistration;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
+import es.degrassi.mmreborn.common.registration.ProcessorTypeRegistration;
 import es.degrassi.mmreborn.common.registration.Registration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.LootTableHelper;
@@ -208,11 +212,22 @@ public class ModularMachineryReborn {
     }
   }
 
+  public static Registry<ProcessorType<?>> processorRegistrar() {
+    return ProcessorTypeRegistration.PROCESSOR_REGISTRY;
+  }
+
+//  public static Registry<RequirementTypeOld<?>> getRequirementRegistrarOld() {
+//    return RequirementTypeRegistration.REQUIREMENTS_REGISTRY_OLD;
+//  }
   public static Registry<RequirementType<?>> getRequirementRegistrar() {
     return RequirementTypeRegistration.REQUIREMENTS_REGISTRY;
   }
 
   public static Registry<ComponentType> getComponentRegistrar() {
     return ComponentRegistration.COMPONENTS_REGISTRY;
+  }
+
+  public static Registry<DataType<?, ?>> dataRegistrar() {
+    return DataRegistration.DATA_REGISTRY;
   }
 }

@@ -37,14 +37,15 @@
   "gui.controller.status.crafting": "Procesando...",
   "gui.controller.status.crafting.progress": "Progreso: %s",
 
-  "craftcheck.failure.item.input": "Sin item de entrada!",
+  "craftcheck.failure.item.input": "Sin item de entrada!, necesario: %sx %s",
   "craftcheck.failure.item.output.space": "No hay suficiente espacio en el inventario para la salida de item(s)!",
-  "craftcheck.failure.fluid.input": "Sin líquido de entrada!",
-  "craftcheck.failure.fluid.output.space": "No hay suficiente espacio en el tanque para salida de líquido(s)!",
-  "craftcheck.failure.energy.input": "No hay suficiente energía!",
-  "craftcheck.failure.energy.output": "No hay suficiente espacio para la salida de energía!",
-  "craftcheck.failure.experience.input": "Not enough experience!",
-  "craftcheck.failure.experience.output": "Not enough space for experience output!",
+  "craftcheck.failure.fluid.input": "Sin líquido de entrada! necesario %s mB %s pero se encontró %s mB %s",
+  "craftcheck.failure.fluid.output.space": "No hay suficiente espacio en el tanque para salida de líquido(s)!, necesario: %s mB pero se encontró %s mB",
+  "craftcheck.failure.fluid.output.fluid": "El líquido del tanque no coincide, necesario: %s pero se encontró %s!",
+  "craftcheck.failure.energy.input": "No hay suficiente energía! Se necesita %s FE pero se encontró %s FE",
+  "craftcheck.failure.energy.output": "No hay suficiente espacio para la salida de energía!, Se necesita %s FE, pero se encontró %s FE de espacio",
+  "craftcheck.failure.experience.input": "No hay suficiente experiencia!, %s XP pero se encontró %s XP",
+  "craftcheck.failure.experience.output": "No hay suficiente espacio para la salida de experiencia!, necesario: %s XP, pero se encontró %s XP space",
   "craftcheck.failure.dimension.false": "No está en la dimensión correcta, se esperaba estar en: %s, estando en: %s",
   "craftcheck.failure.dimension.true": "No está en la dimensión correcta, se esperaba no estar en: %s, estando en: %s",
   "craftcheck.failure.biome.false": "No está en la bioma correcto, se esperaba estar en: %s, estando en: %s",
@@ -313,6 +314,8 @@
   "modular_machinery_reborn.controller.no_machine": "No se ha podido encontrar la máquina",
   "modular_machinery_reborn.controller.shift": "[SHIFT]",
   "modular_machinery_reborn.controller.shift.blocks": "para mostrar los bloques requeridos",
+  "modular_machinery_reborn.controller.control": "[CTRL]",
+  "modular_machinery_reborn.controller.control.modifier": "para mostrar los modificadores",
   "modular_machinery_reborn.controller.required": "Requerimientos:",
   "modular_machinery_reborn.controller.required.item": "%s %s",
   "modular_machinery_reborn.controller.required.tag": "%s",
@@ -342,5 +345,16 @@
   "mmr.recipe.modifier.loot_table.add": " (%s suerte de la loot table a la receta)",
   "mmr.recipe.modifier.loot_table.multiply": " (x%s suerte de la loot table de la receta)",
   "mmr.recipe.modifier.experience.add": " (%s experiencia %s a la receta, afecta probabilidad: %s)",
-  "mmr.recipe.modifier.experience.multiply": " (x%s experiencia %s de la receta, afecta probabilidad: %s)"
+  "mmr.recipe.modifier.experience.multiply": " (x%s experiencia %s de la receta, afecta probabilidad: %s)",
+
+  "mmr.gui.structure.break": "¿Está seguro de que desea romper la estructura actual?",
+
+  "mmr.gui.structure.place.modifier": "¿Quieres colocar la estructura con o sin modificadores?",
+  "mmr.gui.structure.place.modifier.true": "¿Estás seguro de que quieres colocar la estructura con modificadores?",
+  "mmr.gui.structure.place.modifier.false": "¿Estás seguro de que quieres colocar la estructura sin modificadores?",
+  "mmr.gui.structure.place.confirm.modifier": "Con modificadores",
+  "mmr.gui.structure.place.cancel.modifier": "Sin modificadores",
+
+  "mmr.gui.popup.confirm": "Confirmar",
+  "mmr.gui.popup.cancel": "Cancelar"
 }

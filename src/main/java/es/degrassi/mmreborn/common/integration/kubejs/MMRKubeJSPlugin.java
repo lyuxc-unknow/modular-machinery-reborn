@@ -11,6 +11,8 @@ import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
 import es.degrassi.mmreborn.common.integration.kubejs.builder.MachineBuilderJS.MachineKubeEvent;
 import es.degrassi.mmreborn.common.integration.kubejs.builder.ModifierBuilderJS;
 import es.degrassi.mmreborn.common.integration.kubejs.builder.StructureBuilderJS;
+import es.degrassi.mmreborn.common.machine.DynamicMachine;
+import es.degrassi.mmreborn.common.machine.Sounds;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import es.degrassi.mmreborn.common.util.IntRange;
 import es.degrassi.mmreborn.common.util.MachineModelLocation;
@@ -45,5 +47,6 @@ public class MMRKubeJSPlugin implements KubeJSPlugin {
   @Override
   public void registerTypeWrappers(TypeWrapperRegistry registry) {
     registry.register(IntRange.class, IntRange::of);
+    registry.registerCodec(Sounds.class, Sounds.CODEC.codec());
   }
 }

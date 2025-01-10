@@ -1,6 +1,7 @@
 package es.degrassi.mmreborn.common.integration.kubejs.requirement;
 
 import dev.latvian.mods.rhino.util.HideFromJS;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.PositionedRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementExperience;
 import es.degrassi.mmreborn.common.integration.kubejs.MachineRecipeBuilderJS;
@@ -11,12 +12,12 @@ public interface ExperienceRequirementJS extends RecipeJSBuilder {
 
   @HideFromJS
   default MachineRecipeBuilderJS requireExperience(long amount, int x, int y) {
-    return addRequirement(new RequirementExperience(IOType.INPUT, amount, new PositionedRequirement(x, y)));
+    return addRequirement(new RecipeRequirement<>(new RequirementExperience(IOType.INPUT, amount, new PositionedRequirement(x, y))));
   }
 
   @HideFromJS
   default MachineRecipeBuilderJS produceExperience(long amount, int x, int y) {
-    return addRequirement(new RequirementExperience(IOType.OUTPUT, amount, new PositionedRequirement(x, y)));
+    return addRequirement(new RecipeRequirement<>(new RequirementExperience(IOType.OUTPUT, amount, new PositionedRequirement(x, y))));
   }
 
   default MachineRecipeBuilderJS requireExperience(long amount) {

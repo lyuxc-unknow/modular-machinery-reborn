@@ -6,51 +6,45 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
-import es.degrassi.mmreborn.common.crafting.helper.ComponentOutputRestrictor;
-import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
-import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
-import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
-import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
-import es.degrassi.mmreborn.common.crafting.helper.restriction.RestrictionInventory;
-import es.degrassi.mmreborn.common.machine.IOType;
-import es.degrassi.mmreborn.common.machine.MachineComponent;
-import es.degrassi.mmreborn.common.machine.component.ItemBus;
+import es.degrassi.mmreborn.api.crafting.CraftingResult;
+import es.degrassi.mmreborn.api.crafting.ICraftingContext;
+import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
+import es.degrassi.mmreborn.api.crafting.requirement.IRequirementList;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
+import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
+import es.degrassi.mmreborn.common.machine.IOType;
+import es.degrassi.mmreborn.common.machine.component.ItemComponent;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.IOInventory;
 import es.degrassi.mmreborn.common.util.ItemUtils;
-import es.degrassi.mmreborn.common.util.ResultChance;
 import lombok.Getter;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.Objects;
 
-public class RequirementItem extends ComponentRequirement<ItemStack, RequirementItem> implements ComponentRequirement.ChancedRequirement {
+@Getter
+public class RequirementItem implements IRequirement<ItemComponent> {
   public static final NamedCodec<RequirementItem> CODEC =
       NamedCodec.record(instance -> instance.group(
           DefaultCodecs.SIZED_INGREDIENT_WITH_NBT.fieldOf("sizedIngredient").forGetter(req -> req.ingredient),
-          NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(ComponentRequirement::getActionType),
-          NamedCodec.floatRange(0, 1).optionalFieldOf("chance", 1f).forGetter(req -> req.chance),
-          PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
-      ).apply(instance, (item, mode, chance, position) -> {
-        RequirementItem requirementItem = new RequirementItem(mode, item, position);
-        requirementItem.setChance(chance);
+          NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(IRequirement::getMode),
+          PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(IRequirement::getPosition)
+      ).apply(instance, (item, mode, position) -> new RequirementItem(mode, item, position)), "RequirementItem");
 
-        return requirementItem;
-      }), "RequirementItem");
-
-  @Getter
   public final SizedIngredient ingredient;
+  private final IOType mode;
+  private final PositionedRequirement position;
 
-  public int countIOBuffer = 0;
-
-  @Getter
-  public float chance = 1F;
+  public RequirementItem(IOType ioType, SizedIngredient ingredient, PositionedRequirement position) {
+    this.ingredient = ingredient;
+    this.mode = ioType;
+    this.position = position;
+  }
 
   public JsonObject asJson(SizedIngredient ingredient) {
     JsonObject json = new JsonObject();
@@ -64,156 +58,93 @@ public class RequirementItem extends ComponentRequirement<ItemStack, Requirement
   }
 
   @Override
-  public JsonObject asJson() {
-    JsonObject json = super.asJson();
-    json.add("ingredient", asJson(ingredient));
-    json.addProperty("chance", chance);
-    return json;
-  }
-
-  public RequirementItem(IOType ioType, SizedIngredient ingredient, PositionedRequirement position) {
-    super(RequirementTypeRegistration.ITEM.get(), ioType, position);
-    this.ingredient = ingredient;
+  public RequirementType<RequirementItem> getType() {
+    return RequirementTypeRegistration.ITEM.get();
   }
 
   @Override
-  public int getSortingWeight() {
-    return PRIORITY_WEIGHT_ITEM;
+  public ComponentType getComponentType() {
+    return ComponentRegistration.COMPONENT_ITEM.get();
   }
 
   @Override
-  public ComponentRequirement<ItemStack, RequirementItem> deepCopy() {
-    RequirementItem item = new RequirementItem(getActionType(), new SizedIngredient(ingredient.ingredient(), ingredient.count()), getPosition());
-    item.chance = this.chance;
-    return item;
-  }
-
-  @Override
-  public ComponentRequirement<ItemStack, RequirementItem> deepCopyModified(List<RecipeModifier> modifiers) {
-    int inAmt = Math.round(RecipeModifier.applyModifiers(modifiers, this.getRequirementType(), getActionType(),
-        ingredient.count(), false));
-    RequirementItem item = new RequirementItem(getActionType(), new SizedIngredient(ingredient.ingredient(), inAmt), getPosition());
-
-    item.chance = RecipeModifier.applyModifiers(modifiers, this, this.chance, true);
-    return item;
-  }
-
-  @Override
-  public void startRequirementCheck(ResultChance contextChance, RecipeCraftingContext context) {
-    this.countIOBuffer = Math.round(RecipeModifier.applyModifiers(context, this, this.ingredient.count(), false));
-  }
-
-  @Override
-  public void endRequirementCheck() {
-    this.countIOBuffer = 0;
-  }
-
-  @Override
-  public void setChance(float chance) {
-    this.chance = chance;
-  }
-
-  @Nonnull
-  @Override
-  public String getMissingComponentErrorMessage(IOType ioType) {
-    return String.format("component.missing.item.%s", ioType.name().toLowerCase());
-  }
-
-  @Override
-  public boolean isValidComponent(ProcessingComponent<?> component, RecipeCraftingContext ctx) {
-    MachineComponent<?> cmp = component.component();
-    return cmp.getComponentType().equals(ComponentRegistration.COMPONENT_ITEM.get()) &&
-        cmp instanceof ItemBus &&
-        cmp.getIOType() == getActionType();
-  }
-
-  @Nonnull
-  @Override
-  public CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context,
-                                     List<ComponentOutputRestrictor<?>> restrictions) {
-    IOInventory handler = (IOInventory) component.providedComponent();
-    return switch (getActionType()) {
+  public boolean test(ItemComponent component, ICraftingContext context) {
+    IOInventory handler = component.getContainerProvider();
+    return switch (getMode()) {
       case INPUT -> {
-        int amt = Math.round(RecipeModifier.applyModifiers(context, this, ingredient.count(), false));
+        int amt = Math.round(RecipeModifier.applyModifiers(context.getModifiers(getType()), this.getType(), getMode(),
+            ingredient.count(),
+            false));
         for (int i = 0; i < handler.getSlots(); i++) {
           ItemStack stack = handler.getStackInSlot(i).copyWithCount(amt);
           if (ingredient.test(stack))
-            yield CraftCheck.success();
+            yield true;
         }
-        yield CraftCheck.failure("craftcheck.failure.item.input");
+        yield false;
       }
       case OUTPUT -> {
-        for (ComponentOutputRestrictor<?> restrictor : restrictions) {
-          if (restrictor instanceof RestrictionInventory inv) {
-            if (inv.exactComponent.equals(component)) {
-              ItemUtils.tryPlaceItemInInventory(inv.inserted.copy(), handler, true);
-            }
-          }
-        }
-
-        ItemStack stack = ingredient.getItems()[0].copyWithCount(countIOBuffer);
+        ItemStack stack = ingredient.getItems()[0].copyWithCount(ingredient.count());
 
         int inserted = ItemUtils.tryPlaceItemInInventory(stack.copy(), handler, true);
-        if (inserted > 0) {
-          context.addRestriction(new RestrictionInventory(ItemUtils.copyStackWithSize(stack, inserted), component));
-        }
-        this.countIOBuffer -= inserted;
-        if (this.countIOBuffer <= 0) {
-          yield CraftCheck.success();
-        }
-        yield CraftCheck.failure("craftcheck.failure.item.output.space");
+        yield ingredient.count() - inserted <= 0;
       }
     };
   }
 
   @Override
-  public boolean startCrafting(ProcessingComponent<?> component, RecipeCraftingContext context, ResultChance chance) {
-    IOInventory handler = (IOInventory) component.providedComponent();
-    float productionChance = RecipeModifier.applyModifiers(context, this, this.chance, true);
-    if (Objects.requireNonNull(getActionType()) == IOType.INPUT) {
-      int required = Math.round(RecipeModifier.applyModifiers(context, this, this.ingredient.count(), false));
-      for (ItemStack stack : ingredient.getItems()) {
-        stack = stack.copyWithCount(required);
-        boolean can = ItemUtils.consumeFromInventory(handler, stack, true, false);
-        if (chance.canProduce(productionChance)) {
-          return can;
-        }
-        if (can)
-          return ItemUtils.consumeFromInventory(handler, stack, false, false);
-      }
+  public void gatherRequirements(IRequirementList<ItemComponent> list) {
+    switch (getMode()) {
+      case INPUT -> list.processOnStart(this::processInput);
+      case OUTPUT -> list.processOnEnd(this::processOutput);
     }
-    return false;
+  }
+  private CraftingResult processInput(ItemComponent component, ICraftingContext context) {
+    IOInventory handler = component.getContainerProvider();
+    int required = Math.round(RecipeModifier.applyModifiers(context, new RecipeRequirement<>(this), this.ingredient.count(), false));
+    for (ItemStack stack : ingredient.getItems()) {
+      stack = stack.copyWithCount(required);
+      boolean can = ItemUtils.consumeFromInventory(handler, stack, true, false);
+      if (can)
+        if (ItemUtils.consumeFromInventory(handler, stack, false, false))
+          return CraftingResult.success();
+    }
+    return CraftingResult.error(Component.translatable("craftcheck.failure.item.input", required, ingredient.ingredient().toString()));
+  }
+
+  private CraftingResult processOutput(ItemComponent component, ICraftingContext context) {
+    if (!test(component, context)) return CraftingResult.error(Component.translatable("craftcheck.failure.item.output.space"));
+    IOInventory handler = component.getContainerProvider();
+    ItemStack stack = ingredient.getItems()[0].copyWithCount(ingredient.count());
+    ItemUtils.tryPlaceItemInInventory(stack.copy(), handler, false);
+    return CraftingResult.success();
   }
 
   @Override
-  @Nonnull
-  public CraftCheck finishCrafting(ProcessingComponent<?> component, RecipeCraftingContext context, ResultChance chance) {
-    IOInventory handler = (IOInventory) component.providedComponent();
-    if (Objects.requireNonNull(getActionType()) == IOType.OUTPUT) {
-      if (ingredient.getItems().length > 1)
-        throw new IllegalStateException("Invalid item output: can not accept tags");
-      if (ingredient.getItems()[0].isEmpty() || ingredient.getItems()[0].is(Items.AIR))
-        throw new IllegalStateException("Invalid item output: can not be empty or air");
-      ItemStack stack = ingredient.getItems()[0].copyWithCount(this.countIOBuffer);
+  public JsonObject asJson() {
+    JsonObject json = IRequirement.super.asJson();
+    json.add("ingredient", asJson(ingredient));
+    return json;
+  }
 
-      if (stack.isEmpty()) {
-        return CraftCheck.success(); //Can't find anything to output. Guess that's a valid state.
-      }
-      //If we don't produce the item, we only need to see if there would be space for it at all.
-      int inserted = ItemUtils.tryPlaceItemInInventory(stack.copy(), handler, true);
-      if (inserted > 0 && chance.canProduce(RecipeModifier.applyModifiers(context, this, this.chance, true))) {
-        return CraftCheck.success();
-      }
-      if (inserted > 0) {
-        int actual = ItemUtils.tryPlaceItemInInventory(stack.copy(), handler, false);
-        this.countIOBuffer -= actual;
-        if (this.countIOBuffer <= 0) {
-          return CraftCheck.success();
-        }
-        return CraftCheck.partialSuccess();
-      }
-      return CraftCheck.failure("craftcheck.failure.item.output.space");
-    }
-    return CraftCheck.skipComponent();
+  @Override
+  public RequirementItem deepCopyModified(List<RecipeModifier> modifiers) {
+    int inAmt = Math.round(RecipeModifier.applyModifiers(modifiers, this.getType(), getMode(), ingredient.count(), false));
+    return new RequirementItem(getMode(), new SizedIngredient(ingredient.ingredient(), inAmt), getPosition());
+  }
+
+  @Override
+  public RequirementItem deepCopy() {
+    return new RequirementItem(getMode(), new SizedIngredient(ingredient.ingredient(), ingredient.count()),
+        getPosition());
+  }
+
+  @Override
+  public @NotNull Component getMissingComponentErrorMessage(IOType ioType) {
+    return Component.translatable(String.format("component.missing.item.%s", ioType.name().toLowerCase()));
+  }
+
+  @Override
+  public boolean isComponentValid(ItemComponent m, ICraftingContext context) {
+    return getMode().equals(m.getIOType());
   }
 }

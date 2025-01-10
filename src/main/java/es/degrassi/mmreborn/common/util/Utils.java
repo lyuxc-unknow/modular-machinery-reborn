@@ -2,10 +2,13 @@ package es.degrassi.mmreborn.common.util;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Random;
+
 import net.minecraft.ResourceLocationException;
 import net.minecraft.resources.ResourceLocation;
 
 public class Utils {
+  public static final Random RAND = new Random();
   private static final NumberFormat NUMBER_FORMAT = new DecimalFormat("#,###");
   public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
 

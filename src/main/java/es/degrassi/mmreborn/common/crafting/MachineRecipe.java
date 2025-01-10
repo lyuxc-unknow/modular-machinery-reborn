@@ -8,12 +8,13 @@ import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.codec.NamedMapCodec;
-import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
+import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.crafting.requirement.PositionedRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.PositionedSizedRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
-import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
+import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.MMRLogger;
@@ -31,7 +32,6 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
   public static final NamedMapCodec<MachineRecipeBuilder> CODEC = NamedCodec.record(instance -> instance.group(
       DefaultCodecs.RESOURCE_LOCATION.fieldOf("machine").forGetter(MachineRecipeBuilder::getMachine),
       NamedCodec.intRange(1, Integer.MAX_VALUE).fieldOf("time").forGetter(MachineRecipeBuilder::getTime),
-      ComponentRequirement.CODEC.listOf().fieldOf("requirements").forGetter(MachineRecipeBuilder::getRequirements),
+      RecipeRequirement.CODEC.listOf().fieldOf("requirements").forGetter(MachineRecipeBuilder::getRequirements),
       NamedCodec.INT.optionalFieldOf("priority", 0).forGetter(MachineRecipeBuilder::getPrio),
       NamedCodec.BOOL.optionalFieldOf("voidFailure", true).forGetter(MachineRecipeBuilder::isVoidF),
       NamedCodec.INT.optionalFieldOf("width", 256).forGetter(MachineRecipeBuilder::getWidth),
@@ -53,7 +53,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
   private final ResourceLocation owningMachine;
   @Getter(AccessLevel.NONE)
   private final int tickTime;
-  private final List<ComponentRequirement<?, ?>> recipeRequirements = Lists.newArrayList();
+  private final List<RecipeRequirement<?, ?>> recipeRequirements = Lists.newArrayList();
   private final int configuredPriority;
   private final boolean voidPerTickFailure;
   private final PositionedRequirement progressPosition;
@@ -79,14 +79,14 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
     return owningMachine;
   }
 
-  public List<ComponentRequirement<?, ?>> getCraftingRequirements() {
-    return Collections.unmodifiableList(recipeRequirements);
+  public List<RecipeRequirement<?, ?>> getRequirements() {
+    return recipeRequirements;
   }
 
-  public void addRequirement(ComponentRequirement<?, ?> requirement) {
-    if (requirement instanceof RequirementEnergy) {
-      for (ComponentRequirement<?, ?> req : this.recipeRequirements) {
-        if (req instanceof RequirementEnergy && req.getActionType() == requirement.getActionType()) {
+  public void addRequirement(RecipeRequirement<?, ?> requirement) {
+    if (requirement.requirement() instanceof RequirementEnergy) {
+      for (RecipeRequirement<?, ?> req : this.getRequirements()) {
+        if (req.requirement() instanceof RequirementEnergy && req.requirement().getMode() == requirement.requirement().getMode()) {
           throw new IllegalStateException("Tried to add multiple energy requirements for the same ioType! Please only add one for each ioType!");
         }
       }
@@ -114,7 +114,8 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
   public MachineRecipe copy(ResourceLocation newOwningMachineIdentifier, List<RecipeModifier> modifiers) {
     MachineRecipe copy = new MachineRecipe(
         newOwningMachineIdentifier,
-        Math.round(RecipeModifier.applyModifiers(modifiers, RequirementTypeRegistration.DURATION.get(), null, this.getRecipeTotalTickTime(), false)),
+        Math.round(RecipeModifier.applyModifiers(modifiers, RequirementTypeRegistration.DURATION.get(), IOType.INPUT,
+            this.getRecipeTotalTickTime(), false)),
         this.getConfiguredPriority(),
         this.doesCancelRecipeOnPerTickFailure(),
         this.width,
@@ -123,8 +124,8 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
         this.progressPosition
     );
 
-    for (ComponentRequirement<?, ?> requirement : this.getCraftingRequirements()) {
-      copy.addRequirement(requirement.deepCopyModified(modifiers));
+    for (RecipeRequirement<?, ?> requirement : this.getRequirements()) {
+      copy.addRequirement(new RecipeRequirement<>(requirement.deepCopyModified(modifiers)));
     }
     return copy;
   }
@@ -195,7 +196,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
     private final int width, height;
     private int prio;
     private boolean shouldRenderProgress;
-    private final List<ComponentRequirement<?, ?>> requirements;
+    private final List<RecipeRequirement<?, ?>> requirements;
     private boolean voidF;
 
     public MachineRecipeBuilder(ResourceLocation machine, int time, int width, int height, PositionedRequirement progressPosition) {
@@ -219,11 +220,11 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
       this.shouldRenderProgress = v;
     }
 
-    public void addRequirement(ComponentRequirement<?, ?> requirement) {
+    public void addRequirement(RecipeRequirement<?, ?> requirement) {
       requirements.add(requirement);
     }
 
-    public MachineRecipeBuilder(ResourceLocation machine, int time, List<ComponentRequirement<?, ?>> requirements,
+    public MachineRecipeBuilder(ResourceLocation machine, int time, List<RecipeRequirement<?, ?>> requirements,
                                 int prio, boolean voidF, int width, int height,
                                 boolean shouldRenderProgress, PositionedRequirement progressPosition) {
       this.machine = machine;

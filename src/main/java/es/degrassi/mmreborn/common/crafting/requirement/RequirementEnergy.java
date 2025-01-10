@@ -1,82 +1,42 @@
 package es.degrassi.mmreborn.common.crafting.requirement;
 
-import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.codec.NamedMapCodec;
-import es.degrassi.mmreborn.common.crafting.helper.ComponentOutputRestrictor;
-import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
-import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
-import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
-import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
-import es.degrassi.mmreborn.common.machine.IOType;
-import es.degrassi.mmreborn.common.machine.MachineComponent;
-import es.degrassi.mmreborn.common.machine.component.EnergyHatch;
+import es.degrassi.mmreborn.api.crafting.CraftingResult;
+import es.degrassi.mmreborn.api.crafting.ICraftingContext;
+import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
+import es.degrassi.mmreborn.api.crafting.requirement.IRequirementList;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
+import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
+import es.degrassi.mmreborn.common.machine.IOType;
+import es.degrassi.mmreborn.common.machine.component.EnergyComponent;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.IEnergyHandler;
-import es.degrassi.mmreborn.common.util.ResultChance;
+import lombok.Getter;
+import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
-public class RequirementEnergy extends ComponentRequirement<Long, RequirementEnergy> implements ComponentRequirement.PerTick {
+public class RequirementEnergy implements IRequirement<EnergyComponent> {
   public static final NamedMapCodec<RequirementEnergy> CODEC = NamedCodec.record(instance -> instance.group(
       NamedCodec.longRange(0, Long.MAX_VALUE).fieldOf("amount").forGetter(req -> req.requirementPerTick),
-      NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(ComponentRequirement::getActionType),
-      PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
+      NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(IRequirement::getMode),
+      PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(IRequirement::getPosition)
   ).apply(instance, (amount, type, position) -> new RequirementEnergy(type, amount, position)), "EnergyRequirement");
-
+  @Getter
+  private final IOType mode;
+  @Getter
+  private final PositionedRequirement position;
   public final long requirementPerTick;
-  private long activeIO;
-
-  @Override
-  public JsonObject asJson() {
-    JsonObject json = super.asJson();
-    json.addProperty("amount", requirementPerTick);
-    json.addProperty("activeIO", activeIO);
-    return json;
-  }
 
   public RequirementEnergy(IOType ioType, long requirementPerTick, PositionedRequirement position) {
-    super(RequirementTypeRegistration.ENERGY.get(), ioType, position);
     this.requirementPerTick = requirementPerTick;
-    this.activeIO = this.requirementPerTick;
-  }
-
-  @Override
-  public int getSortingWeight() {
-    return PRIORITY_WEIGHT_ENERGY;
-  }
-
-  @Override
-  public ComponentRequirement<Long, RequirementEnergy> deepCopy() {
-    RequirementEnergy energy = new RequirementEnergy(this.getActionType(), this.requirementPerTick, getPosition());
-    energy.activeIO = this.activeIO;
-    return energy;
-  }
-
-  @Override
-  public ComponentRequirement<Long, RequirementEnergy> deepCopyModified(List<RecipeModifier> modifiers) {
-    int requirement = Math.round(RecipeModifier.applyModifiers(modifiers, this, this.requirementPerTick, false));
-    RequirementEnergy energy = new RequirementEnergy(this.getActionType(), requirement, getPosition());
-    energy.activeIO = this.activeIO;
-    return energy;
-  }
-
-  @Override
-  public void startRequirementCheck(ResultChance contextChance, RecipeCraftingContext context) {
-  }
-
-  @Override
-  public void endRequirementCheck() {
-  }
-
-  @Nonnull
-  @Override
-  public String getMissingComponentErrorMessage(IOType ioType) {
-    return String.format("component.missing.energy.%s", ioType.name().toLowerCase());
+    this.position = position;
+    this.mode = ioType;
   }
 
   public long getRequiredEnergyPerTick() {
@@ -84,86 +44,89 @@ public class RequirementEnergy extends ComponentRequirement<Long, RequirementEne
   }
 
   @Override
-  public boolean isValidComponent(ProcessingComponent<?> component, RecipeCraftingContext ctx) {
-    MachineComponent<?> cmp = component.component();
-    if (cmp.getContainerProvider() == null) return false;
-    return cmp.getComponentType().equals(ComponentRegistration.COMPONENT_ENERGY.get()) &&
-        cmp instanceof EnergyHatch e &&
-        cmp.getIOType() == this.getActionType()
-        && e.getContainerProvider().getCurrentEnergy() > requirementPerTick;
+  public RequirementType<RequirementEnergy> getType() {
+    return RequirementTypeRegistration.ENERGY.get();
   }
 
-  @Nonnull
   @Override
-  public CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context,
-                                     List<ComponentOutputRestrictor<?>> restrictions) {
-    IEnergyHandler handler = (IEnergyHandler) component.providedComponent();
-    return switch (getActionType()) {
-      case INPUT -> {
-        if (handler.getCurrentEnergy() >= RecipeModifier.applyModifiers(context, this, this.requirementPerTick, false)) {
-          yield CraftCheck.success();
-        }
-        yield CraftCheck.failure("craftcheck.failure.energy.input");
-      }
-      case OUTPUT -> {
-        if (handler.getCurrentEnergy() + RecipeModifier.applyModifiers(context, this, this.requirementPerTick, false) <= handler.getMaxEnergy())
-          yield CraftCheck.success();
-        yield CraftCheck.failure("craftcheck.failure.energy.output");
-      }
+  public ComponentType getComponentType() {
+    return ComponentRegistration.COMPONENT_ENERGY.get();
+  }
+
+  @Override
+  public boolean test(EnergyComponent component, ICraftingContext context) {
+    IEnergyHandler handler = component.getContainerProvider();
+    return switch (mode) {
+      case INPUT -> handler.getCurrentEnergy() >= requirementPerTick;
+      case OUTPUT -> handler.getMaxEnergy() >= handler.getCurrentEnergy() + requirementPerTick;
     };
   }
 
   @Override
-  public boolean startCrafting(ProcessingComponent<?> component, RecipeCraftingContext context, ResultChance chance) {
-    return canStartCrafting(component, context, Lists.newArrayList()).isSuccess();
-  }
-
-  @Override
-  @Nonnull
-  public CraftCheck finishCrafting(ProcessingComponent<?> component, RecipeCraftingContext context, ResultChance chance) {
-    return CraftCheck.success();
-  }
-
-  @Override
-  public void startIOTick(RecipeCraftingContext context, float durationMultiplier) {
-    this.activeIO = Math.round(((double) RecipeModifier.applyModifiers(context, this, this.activeIO, false)) * durationMultiplier);
-  }
-
-  @Nonnull
-  @Override
-  public CraftCheck resetIOTick(RecipeCraftingContext context) {
-    boolean enough = this.activeIO <= 0;
-    this.activeIO = this.requirementPerTick;
-    return enough ? CraftCheck.success() : CraftCheck.failure("craftcheck.failure.energy.input");
-  }
-
-  @Nonnull
-  @Override
-  public CraftCheck doIOTick(ProcessingComponent<?> component, RecipeCraftingContext context) {
-    IEnergyHandler handler = (IEnergyHandler) component.providedComponent();
-    switch (getActionType()) {
-      case INPUT:
-        if (handler.getCurrentEnergy() >= this.activeIO) {
-          handler.setCurrentEnergy(handler.getCurrentEnergy() - this.activeIO);
-          this.activeIO = 0;
-          return CraftCheck.success();
-        } else {
-          this.activeIO -= handler.getCurrentEnergy();
-          handler.setCurrentEnergy(0);
-          return CraftCheck.partialSuccess();
-        }
-      case OUTPUT:
-        long remaining = handler.getRemainingCapacity();
-        if (remaining - this.activeIO < 0) {
-          handler.setCurrentEnergy(handler.getMaxEnergy());
-          this.activeIO -= remaining;
-          return CraftCheck.partialSuccess();
-        }
-        handler.setCurrentEnergy(Math.min(handler.getCurrentEnergy() + this.activeIO, handler.getMaxEnergy()));
-        this.activeIO = 0;
-        return CraftCheck.success();
+  public void gatherRequirements(IRequirementList<EnergyComponent> list) {
+    if (mode.isInput()) {
+      list.processEachTick(this::processInputs);
+    } else {
+      list.processEachTick(this::processOutputs);
     }
-    //This is neither input nor output? when do we actually end up in this case down here?
-    return CraftCheck.skipComponent();
+  }
+
+  private CraftingResult processInputs(EnergyComponent component, ICraftingContext context) {
+    int amount = (int)context.getPerTickIntegerModifiedValue(this.requirementPerTick, this);
+    component.getContainerProvider().setCanExtract(true);
+    int canExtract = component.getContainerProvider().extractEnergy(amount, true);
+    if(canExtract == amount) {
+      component.getContainerProvider().extractEnergy(amount, false);
+      component.getContainerProvider().setCanExtract(false);
+      return CraftingResult.success();
+    }
+    component.getContainerProvider().setCanExtract(false);
+    return CraftingResult.error(Component.translatable(
+        "craftcheck.failure.energy.input", requirementPerTick, component.getContainerProvider().getCurrentEnergy()
+    ));
+  }
+
+  private CraftingResult processOutputs(EnergyComponent component, ICraftingContext context) {
+    int amount = (int)context.getPerTickIntegerModifiedValue(this.requirementPerTick, this);
+    component.getContainerProvider().setCanInsert(true);
+    int canReceive = component.getContainerProvider().receiveEnergy(amount, true);
+    if(canReceive == amount) {
+      component.getContainerProvider().receiveEnergy(amount, false);
+      component.getContainerProvider().setCanInsert(false);
+      return CraftingResult.success();
+    }
+    component.getContainerProvider().setCanInsert(false);
+    return CraftingResult.error(Component.translatable(
+        "craftcheck.failure.energy.output", requirementPerTick, component.getContainerProvider().getRemainingCapacity()
+    ));
+  }
+
+  @Override
+  public JsonObject asJson() {
+    JsonObject json = IRequirement.super.asJson();
+    json.addProperty("actionType", mode.name());
+    json.addProperty("amount", requirementPerTick);
+    return json;
+  }
+
+  @Override
+  public RequirementEnergy deepCopyModified(List<RecipeModifier> modifiers) {
+    long requirement = Math.round(RecipeModifier.applyModifiers(modifiers, new RecipeRequirement<>(this), this.requirementPerTick, false));
+    return new RequirementEnergy(mode, requirement, position);
+  }
+
+  @Override
+  public RequirementEnergy deepCopy() {
+    return new RequirementEnergy(mode, requirementPerTick, position);
+  }
+
+  @Override
+  public @NotNull Component getMissingComponentErrorMessage(IOType ioType) {
+    return Component.translatable(String.format("component.missing.energy.%s", ioType.name().toLowerCase()));
+  }
+
+  @Override
+  public boolean isComponentValid(EnergyComponent m, ICraftingContext context) {
+    return getMode().equals(m.getIOType());
   }
 }

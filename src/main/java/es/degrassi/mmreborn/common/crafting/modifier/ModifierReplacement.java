@@ -8,6 +8,9 @@ import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 
 import java.util.Collections;
@@ -64,5 +67,26 @@ public class ModifierReplacement {
     json.add("description", desc);
     json.add("position", DefaultCodecs.BLOCK_POS.encodeStart(JsonOps.INSTANCE, position).getOrThrow());
     return json;
+  }
+
+  public CompoundTag asTag() {
+    CompoundTag tag = new CompoundTag();
+    tag.put("replacement", info.asTag());
+    ListTag modifiers = new ListTag();
+    modifier.stream().map(RecipeModifier::asTag).forEachOrdered(modifiers::add);
+    tag.put("modifiers", modifiers);
+    ListTag desc = new ListTag();
+    description.stream().map(Component::getString).map(StringTag::valueOf).forEachOrdered(desc::add);
+    tag.put("description", desc);
+    CompoundTag position = new CompoundTag();
+    position.putInt("x", this.position.getX());
+    position.putInt("y", this.position.getY());
+    position.putInt("z", this.position.getZ());
+    tag.put("position", position);
+    return tag;
+  }
+
+  public String getString() {
+    return asJson().toString();
   }
 }

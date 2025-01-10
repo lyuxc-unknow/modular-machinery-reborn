@@ -61,11 +61,6 @@ public abstract class BaseScreen<T extends ContainerBase<E>, E extends Colorable
           this.renderSlotHighlight(guiGraphics, slot, mouseX, mouseY, partialTick);
         }
       }
-
-//      if (this.isHovering(slot, mouseX, mouseY) && slot.isActive()) {
-//        this.hoveredSlot = slot;
-//        this.renderSlotHighlight(guiGraphics, slot, mouseX, mouseY, partialTick);
-//      }
     }
 
     this.renderLabels(guiGraphics, mouseX, mouseY);

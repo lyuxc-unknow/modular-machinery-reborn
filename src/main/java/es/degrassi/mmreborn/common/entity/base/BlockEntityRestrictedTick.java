@@ -16,9 +16,14 @@ public abstract class BlockEntityRestrictedTick extends ColorableMachineComponen
   }
 
   public final void tick() {
-    if (getLevel() == null || getLevel().isClientSide()) return;
+    if (getLevel() == null) return;
+    if (getLevel().isClientSide()) {
+      doClientTick();
+      return;
+    }
     doRestrictedTick();
   }
 
   public abstract void doRestrictedTick();
+  public void doClientTick() {}
 }

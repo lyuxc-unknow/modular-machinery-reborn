@@ -1,15 +1,17 @@
 package es.degrassi.mmreborn.common.integration.emi;
 
+import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.api.integration.emi.EmiStackFactory;
 import es.degrassi.mmreborn.api.integration.emi.RegisterEmiRequirementToStackEvent;
-import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
+import es.degrassi.mmreborn.common.machine.MachineComponent;
 import net.neoforged.fml.ModLoader;
 
 import java.util.Map;
 
 public class EmiStackRegistry {
-  private static Map<RequirementType<?>, EmiStackFactory<?, ?>> stacks;
+  private static Map<RequirementType<?>, EmiStackFactory<?>> stacks;
 
   public static void init() {
     RegisterEmiRequirementToStackEvent event = new RegisterEmiRequirementToStackEvent();
@@ -22,7 +24,7 @@ public class EmiStackRegistry {
   }
 
   @SuppressWarnings("unchecked")
-  public static <C extends ComponentRequirement<T, C>, T> EmiStackFactory<C, T> getStack(RequirementType<C> type) {
-    return (EmiStackFactory<C, T>) stacks.get(type);
+  public static <R extends RecipeRequirement<C, T>, T extends IRequirement<C>, C extends MachineComponent<?>> EmiStackFactory<R> getStack(RequirementType<T> type) {
+    return (EmiStackFactory<R>) stacks.get(type);
   }
 }

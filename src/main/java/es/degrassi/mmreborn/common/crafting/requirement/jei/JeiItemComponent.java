@@ -1,12 +1,14 @@
 package es.degrassi.mmreborn.common.crafting.requirement.jei;
 
 import com.mojang.datafixers.util.Pair;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.requirement.PositionedSizedRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementItem;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.integration.jei.category.MMRRecipeCategory;
 import es.degrassi.mmreborn.common.integration.jei.category.drawable.DrawableWrappedText;
+import es.degrassi.mmreborn.common.machine.component.ItemComponent;
 import es.degrassi.mmreborn.common.util.Utils;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.recipe.IFocusGroup;
@@ -19,8 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public class JeiItemComponent extends JeiComponent<ItemStack, RequirementItem> {
-  public JeiItemComponent(RequirementItem requirement) {
+public class JeiItemComponent extends JeiComponent<ItemStack, RecipeRequirement<ItemComponent, RequirementItem>> {
+  public JeiItemComponent(RecipeRequirement<ItemComponent, RequirementItem> requirement) {
     super(requirement, 36, 0);
   }
 
@@ -36,16 +38,16 @@ public class JeiItemComponent extends JeiComponent<ItemStack, RequirementItem> {
 
   @Override
   public List<ItemStack> ingredients() {
-    return Arrays.stream(requirement.getIngredient().getItems()).map(ItemStack::copy).toList();
+    return Arrays.stream(requirement.requirement().getIngredient().getItems()).map(ItemStack::copy).toList();
   }
 
   @Override
   public void setRecipe(MMRRecipeCategory category, IRecipeLayoutBuilder builder, MachineRecipe recipe, IFocusGroup focuses) {
     Component component = Component.empty();
-    String chance = Utils.decimalFormat(requirement.chance * 100);
-    if (requirement.chance > 0 && requirement.chance < 1)
+    String chance = Utils.decimalFormat(requirement.chance() * 100);
+    if (requirement.chance() > 0 && requirement.chance() < 1)
       component = Component.translatable("modular_machinery_reborn.ingredient.chance", chance, "%").withColor(Config.chanceColor);
-    else if (requirement.chance == 0)
+    else if (requirement.chance() == 0)
       component = Component.translatable("modular_machinery_reborn.ingredient.chance.nc").withColor(Config.chanceColor);
     Font font = Minecraft.getInstance().font;
     recipe.chanceTexts.add(
@@ -73,12 +75,12 @@ public class JeiItemComponent extends JeiComponent<ItemStack, RequirementItem> {
     builder.addSlot(role(), getPosition().x(), getPosition().y())
         .addItemStacks(ingredients())
         .addRichTooltipCallback((view, tooltip) -> {
-          if (requirement.chance > 0 && requirement.chance < 1)
-            tooltip.add(Component.translatable("modular_machinery_reborn.ingredient.chance." + requirement.getActionType().name().toLowerCase(Locale.ROOT), chance, "%"));
-          else if (requirement.chance == 0)
+          if (requirement.chance() > 0 && requirement.chance() < 1)
+            tooltip.add(Component.translatable("modular_machinery_reborn.ingredient.chance." + requirement.requirement().getMode().name().toLowerCase(Locale.ROOT), chance, "%"));
+          else if (requirement.chance() == 0)
             tooltip.add(Component.translatable("modular_machinery_reborn.ingredient.chance.not_consumed"));
-          else if (requirement.chance == 1)
-            tooltip.add(Component.translatable("modular_machinery_reborn.jei.ingredient.item." + requirement.getActionType().name().toLowerCase(Locale.ROOT)));
+          else if (requirement.chance() == 1)
+            tooltip.add(Component.translatable("modular_machinery_reborn.jei.ingredient.item." + requirement.requirement().getMode().name().toLowerCase(Locale.ROOT)));
         })
         .setStandardSlotBackground();
   }

@@ -1,35 +1,36 @@
 package es.degrassi.mmreborn.common.crafting.requirement;
 
-import com.google.common.collect.Lists;
-import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
-import es.degrassi.mmreborn.common.crafting.helper.ComponentOutputRestrictor;
-import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
-import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
-import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
-import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
-import es.degrassi.mmreborn.common.machine.IOType;
+import es.degrassi.mmreborn.api.crafting.CraftingResult;
+import es.degrassi.mmreborn.api.crafting.ICraftingContext;
+import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
+import es.degrassi.mmreborn.api.crafting.requirement.IRequirementList;
+import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
+import es.degrassi.mmreborn.common.machine.IOType;
+import es.degrassi.mmreborn.common.machine.component.TimeComponent;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.IntRange;
-import es.degrassi.mmreborn.common.util.ResultChance;
+import lombok.Getter;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class RequirementTime extends ComponentRequirement<IntRange, RequirementTime> {
+public class RequirementTime implements IRequirement<TimeComponent> {
   public static final NamedCodec<RequirementTime> CODEC = NamedCodec.record(instance -> instance.group(
       IntRange.CODEC.fieldOf("range").forGetter(RequirementTime::time),
-      PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
+      PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(IRequirement::getPosition)
   ).apply(instance, RequirementTime::new), "Time Requirement");
 
   private final IntRange time;
+  @Getter
+  private final PositionedRequirement position;
 
   public RequirementTime(IntRange time, PositionedRequirement position) {
-    super(RequirementTypeRegistration.TIME.get(), IOType.INPUT, position);
     this.time = time;
+    this.position = position;
   }
 
   public IntRange time() {
@@ -37,66 +38,63 @@ public class RequirementTime extends ComponentRequirement<IntRange, RequirementT
   }
 
   @Override
-  public boolean isValidComponent(ProcessingComponent<?> component, RecipeCraftingContext ctx) {
-    return component.component().getComponentType().equals(ComponentRegistration.COMPONENT_TIME.get());
+  public RequirementType<RequirementTime> getType() {
+    return RequirementTypeRegistration.TIME.get();
   }
 
   @Override
-  public boolean startCrafting(ProcessingComponent<?> component, RecipeCraftingContext context, ResultChance chance) {
-    return canStartCrafting(component, context, Lists.newArrayList()).isSuccess();
+  public ComponentType getComponentType() {
+    return ComponentRegistration.COMPONENT_TIME.get();
   }
 
   @Override
-  public @NotNull CraftCheck finishCrafting(ProcessingComponent<?> component, RecipeCraftingContext context, ResultChance chance) {
-    return CraftCheck.skipComponent();
+  public IOType getMode() {
+    return IOType.INPUT;
   }
 
   @Override
-  public @NotNull CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context,
-                                              List<ComponentOutputRestrictor<?>> restrictions) {
-    long time = context.getMachineController().getLevel().dimensionType().hasFixedTime()
-        ? context.getMachineController().getLevel().getDayTime()
-        : context.getMachineController().getLevel().getDayTime() % 24000L;
-    if (this.time.contains((int) time))
-      return CraftCheck.success();
-    return CraftCheck.failure(
-        Component.translatable(
-            "craftcheck.failure.time",
-            this.time.toFormattedString(),
-            time
-        ).getString()
-    );
+  public boolean test(TimeComponent component, ICraftingContext context) {
+    long time = context.getMachineTile().getLevel().dimensionType().hasFixedTime()
+        ? context.getMachineTile().getLevel().getDayTime()
+        : context.getMachineTile().getLevel().getDayTime() % 24000L;
+    return this.time.contains((int) time);
   }
 
   @Override
-  public ComponentRequirement<IntRange, RequirementTime> deepCopy() {
-    return new RequirementTime(time, getPosition());
+  public void gatherRequirements(IRequirementList<TimeComponent> list) {
+    list.worldCondition(this::check);
+  }
+
+  private CraftingResult check(TimeComponent component, ICraftingContext context) {
+    long time = context.getMachineTile().getLevel().dimensionType().hasFixedTime()
+        ? context.getMachineTile().getLevel().getDayTime()
+        : context.getMachineTile().getLevel().getDayTime() % 24000L;
+    if(this.time.contains((int) time))
+      return CraftingResult.success();
+    return CraftingResult.error(Component.translatable(
+        "craftcheck.failure.time",
+        this.time.toFormattedString(),
+        time
+    ));
   }
 
   @Override
-  public ComponentRequirement<IntRange, RequirementTime> deepCopyModified(List<RecipeModifier> modifiers) {
-    return new RequirementTime(time, getPosition());
+  public RequirementTime deepCopyModified(List<RecipeModifier> modifiers) {
+    return this;
   }
 
   @Override
-  public void startRequirementCheck(ResultChance contextChance, RecipeCraftingContext context) {
-
+  public RequirementTime deepCopy() {
+    return this;
   }
 
   @Override
-  public void endRequirementCheck() {
-
+  public @NotNull Component getMissingComponentErrorMessage(IOType ioType) {
+    return Component.translatable("component.missing.time");
   }
 
   @Override
-  public @NotNull String getMissingComponentErrorMessage(IOType ioType) {
-    return "component.missing.time";
-  }
-
-  @Override
-  public JsonObject asJson() {
-    JsonObject json = super.asJson();
-    json.addProperty("time", time.toFormattedString());
-    return json;
+  public boolean isComponentValid(TimeComponent m, ICraftingContext context) {
+    return getMode().equals(m.getIOType());
   }
 }

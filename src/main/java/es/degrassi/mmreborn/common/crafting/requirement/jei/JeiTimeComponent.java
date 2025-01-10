@@ -1,8 +1,10 @@
 package es.degrassi.mmreborn.common.crafting.requirement.jei;
 
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementTime;
 import es.degrassi.mmreborn.common.integration.jei.category.MMRRecipeCategory;
+import es.degrassi.mmreborn.common.machine.component.TimeComponent;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import es.degrassi.mmreborn.common.util.IntRange;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -12,8 +14,8 @@ import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
-public class JeiTimeComponent extends JeiComponent<IntRange, RequirementTime> {
-  public JeiTimeComponent(RequirementTime requirement) {
+public class JeiTimeComponent extends JeiComponent<IntRange, RecipeRequirement<TimeComponent, RequirementTime>> {
+  public JeiTimeComponent(RecipeRequirement<TimeComponent, RequirementTime> requirement) {
     super(requirement, 0, 0);
   }
 
@@ -29,7 +31,7 @@ public class JeiTimeComponent extends JeiComponent<IntRange, RequirementTime> {
 
   @Override
   public List<IntRange> ingredients() {
-    return List.of(requirement.time());
+    return List.of(requirement.requirement().time());
   }
 
   @Override
@@ -40,7 +42,7 @@ public class JeiTimeComponent extends JeiComponent<IntRange, RequirementTime> {
           tooltip.clear();
           tooltip.add(Component.translatable(
               "modular_machinery_reborn.jei.ingredient.time",
-              requirement.time().toFormattedString()
+              requirement.requirement().time().toFormattedString()
           ));
         });
   }

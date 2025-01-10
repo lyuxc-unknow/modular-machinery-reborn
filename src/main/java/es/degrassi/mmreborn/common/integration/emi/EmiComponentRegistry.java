@@ -1,9 +1,11 @@
 package es.degrassi.mmreborn.common.integration.emi;
 
+import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.api.integration.emi.EmiComponentFactory;
 import es.degrassi.mmreborn.api.integration.emi.RegisterEmiComponentEvent;
-import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
+import es.degrassi.mmreborn.common.machine.MachineComponent;
 import net.neoforged.fml.ModLoader;
 
 import java.util.Map;
@@ -22,7 +24,7 @@ public class EmiComponentRegistry {
   }
 
   @SuppressWarnings("unchecked")
-  public static <C extends ComponentRequirement<T, C>, T> EmiComponentFactory<C, T> getEmiComponent(RequirementType<C> type) {
-    return (EmiComponentFactory<C, T>) components.get(type);
+  public static <R extends RecipeRequirement<C, T>, C extends MachineComponent<?>, T extends IRequirement<C>, X> EmiComponentFactory<R, X> getEmiComponent(RequirementType<T> type) {
+    return (EmiComponentFactory<R, X>) components.get(type);
   }
 }

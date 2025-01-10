@@ -1,20 +1,19 @@
 package es.degrassi.mmreborn.common.crafting.requirement;
 
-import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
-import es.degrassi.mmreborn.common.crafting.helper.ComponentOutputRestrictor;
-import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
-import es.degrassi.mmreborn.common.crafting.helper.CraftCheck;
-import es.degrassi.mmreborn.common.crafting.helper.ProcessingComponent;
-import es.degrassi.mmreborn.common.crafting.helper.RecipeCraftingContext;
-import es.degrassi.mmreborn.common.machine.IOType;
+import es.degrassi.mmreborn.api.crafting.ICraftingContext;
+import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
+import es.degrassi.mmreborn.api.crafting.requirement.IRequirementList;
+import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
+import es.degrassi.mmreborn.common.machine.IOType;
+import es.degrassi.mmreborn.common.machine.component.BiomeComponent;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
-import es.degrassi.mmreborn.common.util.ResultChance;
+import lombok.Getter;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -24,20 +23,28 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class RequirementBiome extends ComponentRequirement<ResourceLocation, RequirementBiome> {
+public class RequirementBiome implements IRequirement<BiomeComponent> {
   public static final NamedCodec<RequirementBiome> CODEC = NamedCodec.record(instance -> instance.group(
       DefaultCodecs.RESOURCE_LOCATION.listOf().fieldOf("filter").forGetter(RequirementBiome::filter),
       NamedCodec.BOOL.optionalFieldOf("blacklist", false).forGetter(RequirementBiome::blacklist),
-      PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(ComponentRequirement::getPosition)
+      PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(IRequirement::getPosition)
   ).apply(instance, RequirementBiome::new), "Biome Requirement");
 
+  @Getter
+  private final IOType actionType;
+  @Getter
+  private final RequirementType<RequirementBiome> requirementType;
+  @Getter
+  private final PositionedRequirement position;
   private final List<ResourceLocation> filter;
   private final boolean blacklist;
 
   public RequirementBiome(List<ResourceLocation> filter, boolean blacklist, PositionedRequirement position) {
-    super(RequirementTypeRegistration.BIOME.get(), IOType.INPUT, position);
     this.filter = filter;
     this.blacklist = blacklist;
+    this.position = position;
+    this.requirementType = RequirementTypeRegistration.BIOME.get();
+    this.actionType = IOType.INPUT;
   }
 
   public List<ResourceLocation> filter() {
@@ -49,66 +56,58 @@ public class RequirementBiome extends ComponentRequirement<ResourceLocation, Req
   }
 
   @Override
-  public boolean isValidComponent(ProcessingComponent<?> component, RecipeCraftingContext ctx) {
-    return component.component().getComponentType().equals(ComponentRegistration.COMPONENT_BIOME.get());
+  public RequirementType<RequirementBiome> getType() {
+    return RequirementTypeRegistration.BIOME.get();
   }
 
   @Override
-  public boolean startCrafting(ProcessingComponent<?> component, RecipeCraftingContext context, ResultChance chance) {
-    return canStartCrafting(component, context, Lists.newArrayList()).isSuccess();
+  public ComponentType getComponentType() {
+    return ComponentRegistration.COMPONENT_BIOME.get();
   }
 
   @Override
-  public @NotNull CraftCheck finishCrafting(ProcessingComponent<?> component, RecipeCraftingContext context, ResultChance chance) {
-    return CraftCheck.skipComponent();
+  public IOType getMode() {
+    return getActionType();
   }
 
   @Override
-  public @NotNull CraftCheck canStartCrafting(ProcessingComponent<?> component, RecipeCraftingContext context,
-                                              List<ComponentOutputRestrictor<?>> restrictions) {
-    Registry<Biome> biomeRegistry = context.getMachineController().getLevel().registryAccess().registryOrThrow(Registries.BIOME);
-    if (this.filter.stream().anyMatch(biome -> biomeRegistry.get(biome) == context.getMachineController().getLevel().getBiome(context.getMachineController().getBlockPos()).value()) != this.blacklist)
-      return CraftCheck.success();
-    return CraftCheck.failure(Component.translatable(
-            "craftcheck.failure.biome." + blacklist,
-            filter.stream().map(ResourceLocation::toString).toList().toString(),
-            context.getMachineController().getLevel().getBiome(context.getMachineController().getBlockPos()).unwrapKey().get().location().toString()
-        ).getString()
-    );
+  public boolean test(BiomeComponent component, ICraftingContext context) {
+    Registry<Biome> biomeRegistry = context.getMachineTile().getLevel().registryAccess().registryOrThrow(Registries.BIOME);
+    return this.filter.stream().anyMatch(biome -> biomeRegistry.get(biome) == context.getMachineTile().getLevel().getBiome(context.getMachineTile().getBlockPos()).value()) != this.blacklist;
   }
 
   @Override
-  public ComponentRequirement<ResourceLocation, RequirementBiome> deepCopy() {
-    return new RequirementBiome(Lists.newArrayList(filter), blacklist, getPosition());
-  }
+  public void gatherRequirements(IRequirementList<BiomeComponent> list) {
 
-  @Override
-  public ComponentRequirement<ResourceLocation, RequirementBiome> deepCopyModified(List<RecipeModifier> modifiers) {
-    return new RequirementBiome(Lists.newArrayList(filter), blacklist, getPosition());
-  }
-
-  @Override
-  public void startRequirementCheck(ResultChance contextChance, RecipeCraftingContext context) {
-
-  }
-
-  @Override
-  public void endRequirementCheck() {
-
-  }
-
-  @Override
-  public @NotNull String getMissingComponentErrorMessage(IOType ioType) {
-    return "component.missing.biome";
   }
 
   @Override
   public JsonObject asJson() {
-    JsonObject json = super.asJson();
+    JsonObject json = IRequirement.super.asJson();
     json.addProperty("blacklist", blacklist);
     JsonArray array = new JsonArray();
     filter.stream().map(ResourceLocation::toString).forEach(array::add);
     json.add("filter", array);
     return json;
+  }
+
+  @Override
+  public RequirementBiome deepCopyModified(List<RecipeModifier> modifiers) {
+    return new RequirementBiome(filter, blacklist, position);
+  }
+
+  @Override
+  public RequirementBiome deepCopy() {
+    return new RequirementBiome(filter, blacklist, position);
+  }
+
+  @Override
+  public @NotNull Component getMissingComponentErrorMessage(IOType ioType) {
+    return Component.translatable("component.missing.biome");
+  }
+
+  @Override
+  public boolean isComponentValid(BiomeComponent m, ICraftingContext context) {
+    return getMode().equals(m.getIOType());
   }
 }

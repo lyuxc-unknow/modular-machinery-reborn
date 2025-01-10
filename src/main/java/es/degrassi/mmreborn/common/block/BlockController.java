@@ -18,6 +18,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -42,6 +43,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 @SuppressWarnings("unused")
 public class BlockController extends BlockMachineComponent {
@@ -135,6 +137,7 @@ public class BlockController extends BlockMachineComponent {
   }
 
   @Override
+  @SuppressWarnings("deprecation")
   public BlockState rotate(BlockState state, Rotation rotation) {
     return state.setValue(BlockStateProperties.HORIZONTAL_FACING, rotation.rotate(state.getValue(BlockStateProperties.HORIZONTAL_FACING)));
   }
@@ -146,10 +149,7 @@ public class BlockController extends BlockMachineComponent {
       if (player instanceof ServerPlayer serverPlayer) {
         if (player.getItemInHand(hand).getItem() instanceof ItemBlueprint) {
           DynamicMachine machine = controller.getFoundMachine();
-          if (machine == null) return ItemInteractionResult.FAIL;
-          PacketDistributor.sendToPlayersTrackingChunk(serverPlayer.serverLevel(),
-              new ChunkPos(pos), new SAddControllerRenderer(pos));
-//          ControllerRenderer.add(machine, pos);
+          PacketDistributor.sendToPlayersTrackingChunk(serverPlayer.serverLevel(), new ChunkPos(pos), new SAddControllerRenderer(pos));
           return ItemInteractionResult.SUCCESS;
         }
         ControllerContainer.open(serverPlayer, controller);
@@ -196,5 +196,14 @@ public class BlockController extends BlockMachineComponent {
     if (tile instanceof MachineControllerEntity entity)
       RedstoneHelper.getRedstoneLevel(entity);
     return 0;
+  }
+
+  @Override
+  @SuppressWarnings("deprecation")
+  public SoundType getSoundType(BlockState state, LevelReader level, BlockPos pos, @Nullable Entity entity) {
+    return Optional.ofNullable(level.getBlockEntity(pos))
+        .filter(blockEntity -> blockEntity instanceof MachineControllerEntity)
+        .map(tile -> ((MachineControllerEntity)tile).getInteractionSound())
+        .orElse(super.getSoundType(state));
   }
 }

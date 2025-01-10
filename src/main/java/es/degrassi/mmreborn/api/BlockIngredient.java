@@ -15,6 +15,9 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -286,6 +289,18 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
     getAll().forEach(state -> array.add(state.toString()));
     json.add("states", array);
     return json;
+  }
+
+  public CompoundTag asTag() {
+    CompoundTag tag = new CompoundTag();
+    tag.putBoolean("isTag", isTag);
+    ListTag tagList = new ListTag();
+    tags.forEach(t -> tagList.add(StringTag.valueOf(t.toString())));
+    tag.put("tags", tagList);
+    ListTag states = new ListTag();
+    getAll().forEach(state -> states.add(StringTag.valueOf(state.toString())));
+    tag.put("states", states);
+    return tag;
   }
 
   public static BlockIngredient of(Object o) {

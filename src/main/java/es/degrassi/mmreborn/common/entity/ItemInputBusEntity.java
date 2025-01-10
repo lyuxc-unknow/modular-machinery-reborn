@@ -25,12 +25,12 @@ public class ItemInputBusEntity extends TileItemBus {
   }
 
   @Override
-  public IOInventory buildInventory(TileInventory tile, int size) {
+  public IOInventory buildInventory(int size) {
     int[] slots = new int[size];
     for (int i = 0; i < size; i++) {
       slots[i] = i;
     }
-    return new IOInventory(tile, slots, new int[] {});
+    return new IOInventory(slots, new int[] {});
   }
 
 }

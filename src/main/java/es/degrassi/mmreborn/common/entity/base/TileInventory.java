@@ -18,22 +18,18 @@ public abstract class TileInventory extends ColorableMachineComponentEntity {
 
   protected IOInventory inventory;
 
-  public TileInventory(BlockEntityType<?> entityType, BlockPos pos, BlockState blockState) {
-    super(entityType, pos, blockState);
-  }
-
   public TileInventory(BlockEntityType<?> entityType, BlockPos pos, BlockState blockState, int size) {
     super(entityType, pos, blockState);
-    this.inventory = buildInventory(this, size);
+    this.inventory = buildInventory(size);
   }
 
-  public abstract IOInventory buildInventory(TileInventory tile, int size);
+  public abstract IOInventory buildInventory(int size);
 
   @Override
   protected void loadAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
     super.loadAdditional(compound, pRegistries);
 
-    this.inventory = IOInventory.deserialize(this, compound.getCompound("inventory"), pRegistries);
+    this.inventory = IOInventory.deserialize(compound.getCompound("inventory"), pRegistries);
   }
 
   @Override

@@ -1,7 +1,6 @@
 package es.degrassi.mmreborn.common.registration;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
-import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.item.StructureCreatorItemMode;
 import net.minecraft.core.BlockPos;
@@ -12,7 +11,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -20,8 +18,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class Registration {
-
-
   public static final LootContextParamSet MODULAR_MACHINERY_LOOT_PARAMETER_SET = LootContextParamSets.register(
       "modular_machinery_reborn", builder ->
       builder.optional(LootContextParams.ORIGIN).optional(LootContextParams.BLOCK_ENTITY)
@@ -68,6 +64,8 @@ public class Registration {
   public static void register(final IEventBus bus) {
     DATA_COMPONENTS.register(bus);
     ComponentRegistration.register(bus);
+    DataRegistration.register(bus);
+    ProcessorTypeRegistration.register(bus);
     RequirementTypeRegistration.register(bus);
     BlockRegistration.register(bus);
     ItemRegistration.register(bus);

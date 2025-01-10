@@ -2,7 +2,9 @@ package es.degrassi.mmreborn.common.integration.jade;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
+import es.degrassi.mmreborn.common.manager.crafting.MachineStatus;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IServerDataProvider;
@@ -19,10 +21,10 @@ public class DynamicMachineServerDataProvider implements IServerDataProvider<Blo
       if (machine.isPaused()) {
         tag.putBoolean("paused", true);
       } else {
-        tag.put("status", machine.getCraftingStatus().serializeNBT());
+        tag.put("status", machine.getCraftingStatus().serializeNBT(accessor.getLevel().registryAccess()));
         if (machine.hasActiveRecipe()) {
-          tag.putDouble("progress", machine.getCraftingManager().getTicks());
-          tag.putInt("total", machine.getCraftingManager().getRecipeTicks());
+          tag.putDouble("progress", machine.getProcessor().core().getRecipeProgressTime());
+          tag.putInt("total", (int) machine.getProcessor().core().getRecipeTotalTime());
         }
       }
       nbt.put(ModularMachineryReborn.MODID, tag);

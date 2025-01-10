@@ -6,7 +6,7 @@ import dev.emi.emi.api.widget.DrawableWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
 import dev.emi.emi.runtime.EmiDrawContext;
 import es.degrassi.mmreborn.ModularMachineryReborn;
-import es.degrassi.mmreborn.common.crafting.helper.ComponentRequirement;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.integration.emi.recipe.MMREmiRecipe;
 import es.degrassi.mmreborn.common.util.TextureSizeHelper;
 import lombok.Getter;
@@ -21,18 +21,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Getter
-public abstract class EmiComponent<C, T extends ComponentRequirement<C, T>> extends DrawableWidget implements IEmiRequirement<C, T> {
+public abstract class EmiComponent<X, R extends RecipeRequirement<?, ?>> extends DrawableWidget implements IEmiRequirement<R> {
   protected static final ResourceLocation LOCATION_ICONS = ResourceLocation.fromNamespaceAndPath(ModularMachineryReborn.MODID, "textures/gui/jeirecipeicons.png");
-  protected T requirement;
+  protected R requirement;
   protected final int uOffset, vOffset;
   private final boolean renderOverlay;
 
-  protected EmiComponent(T requirement, int uOffset, int vOffset) {
+  protected EmiComponent(R requirement, int uOffset, int vOffset) {
     this(requirement, uOffset, vOffset, true);
   }
 
-  protected EmiComponent(T requirement, int uOffset, int vOffset, boolean renderOverlay) {
-    super(requirement.getPosition().x(), requirement.getPosition().y(), 0, 0, null);
+  protected EmiComponent(R requirement, int uOffset, int vOffset, boolean renderOverlay) {
+    super(requirement.requirement().getPosition().x(), requirement.requirement().getPosition().y(), 0, 0, null);
     this.requirement = requirement;
     this.uOffset = uOffset;
     this.vOffset = vOffset;
@@ -116,7 +116,7 @@ public abstract class EmiComponent<C, T extends ComponentRequirement<C, T>> exte
     return new LinkedList<>();
   }
 
-  public abstract List<C> ingredients();
+  public abstract List<X> ingredients();
 
   @Override
   public void addWidgets(WidgetHolder widgets, MMREmiRecipe recipe) {

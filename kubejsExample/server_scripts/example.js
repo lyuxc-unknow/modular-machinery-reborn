@@ -244,6 +244,62 @@ MMREvents.machines(event => {
                             // to affect the chance use .affectsChance()
                     )
             )
+        // CUSTOM SOUNDS, depends on the current machine status to play it, the interaction sounds too
+        // requires the object definition even if no properties are defined. Ex: `.sound("RUNNING", {})`
+        // Possible first arg: "RUNNING", "PAUSED", "ERRORED", "IDLE", "MISSING_STRUCTURE"
+         .sound("RUNNING", {
+            // background sound on the machine for the given status, needs to be registered in the game
+            // OPTIONAL property
+            "ambient": "mekanism:tile.machine.laser",
+            // as its name says, on interaction with the block plays the given sound on the proper interaction action,
+            // also needs to be registered in the game, can be changed between status
+            // OPTIONAL property, optional properties inside: ALL
+            "interaction": {
+                "volume": 1,
+                "pitch": 1,
+                "break": "mekanism:tile.machine.laser",
+                "step": "mekanism:tile.machine.laser",
+                "place": "mekanism:tile.machine.laser",
+                "hit": "mekanism:tile.machine.laser",
+                "fall": "mekanism:tile.machine.laser"
+            }
+         })
+         .sound("PAUSED", {
+            ambient: "mekanism:tile.machine.isotopic_centrifuge",
+            "interaction": {
+                "volume": 1,
+                "pitch": 1,
+                "break": "mekanism:tile.machine.isotopic_centrifuge",
+                "step": "mekanism:tile.machine.isotopic_centrifuge",
+                "place": "mekanism:tile.machine.isotopic_centrifuge",
+                "hit": "mekanism:tile.machine.isotopic_centrifuge",
+                "fall": "mekanism:tile.machine.isotopic_centrifuge"
+            }
+         })
+         .sound("ERRORED", {
+            ambient: "mekanism:tile.machine.chargepad",
+             "interaction": {
+                "volume": 1,
+                "pitch": 1,
+                "break": "mekanism:tile.machine.chargepad",
+                "step": "mekanism:tile.machine.chargepad",
+                "place": "mekanism:tile.machine.chargepad",
+                "hit": "mekanism:tile.machine.chargepad",
+                "fall": "mekanism:tile.machine.chargepad"
+             }
+         })
+         .sound("IDLE", {
+            ambient: "mekanism:tile.machine.compressor",
+           "interaction": {
+               "volume": 1,
+               "pitch": 1,
+               "break": "mekanism:tile.machine.compressor",
+               "step": "mekanism:tile.machine.compressor",
+               "place": "mekanism:tile.machine.compressor",
+               "hit": "mekanism:tile.machine.compressor",
+               "fall": "mekanism:tile.machine.compressor"
+           }
+         })
 
     // To create an empty machine (just the controller to make the multiblocks easier with the structure builder tool
     event.create("mmr:empty")

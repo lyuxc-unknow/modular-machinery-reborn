@@ -1,14 +1,14 @@
 package es.degrassi.mmreborn.common.entity.base;
 
-import es.degrassi.experiencelib.api.capability.IExperienceHandler;
 import es.degrassi.experiencelib.impl.capability.BasicExperienceTank;
-import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
+import es.degrassi.mmreborn.api.controller.ControllerAccessible;
 import es.degrassi.mmreborn.common.block.prop.ExperienceHatchSize;
 import es.degrassi.mmreborn.common.entity.ExperienceInputHatchEntity;
-import es.degrassi.mmreborn.common.entity.FluidInputHatchEntity;
 import es.degrassi.mmreborn.common.machine.IOType;
-import es.degrassi.mmreborn.common.machine.component.ExperienceHatch;
+import es.degrassi.mmreborn.common.machine.component.ExperienceComponent;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateExperienceComponentPacket;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -18,14 +18,15 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Locale;
 
-public abstract class ExperienceHatchEntity extends ColorableMachineComponentEntity implements MachineComponentEntity {
+public abstract class ExperienceHatchEntity extends ColorableMachineComponentEntity implements MachineComponentEntity<ExperienceComponent>, ControllerAccessible {
   protected ExperienceHatchSize size;
   protected IOType ioType;
+  @Getter
+  private BlockPos controllerPos;
 
   private final BasicExperienceTank experienceTank;
 
@@ -42,13 +43,8 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
 
   @Nullable
   @Override
-  public ExperienceHatch provideComponent() {
-    return new ExperienceHatch(ioType) {
-      @Override
-      public @NotNull IExperienceHandler getContainerProvider() {
-        return experienceTank;
-      }
-    };
+  public ExperienceComponent provideComponent() {
+    return new ExperienceComponent(this.getTank(), ioType);
   }
 
   private BasicExperienceTank buildTank() {
@@ -61,6 +57,8 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
                 new ChunkPos(getBlockPos()),
                 new SUpdateExperienceComponentPacket(getTank().getExperience(), getBlockPos())
             );
+          if (getController() != null)
+            getController().getProcessor().setMachineInventoryChanged();
         }
     ) {
       @Override
@@ -104,6 +102,9 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
     if (compound.contains("experience", Tag.TAG_COMPOUND))
       this.experienceTank.deserializeNBT(pRegistries, compound.getCompound("experience"));
     experienceTank.setCapacity(size.getCapacity());
+    if (compound.contains("controllerPos")) {
+      controllerPos = BlockPos.of(compound.getLong("controllerPos"));
+    }
   }
 
   @Override
@@ -116,5 +117,12 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
     compound.putString("ioType", ioType.getSerializedName());
 
     compound.put("experience", experienceTank.serializeNBT(pRegistries));
+    if (controllerPos != null)
+      compound.putLong("controllerPos", controllerPos.asLong());
+  }
+
+  @Override
+  public void setControllerPos(BlockPos pos) {
+    this.controllerPos = pos;
   }
 }

@@ -7,7 +7,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
-import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import lombok.Getter;
@@ -49,24 +48,32 @@ public class Structure {
     return builder.build(pattern, keys);
   }
 
-  public static void place(DynamicMachine machine, BlockPos controllerPos, Level level, boolean isCreative, ServerPlayer player) {
+  public static void place(DynamicMachine machine, BlockPos controllerPos, Level level, boolean isCreative, ServerPlayer player, boolean withModifiers) {
     Structure structure = machine.getPattern();
     BlockState blockState = level.getBlockState(controllerPos);
     Direction facing = blockState.getValue(BlockStateProperties.HORIZONTAL_FACING);
-    Map<BlockPos, BlockIngredient> blocks = structure.getBlocksFiltered(facing);
+    Map<BlockPos, BlockIngredient> blocks = withModifiers ? structure.getBlocks(facing) : structure.getBlocksFiltered(facing);
     BlockPos.MutableBlockPos worldPos = new BlockPos.MutableBlockPos();
     blockSearch:
     for (BlockPos pos : blocks.keySet()) {
       BlockIngredient ingredient = blocks.get(pos);
       if (
           ingredient.equals(BlockIngredient.AIR) ||
-          ingredient.equals(BlockIngredient.ANY) ||
-          ingredient.getAll().stream().anyMatch(state ->
-              state.equals(PartialBlockState.AIR) ||
+          ingredient.equals(BlockIngredient.ANY)
+      ) {
+        continue;
+      } else if (ingredient.getAll().stream().anyMatch(state ->
+          state.equals(PartialBlockState.AIR) ||
               state.equals(PartialBlockState.ANY) ||
               state.getBlockState().isAir()
-          )
-      ) continue;
+      )) {
+        ingredient = new BlockIngredient(ingredient.getTags(), ingredient.uniqueStates().filter(state ->
+            !state.equals(PartialBlockState.AIR) &&
+                !state.equals(PartialBlockState.ANY) &&
+                !state.getBlockState().isAir()
+        ).toList());
+      }
+      if (ingredient.getAll().isEmpty()) continue;
       worldPos.set(pos.getX() + controllerPos.getX(), pos.getY() + controllerPos.getY(), pos.getZ() + controllerPos.getZ());
       BlockInWorld info = new BlockInWorld(level, worldPos, false);
       if (!info.getState().isAir() && ingredient.getAll().stream().noneMatch(state -> state.test(info))) {

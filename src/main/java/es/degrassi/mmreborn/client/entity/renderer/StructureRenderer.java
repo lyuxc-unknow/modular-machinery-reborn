@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.BlockIngredient;
-import es.degrassi.mmreborn.api.IIngredient;
 import es.degrassi.mmreborn.api.PartialBlockState;
 import es.degrassi.mmreborn.client.util.RenderTypes;
 import es.degrassi.mmreborn.common.data.MMRConfig;
@@ -40,9 +39,9 @@ public class StructureRenderer {
     Map<BlockPos, BlockIngredient> map = blocksGetter.apply(Direction.NORTH);
     map.forEach((block, ingredient) -> {
       int cycleTime = time / ingredient.getAll().size();
-      minCycleTime.set(Math.min(cycleTime, minCycleTime.get()));
+      minCycleTime.set(Math.max(cycleTime, minCycleTime.get()));
     });
-    this.timer = new CycleTimer(() -> Math.min(MMRConfig.get().blockTagCycleTime.get(), minCycleTime.get()));
+    this.timer = new CycleTimer(() -> Math.max(MMRConfig.get().blockTagCycleTime.get(), minCycleTime.get()));
   }
 
   public void render(PoseStack matrix, MultiBufferSource buffer, Direction direction, Level world, BlockPos machinePos) {

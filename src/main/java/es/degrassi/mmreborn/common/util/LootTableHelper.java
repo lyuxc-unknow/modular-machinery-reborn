@@ -25,6 +25,7 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -100,7 +101,7 @@ public class LootTableHelper {
     return LootItemFunction.decorate(globalFunction, consumer, context);
   }
 
-  private static String getBaseRolls(NumberProvider rolls, LootContext context) {
+  private static String getBaseRolls(@Nullable NumberProvider rolls, LootContext context) {
     return switch (rolls) {
       case ConstantValue value -> Math.round(value.value()) + " Rolls";
       case UniformGenerator uniform -> "[" + uniform.min().getInt(context) + "," + uniform.max().getInt(context) + "] Rolls (uniform)";
@@ -109,7 +110,7 @@ public class LootTableHelper {
     };
   }
 
-  private static String getBonusRolls(NumberProvider rolls, LootContext context) {
+  private static String getBonusRolls(@Nullable NumberProvider rolls, LootContext context) {
     return switch (rolls) {
       case ConstantValue value -> value.value() != 0.0f ? Math.round(value.value() * context.getLuck()) + " Rolls" : "";
       case UniformGenerator uniform -> "[" + uniform.min().getInt(context) * context.getLuck() + "," + uniform.max().getInt(context) * context.getLuck() + "] Rolls (uniform)";
@@ -131,6 +132,7 @@ public class LootTableHelper {
   }
 
   @SuppressWarnings("unchecked")
+  @Nullable
   public static List<LootPool> getPoolsFromLootTable(LootTable table) {
     for(Field field : LootTable.class.getDeclaredFields()) {
       if(field.getName().equals("e") || field.getName().equals("f_79109_") || field.getName().equals("pools")) {
@@ -146,7 +148,7 @@ public class LootTableHelper {
   }
 
   public record LootData(ItemStack stack, double chance, String rolls, String bonusRolls) {
-    public static StreamCodec<RegistryFriendlyByteBuf, LootData> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, LootData> STREAM_CODEC = StreamCodec.composite(
         ItemStack.STREAM_CODEC,
         LootData::stack,
         ByteBufCodecs.DOUBLE,

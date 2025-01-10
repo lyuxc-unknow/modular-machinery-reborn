@@ -1,8 +1,10 @@
 package es.degrassi.mmreborn.common.crafting.requirement.emi;
 
 import dev.emi.emi.api.stack.EmiStack;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.client.requirement.ItemRendering;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementTime;
+import es.degrassi.mmreborn.common.machine.component.TimeComponent;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import es.degrassi.mmreborn.common.util.IntRange;
 import net.minecraft.client.gui.GuiGraphics;
@@ -12,8 +14,8 @@ import net.minecraft.resources.ResourceLocation;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class EmiTimeComponent extends EmiComponent<IntRange, RequirementTime> implements ItemRendering {
-  public EmiTimeComponent(RequirementTime requirement) {
+public class EmiTimeComponent extends EmiComponent<IntRange, RecipeRequirement<TimeComponent, RequirementTime>> implements ItemRendering {
+  public EmiTimeComponent(RecipeRequirement<TimeComponent, RequirementTime> requirement) {
     super(requirement, 0, 0, false);
   }
 
@@ -35,7 +37,7 @@ public class EmiTimeComponent extends EmiComponent<IntRange, RequirementTime> im
 
   @Override
   public List<IntRange> ingredients() {
-    return List.of(requirement.time());
+    return List.of(requirement.requirement().time());
   }
 
   public EmiStack getStack() {
@@ -52,7 +54,7 @@ public class EmiTimeComponent extends EmiComponent<IntRange, RequirementTime> im
   public List<Component> getTooltip() {
     return List.of(Component.translatable(
         "modular_machinery_reborn.jei.ingredient.time",
-        requirement.time().toFormattedString()
+        requirement.requirement().time().toFormattedString()
     ));
   }
 }
