@@ -38,6 +38,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -137,13 +138,16 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
 
   @Override
   public void doClientTick() {
-    if(soundManager == null)
+    if (soundManager == null)
       soundManager = new SoundManager(getBlockPos());
-    if(!getFoundMachine().getAmbientSound(status).getLocation().equals(soundManager.getSoundID())) {
-      if(getFoundMachine().getAmbientSound(status) == Sounds.DEFAULT.ambientSound())
+    SoundEvent sound = getFoundMachine().getAmbientSound(status);
+    if (sound != null && !sound.getLocation().equals(soundManager.getSoundID())) {
+      if (getFoundMachine().getAmbientSound(status) == Sounds.DEFAULT.ambientSound())
         soundManager.setSound(null);
       else
         soundManager.setSound(getFoundMachine().getAmbientSound(status));
+    } else {
+      soundManager.setSound(null);
     }
 
     if (!soundManager.isPlaying())
@@ -174,7 +178,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
 
   @Override
   public void setRemoved() {
-    if(this.level != null && this.level.isClientSide() && this.soundManager != null)
+    if (this.level != null && this.level.isClientSide() && this.soundManager != null)
       this.soundManager.stop();
     super.setRemoved();
   }

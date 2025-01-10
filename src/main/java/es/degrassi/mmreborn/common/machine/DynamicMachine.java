@@ -18,6 +18,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.SoundType;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,18 +37,24 @@ public class DynamicMachine {
       ModifierReplacement.CODEC.listOf().optionalFieldOf("modifiers", new LinkedList<>()).forGetter(DynamicMachine::getModifiers),
       NamedCodec.unboundedMap(MachineStatus.CODEC, Sounds.CODEC, "Sounds by status").optionalFieldOf("sound", new HashMap<>()).forGetter(DynamicMachine::getSounds)
   ).apply(instance, (registryName, localizedName, pattern, color, controllerModel, modifiers, sounds) -> {
-    DynamicMachine machine = new DynamicMachine(registryName);
+    DynamicMachine machine = new DynamicMachine(registryName, sounds);
     pattern.getPattern().addModifiers(modifiers);
     machine.setPattern(pattern);
     machine.setLocalizedName(localizedName);
     machine.setDefinedColor(color);
     machine.setControllerModel(controllerModel);
     machine.setModifiers(modifiers);
-    machine.setSounds(sounds);
     return machine;
   }), "Dynamic Machine");
 
-  public static final DynamicMachine DUMMY = new DynamicMachine(ModularMachineryReborn.rl("dummy"));
+  public static final DynamicMachine DUMMY;
+  static {
+    Map<MachineStatus, Sounds> sounds = new HashMap<>();
+    for (MachineStatus status : MachineStatus.values()) {
+      sounds.put(status, Sounds.DEFAULT);
+    }
+    DUMMY = new DynamicMachine(ModularMachineryReborn.rl("dummy"), sounds);
+  }
 
   @Nonnull
   private ResourceLocation registryName;
@@ -56,10 +63,11 @@ public class DynamicMachine {
   private int definedColor = Config.machineColor;
   private MachineModelLocation controllerModel;
   private List<ModifierReplacement> modifiers;
-  private Map<MachineStatus, Sounds> sounds;
+  private final Map<MachineStatus, Sounds> sounds;
 
-  public DynamicMachine(@Nonnull ResourceLocation registryName) {
+  public DynamicMachine(@Nonnull ResourceLocation registryName, Map<MachineStatus, Sounds> sounds) {
     this.registryName = registryName;
+    this.sounds = sounds;
   }
 
   public String getLocalizedName() {
@@ -71,8 +79,9 @@ public class DynamicMachine {
     return Component.translatableWithFallback(localizationKey, localizedName.orElse(localizationKey));
   }
 
+  @Nullable
   public SoundEvent getAmbientSound(MachineStatus status) {
-    return Optional.ofNullable(sounds.get(status)).orElse(Sounds.DEFAULT).ambientSound();
+    return Optional.ofNullable(sounds.get(status)).map(Sounds::ambientSound).orElse(null);
   }
 
   public SoundType getInteractionSound(MachineStatus status) {

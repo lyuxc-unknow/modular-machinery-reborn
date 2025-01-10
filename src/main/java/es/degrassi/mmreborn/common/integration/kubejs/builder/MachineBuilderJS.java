@@ -79,7 +79,7 @@ public class MachineBuilderJS {
   public DynamicMachine build() {
     if (structure == null)
       structure = Structure.EMPTY;
-    DynamicMachine machine = new DynamicMachine(id);
+    DynamicMachine machine = new DynamicMachine(id, sounds);
     machine.setPattern(structure);
     machine.setControllerModel(Objects.requireNonNullElse(controllerModel, MachineModelLocation.DEFAULT));
     machine.setLocalizedName(Optional.ofNullable(name));
@@ -89,7 +89,6 @@ public class MachineBuilderJS {
       machine.setDefinedColor(DefaultCodecs.HEX.decode(JsonOps.INSTANCE, new JsonPrimitive(color)).result().orElse(new Pair<>(Config.toInt(MMRConfig.get().general_casing_color.get(), 0xFF4900), null)).getFirst());
 
     machine.setModifiers(modifiers);
-    machine.setSounds(sounds);
 
     return machine;
   }
