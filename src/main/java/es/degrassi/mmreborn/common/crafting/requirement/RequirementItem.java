@@ -13,18 +13,24 @@ import es.degrassi.mmreborn.api.crafting.requirement.IRequirementList;
 import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
+import es.degrassi.mmreborn.common.integration.almostunified.AlmostUnifiedAdapter;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.component.ItemComponent;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.IOInventory;
 import es.degrassi.mmreborn.common.util.ItemUtils;
+import es.degrassi.mmreborn.common.util.Mods;
 import lombok.Getter;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Getter
@@ -41,6 +47,18 @@ public class RequirementItem implements IRequirement<ItemComponent> {
   private final PositionedRequirement position;
 
   public RequirementItem(IOType ioType, SizedIngredient ingredient, PositionedRequirement position) {
+    if (Mods.isAULoaded()) {
+      ingredient = new SizedIngredient(Ingredient.fromValues(Arrays.stream(ingredient.ingredient().getValues())
+              .map(v -> {
+                if (v instanceof Ingredient.ItemValue(ItemStack item)) {
+                  if (((Ingredient.ItemValue) v).item().getComponents().isEmpty())
+                    return new Ingredient.ItemValue(AlmostUnifiedAdapter.getPreferredItemForItem(item.getItemHolder()).getDefaultInstance());
+                } else if (v instanceof Ingredient.TagValue(TagKey<Item> tag)) {
+                  return new Ingredient.ItemValue(AlmostUnifiedAdapter.getPreferredItemForTag(tag).getDefaultInstance());
+                }
+                return v;
+              })), ingredient.count());
+    }
     this.ingredient = ingredient;
     this.mode = ioType;
     this.position = position;

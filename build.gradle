@@ -75,6 +75,7 @@ repositories {
       includeGroup "mezz.jei"
       includeGroup "com.hollingsworth.ars_nouveau"
       includeGroup "vazkii.patchouli"
+      includeGroup "com.almostreliable.mods"
     }
   }
   maven {
@@ -174,6 +175,9 @@ dependencies {
 
   // Mekanism
   compileOnly localRuntime("mekanism:Mekanism:${mekanism_version}")
+
+  // Almost unified
+  compileOnly localRuntime("com.almostreliable.mods:almostunified-neoforge:${almostunified_version}")
 
   // Addons for testing
 //  localRuntime("es.degrassi:modular_machinery_reborn_energistics:${minecraft_version}-1.1.4")
