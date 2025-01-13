@@ -76,6 +76,7 @@ public interface IRequirement<C extends MachineComponent<?>> {
     json.addProperty("actionType", getMode().name());
     json.add("position", getPosition().asJson());
     json.addProperty("type", getId() != null ? getId().toString() : "");
+    json.addProperty("modified", isModified());
     return json;
   }
 
@@ -87,4 +88,12 @@ public interface IRequirement<C extends MachineComponent<?>> {
   Component getMissingComponentErrorMessage(IOType ioType);
 
   boolean isComponentValid(C m, ICraftingContext context);
+
+  default boolean isModified() {
+    return false;
+  }
+
+  default void setModified(boolean modified) {
+
+  }
 }

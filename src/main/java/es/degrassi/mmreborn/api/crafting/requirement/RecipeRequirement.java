@@ -79,6 +79,10 @@ public class RecipeRequirement<C extends MachineComponent<?>, R extends IRequire
     return (R) requirement.deepCopyModified(modifiers);
   }
 
+  public boolean isModified() {
+    return requirement().isModified();
+  }
+
   public JsonObject asJson() {
     JsonObject json = requirement.asJson();
     json.addProperty("chance", chance);

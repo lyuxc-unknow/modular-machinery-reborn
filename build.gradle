@@ -306,6 +306,7 @@ unifiedPublishing {
           optional "jei"
           optional "emi"
           optional "jade"
+          optional "almost-unified"
         }
       }
     }
@@ -321,6 +322,7 @@ unifiedPublishing {
           optional "jei"
           optional "emi"
           optional "jade"
+          optional "almost-unified"
         }
       }
     }

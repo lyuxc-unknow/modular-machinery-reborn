@@ -1,19 +1,22 @@
 package es.degrassi.mmreborn.common.integration.almostunified;
 
 import com.almostreliable.unified.api.AlmostUnified;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
+import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.util.Mods;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 import java.util.Optional;
-import java.util.stream.Stream;
 
 public class AlmostUnifiedAdapter {
   public static boolean isLoaded() {
     return Mods.isAULoaded();
+  }
+
+  public static boolean isRecipeModified(MachineRecipe recipe) {
+    return recipe.getRequirements().stream().anyMatch(RecipeRequirement::isModified) || recipe.isModified();
   }
 
   public static Item getPreferredItemForTag(TagKey<Item> tag) {
@@ -22,11 +25,7 @@ public class AlmostUnifiedAdapter {
       optional = Adapter.getPreferredItemForTag(tag);
     }
 
-    return optional.orElse(BuiltInRegistries.ITEM.getTag(tag)
-        .map(HolderSet.ListBacked::stream)
-        .flatMap(Stream::findFirst)
-        .map(Holder::value)
-        .orElse(null));
+    return optional.orElse(null);
   }
 
   public static Item getPreferredItemForItem(Holder<Item> item) {
@@ -35,7 +34,7 @@ public class AlmostUnifiedAdapter {
       optional = Adapter.getPreferredItemForItem(item);
     }
 
-    return optional.orElse(item.value());
+    return optional.orElse(null);
   }
 
   public static TagKey<Item> getRelevantItemTag(Holder<Item> item) {
@@ -44,7 +43,7 @@ public class AlmostUnifiedAdapter {
       optional = Adapter.getRelevantItemTag(item);
     }
 
-    return optional.orElse(item.tags().findFirst().orElse(null));
+    return optional.orElse(null);
   }
 
   private static class Adapter {

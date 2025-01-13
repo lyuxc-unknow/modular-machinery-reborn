@@ -2,7 +2,9 @@ package es.degrassi.mmreborn.common.integration.jei;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
+import es.degrassi.mmreborn.api.integration.almostunified.RecipeIndicator;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
+import es.degrassi.mmreborn.common.integration.almostunified.AlmostUnifiedAdapter;
 import es.degrassi.mmreborn.common.integration.jei.category.MMRRecipeCategory;
 import es.degrassi.mmreborn.common.integration.jei.ingredient.CustomIngredientTypes;
 import es.degrassi.mmreborn.common.integration.jei.ingredient.DummyIngredientRenderer;
@@ -14,7 +16,11 @@ import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import es.degrassi.mmreborn.common.registration.Registration;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IJeiHelpers;
+import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.recipe.category.extensions.IRecipeCategoryDecorator;
+import mezz.jei.api.registration.IAdvancedRegistration;
 import mezz.jei.api.registration.IModIngredientRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
@@ -22,11 +28,13 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,12 +105,19 @@ public class MMRJeiPlugin implements IModPlugin {
               .map(list -> list
                   .stream()
                   .map(RecipeHolder::value)
-                  .map(MachineRecipe::copy)
                   .filter(recipe -> Objects.requireNonNull(recipe.getOwningMachine()).getRegistryName().equals(machine.getRegistryName()))
                   .toList()
               )
               .orElse(List.of())
       );
+    }
+  }
+
+  @Override
+  public void registerAdvanced(IAdvancedRegistration registration) {
+    for (DynamicMachine machine : ModularMachineryReborn.MACHINES.values()) {
+      if (machine == null) continue;
+      registration.addRecipeCategoryDecorator(getCategory(machine).getRecipeType(), new Decorator<>());
     }
   }
 
@@ -122,5 +137,38 @@ public class MMRJeiPlugin implements IModPlugin {
 //      if(category != null)
 //        category.updateMachine(machine);
     });
+  }
+
+
+  /**
+   * This decorator is adapted from AlmostUnified <a href="https://github.com/AlmostReliable/almostunified/blob/1.21.1/Common/src/main/java/com/almostreliable/unified/compat/viewer/AlmostJEI.java">AlmostJEI$Decorator</a>
+   */
+  private static class Decorator<T> implements IRecipeCategoryDecorator<T> {
+
+    private static final int RECIPE_BORDER_PADDING = 4;
+
+    @Override
+    public void draw(T recipe, IRecipeCategory<T> recipeCategory, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+      var recipeLink = resolveLink(recipeCategory, recipe);
+      if (recipeLink == null) return;
+
+      var pX = recipeCategory.getWidth() + (2 * RECIPE_BORDER_PADDING) - RecipeIndicator.RENDER_SIZE;
+      var pY = recipeCategory.getHeight() + (2 * RECIPE_BORDER_PADDING) - RecipeIndicator.RENDER_SIZE;
+      RecipeIndicator.renderIndicator(guiGraphics, pX, pY, RecipeIndicator.RENDER_SIZE);
+
+      if (mouseX >= pX && mouseX <= pX + RecipeIndicator.RENDER_SIZE &&
+          mouseY >= pY && mouseY <= pY + RecipeIndicator.RENDER_SIZE) {
+        RecipeIndicator.renderTooltip(guiGraphics, recipeLink, mouseX, mouseY);
+      }
+    }
+
+    @Nullable
+    private static <R> MachineRecipe resolveLink(IRecipeCategory<R> recipeCategory, R recipe) {
+      var recipeId = recipeCategory.getRegistryName(recipe);
+      if (recipeId == null) return null;
+      if (!(recipe instanceof MachineRecipe r)) return null;
+      if (!AlmostUnifiedAdapter.isRecipeModified(r)) return null;
+      return r;
+    }
   }
 }

@@ -57,6 +57,8 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
+
 @Mod(ModularMachineryReborn.MODID)
 public class ModularMachineryReborn {
   public static final String MODID = "modular_machinery_reborn";
@@ -188,7 +190,7 @@ public class ModularMachineryReborn {
 
   @Contract("_ -> new")
   public static @NotNull ResourceLocation rl(String path) {
-    return ResourceLocation.fromNamespaceAndPath(MODID, path);
+    return ResourceLocation.fromNamespaceAndPath(MODID, path.toLowerCase(Locale.ROOT));
   }
 
   private void registerCommands(final RegisterCommandsEvent event) {
@@ -216,9 +218,6 @@ public class ModularMachineryReborn {
     return ProcessorTypeRegistration.PROCESSOR_REGISTRY;
   }
 
-//  public static Registry<RequirementTypeOld<?>> getRequirementRegistrarOld() {
-//    return RequirementTypeRegistration.REQUIREMENTS_REGISTRY_OLD;
-//  }
   public static Registry<RequirementType<?>> getRequirementRegistrar() {
     return RequirementTypeRegistration.REQUIREMENTS_REGISTRY;
   }

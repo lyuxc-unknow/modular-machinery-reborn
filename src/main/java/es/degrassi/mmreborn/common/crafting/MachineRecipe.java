@@ -62,6 +62,8 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
   public final List<Pair<PositionedSizedRequirement, Object>> chanceTexts = new LinkedList<>();
   private final boolean shouldRenderProgress;
 
+  private boolean modified = false;
+
   public MachineRecipe(ResourceLocation owningMachine, int tickTime, int configuredPriority,
                        boolean voidPerTickFailure, int width, int height,
                        boolean shouldRenderProgress, PositionedRequirement progressPosition) {
@@ -91,6 +93,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
         }
       }
     }
+    if (requirement.isModified()) setModified(true);
     this.recipeRequirements.add(requirement);
   }
 
@@ -150,6 +153,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
     json.addProperty("voidPerTickFailure", voidPerTickFailure);
     json.addProperty("shouldRenderProgress", shouldRenderProgress);
     json.add("progressPosition", progressPosition.asJson());
+    json.addProperty("modifiedByAU", modified);
     return json;
   }
 
@@ -198,6 +202,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
     private boolean shouldRenderProgress;
     private final List<RecipeRequirement<?, ?>> requirements;
     private boolean voidF;
+    private boolean modified;
 
     public MachineRecipeBuilder(ResourceLocation machine, int time, int width, int height, PositionedRequirement progressPosition) {
       this.requirements = new LinkedList<>();
@@ -206,6 +211,10 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
       this.progressPosition = progressPosition;
       this.width = width;
       this.height = height;
+    }
+
+    public void modified(boolean modified) {
+      this.modified = modified;
     }
 
     public void withPriority(int prio) {
@@ -222,6 +231,8 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
 
     public void addRequirement(RecipeRequirement<?, ?> requirement) {
       requirements.add(requirement);
+      if (requirement.isModified())
+        modified(true);
     }
 
     public MachineRecipeBuilder(ResourceLocation machine, int time, List<RecipeRequirement<?, ?>> requirements,
@@ -242,6 +253,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
       this(recipe.getOwningMachineIdentifier(), recipe.tickTime, recipe.recipeRequirements, recipe.configuredPriority,
           recipe.voidPerTickFailure, recipe.width, recipe.height, recipe.shouldRenderProgress,
           recipe.progressPosition);
+      modified(recipe.modified);
     }
 
     public MachineRecipe build() {
@@ -249,6 +261,8 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
         MMRLogger.INSTANCE.info("Building recipe...");
         MachineRecipe recipe = new MachineRecipe(machine, time, prio, voidF, width, height, shouldRenderProgress, progressPosition);
         requirements.forEach(recipe::addRequirement);
+        if (!recipe.modified)
+          recipe.setModified(modified);
         MMRLogger.INSTANCE.info("Finished building recipe {}", recipe);
         return recipe;
       } catch (Exception ignored) {

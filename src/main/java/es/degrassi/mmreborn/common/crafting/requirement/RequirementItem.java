@@ -22,6 +22,7 @@ import es.degrassi.mmreborn.common.util.IOInventory;
 import es.degrassi.mmreborn.common.util.ItemUtils;
 import es.degrassi.mmreborn.common.util.Mods;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -35,29 +36,52 @@ import java.util.List;
 
 @Getter
 public class RequirementItem implements IRequirement<ItemComponent> {
-  public static final NamedCodec<RequirementItem> CODEC =
-      NamedCodec.record(instance -> instance.group(
-          DefaultCodecs.SIZED_INGREDIENT_WITH_NBT.fieldOf("sizedIngredient").forGetter(req -> req.ingredient),
-          NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(IRequirement::getMode),
-          PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(IRequirement::getPosition)
-      ).apply(instance, (item, mode, position) -> new RequirementItem(mode, item, position)), "RequirementItem");
+  public static final NamedCodec<RequirementItem> CODEC = NamedCodec.record(instance -> instance.group(
+      DefaultCodecs.SIZED_INGREDIENT_WITH_NBT.fieldOf("sizedIngredient").forGetter(req -> req.ingredient),
+      NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(IRequirement::getMode),
+      PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(IRequirement::getPosition),
+      // WARING: do not use this property, it is used to adapt the almost unified to show in JEI/EMI only the
+      // modified recipes with the icon, until they add a proper way to do it
+      NamedCodec.BOOL.optionalFieldOf("modifiedByAU", false).forGetter(RequirementItem::isModified)
+  ).apply(instance, (item, mode, position, modified) -> {
+    RequirementItem requirement = new RequirementItem(mode, item, position);
+    requirement.setModified(modified | requirement.modified);
+    return requirement;
+  }),
+  "RequirementItem");
 
   public final SizedIngredient ingredient;
   private final IOType mode;
   private final PositionedRequirement position;
+  @Setter
+  private boolean modified = false;
 
   public RequirementItem(IOType ioType, SizedIngredient ingredient, PositionedRequirement position) {
     if (Mods.isAULoaded()) {
-      ingredient = new SizedIngredient(Ingredient.fromValues(Arrays.stream(ingredient.ingredient().getValues())
-              .map(v -> {
-                if (v instanceof Ingredient.ItemValue(ItemStack item)) {
-                  if (((Ingredient.ItemValue) v).item().getComponents().isEmpty())
-                    return new Ingredient.ItemValue(AlmostUnifiedAdapter.getPreferredItemForItem(item.getItemHolder()).getDefaultInstance());
-                } else if (v instanceof Ingredient.TagValue(TagKey<Item> tag)) {
-                  return new Ingredient.ItemValue(AlmostUnifiedAdapter.getPreferredItemForTag(tag).getDefaultInstance());
-                }
-                return v;
-              })), ingredient.count());
+      ingredient = new SizedIngredient(
+          Ingredient.fromValues(
+              Arrays.stream(ingredient.ingredient().getValues())
+                  .map(v -> {
+                    if (v instanceof Ingredient.ItemValue(ItemStack item)) {
+                      if (((Ingredient.ItemValue) v).item().getComponents().isEmpty()) {
+                        Item i = AlmostUnifiedAdapter.getPreferredItemForItem(item.getItemHolder());
+                        if (i != null) {
+                          this.modified = true;
+                          return new Ingredient.ItemValue(i.getDefaultInstance());
+                        }
+                      }
+                    } else if (v instanceof Ingredient.TagValue(TagKey<Item> tag)) {
+                      Item i = AlmostUnifiedAdapter.getPreferredItemForTag(tag);
+                      if (i != null) {
+                        this.modified = true;
+                        return new Ingredient.ItemValue(i.getDefaultInstance());
+                      }
+                    }
+                    return v;
+                  })
+          ),
+          ingredient.count()
+      );
     }
     this.ingredient = ingredient;
     this.mode = ioType;
@@ -116,6 +140,7 @@ public class RequirementItem implements IRequirement<ItemComponent> {
       case OUTPUT -> list.processOnEnd(this::processOutput);
     }
   }
+
   private CraftingResult processInput(ItemComponent component, ICraftingContext context) {
     IOInventory handler = component.getContainerProvider();
     int required = Math.round(RecipeModifier.applyModifiers(context, new RecipeRequirement<>(this), this.ingredient.count(), false));
@@ -130,7 +155,8 @@ public class RequirementItem implements IRequirement<ItemComponent> {
   }
 
   private CraftingResult processOutput(ItemComponent component, ICraftingContext context) {
-    if (!test(component, context)) return CraftingResult.error(Component.translatable("craftcheck.failure.item.output.space"));
+    if (!test(component, context))
+      return CraftingResult.error(Component.translatable("craftcheck.failure.item.output.space"));
     IOInventory handler = component.getContainerProvider();
     ItemStack stack = ingredient.getItems()[0].copyWithCount(ingredient.count());
     ItemUtils.tryPlaceItemInInventory(stack.copy(), handler, false);
@@ -147,13 +173,19 @@ public class RequirementItem implements IRequirement<ItemComponent> {
   @Override
   public RequirementItem deepCopyModified(List<RecipeModifier> modifiers) {
     int inAmt = Math.round(RecipeModifier.applyModifiers(modifiers, this.getType(), getMode(), ingredient.count(), false));
-    return new RequirementItem(getMode(), new SizedIngredient(ingredient.ingredient(), inAmt), getPosition());
+    RequirementItem item = new RequirementItem(getMode(), new SizedIngredient(ingredient.ingredient(), inAmt),
+        getPosition());
+    item.setModified(item.isModified() || isModified());
+    return item;
   }
 
   @Override
   public RequirementItem deepCopy() {
-    return new RequirementItem(getMode(), new SizedIngredient(ingredient.ingredient(), ingredient.count()),
+    RequirementItem item = new RequirementItem(getMode(), new SizedIngredient(ingredient.ingredient(),
+        ingredient.count()),
         getPosition());
+    item.setModified(item.isModified() || isModified());
+    return item;
   }
 
   @Override
