@@ -65,7 +65,8 @@ public class RequirementFluid implements IRequirement<FluidComponent> {
     HybridTank handler = component.getContainerProvider();
     return switch (getMode()) {
       case INPUT -> {
-        FluidStack drained = handler.drain(this.required.copy().asFluidStack(), IFluidHandler.FluidAction.SIMULATE);
+        int amount = (int) context.getIntegerModifiedValue(this.amount, this);
+        FluidStack drained = handler.drain(this.required.asFluidStack().copyWithAmount(amount), IFluidHandler.FluidAction.SIMULATE);
         yield drained.getAmount() == required.getAmount();
       }
       case OUTPUT -> {
@@ -165,6 +166,13 @@ public class RequirementFluid implements IRequirement<FluidComponent> {
 
   @Override
   public boolean isComponentValid(FluidComponent m, ICraftingContext context) {
-    return getMode().equals(m.getIOType());
+    if (!getMode().equals(m.getIOType())) return false;
+    if (getMode().isInput()) {
+      if (m.getContainerProvider().isEmpty()) return false;
+      return FluidStack.isSameFluidSameComponents(m.getContainerProvider().getFluid(), required.asFluidStack());
+    } else {
+      if (m.getContainerProvider().isEmpty()) return true;
+      else return FluidStack.isSameFluidSameComponents(m.getContainerProvider().getFluid(), required.asFluidStack());
+    }
   }
 }

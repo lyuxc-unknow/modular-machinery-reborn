@@ -57,7 +57,7 @@ public class RequirementItem implements IRequirement<ItemComponent> {
   private boolean modified = false;
 
   public RequirementItem(IOType ioType, SizedIngredient ingredient, PositionedRequirement position) {
-    if (Mods.isAULoaded()) {
+    if (Mods.isAULoaded() && !ingredient.ingredient().isCustom()) {
       ingredient = new SizedIngredient(
           Ingredient.fromValues(
               Arrays.stream(ingredient.ingredient().getValues())
