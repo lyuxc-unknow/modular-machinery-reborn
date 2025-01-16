@@ -153,7 +153,7 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
         .flatMap(List::stream)
         .map(m -> (C) m)
         .filter(m -> requirement.test(m, context) || requirement.isComponentValid(m, context))
-        .forEachOrdered(c -> {
+        .forEach(c -> {
           if (merged.get() == null)
             merged.set(c);
           else if (c.getIOType().isInput()) {

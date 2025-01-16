@@ -2,14 +2,12 @@ package es.degrassi.mmreborn.api.crafting.requirement;
 
 import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
-import es.degrassi.mmreborn.api.crafting.ComponentNotFoundException;
 import es.degrassi.mmreborn.api.crafting.CraftingResult;
 import es.degrassi.mmreborn.api.crafting.ICraftingContext;
 import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.manager.ComponentManager;
-import es.degrassi.mmreborn.common.manager.crafting.MachineStatus;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
@@ -59,14 +57,13 @@ public class RecipeRequirement<C extends MachineComponent<?>, R extends IRequire
   }
 
   public C findComponent(ComponentManager manager, ICraftingContext context) {
-    return manager.getComponent(this.requirement, context).orElseThrow(() -> {
-      manager.getController().setStatus(MachineStatus.ERRORED, requirement.getMissingComponentErrorMessage(requirement.getMode()));
-      return new ComponentNotFoundException(context.getRecipeId(), context.getMachineTile().getFoundMachine(), requirement);
-    });
+    return manager.getComponent(this.requirement, context).orElse(null);
   }
 
   public CraftingResult test(ComponentManager manager, ICraftingContext context) {
-    return this.requirement.test(findComponent(manager, context), context) ? CraftingResult.success() : CraftingResult.error(Component.empty());
+    C component = findComponent(manager, context);
+    if (component == null) return CraftingResult.error(Component.empty());
+    return this.requirement.test(component, context) ? CraftingResult.success() : CraftingResult.error(Component.empty());
   }
 
   public boolean shouldSkip(Random rand, ICraftingContext context) {

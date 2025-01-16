@@ -67,7 +67,10 @@ public class RequirementList<C extends MachineComponent<?>> implements IRequirem
   public record RequirementWithFunction(RecipeRequirement<?, ?> requirement, RequirementFunction<?> function) {
     @SuppressWarnings({"rawtypes", "unchecked"})
     public CraftingResult process(ComponentManager manager, ICraftingContext context) {
-      return ((RequirementFunction)this.function).process(requirement.findComponent(manager, context), context);
+      MachineComponent<?> component = requirement.findComponent(manager, context);
+      if (component == null)
+        return CraftingResult.error(requirement.requirement().getMissingComponentErrorMessage(requirement.requirement().getMode()));
+      return ((RequirementFunction)this.function).process(component, context);
     }
   }
 }
