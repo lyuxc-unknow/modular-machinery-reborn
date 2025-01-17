@@ -1,6 +1,5 @@
 package es.degrassi.mmreborn.common.crafting.requirement.jei;
 
-import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
@@ -16,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.List;
 
 public class JeiEnergyComponent extends JeiComponent<Long, RecipeRequirement<EnergyComponent, RequirementEnergy>> {
@@ -39,7 +39,7 @@ public class JeiEnergyComponent extends JeiComponent<Long, RecipeRequirement<Ene
 
   @Override
   public List<Long> ingredients() {
-    return Lists.newArrayList(requirement.requirement().getRequiredEnergyPerTick());
+    return Collections.singletonList(requirement.requirement().getRequiredEnergyPerTick());
   }
 
   @Override

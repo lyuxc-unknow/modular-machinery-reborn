@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.util;
 
+import com.google.common.collect.Maps;
 import es.degrassi.mmreborn.api.TagUtil;
 import es.degrassi.mmreborn.common.registration.Registration;
 import net.minecraft.core.registries.Registries;
@@ -24,12 +25,11 @@ import net.minecraft.world.level.storage.loot.providers.number.BinomialDistribut
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import org.apache.commons.compress.utils.Lists;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,8 +38,8 @@ import java.util.function.Consumer;
 
 public class LootTableHelper {
 
-  private static final List<ResourceLocation> tables = new ArrayList<>();
-  private static Map<ResourceLocation, List<LootData>> lootsMap = new HashMap<>();
+  private static final List<ResourceLocation> tables = Lists.newArrayList();
+  private static Map<ResourceLocation, List<LootData>> lootsMap = Maps.newHashMap();
 
   public static void addTable(ResourceLocation table) {
     if(!tables.contains(table))
@@ -58,7 +58,7 @@ public class LootTableHelper {
   }
 
   private static List<LootData> getLoots(ResourceLocation table, MinecraftServer server, LootContext context) {
-    List<LootData> loots = new ArrayList<>();
+    List<LootData> loots = Lists.newArrayList();
     LootTable lootTable = server.reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, table));
     BiFunction<ItemStack, LootContext, ItemStack> globalFunction = lootTable.compositeFunction;
     List<LootPool> pools = getPoolsFromLootTable(lootTable);

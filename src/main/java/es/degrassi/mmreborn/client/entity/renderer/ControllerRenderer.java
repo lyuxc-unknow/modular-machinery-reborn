@@ -1,11 +1,10 @@
 package es.degrassi.mmreborn.client.entity.renderer;
 
+import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
-import java.util.HashMap;
-import java.util.Map;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -13,8 +12,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
+import java.util.Map;
+
 public class ControllerRenderer implements BlockEntityRenderer<MachineControllerEntity> {
-  public static final Map<BlockPos, StructureRenderer> renderers = new HashMap<>();
+  public static final Map<BlockPos, StructureRenderer> renderers = Maps.newHashMap();
 
   public ControllerRenderer(BlockEntityRendererProvider.Context context) {}
 

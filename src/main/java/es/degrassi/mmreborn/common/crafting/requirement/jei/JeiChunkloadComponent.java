@@ -11,6 +11,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.network.chat.Component;
 
+import java.util.Collections;
 import java.util.List;
 
 public class JeiChunkloadComponent extends JeiComponent<Integer, RecipeRequirement<ChunkloadComponent, RequirementChunkload>> {
@@ -30,7 +31,7 @@ public class JeiChunkloadComponent extends JeiComponent<Integer, RecipeRequireme
 
   @Override
   public List<Integer> ingredients() {
-    return List.of(requirement.requirement().radius());
+    return Collections.singletonList(requirement.requirement().radius());
   }
 
   @Override

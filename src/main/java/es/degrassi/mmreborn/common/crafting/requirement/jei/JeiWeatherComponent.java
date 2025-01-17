@@ -12,6 +12,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.network.chat.Component;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,7 +33,7 @@ public class JeiWeatherComponent extends JeiComponent<WeatherType, RecipeRequire
 
   @Override
   public List<WeatherType> ingredients() {
-    return List.of(requirement.requirement().weather());
+    return Collections.singletonList(requirement.requirement().weather());
   }
 
   @Override

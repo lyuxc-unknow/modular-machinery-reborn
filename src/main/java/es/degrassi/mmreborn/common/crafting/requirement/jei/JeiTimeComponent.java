@@ -12,6 +12,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.network.chat.Component;
 
+import java.util.Collections;
 import java.util.List;
 
 public class JeiTimeComponent extends JeiComponent<IntRange, RecipeRequirement<TimeComponent, RequirementTime>> {
@@ -31,7 +32,7 @@ public class JeiTimeComponent extends JeiComponent<IntRange, RecipeRequirement<T
 
   @Override
   public List<IntRange> ingredients() {
-    return List.of(requirement.requirement().time());
+    return Collections.singletonList(requirement.requirement().time());
   }
 
   @Override

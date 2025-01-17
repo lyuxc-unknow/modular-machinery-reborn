@@ -6,8 +6,8 @@ import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import lombok.Getter;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import org.apache.commons.compress.utils.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeChecker<T extends MachineRecipe> {
@@ -26,7 +26,7 @@ public class RecipeChecker<T extends MachineRecipe> {
     this.recipe = recipe;
     this.inventoryRequirements =
         recipe.value().getRequirements().stream().filter(r -> !r.getType().isWorldRequirement()).toList();
-    this.checkedInventoryRequirements = new ArrayList<>();
+    this.checkedInventoryRequirements = Lists.newArrayList();
     this.worldRequirements =
         recipe.value().getRequirements().stream().filter(r -> r.getType().isWorldRequirement()).toList();
     this.inventoryRequirementsOnly =

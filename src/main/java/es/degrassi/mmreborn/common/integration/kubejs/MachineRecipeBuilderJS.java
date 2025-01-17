@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.integration.kubejs;
 
+import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.DataResult;
@@ -24,10 +25,10 @@ import es.degrassi.mmreborn.common.integration.kubejs.requirement.TimeRequiremen
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.WeatherRequirementJS;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import net.minecraft.resources.ResourceLocation;
+import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.helpers.MessageFormatter;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
 {
 
   @HideFromJS
-  public static final Map<ResourceLocation, Map<ResourceLocation, Integer>> IDS = new HashMap<>();
+  public static final Map<ResourceLocation, Map<ResourceLocation, Integer>> IDS = Maps.newHashMap();
 
   @HideFromJS
   public MachineRecipeBuilderJS(ResourceLocation machine, int time, int width, int height, int progressX, int progressY) {
@@ -170,7 +171,7 @@ public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilde
 
   @HideFromJS
   private <E> List<E> addToList(RecipeKey<List<E>> key, E element) {
-    List<E> list = new ArrayList<>();
+    List<E> list = Lists.newArrayList();
     List<E> values = getValue(key);
     if (values != null) list.addAll(values);
     list.add(element);

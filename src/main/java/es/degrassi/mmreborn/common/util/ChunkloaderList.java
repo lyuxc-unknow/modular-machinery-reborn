@@ -2,6 +2,7 @@ package es.degrassi.mmreborn.common.util;
 
 import es.degrassi.mmreborn.common.entity.ChunkloaderEntity;
 import net.minecraft.world.level.ChunkPos;
+import org.apache.commons.compress.utils.Lists;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.Optional;
 
 public class ChunkloaderList {
 
-  private static final List<WeakReference<ChunkloaderEntity>> LOADED_MACHINES = Collections.synchronizedList(new ArrayList<>());
+  private static final List<WeakReference<ChunkloaderEntity>> LOADED_MACHINES = Collections.synchronizedList(Lists.newArrayList());
 
   public static void add(ChunkloaderEntity tile) {
     if (tile.getLevel() != null && !tile.getLevel().isClientSide())
@@ -27,7 +28,7 @@ public class ChunkloaderList {
 
   public static List<ChunkloaderEntity> getLoadedMachines() {
     Iterator<WeakReference<ChunkloaderEntity>> iterator = LOADED_MACHINES.iterator();
-    List<ChunkloaderEntity> loadedMachines = new ArrayList<>();
+    List<ChunkloaderEntity> loadedMachines = Lists.newArrayList();
     while (iterator.hasNext()) {
       ChunkloaderEntity tile = iterator.next().get();
       if (tile == null || tile.isRemoved())

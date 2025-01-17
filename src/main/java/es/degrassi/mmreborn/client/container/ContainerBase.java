@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.client.container;
 
+import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.api.network.DataType;
 import es.degrassi.mmreborn.api.network.IData;
 import es.degrassi.mmreborn.api.network.ISyncable;
@@ -28,7 +29,7 @@ import java.util.List;
 public abstract class ContainerBase<T extends ColorableMachineComponentEntity> extends AbstractContainerMenu {
   private final Player player;
   private final T entity;
-  private final List<ISyncable<?, ?>> stuffToSync = new ArrayList<>();
+  private final List<ISyncable<?, ?>> stuffToSync = Lists.newArrayList();
 
   protected ContainerBase(T entity, Player player, @Nullable MenuType<?> menuType, int containerId) {
     super(menuType, containerId);

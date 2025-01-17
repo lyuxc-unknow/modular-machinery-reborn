@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -38,7 +39,7 @@ public class EmiWeatherComponent extends EmiComponent<WeatherType, RecipeRequire
 
   @Override
   public List<WeatherType> ingredients() {
-    return List.of(requirement.requirement().weather());
+    return Collections.singletonList(requirement.requirement().weather());
   }
 
   public EmiStack getStack() {

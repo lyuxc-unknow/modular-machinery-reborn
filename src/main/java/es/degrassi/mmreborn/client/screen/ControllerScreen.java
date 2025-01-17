@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.client.screen;
 
+import com.google.common.collect.Maps;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
@@ -31,10 +32,9 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
+import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -54,7 +54,7 @@ public class ControllerScreen extends BasePopupScreen<ControllerContainer> {
 
   public ControllerScreen(ControllerContainer pMenu, Inventory pPlayerInventory, Component pTitle) {
     super(pMenu, pPlayerInventory, pTitle, TextureSizeHelper.getWidth(getTexture()), TextureSizeHelper.getHeight(getTexture()));
-    List<Either<FormattedText, TooltipComponent>> components = new LinkedList<>();
+    List<Either<FormattedText, TooltipComponent>> components = Lists.newArrayList();
     gatherComponents(components);
     this.components = components;
   }
@@ -159,7 +159,7 @@ public class ControllerScreen extends BasePopupScreen<ControllerContainer> {
     guiGraphics.pose().popPose();
 
     RenderSystem.enableDepthTest();
-    List<Either<FormattedText, TooltipComponent>> components = new LinkedList<>();
+    List<Either<FormattedText, TooltipComponent>> components = Lists.newArrayList();
     gatherComponents(components);
     this.components.clear();
     components.addFirst(Either.left(placeWidget.component));
@@ -271,7 +271,7 @@ public class ControllerScreen extends BasePopupScreen<ControllerContainer> {
         .ifPresentOrElse(machine -> {
           if (Screen.hasShiftDown()) {
             components.add(Either.left(Component.translatable("modular_machinery_reborn.controller.required").withStyle(ChatFormatting.GRAY)));
-            Map<MutableComponent, List<ItemStack>> map = new LinkedHashMap<>();
+            Map<MutableComponent, List<ItemStack>> map = Maps.newHashMap();
             machine.getPattern()
                 .getPattern()
                 .asList()
@@ -290,7 +290,7 @@ public class ControllerScreen extends BasePopupScreen<ControllerContainer> {
                 .forEachOrdered(pair -> {
                   List<ItemStack> stacks = pair.getFirst();
                   MutableComponent component = pair.getSecond();
-                  List<ItemStack> s2 = new LinkedList<>();
+                  List<ItemStack> s2 = Lists.newArrayList();
                   if (map.containsKey(component)) {
                     stacks.forEach(stack -> map.forEach((c, s) -> {
                       if (c.getString().equals(component.getString())) {
@@ -327,7 +327,7 @@ public class ControllerScreen extends BasePopupScreen<ControllerContainer> {
 
           if (Screen.hasControlDown() && !Screen.hasShiftDown()) {
             components.add(Either.left(Component.translatable("modular_machinery_reborn.controller.modifier").withStyle(ChatFormatting.GRAY)));
-            Map<MutableComponent, List<ItemStack>> modifierMap = new LinkedHashMap<>();
+            Map<MutableComponent, List<ItemStack>> modifierMap = Maps.newHashMap();
             machine.getPattern()
                 .getPattern()
                 .getModifiers()

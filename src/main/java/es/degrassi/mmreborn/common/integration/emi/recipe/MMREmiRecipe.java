@@ -16,9 +16,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import org.apache.commons.compress.utils.Lists;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -29,7 +29,7 @@ public class MMREmiRecipe extends BasicEmiRecipe {
   @Getter
   protected int width = 256, height = 256;
 
-  public final List<FormattedText> textsToRender = new LinkedList<>();
+  public final List<FormattedText> textsToRender = Lists.newArrayList();
 
   public MMREmiRecipe(EmiRecipeCategory category, RecipeHolder<MachineRecipe> recipe) {
     super(category, recipe.id(), recipe.value().getWidth(), recipe.value().getHeight());

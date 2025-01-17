@@ -1,6 +1,7 @@
 package es.degrassi.mmreborn.api.integration.emi;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
 import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
@@ -11,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RegisterEmiComponentEvent extends Event implements IModBusEvent {
-  private final Map<RequirementType<?>, EmiComponentFactory<?, ?>> components = new HashMap<>();
+  private final Map<RequirementType<?>, EmiComponentFactory<?, ?>> components = Maps.newHashMap();
 
   public <R extends RecipeRequirement<?, ?>, T extends IRequirement<?>, X> void register(RequirementType<T> requirement,
                                                                                           EmiComponentFactory<R, X> component) {

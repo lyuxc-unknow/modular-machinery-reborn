@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.client.screen;
 
+import com.google.common.collect.Maps;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.client.container.ExperienceHatchContainer;
 import es.degrassi.mmreborn.client.screen.widget.ExperienceButton;
@@ -17,13 +18,12 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExperienceHatchScreen extends BaseScreen<ExperienceHatchContainer, ExperienceHatchEntity> {
   private ExperienceWidget experienceWidget;
-  private final Map<ExperienceButtonType, ExperienceButton> experienceButtons = new LinkedHashMap<>();
+  private final Map<ExperienceButtonType, ExperienceButton> experienceButtons = Maps.newHashMap();
 
   public ExperienceHatchScreen(ExperienceHatchContainer menu, Inventory playerInventory, Component title) {
     super(menu, playerInventory, title);

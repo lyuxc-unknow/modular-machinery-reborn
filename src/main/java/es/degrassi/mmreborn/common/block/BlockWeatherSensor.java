@@ -1,6 +1,5 @@
 package es.degrassi.mmreborn.common.block;
 
-import es.degrassi.mmreborn.common.entity.DimensionalDetectorEntity;
 import es.degrassi.mmreborn.common.entity.WeatherSensorEntity;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import net.minecraft.core.BlockPos;
@@ -17,12 +16,12 @@ import java.util.List;
 public class BlockWeatherSensor extends BlockMachineComponent {
   public BlockWeatherSensor() {
     super(
-      Properties.of()
-        .strength(2F, 10F)
-        .sound(SoundType.METAL)
-        .requiresCorrectToolForDrops()
-        .dynamicShape()
-        .noOcclusion()
+        Properties.of()
+            .strength(2F, 10F)
+            .sound(SoundType.METAL)
+            .requiresCorrectToolForDrops()
+            .dynamicShape()
+            .noOcclusion()
     );
   }
 

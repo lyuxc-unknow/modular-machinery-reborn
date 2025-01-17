@@ -1,17 +1,17 @@
 package es.degrassi.mmreborn.common.util;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import javax.imageio.ImageIO;
-
+import com.google.common.collect.Maps;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * A helper class to find the size of a texture, do not call its methods on a dedicated server as it will immediately
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 public class TextureSizeHelper {
 
   private static final Logger LOGGER = LogManager.getLogger();
-  private static final Map<ResourceLocation, Pair<Integer, Integer>> SIZES = new HashMap<>();
+  private static final Map<ResourceLocation, Pair<Integer, Integer>> SIZES = Maps.newHashMap();
 
   public static int getWidth(@Nullable ResourceLocation texture) {
     if (texture == null)

@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.manager.crafting;
 
+import com.google.common.collect.Maps;
 import es.degrassi.mmreborn.api.crafting.CraftingResult;
 import es.degrassi.mmreborn.api.crafting.ICraftingContext;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirementList;
@@ -9,6 +10,7 @@ import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.manager.ComponentManager;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.compress.utils.Lists;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,13 +20,13 @@ import java.util.Map;
 public class RequirementList<C extends MachineComponent<?>> implements IRequirementList<C> {
 
   @Getter
-  private final Map<Double, List<RequirementWithFunction>> processRequirements = new HashMap<>();
+  private final Map<Double, List<RequirementWithFunction>> processRequirements = Maps.newHashMap();
   @Getter
-  private final List<RequirementWithFunction> tickableRequirements = new ArrayList<>();
+  private final List<RequirementWithFunction> tickableRequirements = Lists.newArrayList();
   @Getter
-  private final List<RequirementWithFunction> worldConditions = new ArrayList<>();
+  private final List<RequirementWithFunction> worldConditions = Lists.newArrayList();
   @Getter
-  private final List<RequirementWithFunction> inventoryConditions = new ArrayList<>();
+  private final List<RequirementWithFunction> inventoryConditions = Lists.newArrayList();
 
   @Setter
   private RecipeRequirement<? extends MachineComponent<?>, ?> currentRequirement;

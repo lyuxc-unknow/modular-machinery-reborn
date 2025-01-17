@@ -12,6 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
+import org.apache.commons.compress.utils.Lists;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -35,7 +36,7 @@ public class ModifierReplacement {
     this.info = info;
     this.modifier = modifier;
     this.position = pos;
-    this.description = new LinkedList<>();
+    this.description = Lists.newArrayList();
     description.add(info.getNamesUnified());
     description.addAll(getModifiers().stream().map(RecipeModifier::getDescription).toList());
   }
@@ -60,10 +61,10 @@ public class ModifierReplacement {
     JsonObject json = new JsonObject();
     json.add("replacement", info.asJson());
     JsonArray modifiers = new JsonArray();
-    modifier.stream().map(RecipeModifier::asJson).forEachOrdered(modifiers::add);
+    modifier.stream().map(RecipeModifier::asJson).forEach(modifiers::add);
     json.add("modifiers", modifiers);
     JsonArray desc = new JsonArray();
-    description.stream().map(Component::getString).map(JsonOps.INSTANCE::createString).forEachOrdered(desc::add);
+    description.stream().map(Component::getString).map(JsonOps.INSTANCE::createString).forEach(desc::add);
     json.add("description", desc);
     json.add("position", DefaultCodecs.BLOCK_POS.encodeStart(JsonOps.INSTANCE, position).getOrThrow());
     return json;
@@ -73,10 +74,10 @@ public class ModifierReplacement {
     CompoundTag tag = new CompoundTag();
     tag.put("replacement", info.asTag());
     ListTag modifiers = new ListTag();
-    modifier.stream().map(RecipeModifier::asTag).forEachOrdered(modifiers::add);
+    modifier.stream().map(RecipeModifier::asTag).forEach(modifiers::add);
     tag.put("modifiers", modifiers);
     ListTag desc = new ListTag();
-    description.stream().map(Component::getString).map(StringTag::valueOf).forEachOrdered(desc::add);
+    description.stream().map(Component::getString).map(StringTag::valueOf).forEach(desc::add);
     tag.put("description", desc);
     CompoundTag position = new CompoundTag();
     position.putInt("x", this.position.getX());

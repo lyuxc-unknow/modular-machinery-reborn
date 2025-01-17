@@ -1,24 +1,19 @@
 package es.degrassi.mmreborn.common.util;
 
+import com.google.common.collect.Maps;
 import es.degrassi.mmreborn.common.entity.base.BlockEntitySynchronized;
-import es.degrassi.mmreborn.common.network.server.component.SUpdateItemComponentPacket;
-import lombok.Getter;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ChunkPos;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,8 +21,8 @@ public class IOInventory implements IItemHandlerModifiable {
 
   public boolean allowAnySlots = false;
 
-  private final Map<Integer, Integer> slotLimits = new HashMap<>(); //Value not present means default, aka 64.
-  private final Map<Integer, SlotStackHolder> inventory = new HashMap<>();
+  private final Map<Integer, Integer> slotLimits = Maps.newHashMap(); //Value not present means default, aka 64.
+  private final Map<Integer, SlotStackHolder> inventory = Maps.newHashMap();
   private int[] inSlots = new int[0], outSlots = new int[0], miscSlots = new int[0];
 
   private IOInventoryChangedListener listener = null;

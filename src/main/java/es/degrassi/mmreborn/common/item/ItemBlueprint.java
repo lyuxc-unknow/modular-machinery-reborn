@@ -10,7 +10,7 @@ public class ItemBlueprint extends Item {
   public ItemBlueprint() {
     super(
       new Properties()
-        .stacksTo(16)
+        .stacksTo(1)
     );
   }
 

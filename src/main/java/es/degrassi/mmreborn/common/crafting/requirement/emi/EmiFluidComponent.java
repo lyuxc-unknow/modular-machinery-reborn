@@ -1,6 +1,5 @@
 package es.degrassi.mmreborn.common.crafting.requirement.emi;
 
-import com.google.common.collect.Lists;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.EmiStackInteraction;
@@ -16,6 +15,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class EmiFluidComponent extends EmiComponent<FluidStack, RecipeRequiremen
 
   @Override
   public List<FluidStack> ingredients() {
-    return Lists.newArrayList(requirement.requirement().required.asFluidStack());
+    return Collections.singletonList(requirement.requirement().required.asFluidStack());
   }
 
   @Override

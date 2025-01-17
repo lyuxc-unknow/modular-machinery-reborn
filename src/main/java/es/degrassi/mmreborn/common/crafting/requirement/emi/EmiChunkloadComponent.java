@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 public class EmiChunkloadComponent extends EmiComponent<Integer, RecipeRequirement<ChunkloadComponent, RequirementChunkload>> implements ItemRendering {
@@ -36,7 +37,7 @@ public class EmiChunkloadComponent extends EmiComponent<Integer, RecipeRequireme
 
   @Override
   public List<Integer> ingredients() {
-    return List.of(requirement.requirement().radius());
+    return Collections.singletonList(requirement.requirement().radius());
   }
 
   public EmiStack getStack() {

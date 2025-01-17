@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.integration.jei;
 
+import com.google.common.collect.Maps;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.integration.almostunified.RecipeIndicator;
@@ -33,11 +34,10 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -47,7 +47,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @JeiPlugin
 public class MMRJeiPlugin implements IModPlugin {
   public static final ResourceLocation PLUGIN_ID = ModularMachineryReborn.rl("jei_plugin");
-  private static final Map<DynamicMachine, MMRRecipeCategory> recipeCategories = new HashMap<>();
+  private static final Map<DynamicMachine, MMRRecipeCategory> recipeCategories = Maps.newHashMap();
   public static IJeiHelpers jeiHelpers;
 
   public static MMRRecipeCategory getCategory(DynamicMachine machine) {
@@ -56,7 +56,7 @@ public class MMRJeiPlugin implements IModPlugin {
 
   @Override
   public void registerIngredients(IModIngredientRegistration registration) {
-    registration.register(CustomIngredientTypes.LONG, new ArrayList<>(), new LongIngredientHelper(),
+    registration.register(CustomIngredientTypes.LONG, Lists.newArrayList(), new LongIngredientHelper(),
         new DummyIngredientRenderer<>(), NamedCodec.LONG.codec());
   }
 

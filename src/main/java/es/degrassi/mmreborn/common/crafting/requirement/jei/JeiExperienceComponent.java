@@ -1,6 +1,5 @@
 package es.degrassi.mmreborn.common.crafting.requirement.jei;
 
-import com.google.common.collect.Lists;
 import es.degrassi.experiencelib.util.ExperienceUtils;
 import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
@@ -14,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.List;
 
 public class JeiExperienceComponent extends JeiComponent<Long, RecipeRequirement<ExperienceComponent, RequirementExperience>> {
@@ -44,7 +44,7 @@ public class JeiExperienceComponent extends JeiComponent<Long, RecipeRequirement
 
   @Override
   public List<Long> ingredients() {
-    return Lists.newArrayList(requirement.requirement().getRequired());
+    return Collections.singletonList(requirement.requirement().getRequired());
   }
 
   @Override

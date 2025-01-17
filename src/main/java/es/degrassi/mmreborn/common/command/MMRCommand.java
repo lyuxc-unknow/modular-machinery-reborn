@@ -44,13 +44,6 @@ public class MMRCommand {
       .executes(ctx -> {
         Config.load();
         ConfigLoaded.load();
-//        EnergyHatchSize.loadFromConfig((EnergyHatchSize size) -> {
-//          size.maxEnergy = MMRConfig.get().energySize(size);
-//          size.maxEnergy = MiscUtils.clamp(size.maxEnergy, 1, Long.MAX_VALUE);
-//          size.transferLimit = MMRConfig.get().energyLimit(size);
-//          size.transferLimit = MiscUtils.clamp(size.transferLimit, 1, Long.MAX_VALUE);
-//        });
-//        FluidHatchSize.loadFromConfig();
         EnergyDisplayUtil.loadFromConfig();
         if (ctx.getSource().getEntity() instanceof ServerPlayer player) {
           reloadMachines(player.server, player);

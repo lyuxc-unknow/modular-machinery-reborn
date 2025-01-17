@@ -51,7 +51,6 @@ public class RequirementTypeRegistration {
       () -> RequirementType.inventory(RequirementExperience.CODEC));
 
   public static void register(IEventBus bus) {
-//    MACHINE_REQUIREMENTS_OLD.register(bus);
     MACHINE_REQUIREMENTS.register(bus);
   }
 }

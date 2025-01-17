@@ -6,8 +6,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import org.apache.commons.compress.utils.Lists;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @EventBusSubscriber(modid = ModularMachineryReborn.MODID, bus = Bus.GAME)
 public class TaskDelayer {
 
-  private static final List<Pair<AtomicInteger, Runnable>> tasks = new ArrayList<>();
+  private static final List<Pair<AtomicInteger, Runnable>> tasks = Lists.newArrayList();
 
   @SubscribeEvent
   public static void serverTick(final ServerTickEvent.Post event) {

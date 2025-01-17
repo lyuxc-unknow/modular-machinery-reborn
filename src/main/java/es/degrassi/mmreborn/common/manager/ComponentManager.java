@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.manager;
 
+import com.google.common.collect.Maps;
 import es.degrassi.mmreborn.api.BlockIngredient;
 import es.degrassi.mmreborn.api.controller.ControllerAccessible;
 import es.degrassi.mmreborn.api.crafting.ICraftingContext;
@@ -23,10 +24,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+import org.apache.commons.compress.utils.Lists;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,9 +37,9 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
   @Getter
   private final MachineControllerEntity controller;
 
-  private final Map<BlockPos, MachineComponent<?>> foundComponents = new LinkedHashMap<>();
-  private final Map<ComponentType, Map<IOType, List<MachineComponent<?>>>> foundComponentsValues = new LinkedHashMap<>();
-  private final Map<BlockPos, ModifierReplacement> foundModifiers = new LinkedHashMap<>();
+  private final Map<BlockPos, MachineComponent<?>> foundComponents = Maps.newHashMap();
+  private final Map<ComponentType, Map<IOType, List<MachineComponent<?>>>> foundComponentsValues = Maps.newHashMap();
+  private final Map<BlockPos, ModifierReplacement> foundModifiers = Maps.newHashMap();
 
   public ComponentManager(MachineControllerEntity entity) {
     this.controller = entity;
@@ -66,11 +66,11 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
   }
 
   private Map<ComponentType, Map<IOType, List<MachineComponent<?>>>> filter() {
-    Map<ComponentType, Map<IOType, List<MachineComponent<?>>>> foundComponentsValues = new LinkedHashMap<>();
+    Map<ComponentType, Map<IOType, List<MachineComponent<?>>>> foundComponentsValues = Maps.newHashMap();
     for (MachineComponent<?> comp : foundComponents.values()) {
       foundComponentsValues
-          .computeIfAbsent(comp.getComponentType(), t -> new LinkedHashMap<>())
-          .computeIfAbsent(comp.getIOType(), io -> new LinkedList<>())
+          .computeIfAbsent(comp.getComponentType(), t -> Maps.newHashMap())
+          .computeIfAbsent(comp.getIOType(), io -> Lists.newArrayList())
           .add(comp);
     }
     return foundComponentsValues;
@@ -97,7 +97,7 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
   }
 
   private Map<BlockPos, MachineComponent<?>> gatherComponents() {
-    Map<BlockPos, MachineComponent<?>> map = new LinkedHashMap<>();
+    Map<BlockPos, MachineComponent<?>> map = Maps.newHashMap();
     Map<BlockPos, BlockIngredient> filteredMap = controller.getFoundMachine().getPattern().getBlocksFiltered(controller.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING));
     BlockPos controllerPos = controller.getBlockPos();
     Level level = controller.getLevel();
@@ -118,7 +118,7 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
   }
 
   private Map<BlockPos, ModifierReplacement> gatherModifiers() {
-    Map<BlockPos, ModifierReplacement> map = new LinkedHashMap<>();
+    Map<BlockPos, ModifierReplacement> map = Maps.newHashMap();
     if (controller.getLevel() == null) return map;
     controller.getFoundMachine()
         .getPattern()

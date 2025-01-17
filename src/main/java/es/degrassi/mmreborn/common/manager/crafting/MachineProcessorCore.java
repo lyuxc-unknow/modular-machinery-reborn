@@ -18,10 +18,10 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -50,7 +50,7 @@ public class MachineProcessorCore implements ISyncableStuff {
   private boolean isLastRecipeTick = false;
 
   private RequirementList<MachineComponent<?>> requirementList;
-  private final List<RequirementWithFunction> currentProcessRequirements = new ArrayList<>();
+  private final List<RequirementWithFunction> currentProcessRequirements = Lists.newArrayList();
 
   public MachineProcessorCore(MachineProcessor processor, MachineControllerEntity tile) {
     this.processor = processor;
@@ -148,9 +148,9 @@ public class MachineProcessorCore implements ISyncableStuff {
       if (!requirement.requirement().shouldSkip(this.rand, this.context)) {
         CraftingResult result = requirement.process(this.tile.getComponentManager(), this.context);
         if (!result.isSuccess()) {
-//          if (this.currentRecipe.value().isVoidPerTickFailure())
-//            this.reset();
-//          else
+          if (this.currentRecipe.value().isVoidPerTickFailure())
+            this.reset();
+          else
             this.setError(result.getMessage());
           return;
         }

@@ -40,46 +40,31 @@ public class MMRConfig {
 
   public final ConfigValue<Integer> TINY_energy_size;
   public final ConfigValue<Integer> TINY_energy_transferRate;
-
   public final ConfigValue<Integer> SMALL_energy_size;
   public final ConfigValue<Integer> SMALL_energy_transferRate;
-
   public final ConfigValue<Integer> NORMAL_energy_size;
   public final ConfigValue<Integer> NORMAL_energy_transferRate;
-
   public final ConfigValue<Integer> REINFORCED_energy_size;
   public final ConfigValue<Integer> REINFORCED_energy_transferRate;
-
   public final ConfigValue<Integer> BIG_energy_size;
   public final ConfigValue<Integer> BIG_energy_transferRate;
-
   public final ConfigValue<Integer> HUGE_energy_size;
   public final ConfigValue<Integer> HUGE_energy_transferRate;
-
   public final ConfigValue<Integer> LUDICROUS_energy_size;
   public final ConfigValue<Integer> LUDICROUS_energy_transferRate;
-
   public final ConfigValue<Integer> ULTIMATE_energy_size;
   public final ConfigValue<Integer> ULTIMATE_energy_transferRate;
-
   public final ConfigValue<Boolean> energy_displayFETooltip;
   public final ConfigValue<Boolean> energy_displayIC2EUTooltip;
   public final ConfigValue<EnergyDisplayUtil.EnergyType> energy_type;
 
   public final ConfigValue<Integer> TINY_fluid_size;
-
   public final ConfigValue<Integer> SMALL_fluid_size;
-
   public final ConfigValue<Integer> NORMAL_fluid_size;
-
   public final ConfigValue<Integer> REINFORCED_fluid_size;
-
   public final ConfigValue<Integer> BIG_fluid_size;
-
   public final ConfigValue<Integer> HUGE_fluid_size;
-
   public final ConfigValue<Integer> LUDICROUS_fluid_size;
-
   public final ConfigValue<Integer> VACUUM_fluid_size;
 
   public final ConfigValue<Integer> TINY_experience_size;

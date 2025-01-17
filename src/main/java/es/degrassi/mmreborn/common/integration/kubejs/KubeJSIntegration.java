@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.integration.kubejs;
 
+import com.google.common.collect.Maps;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.script.data.KubeFileResourcePack;
 import dev.latvian.mods.kubejs.script.data.VirtualDataPack;
@@ -30,7 +31,7 @@ public class KubeJSIntegration {
     MachineBuilderJS.MachineKubeEvent event = new MachineBuilderJS.MachineKubeEvent();
     MMRKubeJSPlugin.MACHINES.post(event);
 
-    Map<ResourceLocation, DynamicMachine> machines = new LinkedHashMap<>();
+    Map<ResourceLocation, DynamicMachine> machines = Maps.newHashMap();
     try {
       event.getBuilders().forEach(builder -> {
         DynamicMachine machine = builder.build();

@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -83,7 +84,7 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
   private final boolean isTag;
   @Getter
   @Setter
-  private List<TagKey<Block>> tags = new LinkedList<>();
+  private List<TagKey<Block>> tags = Lists.newArrayList();
 
   public BlockIngredient(List<TagKey<Block>> tags, List<PartialBlockState> states) {
     List<PartialBlockState> statesCopy = Lists.newArrayList(states);
@@ -100,7 +101,7 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
   }
 
   public BlockIngredient(PartialBlockState partialBlockState) {
-    this(List.of(), List.of(partialBlockState));
+    this(Collections.emptyList(), Collections.singletonList(partialBlockState));
   }
 
   public static BlockIngredient create(String s) throws IllegalArgumentException {
@@ -112,8 +113,8 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
       }
     }
     String[] arr = s.split(", ");
-    List<TagKey<Block>> tags = new LinkedList<>();
-    List<PartialBlockState> states = new LinkedList<>();
+    List<TagKey<Block>> tags = Lists.newArrayList();
+    List<PartialBlockState> states = Lists.newArrayList();
     Arrays.asList(arr).forEach(string -> {
       if (string.startsWith("#")) {
         string = string.substring(1);
@@ -199,7 +200,7 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
   }
 
   public List<Component> getNames() {
-    List<Component> ingredients = new LinkedList<>();
+    List<Component> ingredients = Lists.newArrayList();
     ingredients.addAll(this.tags.stream().map(TagKey::location).map(ResourceLocation::toString).map(s -> "#" + s).map(Component::literal).toList());
 
     ingredients.addAll(
@@ -244,7 +245,7 @@ public class BlockIngredient implements IIngredient<PartialBlockState> {
   }
 
   public String getString() {
-    List<String> ingredients = new LinkedList<>();
+    List<String> ingredients = Lists.newArrayList();
     ingredients.addAll(this.tags.stream().map(TagKey::location).map(ResourceLocation::toString).map(s -> "#" + s).toList());
 
     ingredients.addAll(

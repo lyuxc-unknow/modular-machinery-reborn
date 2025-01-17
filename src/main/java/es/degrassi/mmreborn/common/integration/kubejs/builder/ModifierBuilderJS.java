@@ -12,13 +12,13 @@ import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import org.apache.commons.compress.utils.Lists;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class ModifierBuilderJS {
   private BlockIngredient ingredient;
-  private final List<RecipeModifier> modifiers = new LinkedList<>();
+  private final List<RecipeModifier> modifiers = Lists.newArrayList();
   private BlockPos position;
 
   @HideFromJS

@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.util;
 
+import com.google.common.collect.Maps;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -161,7 +162,7 @@ public class ItemUtils {
   }
 
   public static Map<Integer, ItemStack> findItemsIndexedInInventoryFuel(IItemHandlerModifiable handler) {
-    Map<Integer, ItemStack> stacksOut = new HashMap<>();
+    Map<Integer, ItemStack> stacksOut = Maps.newHashMap();
     for (int j = 0; j < handler.getSlots(); j++) {
       ItemStack s = handler.getStackInSlot(j);
     }
@@ -169,7 +170,7 @@ public class ItemUtils {
   }
 
   public static Map<Integer, ItemStack> findItemsIndexedInInventoryOreDict(IItemHandlerModifiable handler, ResourceLocation oreDict) {
-    Map<Integer, ItemStack> stacksOut = new HashMap<>();
+    Map<Integer, ItemStack> stacksOut = Maps.newHashMap();
     for (int j = 0; j < handler.getSlots(); j++) {
       ItemStack s = handler.getStackInSlot(j);
       if(s.isEmpty()) continue;
@@ -180,7 +181,7 @@ public class ItemUtils {
   }
 
   public static Map<Integer, ItemStack> findItemsIndexedInInventory(IItemHandlerModifiable handler, ItemStack match, boolean strict) {
-    Map<Integer, ItemStack> stacksOut = new HashMap<>();
+    Map<Integer, ItemStack> stacksOut = Maps.newHashMap();
     for (int j = 0; j < handler.getSlots(); j++) {
       ItemStack s = handler.getStackInSlot(j);
       if ((strict ? matchStacks(s, match) : matchStackLoosely(s, match))) {

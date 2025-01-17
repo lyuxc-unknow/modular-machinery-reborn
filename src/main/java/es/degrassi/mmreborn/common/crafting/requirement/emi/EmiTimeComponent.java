@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 public class EmiTimeComponent extends EmiComponent<IntRange, RecipeRequirement<TimeComponent, RequirementTime>> implements ItemRendering {
@@ -37,7 +38,7 @@ public class EmiTimeComponent extends EmiComponent<IntRange, RecipeRequirement<T
 
   @Override
   public List<IntRange> ingredients() {
-    return List.of(requirement.requirement().time());
+    return Collections.singletonList(requirement.requirement().time());
   }
 
   public EmiStack getStack() {

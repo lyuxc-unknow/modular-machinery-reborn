@@ -1,11 +1,12 @@
 package es.degrassi.mmreborn.client;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import com.google.common.collect.Maps;
 import lombok.Getter;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+
+import java.util.Iterator;
+import java.util.Map;
 
 public class ClientScheduler {
 
@@ -14,8 +15,8 @@ public class ClientScheduler {
   private static final Object lock = new Object();
 
   private boolean inTick = false;
-  private final Map<Runnable, Counter> queuedRunnables = new HashMap<>();
-  private final Map<Runnable, Integer> waitingRunnables = new HashMap<>();
+  private final Map<Runnable, Counter> queuedRunnables = Maps.newHashMap();
+  private final Map<Runnable, Integer> waitingRunnables = Maps.newHashMap();
 
   @SubscribeEvent
   public void tick(ClientTickEvent.Pre event) {
@@ -29,7 +30,7 @@ public class ClientScheduler {
         Runnable r = iterator.next();
         Counter delay = queuedRunnables.get(r);
         delay.decrement();
-        if(delay.value <= 0) {
+        if (delay.value <= 0) {
           r.run();
           iterator.remove();
         }
@@ -44,7 +45,7 @@ public class ClientScheduler {
 
   public void addRunnable(Runnable r, int tickDelay) {
     synchronized (lock) {
-      if(inTick) {
+      if (inTick) {
         waitingRunnables.put(r, tickDelay);
       } else {
         queuedRunnables.put(r, new Counter(tickDelay));

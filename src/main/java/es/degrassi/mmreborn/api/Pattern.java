@@ -1,13 +1,8 @@
 package es.degrassi.mmreborn.api;
 
+import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
@@ -15,6 +10,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
+import org.apache.commons.compress.utils.Lists;
+
+import java.util.List;
+import java.util.Map;
 
 public class Pattern {
   private final List<List<String>> strings;
@@ -27,11 +26,11 @@ public class Pattern {
   private final Map<BlockPos, BlockIngredient> pattern_west;
 
   @Getter
-  private final List<ModifierReplacement> modifiers = new LinkedList<>();
-  private final Map<BlockPos, ModifierReplacement> modifiers_north = new LinkedHashMap<>();
-  private final Map<BlockPos, ModifierReplacement> modifiers_south = new LinkedHashMap<>();
-  private final Map<BlockPos, ModifierReplacement> modifiers_east = new LinkedHashMap<>();
-  private final Map<BlockPos, ModifierReplacement> modifiers_west = new LinkedHashMap<>();
+  private final List<ModifierReplacement> modifiers = Lists.newArrayList();
+  private final Map<BlockPos, ModifierReplacement> modifiers_north = Maps.newHashMap();
+  private final Map<BlockPos, ModifierReplacement> modifiers_south = Maps.newHashMap();
+  private final Map<BlockPos, ModifierReplacement> modifiers_east = Maps.newHashMap();
+  private final Map<BlockPos, ModifierReplacement> modifiers_west = Maps.newHashMap();
 
   public Pattern(Map<BlockPos, BlockIngredient> pattern, List<List<String>> strings, Map<Character, BlockIngredient> keys) {
     this.pattern = pattern;
@@ -105,7 +104,7 @@ public class Pattern {
   }
 
   private Map<BlockPos, BlockIngredient> rotate(Rotation rotation) {
-    Map<BlockPos, BlockIngredient> rotated = new HashMap<>();
+    Map<BlockPos, BlockIngredient> rotated = Maps.newHashMap();
     pattern.forEach((pos, ingredient) -> rotated.put(pos.rotate(rotation), ingredient.copyWithRotation(rotation)));
     return rotated;
   }

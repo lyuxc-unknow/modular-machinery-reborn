@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.network.server;
 
+import com.google.common.collect.Maps;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.integration.jei.MMRJeiPlugin;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
@@ -25,7 +26,7 @@ public record SSyncMachinesPacket(Map<ResourceLocation, DynamicMachine> machines
   public static final StreamCodec<RegistryFriendlyByteBuf, SSyncMachinesPacket> CODEC = new StreamCodec<>() {
     @Override
     public SSyncMachinesPacket decode(RegistryFriendlyByteBuf buf) {
-      Map<ResourceLocation, DynamicMachine> map = new HashMap<>();
+      Map<ResourceLocation, DynamicMachine> map = Maps.newHashMap();
       int size = buf.readInt();
       for (int i = 0; i < size; i++) {
         try {

@@ -1,15 +1,12 @@
 package es.degrassi.mmreborn.common.util;
 
 import com.google.common.collect.Lists;
+import net.minecraft.core.BlockPos;
+
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import javax.annotation.Nullable;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 
 public class MiscUtils {
 

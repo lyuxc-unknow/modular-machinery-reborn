@@ -32,7 +32,6 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.LinkedList;
 import java.util.List;
 
 @Getter
@@ -58,8 +57,8 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
   private final boolean voidPerTickFailure;
   private final PositionedRequirement progressPosition;
   private final int width, height;
-  public final List<Component> textsToRender = new LinkedList<>();
-  public final List<Pair<PositionedSizedRequirement, Object>> chanceTexts = new LinkedList<>();
+  public final List<Component> textsToRender = Lists.newArrayList();
+  public final List<Pair<PositionedSizedRequirement, Object>> chanceTexts = Lists.newArrayList();
   private final boolean shouldRenderProgress;
 
   private boolean modified = false;
@@ -111,7 +110,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
   }
 
   public MachineRecipe copy() {
-    return copy(owningMachine, List.of());
+    return copy(owningMachine, Lists.newArrayList());
   }
 
   public MachineRecipe copy(ResourceLocation newOwningMachineIdentifier, List<RecipeModifier> modifiers) {
@@ -205,7 +204,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
     private boolean modified;
 
     public MachineRecipeBuilder(ResourceLocation machine, int time, int width, int height, PositionedRequirement progressPosition) {
-      this.requirements = new LinkedList<>();
+      this.requirements = Lists.newArrayList();
       this.machine = machine;
       this.time = time;
       this.progressPosition = progressPosition;

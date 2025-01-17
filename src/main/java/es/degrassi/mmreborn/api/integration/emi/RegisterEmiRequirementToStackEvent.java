@@ -1,6 +1,7 @@
 package es.degrassi.mmreborn.api.integration.emi;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import dev.emi.emi.api.stack.EmiStack;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
 import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
@@ -13,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RegisterEmiRequirementToStackEvent extends Event implements IModBusEvent {
-  private final Map<RequirementType<?>, EmiStackFactory<?>> stacks = new HashMap<>();
+  private final Map<RequirementType<?>, EmiStackFactory<?>> stacks = Maps.newHashMap();
 
   public <R extends RecipeRequirement<T, C>, C extends IRequirement<T>, T extends MachineComponent<?>,
       E extends EmiStack> void register(RequirementType<C> requirement, EmiStackFactory<R> factory) {

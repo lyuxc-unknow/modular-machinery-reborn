@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 public interface ConfigLoaded {
-  Map<Class<? extends Enum<?>>, ValueSetter<?>> setters = Maps.newLinkedHashMap();
+  Map<Class<? extends Enum<?>>, ValueSetter<?>> setters = Maps.newHashMap();
 
   static <T extends Enum<T> & ConfigLoaded> void add(Class<T> clazz, ValueSetter<T> consumer) {
     setters.put(clazz, consumer);

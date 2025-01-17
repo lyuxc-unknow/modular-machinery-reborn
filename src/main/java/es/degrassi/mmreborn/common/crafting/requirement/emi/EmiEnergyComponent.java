@@ -1,6 +1,5 @@
 package es.degrassi.mmreborn.common.crafting.requirement.emi;
 
-import com.google.common.collect.Lists;
 import dev.emi.emi.api.widget.WidgetHolder;
 import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
@@ -11,6 +10,7 @@ import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class EmiEnergyComponent extends EmiComponent<Long, RecipeRequirement<Ene
 
   @Override
   public List<Long> ingredients() {
-    return Lists.newArrayList(requirement.requirement().getRequiredEnergyPerTick());
+    return Collections.singletonList(requirement.requirement().getRequiredEnergyPerTick());
   }
 
   @Override

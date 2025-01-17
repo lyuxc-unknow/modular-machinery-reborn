@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.integration.kubejs.builder;
 
+import com.google.common.collect.Maps;
 import com.google.gson.JsonPrimitive;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
@@ -15,10 +16,9 @@ import es.degrassi.mmreborn.common.manager.crafting.MachineStatus;
 import es.degrassi.mmreborn.common.util.MachineModelLocation;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
+import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.EnumMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -37,8 +37,8 @@ public class MachineBuilderJS {
 
   public MachineBuilderJS(@NotNull ResourceLocation id) {
     this.id = id;
-    modifiers = new LinkedList<>();
-    sounds = new EnumMap<>(MachineStatus.class);
+    modifiers = Lists.newArrayList();
+    sounds = Maps.newEnumMap(MachineStatus.class);
   }
 
   public MachineBuilderJS name(String name) {
@@ -95,7 +95,7 @@ public class MachineBuilderJS {
 
   @Getter
   public static class MachineKubeEvent implements KubeEvent {
-    private final List<MachineBuilderJS> builders = new LinkedList<>();
+    private final List<MachineBuilderJS> builders = Lists.newArrayList();
 
     public MachineBuilderJS create(ResourceLocation id) {
       MachineBuilderJS builder = new MachineBuilderJS(id);

@@ -9,6 +9,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.apache.commons.compress.utils.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public record SUpdateContainerPacket(int windowId, List<IData<?>> data) implemen
 
   public static SUpdateContainerPacket read(RegistryFriendlyByteBuf buf) {
     int windowId = buf.readInt();
-    List<IData<?>> dataList = new ArrayList<>();
+    List<IData<?>> dataList = Lists.newArrayList();
     short size = buf.readShort();
     for(short i = 0; i < size; i++) {
       IData<?> data = IData.readData(buf);

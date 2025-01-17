@@ -88,7 +88,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -426,7 +425,7 @@ public class ModularMachineryRebornClient {
   }
 
   private List<EmiStack> emiStackFromItemRequirement(RecipeRequirement<ItemComponent, RequirementItem> requirement) {
-    List<EmiStack> stacks = new ArrayList<>();
+    List<EmiStack> stacks = Lists.newArrayList();
     for (Ingredient.Value value : requirement.requirement().getIngredient().ingredient().values) {
       if (value instanceof Ingredient.TagValue(TagKey<Item> tag)) {
         for (Item stack : TagUtil.getItems(tag).toList()) {

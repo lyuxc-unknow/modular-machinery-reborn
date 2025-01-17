@@ -13,6 +13,7 @@ import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.apache.commons.compress.utils.Lists;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -34,7 +35,7 @@ public class RecipeModifier {
       chance
   )), "Recipe Modifier");
 
-  private static final List<RequirementType<?>> blacklist = new LinkedList<>();
+  private static final List<RequirementType<?>> blacklist = Lists.newArrayList();
 
   static {
     addToBlacklist(RequirementTypeRegistration.DIMENSION.get());

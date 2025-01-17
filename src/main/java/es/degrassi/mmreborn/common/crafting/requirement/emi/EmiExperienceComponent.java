@@ -1,6 +1,5 @@
 package es.degrassi.mmreborn.common.crafting.requirement.emi;
 
-import com.google.common.collect.Lists;
 import dev.emi.emi.api.widget.WidgetHolder;
 import es.degrassi.experiencelib.util.ExperienceUtils;
 import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
@@ -10,6 +9,7 @@ import es.degrassi.mmreborn.common.machine.component.ExperienceComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
+import java.util.Collections;
 import java.util.List;
 
 public class EmiExperienceComponent extends EmiComponent<Long, RecipeRequirement<ExperienceComponent, RequirementExperience>> {
@@ -29,7 +29,7 @@ public class EmiExperienceComponent extends EmiComponent<Long, RecipeRequirement
 
   @Override
   public List<Long> ingredients() {
-    return Lists.newArrayList(requirement.requirement().getRequired());
+    return Collections.singletonList(requirement.requirement().getRequired());
   }
 
   @Override

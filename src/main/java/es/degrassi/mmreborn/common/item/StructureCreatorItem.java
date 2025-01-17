@@ -6,6 +6,7 @@ package es.degrassi.mmreborn.common.item;
 
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -250,9 +251,9 @@ public class StructureCreatorItem extends Item {
           keys.put((char) charIndex.getAndIncrement(), state);
           if (charIndex.get() == 122) charIndex.set(65); //All lowercase are used, so switch to uppercase.
         });
-    List<List<String>> pattern = new ArrayList<>();
+    List<List<String>> pattern = Lists.newArrayList();
     for (BlockIngredient[][] state : states) {
-      List<String> floor = new ArrayList<>();
+      List<String> floor = Lists.newArrayList();
       for (BlockIngredient[] partialBlockStates : state) {
         StringBuilder row = new StringBuilder();
         for (BlockIngredient partial : partialBlockStates) {
@@ -298,7 +299,7 @@ public class StructureCreatorItem extends Item {
     else
       states = new BlockIngredient[maxY - minY + 1][maxZ - minZ + 1][maxX - minX + 1];
     AABB box = new AABB(minX, minY, minZ, maxX, maxY, maxZ);
-    Map<BlockState, BlockIngredient> cache = new HashMap<>();
+    Map<BlockState, BlockIngredient> cache = Maps.newHashMap();
     BlockPos.betweenClosedStream(box).forEach(p -> {
       BlockState state = world.getBlockState(p);
       BlockIngredient partial;

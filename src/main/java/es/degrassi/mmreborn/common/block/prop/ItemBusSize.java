@@ -13,7 +13,7 @@ public enum ItemBusSize implements StringRepresentable, ConfigLoaded {
   HUGE(16),
   LUDICROUS(32);
 
-  private final int slots;
+  private int slots;
 
   public final int defaultConfigSize;
 

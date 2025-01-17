@@ -235,7 +235,7 @@ public class Structure {
     public Structure build(List<List<String>> pattern, Map<Character, BlockIngredient> keys) {
       this.checkMissingPredicates();
       BlockPos machinePos = this.getMachinePos();
-      Map<BlockPos, BlockIngredient> blocks = new HashMap<>();
+      Map<BlockPos, BlockIngredient> blocks = Maps.newHashMap();
       for (int i = 0; i < this.depth.size(); ++i) {
         for (int j = 0; j < this.aisleHeight; ++j) {
           for (int k = 0; k < this.rowWidth; ++k) {

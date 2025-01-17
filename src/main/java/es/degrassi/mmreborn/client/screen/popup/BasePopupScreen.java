@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.client.screen.popup;
 
+import com.google.common.collect.Maps;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.util.LRU;
 import lombok.Getter;
@@ -20,14 +21,11 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 public abstract class BasePopupScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
   protected static final ResourceLocation BLANK_BACKGROUND = ModularMachineryReborn.rl("background");
-
-  public final Minecraft mc = Minecraft.getInstance();
 
   //Position of the top left corner of the popup.
   public int x;
@@ -37,7 +35,7 @@ public abstract class BasePopupScreen<T extends AbstractContainerMenu> extends A
   public int xSize;
   public int ySize;
   private final LRU<PopupScreen<?>> popups = new LRU<>();
-  private final Map<PopupScreen<?>, String> popupToId = new HashMap<>();
+  private final Map<PopupScreen<?>, String> popupToId = Maps.newHashMap();
 
   private int freezePopupsTicks;
 
@@ -259,11 +257,11 @@ public abstract class BasePopupScreen<T extends AbstractContainerMenu> extends A
     } else {
       FocusNavigationEvent focusnavigationevent = switch (keyCode) {
         case 258 -> this.createTabEvent();
-        default -> null;
         case 262 -> this.createArrowEvent(ScreenDirection.RIGHT);
         case 263 -> this.createArrowEvent(ScreenDirection.LEFT);
         case 264 -> this.createArrowEvent(ScreenDirection.DOWN);
         case 265 -> this.createArrowEvent(ScreenDirection.UP);
+        default -> null;
       };
       if (focusnavigationevent != null) {
         ComponentPath componentpath = super.nextFocusPath(focusnavigationevent);

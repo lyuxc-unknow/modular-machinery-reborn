@@ -7,8 +7,8 @@ import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import lombok.Setter;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import org.apache.commons.compress.utils.Lists;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -42,7 +42,7 @@ public class MachineRecipeFinder {
         .sorted((holder1, holder2) -> Comparator.comparingInt(MachineRecipe::getConfiguredPriority).reversed().compare(holder1.value(), holder2.value()))
         .map(RecipeChecker::new)
         .toList();
-    this.okToCheck = new ArrayList<>();
+    this.okToCheck = Lists.newArrayList();
     this.recipeCheckCooldown = tile.getLevel().random.nextInt(this.baseCooldown);
   }
 

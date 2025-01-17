@@ -1,6 +1,5 @@
 package es.degrassi.mmreborn.common.crafting.requirement.jei;
 
-import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
@@ -22,6 +21,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -42,7 +42,7 @@ public class JeiFluidComponent extends JeiComponent<FluidStack, RecipeRequiremen
 
   @Override
   public List<FluidStack> ingredients() {
-    return Lists.newArrayList(requirement.requirement().required.asFluidStack());
+    return Collections.singletonList(requirement.requirement().required.asFluidStack());
   }
 
   @Override
