@@ -6,7 +6,6 @@ import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.util.HybridTank;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
 
 public class FluidComponent extends MachineComponent<HybridTank> {
   private final HybridTank handler;
@@ -27,11 +26,54 @@ public class FluidComponent extends MachineComponent<HybridTank> {
   }
 
   @Override
+  public <C extends MachineComponent<?>> boolean canMerge(C c) {
+    FluidComponent comp = (FluidComponent) c;
+    if (getIOType().isInput())
+      return handler.getFluid().is(comp.handler.getFluid().getFluid());
+    else
+      return handler.isEmpty() || comp.handler.isEmpty() || handler.getFluid().is(comp.handler.getFluid().getFluid());
+  }
+
+  @Override
   @SuppressWarnings("unchecked")
   public <C extends MachineComponent<?>> C merge(C c) {
     FluidComponent comp = (FluidComponent) c;
     return (C) new FluidComponent(
         new HybridTank(handler.getCapacity() + comp.handler.getCapacity()) {
+          @Override
+          public FluidStack getFluid() {
+            FluidStack one = handler.getFluid(), second = comp.getContainerProvider().getFluid();
+            if (!one.isEmpty()) return one;
+            if (!second.isEmpty()) return second;
+            return FluidStack.EMPTY;
+          }
+
+          @Override
+          public int getFluidAmount() {
+            int one = handler.getFluidAmount(), second = comp.handler.getFluidAmount();
+            return one + second;
+          }
+
+          @Override
+          public boolean isFluidValid(FluidStack stack) {
+            return handler.isFluidValid(stack) || comp.handler.isFluidValid(stack);
+          }
+
+          @Override
+          public void setFluid(FluidStack stack) {
+
+          }
+
+          @Override
+          public boolean isEmpty() {
+            return handler.isEmpty() && comp.handler.isEmpty();
+          }
+
+          @Override
+          public int getSpace() {
+            return handler.getSpace() + comp.handler.getSpace();
+          }
+
           @Override
           public int fill(FluidStack resource, FluidAction action) {
             int filled1 = handler.fill(resource, action);
@@ -61,7 +103,7 @@ public class FluidComponent extends MachineComponent<HybridTank> {
   }
 
   @Override
-  public int compareTo(@NotNull MachineComponent<HybridTank> o) {
+  public int compareTo(MachineComponent<HybridTank> o) {
     HybridTank one = getContainerProvider();
     HybridTank two = o.getContainerProvider();
     if (one.isEmpty() && two.isEmpty()) return 0;

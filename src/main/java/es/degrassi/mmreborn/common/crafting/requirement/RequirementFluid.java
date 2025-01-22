@@ -71,7 +71,7 @@ public class RequirementFluid implements IRequirement<FluidComponent> {
       }
       case OUTPUT -> {
         int amount = (int) context.getIntegerModifiedValue(this.amount, this);
-        int filled = component.getContainerProvider().fill(required.asFluidStack().copyWithAmount(amount), IFluidHandler.FluidAction.SIMULATE);
+        int filled = handler.fill(required.asFluidStack().copyWithAmount(amount), IFluidHandler.FluidAction.SIMULATE);
         yield filled == amount;
       }
     };
@@ -87,9 +87,9 @@ public class RequirementFluid implements IRequirement<FluidComponent> {
 
   private CraftingResult processInput(FluidComponent component, ICraftingContext context) {
     int amount = (int) context.getIntegerModifiedValue(this.amount, this);
-    if (!required.asFluidStack().is(component.getContainerProvider().getFluid().getFluid()))
-      errorInput(amount, component.getContainerProvider().getFluid(),
-          component.getContainerProvider().getFluidAmount());
+//    if (!required.asFluidStack().is(component.getContainerProvider().getFluid().getFluid()))
+//      errorInput(amount, component.getContainerProvider().getFluid(),
+//          component.getContainerProvider().getFluidAmount());
     int toDrain = amount;
     FluidStack fluid = required.asFluidStack().copyWithAmount(toDrain);
     int canDrain = component.getContainerProvider().getFluidAmount();
@@ -107,7 +107,7 @@ public class RequirementFluid implements IRequirement<FluidComponent> {
     return CraftingResult.error(Component.translatable(
         "craftcheck.failure.fluid.input",
         amount, required.asFluidStack().getHoverName(),
-        "%sx %s", amountFound, found.getHoverName()
+        amountFound, found.getHoverName()
     ));
   }
 
@@ -166,13 +166,13 @@ public class RequirementFluid implements IRequirement<FluidComponent> {
 
   @Override
   public boolean isComponentValid(FluidComponent m, ICraftingContext context) {
-    if (!getMode().equals(m.getIOType())) return false;
-    if (getMode().isInput()) {
-      if (m.getContainerProvider().isEmpty()) return false;
-      return FluidStack.isSameFluidSameComponents(m.getContainerProvider().getFluid(), required.asFluidStack());
-    } else {
-      if (m.getContainerProvider().isEmpty()) return true;
-      else return FluidStack.isSameFluidSameComponents(m.getContainerProvider().getFluid(), required.asFluidStack());
-    }
+    return getMode().equals(m.getIOType());
+//    if (getMode().isInput()) {
+//      if (m.getContainerProvider().isEmpty()) return false;
+//      return FluidStack.isSameFluidSameComponents(m.getContainerProvider().getFluid(), required.asFluidStack());
+//    } else {
+//      if (m.getContainerProvider().isEmpty()) return true;
+//      else return FluidStack.isSameFluidSameComponents(m.getContainerProvider().getFluid(), required.asFluidStack());
+//    }
   }
 }
