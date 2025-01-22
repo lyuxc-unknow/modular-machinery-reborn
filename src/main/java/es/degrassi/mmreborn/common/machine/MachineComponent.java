@@ -3,11 +3,13 @@ package es.degrassi.mmreborn.common.machine;
 import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.manager.crafting.MachineStatus;
+import es.degrassi.mmreborn.common.util.HybridTank;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class MachineComponent<T> {
+public abstract class MachineComponent<T> implements Comparable<MachineComponent<T>> {
   private final IOType ioType;
 
   public MachineComponent(IOType ioType) {
@@ -49,5 +51,10 @@ public abstract class MachineComponent<T> {
 
   public <C extends MachineComponent<?>> boolean canMerge(C c) {
     return c.getIOType().equals(getIOType());
+  }
+
+  @Override
+  public int compareTo(@NotNull MachineComponent<T> o) {
+    return 0;
   }
 }

@@ -29,6 +29,7 @@ import org.apache.commons.compress.utils.Lists;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -152,14 +153,14 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
         .stream()
         .flatMap(List::stream)
         .map(m -> (C) m)
+        .filter(Objects::nonNull)
         .filter(m -> requirement.test(m, context) || requirement.isComponentValid(m, context))
+        .sorted()
         .forEach(c -> {
           if (merged.get() == null)
             merged.set(c);
-          else if (c.getIOType().isInput()) {
-            if (merged.get().canMerge(c))
-              merged.set(merged.get().merge(c));
-          }
+          if (merged.get().canMerge(c))
+            merged.set(merged.get().merge(c));
         });
     return Optional.ofNullable(merged.get());
   }

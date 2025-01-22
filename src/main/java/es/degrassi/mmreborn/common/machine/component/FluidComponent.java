@@ -6,6 +6,7 @@ import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.util.HybridTank;
 import net.neoforged.neoforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 public class FluidComponent extends MachineComponent<HybridTank> {
   private final HybridTank handler;
@@ -23,12 +24,6 @@ public class FluidComponent extends MachineComponent<HybridTank> {
   @Override
   public HybridTank getContainerProvider() {
     return handler;
-  }
-
-  @Override
-  public <C extends MachineComponent<?>> boolean canMerge(C c) {
-    FluidComponent comp = (FluidComponent) c;
-    return handler.getFluid().is(comp.handler.getFluid().getFluid());
   }
 
   @Override
@@ -63,5 +58,15 @@ public class FluidComponent extends MachineComponent<HybridTank> {
         },
         getIOType()
     );
+  }
+
+  @Override
+  public int compareTo(@NotNull MachineComponent<HybridTank> o) {
+    HybridTank one = getContainerProvider();
+    HybridTank two = o.getContainerProvider();
+    if (one.isEmpty() && two.isEmpty()) return 0;
+    if (one.isEmpty() && !two.isEmpty()) return -1;
+    if (!one.isEmpty() && !two.isEmpty()) return 0;
+    return 1;
   }
 }
