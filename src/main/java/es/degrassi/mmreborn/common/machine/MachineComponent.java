@@ -3,7 +3,6 @@ package es.degrassi.mmreborn.common.machine;
 import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.manager.crafting.MachineStatus;
-import es.degrassi.mmreborn.common.util.HybridTank;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;

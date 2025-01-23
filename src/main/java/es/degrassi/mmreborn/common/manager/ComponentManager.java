@@ -165,13 +165,36 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
     return Optional.ofNullable(merged.get());
   }
 
+  @SuppressWarnings("unchecked")
+  public <C extends MachineComponent<?>> Optional<C> getComponent(ComponentType type, IOType mode) {
+    if (foundComponentsValues.isEmpty()) updateComponents();
+    AtomicReference<C> merged = new AtomicReference<>(null);
+    Optional.ofNullable(foundComponentsValues.get(type))
+        .map(m -> m.get(mode))
+        .stream()
+        .flatMap(List::stream)
+        .map(m -> (C) m)
+        .filter(Objects::nonNull)
+        .sorted()
+        .forEach(c -> {
+          if (merged.get() == null)
+            merged.set(c);
+          if (merged.get().canMerge(c))
+            merged.set(merged.get().merge(c));
+        });
+    return Optional.ofNullable(merged.get());
+  }
+
   @Override
   public CompoundTag serializeNBT(HolderLookup.Provider provider) {
     CompoundTag nbt = new CompoundTag();
     CompoundTag componentsByType = new CompoundTag();
     foundComponentsValues.forEach((type, map) -> {
       CompoundTag listByMode = new CompoundTag();
-      map.forEach((mode, list) -> listByMode.putInt(mode.getSerializedName(), list.size()));
+      map.forEach((mode, list) -> listByMode.put(
+          mode.getSerializedName(),
+          getComponent(type, mode).map(MachineComponent::asTag).orElse(new CompoundTag())
+      ));
       componentsByType.put(type.getId().toString(), listByMode);
     });
     nbt.put("components", componentsByType);

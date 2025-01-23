@@ -87,9 +87,6 @@ public class RequirementFluid implements IRequirement<FluidComponent> {
 
   private CraftingResult processInput(FluidComponent component, ICraftingContext context) {
     int amount = (int) context.getIntegerModifiedValue(this.amount, this);
-//    if (!required.asFluidStack().is(component.getContainerProvider().getFluid().getFluid()))
-//      errorInput(amount, component.getContainerProvider().getFluid(),
-//          component.getContainerProvider().getFluidAmount());
     int toDrain = amount;
     FluidStack fluid = required.asFluidStack().copyWithAmount(toDrain);
     int canDrain = component.getContainerProvider().getFluidAmount();
@@ -166,13 +163,12 @@ public class RequirementFluid implements IRequirement<FluidComponent> {
 
   @Override
   public boolean isComponentValid(FluidComponent m, ICraftingContext context) {
-    return getMode().equals(m.getIOType());
-//    if (getMode().isInput()) {
-//      if (m.getContainerProvider().isEmpty()) return false;
-//      return FluidStack.isSameFluidSameComponents(m.getContainerProvider().getFluid(), required.asFluidStack());
-//    } else {
-//      if (m.getContainerProvider().isEmpty()) return true;
-//      else return FluidStack.isSameFluidSameComponents(m.getContainerProvider().getFluid(), required.asFluidStack());
-//    }
+    if (getMode().isInput()) {
+      if (m.getContainerProvider().isEmpty()) return false;
+      return FluidStack.isSameFluidSameComponents(m.getContainerProvider().getFluid(), required.asFluidStack());
+    } else {
+      if (m.getContainerProvider().isEmpty()) return true;
+      else return FluidStack.isSameFluidSameComponents(m.getContainerProvider().getFluid(), required.asFluidStack());
+    }
   }
 }
