@@ -1,12 +1,12 @@
 package es.degrassi.mmreborn.common.util;
 
+import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import org.apache.commons.compress.utils.Lists;
 
 import java.util.Iterator;
 import java.util.List;
