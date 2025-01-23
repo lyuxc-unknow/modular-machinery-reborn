@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.api;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -10,7 +11,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
-import org.apache.commons.compress.utils.Lists;
 
 import java.util.List;
 import java.util.Map;

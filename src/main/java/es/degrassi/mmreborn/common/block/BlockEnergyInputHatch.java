@@ -19,8 +19,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class BlockEnergyInputHatch extends BlockEnergyHatch {
-
-//  public static final EnumProperty<EnergyHatchSize> BUS_TYPE = EnumProperty.create("size", EnergyHatchSize.class);
   public BlockEnergyInputHatch(EnergyHatchSize type) {
     super(type);
   }

@@ -16,7 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import org.apache.commons.compress.utils.Lists;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.List;

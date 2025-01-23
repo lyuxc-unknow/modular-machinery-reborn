@@ -1,11 +1,10 @@
 package es.degrassi.mmreborn.common.util;
 
+import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.common.entity.ChunkloaderEntity;
 import net.minecraft.world.level.ChunkPos;
-import org.apache.commons.compress.utils.Lists;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;

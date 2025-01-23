@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.network.server;
 
+import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.network.IData;
 import es.degrassi.mmreborn.client.container.ContainerBase;
@@ -9,9 +10,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.apache.commons.compress.utils.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public record SUpdateContainerPacket(int windowId, List<IData<?>> data) implements CustomPacketPayload {

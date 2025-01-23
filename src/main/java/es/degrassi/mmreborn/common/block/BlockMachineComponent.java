@@ -1,7 +1,6 @@
 package es.degrassi.mmreborn.common.block;
 
 import es.degrassi.mmreborn.common.data.Config;
-import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.entity.base.BlockEntitySynchronized;
 import es.degrassi.mmreborn.common.entity.base.ColorableMachineComponentEntity;
 import es.degrassi.mmreborn.common.entity.base.ColorableMachineEntity;

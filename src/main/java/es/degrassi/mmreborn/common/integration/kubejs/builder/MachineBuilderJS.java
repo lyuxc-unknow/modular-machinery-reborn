@@ -16,7 +16,7 @@ import es.degrassi.mmreborn.common.manager.crafting.MachineStatus;
 import es.degrassi.mmreborn.common.util.MachineModelLocation;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
-import org.apache.commons.compress.utils.Lists;
+import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

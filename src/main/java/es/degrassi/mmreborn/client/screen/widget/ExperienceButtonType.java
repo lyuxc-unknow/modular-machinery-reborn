@@ -1,8 +1,6 @@
 package es.degrassi.mmreborn.client.screen.widget;
 
-import es.degrassi.mmreborn.ModularMachineryReborn;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 
 import java.util.List;

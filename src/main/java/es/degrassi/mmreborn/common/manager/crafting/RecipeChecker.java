@@ -6,7 +6,7 @@ import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import lombok.Getter;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import org.apache.commons.compress.utils.Lists;
+import com.google.common.collect.Lists;
 
 import java.util.List;
 

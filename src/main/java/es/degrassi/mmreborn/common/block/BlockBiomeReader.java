@@ -1,7 +1,6 @@
 package es.degrassi.mmreborn.common.block;
 
 import es.degrassi.mmreborn.common.entity.BiomeReaderEntity;
-import es.degrassi.mmreborn.common.entity.DimensionalDetectorEntity;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;

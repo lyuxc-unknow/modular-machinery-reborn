@@ -24,7 +24,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-import org.apache.commons.compress.utils.Lists;
+import com.google.common.collect.Lists;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;

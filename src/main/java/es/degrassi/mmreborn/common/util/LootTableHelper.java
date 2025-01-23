@@ -25,7 +25,7 @@ import net.minecraft.world.level.storage.loot.providers.number.BinomialDistribut
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import org.apache.commons.compress.utils.Lists;
+import com.google.common.collect.Lists;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;

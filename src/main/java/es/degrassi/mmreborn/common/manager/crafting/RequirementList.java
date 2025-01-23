@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.manager.crafting;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import es.degrassi.mmreborn.api.crafting.CraftingResult;
 import es.degrassi.mmreborn.api.crafting.ICraftingContext;
@@ -10,10 +11,8 @@ import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.manager.ComponentManager;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.compress.utils.Lists;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

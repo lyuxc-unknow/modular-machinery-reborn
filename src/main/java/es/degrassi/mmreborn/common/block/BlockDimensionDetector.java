@@ -1,11 +1,8 @@
 package es.degrassi.mmreborn.common.block;
 
 import es.degrassi.mmreborn.common.entity.DimensionalDetectorEntity;
-import es.degrassi.mmreborn.common.entity.EnergyInputHatchEntity;
-import es.degrassi.mmreborn.common.registration.BlockRegistration;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -15,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Locale;
 
 public class BlockDimensionDetector extends BlockMachineComponent {
   public BlockDimensionDetector() {

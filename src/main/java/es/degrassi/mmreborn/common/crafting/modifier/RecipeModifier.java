@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.crafting.modifier;
 
+import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
@@ -13,10 +14,8 @@ import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import org.apache.commons.compress.utils.Lists;
 
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 

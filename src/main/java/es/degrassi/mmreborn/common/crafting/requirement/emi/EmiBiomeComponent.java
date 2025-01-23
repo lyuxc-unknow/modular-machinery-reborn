@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.crafting.requirement.emi;
 
+import com.google.common.collect.Lists;
 import dev.emi.emi.api.stack.EmiStack;
 import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.client.requirement.ItemRendering;
@@ -9,7 +10,6 @@ import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import org.apache.commons.compress.utils.Lists;
 
 import javax.annotation.Nullable;
 import java.util.List;

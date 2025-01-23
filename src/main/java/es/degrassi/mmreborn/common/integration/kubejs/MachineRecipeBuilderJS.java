@@ -25,7 +25,7 @@ import es.degrassi.mmreborn.common.integration.kubejs.requirement.TimeRequiremen
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.WeatherRequirementJS;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import net.minecraft.resources.ResourceLocation;
-import org.apache.commons.compress.utils.Lists;
+import com.google.common.collect.Lists;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.helpers.MessageFormatter;
 

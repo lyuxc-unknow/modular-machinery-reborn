@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.crafting.modifier;
 
+import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
@@ -12,10 +13,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
-import org.apache.commons.compress.utils.Lists;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 public class ModifierReplacement {

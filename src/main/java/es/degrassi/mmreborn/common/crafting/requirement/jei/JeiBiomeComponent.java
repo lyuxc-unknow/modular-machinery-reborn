@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.crafting.requirement.jei;
 
+import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementBiome;
@@ -11,7 +12,6 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import org.apache.commons.compress.utils.Lists;
 
 import java.util.List;
 

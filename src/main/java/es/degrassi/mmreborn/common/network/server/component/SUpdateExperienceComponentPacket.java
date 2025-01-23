@@ -2,15 +2,12 @@ package es.degrassi.mmreborn.common.network.server.component;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.entity.base.ExperienceHatchEntity;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 public record SUpdateExperienceComponentPacket(long amount, BlockPos pos) implements CustomPacketPayload {
 
