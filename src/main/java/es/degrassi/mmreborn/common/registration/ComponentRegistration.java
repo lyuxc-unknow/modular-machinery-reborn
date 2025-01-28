@@ -8,31 +8,33 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
+import static es.degrassi.mmreborn.ModularMachineryReborn.rootLC;
+
 public class ComponentRegistration {
 
   public static final DeferredRegister<ComponentType> MACHINE_COMPONENTS =
       DeferredRegister.create(ComponentType.REGISTRY_KEY, ModularMachineryReborn.MODID);
   public static final Registry<ComponentType> COMPONENTS_REGISTRY = MACHINE_COMPONENTS.makeRegistry(builder -> {});
 
-  public static final Supplier<ComponentType> COMPONENT_ITEM = MACHINE_COMPONENTS.register("item",
+  public static final Supplier<ComponentType> COMPONENT_ITEM = MACHINE_COMPONENTS.register(rootLC("item"),
       ComponentType::create);
-  public static final Supplier<ComponentType> COMPONENT_DURATION = MACHINE_COMPONENTS.register("duration",
+  public static final Supplier<ComponentType> COMPONENT_DURATION = MACHINE_COMPONENTS.register(rootLC("duration"),
       ComponentType::create);
-  public static final Supplier<ComponentType> COMPONENT_FLUID = MACHINE_COMPONENTS.register("fluid",
+  public static final Supplier<ComponentType> COMPONENT_FLUID = MACHINE_COMPONENTS.register(rootLC("fluid"),
       ComponentType::create);
-  public static final Supplier<ComponentType> COMPONENT_ENERGY = MACHINE_COMPONENTS.register("energy",
+  public static final Supplier<ComponentType> COMPONENT_ENERGY = MACHINE_COMPONENTS.register(rootLC("energy"),
       ComponentType::create);
-  public static final Supplier<ComponentType> COMPONENT_DIMENSION = MACHINE_COMPONENTS.register("dimension",
+  public static final Supplier<ComponentType> COMPONENT_DIMENSION = MACHINE_COMPONENTS.register(rootLC("dimension"),
       ComponentType::create);
-  public static final Supplier<ComponentType> COMPONENT_BIOME = MACHINE_COMPONENTS.register("biome",
+  public static final Supplier<ComponentType> COMPONENT_BIOME = MACHINE_COMPONENTS.register(rootLC("biome"),
       ComponentType::create);
-  public static final Supplier<ComponentType> COMPONENT_WEATHER = MACHINE_COMPONENTS.register("weather",
+  public static final Supplier<ComponentType> COMPONENT_WEATHER = MACHINE_COMPONENTS.register(rootLC("weather"),
       ComponentType::create);
-  public static final Supplier<ComponentType> COMPONENT_TIME = MACHINE_COMPONENTS.register("time",
+  public static final Supplier<ComponentType> COMPONENT_TIME = MACHINE_COMPONENTS.register(rootLC("time"),
       ComponentType::create);
-  public static final Supplier<ComponentType> COMPONENT_CHUNKLOAD = MACHINE_COMPONENTS.register("chunkload",
+  public static final Supplier<ComponentType> COMPONENT_CHUNKLOAD = MACHINE_COMPONENTS.register(rootLC("chunkload"),
       ComponentType::create);
-  public static final Supplier<ComponentType> COMPONENT_EXPERIENCE = MACHINE_COMPONENTS.register("experience",
+  public static final Supplier<ComponentType> COMPONENT_EXPERIENCE = MACHINE_COMPONENTS.register(rootLC("experience"),
       ComponentType::create);
 
   public static void register(final IEventBus bus) {

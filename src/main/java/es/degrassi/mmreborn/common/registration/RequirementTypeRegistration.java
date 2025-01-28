@@ -20,6 +20,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
+import static es.degrassi.mmreborn.ModularMachineryReborn.rootLC;
+
 public class RequirementTypeRegistration {
   public static final DeferredRegister<RequirementType<? extends IRequirement<?>>> MACHINE_REQUIREMENTS =
       DeferredRegister.create(RequirementType.REGISTRY_KEY, ModularMachineryReborn.MODID);
@@ -27,27 +29,38 @@ public class RequirementTypeRegistration {
   public static final Registry<RequirementType<? extends IRequirement<?>>> REQUIREMENTS_REGISTRY =
       MACHINE_REQUIREMENTS.makeRegistry(builder -> {});
 
-  public static final Supplier<RequirementType<RequirementItem>> ITEM = MACHINE_REQUIREMENTS.register("item",
+  public static final Supplier<RequirementType<RequirementItem>> ITEM =
+      MACHINE_REQUIREMENTS.register(rootLC("item"),
       () -> RequirementType.inventory(RequirementItem.CODEC));
-  public static final Supplier<RequirementType<RequirementFluid>> FLUID = MACHINE_REQUIREMENTS.register("fluid",
+  public static final Supplier<RequirementType<RequirementFluid>> FLUID =
+      MACHINE_REQUIREMENTS.register(rootLC("fluid"),
       () -> RequirementType.inventory(RequirementFluid.CODEC));
-  public static final Supplier<RequirementType<RequirementEnergy>> ENERGY = MACHINE_REQUIREMENTS.register("energy",
+  public static final Supplier<RequirementType<RequirementEnergy>> ENERGY =
+      MACHINE_REQUIREMENTS.register(rootLC("energy"),
       () -> RequirementType.inventory(RequirementEnergy.CODEC));
-  public static final Supplier<RequirementType<RequirementDuration>> DURATION = MACHINE_REQUIREMENTS.register("duration",
+  public static final Supplier<RequirementType<RequirementDuration>> DURATION =
+      MACHINE_REQUIREMENTS.register(rootLC("duration"),
       () -> RequirementType.inventory(RequirementDuration.CODEC));
-  public static final Supplier<RequirementType<RequirementDimension>> DIMENSION = MACHINE_REQUIREMENTS.register("dimension",
+  public static final Supplier<RequirementType<RequirementDimension>> DIMENSION =
+      MACHINE_REQUIREMENTS.register(rootLC("dimension"),
       () -> RequirementType.world(RequirementDimension.CODEC));
-  public static final Supplier<RequirementType<RequirementBiome>> BIOME = MACHINE_REQUIREMENTS.register("biome",
+  public static final Supplier<RequirementType<RequirementBiome>> BIOME =
+      MACHINE_REQUIREMENTS.register(rootLC("biome"),
       () -> RequirementType.world(RequirementBiome.CODEC));
-  public static final Supplier<RequirementType<RequirementWeather>> WEATHER = MACHINE_REQUIREMENTS.register("weather",
+  public static final Supplier<RequirementType<RequirementWeather>> WEATHER =
+      MACHINE_REQUIREMENTS.register(rootLC("weather"),
       () -> RequirementType.world(RequirementWeather.CODEC));
-  public static final Supplier<RequirementType<RequirementTime>> TIME = MACHINE_REQUIREMENTS.register("time",
+  public static final Supplier<RequirementType<RequirementTime>> TIME =
+      MACHINE_REQUIREMENTS.register(rootLC("time"),
       () -> RequirementType.world(RequirementTime.CODEC));
-  public static final Supplier<RequirementType<RequirementChunkload>> CHUNKLOAD = MACHINE_REQUIREMENTS.register("chunkload",
+  public static final Supplier<RequirementType<RequirementChunkload>> CHUNKLOAD =
+      MACHINE_REQUIREMENTS.register(rootLC("chunkload"),
       () -> RequirementType.world(RequirementChunkload.CODEC));
-  public static final Supplier<RequirementType<RequirementLootTable>> LOOT_TABLE = MACHINE_REQUIREMENTS.register("loot_table",
+  public static final Supplier<RequirementType<RequirementLootTable>> LOOT_TABLE =
+      MACHINE_REQUIREMENTS.register(rootLC("loot_table"),
       () -> RequirementType.inventory(RequirementLootTable.CODEC));
-  public static final Supplier<RequirementType<RequirementExperience>> EXPERIENCE = MACHINE_REQUIREMENTS.register("experience",
+  public static final Supplier<RequirementType<RequirementExperience>> EXPERIENCE =
+      MACHINE_REQUIREMENTS.register(rootLC("experience"),
       () -> RequirementType.inventory(RequirementExperience.CODEC));
 
   public static void register(IEventBus bus) {

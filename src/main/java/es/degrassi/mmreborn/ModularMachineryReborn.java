@@ -193,6 +193,14 @@ public class ModularMachineryReborn {
     return ResourceLocation.fromNamespaceAndPath(MODID, path.toLowerCase(Locale.ROOT));
   }
 
+  public static String rootLC(String s) {
+    return s.toLowerCase(Locale.ROOT);
+  }
+
+  public static String rootUC(String s) {
+    return s.toUpperCase(Locale.ROOT);
+  }
+
   private void registerCommands(final RegisterCommandsEvent event) {
     event.getDispatcher().register(MMRCommand.register("modularmachineryreborn"));
     event.getDispatcher().register(MMRCommand.register("modularmachinery"));
