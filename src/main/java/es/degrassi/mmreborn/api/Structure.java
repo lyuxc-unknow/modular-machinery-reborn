@@ -7,6 +7,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
+import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import lombok.Getter;
@@ -26,16 +27,21 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Getter
 public class Structure {
-  public static final NamedCodec<Structure> CODEC = NamedCodec.record(structure -> structure.group(
+  public static final NamedCodec<Structure> CODEC_WITHOUT_MODIFIERS = NamedCodec.record(structure -> structure.group(
       NamedCodec.STRING.listOf().listOf().fieldOf("pattern").forGetter(s -> s.pattern.asList()),
       NamedCodec.unboundedMap(DefaultCodecs.CHARACTER, BlockIngredient.CODEC, "Map<Character, Block>").fieldOf("keys").forGetter(s -> s.pattern.asMap())
   ).apply(structure, Structure::makeStructure), "Structure");
+
+  public static final NamedCodec<Structure> CODEC = NamedCodec.record(structure -> structure.group(
+      NamedCodec.STRING.listOf().listOf().fieldOf("pattern").forGetter(s -> s.pattern.asList()),
+      NamedCodec.unboundedMap(DefaultCodecs.CHARACTER, BlockIngredient.CODEC, "Map<Character, Block>").fieldOf("keys").forGetter(s -> s.pattern.asMap()),
+      ModifierReplacement.CODEC.listOf().optionalFieldOf("modifiers", List.of()).forGetter(s -> s.pattern.getModifiers())
+  ).apply(structure, Structure::makeStructure), "Structure with modifiers");
 
   public static final Structure EMPTY = new Structure(Map.of(), List.of(List.of("m")), Map.of());
 
@@ -46,6 +52,17 @@ public class Structure {
     for (Map.Entry<Character, BlockIngredient> key : keys.entrySet())
       builder.where(key.getKey(), key.getValue());
     return builder.build(pattern, keys);
+  }
+
+  private static Structure makeStructure(List<List<String>> pattern, Map<Character, BlockIngredient> keys, List<ModifierReplacement> modifiers) {
+    Structure.Builder builder = Structure.Builder.start();
+    for (List<String> levels : pattern)
+      builder.aisle(levels.toArray(new String[0]));
+    for (Map.Entry<Character, BlockIngredient> key : keys.entrySet())
+      builder.where(key.getKey(), key.getValue());
+    Structure structure = builder.build(pattern, keys);
+    structure.getPattern().addModifiers(modifiers);
+    return structure;
   }
 
   public static void place(DynamicMachine machine, BlockPos controllerPos, Level level, boolean isCreative, ServerPlayer player, boolean withModifiers) {
