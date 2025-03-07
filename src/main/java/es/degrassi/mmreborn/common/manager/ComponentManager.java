@@ -1,19 +1,24 @@
 package es.degrassi.mmreborn.common.manager;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import es.degrassi.mmreborn.api.BlockIngredient;
 import es.degrassi.mmreborn.api.controller.ControllerAccessible;
 import es.degrassi.mmreborn.api.crafting.ICraftingContext;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
+import es.degrassi.mmreborn.client.ModularMachineryRebornClient;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
 import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.entity.base.MachineComponentEntity;
+import es.degrassi.mmreborn.common.entity.base.TileItemBus;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
+import es.degrassi.mmreborn.common.machine.component.ItemComponent;
+import es.degrassi.mmreborn.common.machine.component.ParallelComponent;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -24,7 +29,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-import com.google.common.collect.Lists;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -40,7 +44,7 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
 
   private final Map<BlockPos, MachineComponent<?>> foundComponents = Maps.newHashMap();
   private final Map<ComponentType, Map<IOType, List<MachineComponent<?>>>> foundComponentsValues = Maps.newHashMap();
-  private final Map<BlockPos, ModifierReplacement> foundModifiers = Maps.newHashMap();
+  private final Map<BlockPos, List<ModifierReplacement>> foundModifiers = Maps.newHashMap();
 
   public ComponentManager(MachineControllerEntity entity) {
     this.controller = entity;
@@ -86,14 +90,14 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
 
   public List<ModifierReplacement> getFoundModifiersList() {
     if (foundModifiers.isEmpty()) updateComponents();
-    return foundModifiers.values().stream().toList();
+    return foundModifiers.values().stream().flatMap(List::stream).toList();
   }
 
   public final Map<BlockPos, MachineComponent<?>> getFoundComponentsMap() {
     return foundComponents;
   }
 
-  public final Map<BlockPos, ModifierReplacement> getFoundModifiersMap() {
+  public final Map<BlockPos, List<ModifierReplacement>> getFoundModifiersMap() {
     return foundModifiers;
   }
 
@@ -108,9 +112,12 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
       BlockEntity te = level.getBlockEntity(realPos);
       if (te instanceof MachineComponentEntity<?> entity) {
         var component = entity.provideComponent();
-        if (entity instanceof ControllerAccessible accessible && accessible.getControllerPos() != null)
-          accessible.setControllerPos(controllerPos.immutable());
-        if (component != null) {
+        if (entity instanceof ControllerAccessible accessible) {
+          if (accessible.getControllerPos() == null)
+            accessible.setControllerPos(controllerPos.immutable());
+          if (component != null && controllerPos.equals(accessible.getControllerPos()))
+            map.put(realPos, component);
+        } else {
           map.put(realPos, component);
         }
       }
@@ -118,18 +125,18 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
     return map;
   }
 
-  private Map<BlockPos, ModifierReplacement> gatherModifiers() {
-    Map<BlockPos, ModifierReplacement> map = Maps.newHashMap();
+  private Map<BlockPos, List<ModifierReplacement>> gatherModifiers() {
+    Map<BlockPos, List<ModifierReplacement>> map = Maps.newHashMap();
     if (controller.getLevel() == null) return map;
     controller.getFoundMachine()
         .getPattern()
         .getPattern()
         .getModifiers(controller.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING))
-        .forEach((potentialPosition, modifier) -> {
+        .forEach((potentialPosition, modifiers) -> {
           BlockPos realPos = controller.getBlockPos().offset(potentialPosition);
           BlockInWorld biw = new BlockInWorld(controller.getLevel(), realPos, false);
-          if (modifier.getIngredient().getAll().stream().anyMatch(state -> state.test(biw)))
-            map.put(realPos, modifier);
+          if (modifiers.stream().anyMatch(modifier -> modifier.getIngredient().getAll().stream().anyMatch(state -> state.test(biw))))
+            map.put(realPos, modifiers);
         });
     return map;
   }
@@ -138,6 +145,7 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
     if (foundModifiers.isEmpty()) updateComponents();
     return foundModifiers.values()
         .stream()
+        .flatMap(List::stream)
         .map(ModifierReplacement::getModifiers)
         .flatMap(List::stream)
         .filter(mod -> mod.getTarget().equals(type))
@@ -165,6 +173,57 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
     return Optional.ofNullable(merged.get());
   }
 
+  public Optional<ParallelComponent> getParallel() {
+    Map<BlockPos, BlockIngredient> filteredMap = controller.getFoundMachine()
+        .getPattern()
+        .getBlocksFiltered(controller.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING));
+    BlockPos controllerPos = controller.getBlockPos();
+    Level level = controller.getLevel();
+    if (level == null) return Optional.empty();
+    for (BlockPos potentialPosition : filteredMap.keySet()) {
+      BlockPos realPos = controllerPos.offset(potentialPosition);
+      try {
+        return Optional.of(ModularMachineryRebornClient.getClientSideParallelHatchEntity(realPos).provideComponent());
+      } catch (Exception ignored) {}
+    }
+    return Optional.empty();
+  }
+
+  public Optional<ItemComponent> getItemComponent(IOType mode) {
+    Map<BlockPos, BlockIngredient> filteredMap = controller.getFoundMachine()
+        .getPattern()
+        .getBlocksFiltered(controller.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING));
+    BlockPos controllerPos = controller.getBlockPos();
+    Level level = controller.getLevel();
+    if (level == null) return Optional.empty();
+    List<ItemComponent> components = Lists.newArrayList();
+    for (BlockPos potentialPosition : filteredMap.keySet()) {
+      BlockPos realPos = controllerPos.offset(potentialPosition);
+      try {
+        TileItemBus entity = ModularMachineryRebornClient.getClientSideItemBusEntity(realPos);
+        if (!entity.getIoType().equals(mode)) continue;
+        if (entity.provideComponent() == null) continue;
+        components.add(entity.provideComponent());
+      } catch (Exception ignored) {}
+    }
+    if (components.isEmpty())
+      return Optional.empty();
+    else {
+      AtomicReference<ItemComponent> merged = new AtomicReference<>(null);
+      components.stream()
+          .filter(Objects::nonNull)
+          .sorted()
+          .forEach(c -> {
+            if (merged.get() == null)
+              merged.set(c);
+            else if (merged.get().canMerge(c)) {
+              merged.set(merged.get().merge(c));
+            }
+          });
+      return Optional.ofNullable(merged.get());
+    }
+  }
+
   @SuppressWarnings("unchecked")
   public <C extends MachineComponent<?>> Optional<C> getComponent(ComponentType type, IOType mode) {
     if (foundComponentsValues.isEmpty()) updateComponents();
@@ -179,7 +238,7 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
         .forEach(c -> {
           if (merged.get() == null)
             merged.set(c);
-          if (merged.get().canMerge(c))
+          else if (merged.get().canMerge(c))
             merged.set(merged.get().merge(c));
         });
     return Optional.ofNullable(merged.get());
@@ -200,6 +259,7 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
     nbt.put("components", componentsByType);
     ListTag modifiers = foundModifiers.values()
         .stream()
+        .flatMap(List::stream)
         .map(ModifierReplacement::asTag)
         .collect(ListTag::new, ListTag::add, ListTag::add);
     nbt.put("modifiers", modifiers);
