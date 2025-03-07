@@ -1,14 +1,10 @@
 package es.degrassi.mmreborn.client;
 
 import com.google.common.collect.Lists;
-import dev.emi.emi.api.stack.EmiStack;
 import es.degrassi.mmreborn.ModularMachineryReborn;
-import es.degrassi.mmreborn.api.TagUtil;
-import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
-import es.degrassi.mmreborn.api.integration.emi.RegisterEmiComponentEvent;
-import es.degrassi.mmreborn.api.integration.emi.RegisterEmiRequirementToStackEvent;
-import es.degrassi.mmreborn.api.integration.jei.RegisterJeiComponentEvent;
 import es.degrassi.mmreborn.client.entity.renderer.ControllerRenderer;
+import es.degrassi.mmreborn.client.integration.emi.MMREmiClientIntegration;
+import es.degrassi.mmreborn.client.integration.jei.MMRJeiClientIntegration;
 import es.degrassi.mmreborn.client.item.MMRItemTooltip;
 import es.degrassi.mmreborn.client.item.MMRItemTooltipComponent;
 import es.degrassi.mmreborn.client.model.ControllerModelLoader;
@@ -17,57 +13,31 @@ import es.degrassi.mmreborn.client.screen.EnergyHatchScreen;
 import es.degrassi.mmreborn.client.screen.ExperienceHatchScreen;
 import es.degrassi.mmreborn.client.screen.FluidHatchScreen;
 import es.degrassi.mmreborn.client.screen.ItemBusScreen;
-import es.degrassi.mmreborn.common.crafting.requirement.RequirementItem;
-import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiBiomeComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiChunkloadComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiDimensionComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiEnergyComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiExperienceComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiFluidComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiItemComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiLootTableComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiTimeComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiWeatherComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiBiomeComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiChunkloadComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiDimensionComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiEnergyComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiExperienceComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiFluidComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiItemComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiLootTableComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiTimeComponent;
-import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiWeatherComponent;
+import es.degrassi.mmreborn.client.screen.ParallelHatchScreen;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
+import es.degrassi.mmreborn.common.entity.ParallelHatchEntity;
 import es.degrassi.mmreborn.common.entity.base.ColorableMachineEntity;
 import es.degrassi.mmreborn.common.entity.base.EnergyHatchEntity;
 import es.degrassi.mmreborn.common.entity.base.ExperienceHatchEntity;
 import es.degrassi.mmreborn.common.entity.base.FluidTankEntity;
 import es.degrassi.mmreborn.common.entity.base.TileItemBus;
-import es.degrassi.mmreborn.common.integration.emi.EmiComponentRegistry;
-import es.degrassi.mmreborn.common.integration.emi.EmiStackRegistry;
-import es.degrassi.mmreborn.common.integration.jei.JeiComponentRegistry;
 import es.degrassi.mmreborn.common.item.ItemDynamicColor;
-import es.degrassi.mmreborn.common.machine.component.ItemComponent;
 import es.degrassi.mmreborn.common.registration.BlockRegistration;
 import es.degrassi.mmreborn.common.registration.ContainerRegistration;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
-import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
-import es.degrassi.mmreborn.common.util.LootTableHelper;
+import es.degrassi.mmreborn.common.util.Mods;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -76,7 +46,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
@@ -98,13 +67,12 @@ public class ModularMachineryRebornClient {
   private static Map<ModelResourceLocation, BakedModel> models;
   private static final List<Block> blockModelsToRegister = Lists.newLinkedList();
   private static final List<Item> itemModelsToRegister = Lists.newLinkedList();
-
-  public static ModularMachineryRebornClient instance;
+  private final IEventBus bus;
 
   public ModularMachineryRebornClient(final IEventBus bus) {
     NeoForge.EVENT_BUS.register(clientScheduler);
-    instance = this;
     bus.register(this);
+    this.bus = bus;
   }
 
   @SubscribeEvent
@@ -218,7 +186,13 @@ public class ModularMachineryRebornClient {
         BlockRegistration.BIOME_READER.get(),
         BlockRegistration.WEATHER_SENSOR.get(),
         BlockRegistration.TIME_COUNTER.get(),
-        BlockRegistration.CHUNKLOADER.get()
+        BlockRegistration.CHUNKLOADER.get(),
+
+        BlockRegistration.PARALLEL_HATCH_BASIC.get(),
+        BlockRegistration.PARALLEL_HATCH_MEDIUM.get(),
+        BlockRegistration.PARALLEL_HATCH_ADVANCED.get(),
+        BlockRegistration.PARALLEL_HATCH_ULTIMATE.get(),
+        BlockRegistration.PARALLEL_HATCH_MAX.get()
     );
     ModularMachineryReborn.MACHINES_BLOCK.values().forEach(block -> event.register(ModularMachineryRebornClient::blockColor, block));
   }
@@ -312,7 +286,13 @@ public class ModularMachineryRebornClient {
         ItemRegistration.BIOME_READER.get(),
         ItemRegistration.WEATHER_SENSOR.get(),
         ItemRegistration.TIME_COUNTER.get(),
-        ItemRegistration.CHUNKLOADER.get()
+        ItemRegistration.CHUNKLOADER.get(),
+
+        ItemRegistration.PARALLEL_HATCH_BASIC.get(),
+        ItemRegistration.PARALLEL_HATCH_MEDIUM.get(),
+        ItemRegistration.PARALLEL_HATCH_ADVANCED.get(),
+        ItemRegistration.PARALLEL_HATCH_ULTIMATE.get(),
+        ItemRegistration.PARALLEL_HATCH_MAX.get()
     );
     ModularMachineryReborn.MACHINES_BLOCK.values().forEach(block -> event.register(ModularMachineryRebornClient::itemColor, block));
   }
@@ -367,75 +347,11 @@ public class ModularMachineryRebornClient {
   @SubscribeEvent
   @OnlyIn(Dist.CLIENT)
   public void clientSetup(final FMLClientSetupEvent event) {
-    if (ModList.get().isLoaded("emi")) {
-      EmiComponentRegistry.init();
-      EmiStackRegistry.init();
-    } else if (ModList.get().isLoaded("jei")) {
-      JeiComponentRegistry.init();
+    if (Mods.isEMILoaded()) {
+      new MMREmiClientIntegration(bus);
+    } else if (Mods.isJEILoaded()) {
+      new MMRJeiClientIntegration(bus);
     }
-  }
-
-  @SubscribeEvent
-  public void registerJeiComponents(final RegisterJeiComponentEvent event) {
-    event.register(RequirementTypeRegistration.ENERGY.get(), JeiEnergyComponent::new);
-    event.register(RequirementTypeRegistration.EXPERIENCE.get(), JeiExperienceComponent::new);
-    event.register(RequirementTypeRegistration.FLUID.get(), JeiFluidComponent::new);
-    event.register(RequirementTypeRegistration.ITEM.get(), JeiItemComponent::new);
-    event.register(RequirementTypeRegistration.TIME.get(), JeiTimeComponent::new);
-    event.register(RequirementTypeRegistration.BIOME.get(), JeiBiomeComponent::new);
-    event.register(RequirementTypeRegistration.CHUNKLOAD.get(), JeiChunkloadComponent::new);
-    event.register(RequirementTypeRegistration.DIMENSION.get(), JeiDimensionComponent::new);
-    event.register(RequirementTypeRegistration.WEATHER.get(), JeiWeatherComponent::new);
-    event.register(RequirementTypeRegistration.LOOT_TABLE.get(), JeiLootTableComponent::new);
-  }
-
-  @SubscribeEvent
-  public void registerEmiComponents(final RegisterEmiComponentEvent event) {
-    event.register(RequirementTypeRegistration.ENERGY.get(), EmiEnergyComponent::new);
-    event.register(RequirementTypeRegistration.EXPERIENCE.get(), EmiExperienceComponent::new);
-    event.register(RequirementTypeRegistration.ITEM.get(), EmiItemComponent::new);
-    event.register(RequirementTypeRegistration.FLUID.get(), EmiFluidComponent::new);
-    event.register(RequirementTypeRegistration.BIOME.get(), EmiBiomeComponent::new);
-    event.register(RequirementTypeRegistration.TIME.get(), EmiTimeComponent::new);
-    event.register(RequirementTypeRegistration.CHUNKLOAD.get(), EmiChunkloadComponent::new);
-    event.register(RequirementTypeRegistration.DIMENSION.get(), EmiDimensionComponent::new);
-    event.register(RequirementTypeRegistration.WEATHER.get(), EmiWeatherComponent::new);
-    event.register(RequirementTypeRegistration.LOOT_TABLE.get(), EmiLootTableComponent::new);
-  }
-
-  @SubscribeEvent
-  public void registerEmiStacks(final RegisterEmiRequirementToStackEvent event) {
-    event.register(
-        RequirementTypeRegistration.ITEM.get(),
-        this::emiStackFromItemRequirement
-    );
-    event.register(
-        RequirementTypeRegistration.FLUID.get(),
-        requirement -> List.of(EmiStack.of(requirement.requirement().required.asFluidStack().getFluid(), requirement.requirement().amount))
-    );
-    event.register(
-        RequirementTypeRegistration.LOOT_TABLE.get(),
-        requirement -> LootTableHelper
-            .getLootsForTable(requirement.requirement().getLootTable())
-            .stream()
-            .map(LootTableHelper.LootData::stack)
-            .map(EmiStack::of)
-            .toList()
-    );
-  }
-
-  private List<EmiStack> emiStackFromItemRequirement(RecipeRequirement<ItemComponent, RequirementItem> requirement) {
-    List<EmiStack> stacks = Lists.newArrayList();
-    for (Ingredient.Value value : requirement.requirement().getIngredient().ingredient().values) {
-      if (value instanceof Ingredient.TagValue(TagKey<Item> tag)) {
-        for (Item stack : TagUtil.getItems(tag).toList()) {
-          stacks.add(EmiStack.of(stack, requirement.requirement().ingredient.count()));
-        }
-      } else if (value instanceof Ingredient.ItemValue(ItemStack item)) {
-        stacks.add(EmiStack.of(item, requirement.requirement().ingredient.count()));
-      }
-    }
-    return stacks;
   }
 
   public void registerBlockModel(Block block) {
@@ -453,6 +369,7 @@ public class ModularMachineryRebornClient {
     event.register(ContainerRegistration.FLUID_HATCH.get(), FluidHatchScreen::new);
     event.register(ContainerRegistration.ITEM_BUS.get(), ItemBusScreen::new);
     event.register(ContainerRegistration.EXPERIENCE_HATCH.get(), ExperienceHatchScreen::new);
+    event.register(ContainerRegistration.PARALLEL_HATCH.get(), ParallelHatchScreen::new);
   }
 
   @NotNull
@@ -499,5 +416,14 @@ public class ModularMachineryRebornClient {
         return controller;
     }
     throw new IllegalStateException("Trying to open a Experience Hatch container without clicking on a Experience Hatch block");
+  }
+
+  public static ParallelHatchEntity getClientSideParallelHatchEntity(BlockPos pos) {
+    if (Minecraft.getInstance().level != null) {
+      BlockEntity tile = Minecraft.getInstance().level.getBlockEntity(pos);
+      if (tile instanceof ParallelHatchEntity controller)
+        return controller;
+    }
+    throw new IllegalStateException("Trying to open a Parallel Hatch container without clicking on a Parallel Hatch block");
   }
 }
