@@ -1,6 +1,5 @@
 {
-  "itemGroup.modular_machinery_reborn.group": "模块化机械:重制",
-  "itemGroup.modular_machinery_reborn_mekanism.group": "模块化机械:重置 通用机械附属",
+  "itemGroup.modular_machinery_reborn.group": "模块化机械:重生",
   "item.modular_machinery_reborn.structure_creator": "结构创建器",
   "modular_machinery_reborn.command.reload.machines": "成功重载模块化机械！",
   "modular_machinery_reborn.command.reload.recipes": "成功重载模块化机械的配方",

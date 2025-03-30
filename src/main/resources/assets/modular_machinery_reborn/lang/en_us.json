@@ -1,6 +1,5 @@
 {
   "itemGroup.modular_machinery_reborn.group": "Modular Machinery Reborn",
-  "itemGroup.modular_machinery_reborn_mekanism.group": "Modular Machinery Reborn Mekanism",
   "item.modular_machinery_reborn.structure_creator": "Structure Creator",
   "modular_machinery_reborn.command.reload.machines": "Successfully reloaded modular machinery machines !",
   "modular_machinery_reborn.command.reload.recipes": "Successfully reloaded modular machinery recipes !",
