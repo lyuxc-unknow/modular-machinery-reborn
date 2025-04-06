@@ -15,6 +15,7 @@ import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiDimensionComponen
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiEnergyComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiExperienceComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiFluidComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiHeightComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiItemComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiLootTableComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiTimeComponent;
@@ -50,6 +51,7 @@ public class MMREmiClientIntegration {
     event.register(RequirementTypeRegistration.FLUID.get(), EmiFluidComponent::new);
     event.register(RequirementTypeRegistration.BIOME.get(), EmiBiomeComponent::new);
     event.register(RequirementTypeRegistration.TIME.get(), EmiTimeComponent::new);
+    event.register(RequirementTypeRegistration.HEIGHT.get(), EmiHeightComponent::new);
     event.register(RequirementTypeRegistration.CHUNKLOAD.get(), EmiChunkloadComponent::new);
     event.register(RequirementTypeRegistration.DIMENSION.get(), EmiDimensionComponent::new);
     event.register(RequirementTypeRegistration.WEATHER.get(), EmiWeatherComponent::new);

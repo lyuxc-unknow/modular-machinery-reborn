@@ -2,6 +2,7 @@ package es.degrassi.mmreborn.common.registration;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.block.BlockDynamicColor;
+import es.degrassi.mmreborn.common.block.BlockHeightMeter;
 import es.degrassi.mmreborn.common.entity.BiomeReaderEntity;
 import es.degrassi.mmreborn.common.entity.ChunkloaderEntity;
 import es.degrassi.mmreborn.common.entity.DimensionalDetectorEntity;
@@ -11,9 +12,11 @@ import es.degrassi.mmreborn.common.entity.ExperienceInputHatchEntity;
 import es.degrassi.mmreborn.common.entity.ExperienceOutputHatchEntity;
 import es.degrassi.mmreborn.common.entity.FluidInputHatchEntity;
 import es.degrassi.mmreborn.common.entity.FluidOutputHatchEntity;
+import es.degrassi.mmreborn.common.entity.HeightMeterEntity;
 import es.degrassi.mmreborn.common.entity.ItemInputBusEntity;
 import es.degrassi.mmreborn.common.entity.ItemOutputBusEntity;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
+import es.degrassi.mmreborn.common.entity.ParallelHatchEntity;
 import es.degrassi.mmreborn.common.entity.TimeCounterEntity;
 import es.degrassi.mmreborn.common.entity.WeatherSensorEntity;
 import es.degrassi.mmreborn.common.entity.base.ColorableMachineComponentEntity;
@@ -221,12 +224,36 @@ public class EntityRegistration {
           null)
   );
 
+  public static final Supplier<BlockEntityType<HeightMeterEntity>> HEIGHT_METER = ENTITY_TYPE.register(
+      rootLC("height_meter"),
+      () -> new BlockEntityType<>(
+          HeightMeterEntity::new,
+          Set.of(
+              BlockRegistration.HEIGHT_METER.get()
+          ),
+          null)
+  );
+
   public static final Supplier<BlockEntityType<ChunkloaderEntity>> CHUNKLOADER = ENTITY_TYPE.register(
       rootLC("chunkloader"),
       () -> new BlockEntityType<>(
           ChunkloaderEntity::new,
           Set.of(
               BlockRegistration.CHUNKLOADER.get()
+          ),
+          null)
+  );
+
+  public static final Supplier<BlockEntityType<ParallelHatchEntity>> PARALLEL_HATCH = ENTITY_TYPE.register(
+      rootLC("parallel_hatch"),
+      () -> new BlockEntityType<>(
+          ParallelHatchEntity::new,
+          Set.of(
+              BlockRegistration.PARALLEL_HATCH_BASIC.get(),
+              BlockRegistration.PARALLEL_HATCH_MEDIUM.get(),
+              BlockRegistration.PARALLEL_HATCH_ADVANCED.get(),
+              BlockRegistration.PARALLEL_HATCH_ULTIMATE.get(),
+              BlockRegistration.PARALLEL_HATCH_MAX.get()
           ),
           null)
   );

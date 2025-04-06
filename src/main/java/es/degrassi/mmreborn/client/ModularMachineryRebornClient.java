@@ -187,6 +187,7 @@ public class ModularMachineryRebornClient {
         BlockRegistration.WEATHER_SENSOR.get(),
         BlockRegistration.TIME_COUNTER.get(),
         BlockRegistration.CHUNKLOADER.get(),
+        BlockRegistration.HEIGHT_METER.get(),
 
         BlockRegistration.PARALLEL_HATCH_BASIC.get(),
         BlockRegistration.PARALLEL_HATCH_MEDIUM.get(),
@@ -287,6 +288,7 @@ public class ModularMachineryRebornClient {
         ItemRegistration.WEATHER_SENSOR.get(),
         ItemRegistration.TIME_COUNTER.get(),
         ItemRegistration.CHUNKLOADER.get(),
+        ItemRegistration.HEIGHT_METER.get(),
 
         ItemRegistration.PARALLEL_HATCH_BASIC.get(),
         ItemRegistration.PARALLEL_HATCH_MEDIUM.get(),

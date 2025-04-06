@@ -2,13 +2,16 @@ package es.degrassi.mmreborn.common.crafting.requirement.emi;
 
 import com.google.common.collect.Lists;
 import dev.emi.emi.api.recipe.EmiRecipe;
+import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.EmiStackInteraction;
+import dev.emi.emi.api.widget.Bounds;
 import dev.emi.emi.screen.EmiScreenManager;
 import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.client.requirement.ChanceRendering;
 import es.degrassi.mmreborn.client.requirement.ItemRendering;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementItem;
+import es.degrassi.mmreborn.common.integration.emi.EmiIngredientRegistry;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.component.ItemComponent;
 import lombok.Getter;
@@ -16,14 +19,15 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.Arrays;
+import javax.annotation.Nullable;
 import java.util.List;
 
-public class EmiItemComponent extends EmiComponent<ItemStack, RecipeRequirement<ItemComponent, RequirementItem>> implements SlotTooltip, ItemRendering, ChanceRendering {
+public class EmiItemComponent extends EmiComponent<ItemStack, RecipeRequirement<ItemComponent, RequirementItem>> implements SlotTooltip, ItemRendering, ChanceRendering, IngredientHolder {
   private int item;
   @Getter
   private int width = 16, height = 16;
   @Getter
+  @Nullable
   private EmiRecipe recipe;
   public EmiItemComponent(RecipeRequirement<ItemComponent, RequirementItem> requirement) {
     super(requirement, 36, 0);
@@ -39,8 +43,18 @@ public class EmiItemComponent extends EmiComponent<ItemStack, RecipeRequirement<
   }
 
   @Override
+  public EmiIngredient getIngredient() {
+    return EmiIngredientRegistry.getIngredient(requirement.getType()).create(requirement);
+  }
+
+  @Override
   public List<ItemStack> ingredients() {
-    return Arrays.stream(requirement.requirement().getIngredient().getItems()).map(ItemStack::copy).toList();
+    return getIngredient().getEmiStacks().stream().map(EmiStack::getItemStack).toList();
+  }
+
+  @Override
+  public Bounds getBounds() {
+    return super.getBounds();
   }
 
   @Override

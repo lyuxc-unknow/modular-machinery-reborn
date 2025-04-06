@@ -6,6 +6,7 @@ import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ExperienceHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
+import es.degrassi.mmreborn.common.block.prop.ParallelHatchSize;
 import es.degrassi.mmreborn.common.item.BiomeReaderItem;
 import es.degrassi.mmreborn.common.item.CasingItem;
 import es.degrassi.mmreborn.common.item.ChunkloaderItem;
@@ -14,10 +15,12 @@ import es.degrassi.mmreborn.common.item.DimensionalDetectorItem;
 import es.degrassi.mmreborn.common.item.EnergyHatchItem;
 import es.degrassi.mmreborn.common.item.ExperienceHatchItem;
 import es.degrassi.mmreborn.common.item.FluidHatchItem;
+import es.degrassi.mmreborn.common.item.HeightMeterItem;
 import es.degrassi.mmreborn.common.item.InputBusItem;
 import es.degrassi.mmreborn.common.item.ItemBlueprint;
 import es.degrassi.mmreborn.common.item.ItemModularium;
 import es.degrassi.mmreborn.common.item.OutputBusItem;
+import es.degrassi.mmreborn.common.item.ParallelHatchItem;
 import es.degrassi.mmreborn.common.item.StructureCreatorItem;
 import es.degrassi.mmreborn.common.item.TimeCounterItem;
 import es.degrassi.mmreborn.common.item.WeatherSensorItem;
@@ -263,8 +266,26 @@ public class ItemRegistration {
     () -> new WeatherSensorItem(BlockRegistration.WEATHER_SENSOR.get()));
   public static final DeferredItem<TimeCounterItem> TIME_COUNTER = ITEMS.register(rootLC("time_counter"),
     () -> new TimeCounterItem(BlockRegistration.TIME_COUNTER.get()));
+  public static final DeferredItem<HeightMeterItem> HEIGHT_METER = ITEMS.register(rootLC("height_meter"),
+    () -> new HeightMeterItem(BlockRegistration.HEIGHT_METER.get()));
   public static final DeferredItem<ChunkloaderItem> CHUNKLOADER = ITEMS.register(rootLC("chunkloader"),
     () -> new ChunkloaderItem(BlockRegistration.CHUNKLOADER.get()));
+
+  public static final DeferredItem<ParallelHatchItem> PARALLEL_HATCH_BASIC =
+      ITEMS.register(rootLC("parallel_hatch_" + ParallelHatchSize.BASIC.getSerializedName()),
+    () -> new ParallelHatchItem(BlockRegistration.PARALLEL_HATCH_BASIC.get(), ParallelHatchSize.BASIC));
+  public static final DeferredItem<ParallelHatchItem> PARALLEL_HATCH_MEDIUM =
+      ITEMS.register(rootLC("parallel_hatch_" + ParallelHatchSize.MEDIUM.getSerializedName()),
+    () -> new ParallelHatchItem(BlockRegistration.PARALLEL_HATCH_MEDIUM.get(), ParallelHatchSize.MEDIUM));
+  public static final DeferredItem<ParallelHatchItem> PARALLEL_HATCH_ADVANCED =
+      ITEMS.register(rootLC("parallel_hatch_" + ParallelHatchSize.ADVANCED.getSerializedName()),
+    () -> new ParallelHatchItem(BlockRegistration.PARALLEL_HATCH_ADVANCED.get(), ParallelHatchSize.ADVANCED));
+  public static final DeferredItem<ParallelHatchItem> PARALLEL_HATCH_ULTIMATE =
+      ITEMS.register(rootLC("parallel_hatch_" + ParallelHatchSize.ULTIMATE.getSerializedName()),
+    () -> new ParallelHatchItem(BlockRegistration.PARALLEL_HATCH_ULTIMATE.get(), ParallelHatchSize.ULTIMATE));
+  public static final DeferredItem<ParallelHatchItem> PARALLEL_HATCH_MAX =
+      ITEMS.register(rootLC("parallel_hatch_" + ParallelHatchSize.MAX.getSerializedName()),
+    () -> new ParallelHatchItem(BlockRegistration.PARALLEL_HATCH_MAX.get(), ParallelHatchSize.MAX));
 
 
   public static void register(final IEventBus bus) {

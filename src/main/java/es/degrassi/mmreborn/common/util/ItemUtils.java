@@ -1,86 +1,27 @@
 package es.degrassi.mmreborn.common.util;
 
 import com.google.common.collect.Maps;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
 import java.util.Map;
 
 public class ItemUtils {
-  public static void decrStackInInventory(ItemStackHandler handler, int slot) {
-    if (slot < 0 || slot >= handler.getSlots()) return;
-    ItemStack st = handler.getStackInSlot(slot);
-    if (st.isEmpty()) return;
-    st.setCount(st.getCount() - 1);
-    if (st.getCount() <= 0) {
-      handler.setStackInSlot(slot, ItemStack.EMPTY);
-    }
-  }
-
-  //Negative amount: overhead fuel burnt
-  //Positive amount: Failure/couldn't find enough fuel
-  public static int consumeFromInventoryFuel(IItemHandlerModifiable handler, int fuelAmtToConsume, boolean simulate) {
-    Map<Integer, ItemStack> contents = findItemsIndexedInInventoryFuel(handler);
-    if (contents.isEmpty()) {
-      return fuelAmtToConsume;
-    }
-
-    for (int slot : contents.keySet()) {
-      ItemStack inSlot = contents.get(slot);
-      if (!simulate) {
-      }
-      if (fuelAmtToConsume <= 0) {
-        break;
-      }
-    }
-    return fuelAmtToConsume;
-  }
-
-  public static boolean consumeFromInventory(IItemHandlerModifiable handler, ItemStack toConsume, boolean simulate) {
-    return consumeFromInventory(handler, toConsume, simulate, true);
-  }
-
   public static boolean consumeFromInventory(IItemHandlerModifiable handler, ItemStack toConsume, boolean simulate, boolean strict) {
     Map<Integer, ItemStack> contents = findItemsIndexedInInventory(handler, toConsume, strict);
     if (contents.isEmpty()) return false;
 
     int cAmt = toConsume.getCount();
     for (int slot : contents.keySet()) {
-      ItemStack inSlot = contents.get(slot);
+      ItemStack inSlot = handler.getStackInSlot(slot);
       int toRemove = Math.min(cAmt, inSlot.getCount());
-      cAmt -= toRemove;
-      if (!simulate) {
-        handler.setStackInSlot(slot, copyStackWithSize(inSlot, inSlot.getCount() - toRemove));
-      }
+      ItemStack extracted = handler.extractItem(slot, toRemove, simulate);
+      cAmt -= extracted.getCount();
       if (cAmt <= 0) return true;
     }
     return false;
-  }
-
-  public static boolean consumeFromInventoryOreDict(IItemHandlerModifiable handler, ResourceLocation oreName, int amount, boolean simulate) {
-    Map<Integer, ItemStack> contents = findItemsIndexedInInventoryOreDict(handler, oreName);
-    if (contents.isEmpty()) return false;
-
-    int cAmt = amount;
-    for (int slot : contents.keySet()) {
-      ItemStack inSlot = contents.get(slot);
-      int toRemove = Math.min(cAmt, inSlot.getCount());
-      cAmt -= toRemove;
-      if (!simulate) {
-        handler.setStackInSlot(slot, copyStackWithSize(inSlot, inSlot.getCount() - toRemove));
-      }
-      if (cAmt <= 0) {
-        break;
-      }
-    }
-    return cAmt <= 0;
   }
 
   //Returns the amount inserted
@@ -114,7 +55,8 @@ public class ItemUtils {
           insertedAmt += added;
           stack.setCount(stack.getCount() - added);
           if(!simulate) {
-            handler.getStackInSlot(i).setCount(handler.getStackInSlot(i).getCount() + added);
+            handler.setStackInSlot(i, handler.getStackInSlot(i).copyWithCount(handler.getStackInSlot(i).getCount() + added));
+            // handler.getStackInSlot(i).setCount(handler.getStackInSlot(i).getCount() + added);
           }
           if (stack.getCount() <= 0)
             return insertedAmt;
@@ -156,28 +98,7 @@ public class ItemUtils {
   @Nonnull
   public static ItemStack copyStackWithSize(@Nonnull ItemStack stack, int amount) {
     if (stack.isEmpty() || amount <= 0) return ItemStack.EMPTY;
-    ItemStack s = stack.copy();
-    s.setCount(amount);
-    return s;
-  }
-
-  public static Map<Integer, ItemStack> findItemsIndexedInInventoryFuel(IItemHandlerModifiable handler) {
-    Map<Integer, ItemStack> stacksOut = Maps.newHashMap();
-    for (int j = 0; j < handler.getSlots(); j++) {
-      ItemStack s = handler.getStackInSlot(j);
-    }
-    return stacksOut;
-  }
-
-  public static Map<Integer, ItemStack> findItemsIndexedInInventoryOreDict(IItemHandlerModifiable handler, ResourceLocation oreDict) {
-    Map<Integer, ItemStack> stacksOut = Maps.newHashMap();
-    for (int j = 0; j < handler.getSlots(); j++) {
-      ItemStack s = handler.getStackInSlot(j);
-      if(s.isEmpty()) continue;
-      if (s.is(TagKey.create(Registries.ITEM, oreDict)))
-        stacksOut.put(j, s.copy());
-    }
-    return stacksOut;
+    return stack.copyWithCount(amount);
   }
 
   public static Map<Integer, ItemStack> findItemsIndexedInInventory(IItemHandlerModifiable handler, ItemStack match, boolean strict) {

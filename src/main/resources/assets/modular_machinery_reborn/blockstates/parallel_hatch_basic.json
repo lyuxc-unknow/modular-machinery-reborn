@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model":"modular_machinery_reborn:block/parallel_hatch_basic"
+    },
+    "facing=east": {
+      "model":"modular_machinery_reborn:block/parallel_hatch_basic",
+      "y": 90
+    },
+    "facing=south": {
+      "model":"modular_machinery_reborn:block/parallel_hatch_basic",
+      "y": 180
+    },
+    "facing=west": {
+      "model":"modular_machinery_reborn:block/parallel_hatch_basic",
+      "y": 270
+    }
+  }
+}

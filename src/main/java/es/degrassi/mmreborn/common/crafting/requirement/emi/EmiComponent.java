@@ -41,7 +41,15 @@ public abstract class EmiComponent<X, R extends RecipeRequirement<?, ?>> extends
 
   @Override
   public Bounds getBounds() {
-    return new Bounds(getPosition().x(), getPosition().y(), getWidth(), getHeight());
+    return new Bounds(x, y, getWidth(), getHeight());
+  }
+
+  public int getX() {
+    return x;
+  }
+
+  public int getY() {
+    return y;
   }
 
   public abstract int getWidth();
@@ -80,7 +88,7 @@ public abstract class EmiComponent<X, R extends RecipeRequirement<?, ?>> extends
   }
 
   public final boolean shouldDrawSlotHighlight(int mouseX, int mouseY) {
-    return mouseX >= x && mouseX < x + getWidth() && mouseY >= y && mouseY < y + getHeight() && renderOverlay;
+    return renderOverlay && mouseX >= x && mouseX < x + getWidth() && mouseY >= y && mouseY < y + getHeight();
   }
 
   public int getXHighlight() {
@@ -120,7 +128,7 @@ public abstract class EmiComponent<X, R extends RecipeRequirement<?, ?>> extends
 
   @Override
   public void addWidgets(WidgetHolder widgets, MMREmiRecipe recipe) {
-    if (this instanceof RecipeHolder holder) holder.recipeContext(recipe);
+    if (this instanceof RecipeHolder holder && !this.requirement.requirement().getMode().isInput()) holder.recipeContext(recipe);
     widgets.addTooltip(this::getTooltip, x, y, getWidth(), getHeight());
     widgets.add(this);
   }

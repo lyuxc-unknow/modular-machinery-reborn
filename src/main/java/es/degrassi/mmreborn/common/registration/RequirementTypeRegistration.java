@@ -12,6 +12,7 @@ import es.degrassi.mmreborn.common.crafting.requirement.RequirementFluid;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementItem;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementLootTable;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementTime;
+import es.degrassi.mmreborn.common.crafting.requirement.RequirementHeight;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementWeather;
 import net.minecraft.core.Registry;
@@ -38,8 +39,8 @@ public class RequirementTypeRegistration {
   public static final Supplier<RequirementType<RequirementEnergy>> ENERGY =
       MACHINE_REQUIREMENTS.register(rootLC("energy"),
       () -> RequirementType.inventory(RequirementEnergy.CODEC));
-  public static final Supplier<RequirementType<RequirementDuration>> DURATION =
-      MACHINE_REQUIREMENTS.register(rootLC("duration"),
+  public static final Supplier<RequirementType<RequirementDuration>> SPEED =
+      MACHINE_REQUIREMENTS.register(rootLC("speed"),
       () -> RequirementType.inventory(RequirementDuration.CODEC));
   public static final Supplier<RequirementType<RequirementDimension>> DIMENSION =
       MACHINE_REQUIREMENTS.register(rootLC("dimension"),
@@ -53,6 +54,9 @@ public class RequirementTypeRegistration {
   public static final Supplier<RequirementType<RequirementTime>> TIME =
       MACHINE_REQUIREMENTS.register(rootLC("time"),
       () -> RequirementType.world(RequirementTime.CODEC));
+  public static final Supplier<RequirementType<RequirementHeight>> HEIGHT =
+      MACHINE_REQUIREMENTS.register(rootLC("height"),
+      () -> RequirementType.world(RequirementHeight.CODEC));
   public static final Supplier<RequirementType<RequirementChunkload>> CHUNKLOAD =
       MACHINE_REQUIREMENTS.register(rootLC("chunkload"),
       () -> RequirementType.world(RequirementChunkload.CODEC));

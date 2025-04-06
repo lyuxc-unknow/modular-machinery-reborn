@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.crafting.requirement;
 
+import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.crafting.CraftingResult;
@@ -14,8 +15,6 @@ import es.degrassi.mmreborn.common.machine.component.ItemComponent;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.registration.Registration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
-import es.degrassi.mmreborn.common.util.IOInventory;
-import es.degrassi.mmreborn.common.util.ItemUtils;
 import es.degrassi.mmreborn.common.util.LootTableHelper;
 import lombok.Getter;
 import net.minecraft.core.registries.Registries;
@@ -71,7 +70,7 @@ public class RequirementLootTable implements IRequirement<ItemComponent> {
 
   @Override
   public boolean test(ItemComponent component, ICraftingContext context) {
-    return true;
+    return context.getMachineTile().getComponentManager().getParallel().isEmpty();
   }
 
   @Override
@@ -80,16 +79,18 @@ public class RequirementLootTable implements IRequirement<ItemComponent> {
   }
 
   private CraftingResult processOutput(ItemComponent component, ICraftingContext context) {
-    if(context.getMachineTile().getLevel() == null || context.getMachineTile().getLevel().getServer() == null)
+    if (context.getMachineTile().getLevel() == null || context.getMachineTile().getLevel().getServer() == null)
       return CraftingResult.pass();
-    IOInventory inv = component.getContainerProvider();
-    if(toOutput.isEmpty()) {
+    if (context.getMachineTile().getComponentManager().getParallel().isPresent()) {
+      return CraftingResult.error(Component.translatable("craftcheck.failure.parallel.loot_table"));
+    }
+    if (toOutput.isEmpty()) {
+      float luck = context.getModifiedValue(this.luck, this);
       LootTable table = context.getMachineTile().getLevel().getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, this.lootTable));
       LootParams params = new LootParams.Builder((ServerLevel) context.getMachineTile().getLevel())
           .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(context.getMachineTile().getBlockPos()))
           .withParameter(LootContextParams.BLOCK_ENTITY, context.getMachineTile())
-          .withLuck(RecipeModifier.applyModifiers(context.getModifiers(getType()), getType(),
-              IOType.OUTPUT, luck, false))
+          .withLuck(luck)
           .create(Registration.MODULAR_MACHINERY_LOOT_PARAMETER_SET);
       toOutput = table.getRandomItems(params);
     }
@@ -97,14 +98,12 @@ public class RequirementLootTable implements IRequirement<ItemComponent> {
     Iterator<ItemStack> iterator = toOutput.iterator();
     while (iterator.hasNext()) {
       ItemStack stack = iterator.next();
-
-      int inserted = ItemUtils.tryPlaceItemInInventory(stack.copy(), inv, true);
-
-      if (inserted < stack.getCount()) {
+      int space = component.getSpaceForItem(stack);
+      if (space < stack.getCount()) {
         return CraftingResult.error(Component.translatable("craftcheck.failure.item.output.space"));
       }
 
-      ItemUtils.tryPlaceItemInInventory(stack.copy(), inv, false);
+      component.addToOutputs(stack, stack.getCount());
       iterator.remove();
     }
     return CraftingResult.success();
@@ -137,5 +136,13 @@ public class RequirementLootTable implements IRequirement<ItemComponent> {
   @Override
   public boolean isComponentValid(ItemComponent m, ICraftingContext context) {
     return getMode().equals(m.getIOType());
+  }
+
+  @Override
+  public JsonObject asJson() {
+    JsonObject json = IRequirement.super.asJson();
+    json.addProperty("luck", luck);
+    json.addProperty("lootTable", lootTable.toString());
+    return json;
   }
 }

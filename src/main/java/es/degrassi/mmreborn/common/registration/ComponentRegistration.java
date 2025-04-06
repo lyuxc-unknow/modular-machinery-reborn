@@ -32,9 +32,13 @@ public class ComponentRegistration {
       ComponentType::create);
   public static final Supplier<ComponentType> COMPONENT_TIME = MACHINE_COMPONENTS.register(rootLC("time"),
       ComponentType::create);
+  public static final Supplier<ComponentType> COMPONENT_HEIGHT = MACHINE_COMPONENTS.register(rootLC("height"),
+      ComponentType::create);
   public static final Supplier<ComponentType> COMPONENT_CHUNKLOAD = MACHINE_COMPONENTS.register(rootLC("chunkload"),
       ComponentType::create);
   public static final Supplier<ComponentType> COMPONENT_EXPERIENCE = MACHINE_COMPONENTS.register(rootLC("experience"),
+      ComponentType::create);
+  public static final Supplier<ComponentType> COMPONENT_PARALLEL = MACHINE_COMPONENTS.register(rootLC("parallel"),
       ComponentType::create);
 
   public static void register(final IEventBus bus) {

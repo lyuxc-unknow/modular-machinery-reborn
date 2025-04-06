@@ -7,6 +7,9 @@ import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 public abstract class PopupScreen<T extends AbstractContainerMenu> extends BasePopupScreen<T> {
 
   public final BasePopupScreen<T> parent;
@@ -49,6 +52,8 @@ public abstract class PopupScreen<T extends AbstractContainerMenu> extends BaseP
         this.deferredTooltipRendering = this.parent.deferredTooltipRendering;
       this.parent.deferredTooltipRendering = null;
     }
+
+    renderTooltip(graphics, mouseX, mouseY);
   }
 
   @Override

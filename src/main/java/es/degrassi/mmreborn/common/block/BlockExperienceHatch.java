@@ -52,13 +52,12 @@ public class BlockExperienceHatch extends BlockMachineComponent {
 
   @Override
   protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
-    if (level.isClientSide()) return ItemInteractionResult.sidedSuccess(true);
     BlockEntity te = level.getBlockEntity(pos);
     if (te instanceof ExperienceHatchEntity entity) {
       if (player instanceof ServerPlayer serverPlayer) {
         ExperienceHatchContainer.open(serverPlayer, entity);
       }
-      return ItemInteractionResult.SUCCESS;
+      return ItemInteractionResult.sidedSuccess(level.isClientSide);
     }
     return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
   }

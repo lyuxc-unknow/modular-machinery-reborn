@@ -10,20 +10,28 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 public interface ItemRequirementJS extends RecipeJSBuilder {
 
-  default MachineRecipeBuilderJS requireItem(SizedIngredient stack, int x, int y) {
-    return requireItem(stack, 1, x, y);
-  }
-
-  default MachineRecipeBuilderJS produceItem(SizedIngredient stack, int x, int y) {
-    return produceItem(stack, 1, x, y);
-  }
-
   default MachineRecipeBuilderJS requireItem(SizedIngredient stack) {
     return requireItem(stack, 0, 0);
   }
 
   default MachineRecipeBuilderJS produceItem(SizedIngredient stack) {
     return produceItem(stack, 0, 0);
+  }
+
+  default MachineRecipeBuilderJS requireItem(SizedIngredient stack, float chance) {
+    return requireItem(stack, chance, 0, 0);
+  }
+
+  default MachineRecipeBuilderJS produceItem(SizedIngredient stack, float chance) {
+    return produceItem(stack, chance, 0, 0);
+  }
+
+  default MachineRecipeBuilderJS requireItem(SizedIngredient stack, int x, int y) {
+    return requireItem(stack, 1, x, y);
+  }
+
+  default MachineRecipeBuilderJS produceItem(SizedIngredient stack, int x, int y) {
+    return produceItem(stack, 1, x, y);
   }
 
   default MachineRecipeBuilderJS requireItem(SizedIngredient stack, float chance, int x, int y) {
@@ -48,13 +56,5 @@ public interface ItemRequirementJS extends RecipeJSBuilder {
       return this.error("Chance can not be greater than 0");
     RequirementItem requirement = new RequirementItem(IOType.OUTPUT, stack, new PositionedRequirement(x, y));
     return addRequirement(new RecipeRequirement<>(requirement, chance));
-  }
-
-  default MachineRecipeBuilderJS requireItem(SizedIngredient stack, float chance) {
-    return requireItem(stack, chance, 0, 0);
-  }
-
-  default MachineRecipeBuilderJS produceItem(SizedIngredient stack, float chance) {
-    return produceItem(stack, chance, 0, 0);
   }
 }

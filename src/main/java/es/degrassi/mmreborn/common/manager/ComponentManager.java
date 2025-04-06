@@ -6,6 +6,8 @@ import es.degrassi.mmreborn.api.BlockIngredient;
 import es.degrassi.mmreborn.api.controller.ControllerAccessible;
 import es.degrassi.mmreborn.api.crafting.ICraftingContext;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
+import es.degrassi.mmreborn.api.network.ISyncable;
+import es.degrassi.mmreborn.api.network.ISyncableStuff;
 import es.degrassi.mmreborn.client.ModularMachineryRebornClient;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
@@ -36,9 +38,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 @ParametersAreNonnullByDefault
-public class ComponentManager implements INBTSerializable<CompoundTag> {
+public class ComponentManager implements INBTSerializable<CompoundTag>, ISyncableStuff {
   @Getter
   private final MachineControllerEntity controller;
 
@@ -56,11 +59,10 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
     foundComponentsValues.clear();
   }
 
-  public final void updateComponents() {
+  public final void updateComponents(boolean force) {
     if (controller.getFoundMachine() == DynamicMachine.DUMMY) return;
-    if (controller.hasActiveRecipe()) return;
     if (controller.getLevel() == null) return;
-    if (controller.getLevel().getGameTime() % 20 == 0) {
+    if (force || controller.getLevel().getGameTime() % 20 == 0) {
       reset();
       foundComponents.putAll(gatherComponents());
       foundComponentsValues.putAll(filter());
@@ -82,14 +84,14 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
   }
 
   public final List<MachineComponent<?>> getFoundComponentsList() {
-    if (foundComponents.isEmpty()) updateComponents();
+    if (foundComponents.isEmpty()) updateComponents(true);
     return foundComponents.values()
         .stream()
         .toList();
   }
 
   public List<ModifierReplacement> getFoundModifiersList() {
-    if (foundModifiers.isEmpty()) updateComponents();
+    if (foundModifiers.isEmpty()) updateComponents(true);
     return foundModifiers.values().stream().flatMap(List::stream).toList();
   }
 
@@ -142,7 +144,7 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
   }
 
   public List<RecipeModifier> getModifiers(RequirementType<?> type) {
-    if (foundModifiers.isEmpty()) updateComponents();
+    if (foundModifiers.isEmpty()) updateComponents(true);
     return foundModifiers.values()
         .stream()
         .flatMap(List::stream)
@@ -154,7 +156,7 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
 
   @SuppressWarnings("unchecked")
   public <C extends MachineComponent<?>> Optional<C> getComponent(IRequirement<C> requirement, ICraftingContext context) {
-    if (foundComponentsValues.isEmpty()) updateComponents();
+    if (foundComponentsValues.isEmpty()) updateComponents(true);
     AtomicReference<C> merged = new AtomicReference<>(null);
     Optional.ofNullable(foundComponentsValues.get(requirement.getComponentType()))
         .map(m -> m.get(requirement.getMode()))
@@ -226,7 +228,7 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
 
   @SuppressWarnings("unchecked")
   public <C extends MachineComponent<?>> Optional<C> getComponent(ComponentType type, IOType mode) {
-    if (foundComponentsValues.isEmpty()) updateComponents();
+    if (foundComponentsValues.isEmpty()) updateComponents(true);
     AtomicReference<C> merged = new AtomicReference<>(null);
     Optional.ofNullable(foundComponentsValues.get(type))
         .map(m -> m.get(mode))
@@ -252,7 +254,7 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
       CompoundTag listByMode = new CompoundTag();
       map.forEach((mode, list) -> listByMode.put(
           mode.getSerializedName(),
-          getComponent(type, mode).map(MachineComponent::asTag).orElse(new CompoundTag())
+          getComponent(type, mode).map(component -> component.asTag(provider)).orElse(new CompoundTag())
       ));
       componentsByType.put(type.getId().toString(), listByMode);
     });
@@ -268,6 +270,14 @@ public class ComponentManager implements INBTSerializable<CompoundTag> {
 
   @Override
   public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+    updateComponents(true);
+  }
 
+  @Override
+  public void getStuffToSync(Consumer<ISyncable<?, ?>> container) {
+    getFoundComponentsList().stream()
+        .filter(c -> c instanceof ISyncableStuff)
+        .map(c -> (ISyncableStuff) c)
+        .forEach(c -> c.getStuffToSync(container));
   }
 }

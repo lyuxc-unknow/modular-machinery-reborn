@@ -1,8 +1,11 @@
 package es.degrassi.mmreborn.client.screen.widget;
 
+import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.api.client.Blitter;
+import es.degrassi.mmreborn.api.client.screen.TooltipRender;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
@@ -13,21 +16,37 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collections;
 import java.util.List;
 
 @Getter
 @Setter
 @ParametersAreNonnullByDefault
-public class IconButton extends Button {
+public class IconButton extends Button implements TooltipRender {
   private boolean halfSize = false;
   private boolean disableClickSound = false;
   private boolean disableBackground = false;
   @Nullable
   private Icon icon = null;
 
+  private boolean renderTooltip = true;
+  private List<Component> tooltips;
+
   public IconButton(int x, int y, Button.OnPress onPress) {
     super(x, y, 16, 16, Component.empty(), onPress, Button.DEFAULT_NARRATION);
+  }
+
+  public IconButton(Button.Builder builder) {
+    super(builder);
+  }
+
+  public IconButton renderTooltip(boolean render) {
+    this.renderTooltip = render;
+    return this;
+  }
+
+  public IconButton setTooltips(Component... components) {
+    this.tooltips = Lists.newArrayList(components);
+    return this;
   }
 
   public void setVisibility(boolean vis) {
@@ -39,7 +58,6 @@ public class IconButton extends Button {
     if (!this.disableClickSound) {
       super.playDownSound(soundHandler);
     }
-
   }
 
   public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
@@ -83,12 +101,17 @@ public class IconButton extends Button {
 
   }
 
+  @Override
+  public boolean isMouseOver(double mouseX, double mouseY) {
+    return getTooltipArea().contains((int) mouseX, (int) mouseY);
+  }
+
   protected @Nullable Item getItemOverlay() {
     return null;
   }
 
   public List<Component> getTooltipMessage() {
-    return Collections.singletonList(this.getMessage());
+    return tooltips;
   }
 
   public Rect2i getTooltipArea() {
@@ -97,5 +120,17 @@ public class IconButton extends Button {
 
   public boolean isTooltipAreaVisible() {
     return this.visible;
+  }
+
+  @Override
+  public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    if (isMouseOver(mouseX, mouseY)) {
+      if (renderTooltip) {
+        guiGraphics.renderTooltip(Minecraft.getInstance().font, getTooltipMessage().stream().map(Component::getVisualOrderText).toList(), mouseX, mouseY);
+//        for (Component tooltip : getTooltipMessage()) {
+//          guiGraphics.renderTooltip(Minecraft.getInstance().font, tooltip, mouseX, mouseY);
+//        }
+      }
+    }
   }
 }

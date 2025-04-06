@@ -60,24 +60,17 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
   @Setter
   private CraftingStatus craftingStatus = CraftingStatus.MISSING_STRUCTURE;
   private boolean isPaused = false;
-
   private ResourceLocation id = DynamicMachine.DUMMY.getRegistryName();
-
   private MachineStatus status = MachineStatus.IDLE;
   private Component errorMessage = Component.empty();
-
   private final ComponentManager componentManager;
-
   private final MachineProcessor processor;
-
   private int lastFocus;
-
   private SoundManager soundManager;
 
   public MachineControllerEntity(BlockPos pos, BlockState state) {
     super(EntityRegistration.CONTROLLER.get(), pos, state);
     componentManager = new ComponentManager(this);
-
     processor = new MachineProcessor(this);
   }
 
@@ -157,7 +150,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
   @Override
   public void doRestrictedTick() {
     pause();
-    checkStructure();
+    checkStructure(false);
 
     if (status.isMissingStructure()) {
       processor.reset();
@@ -165,7 +158,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
       return;
     }
 
-    componentManager.updateComponents();
+    componentManager.updateComponents(false);
 
     if (isPaused()) return;
 
@@ -189,18 +182,19 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
     if (getLevel() instanceof ServerLevel l)
       PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getBlockPos()), new SMachineUpdatePacket(id, getBlockPos()));
     setRequestModelUpdate(true);
+    refreshClientData();
     setChanged();
   }
 
-  private void checkStructure() {
-    if (level.getGameTime() % MMRConfig.get().checkStructureTicks.get() == 0) {
+  public void checkStructure(boolean immediate) {
+    if (immediate || level.getGameTime() % MMRConfig.get().checkStructureTicks.get() == 0) {
       if (this.getFoundMachine() != DynamicMachine.DUMMY) {
         if (!getFoundMachine().getPattern().match(getLevel(), getBlockPos(), getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING))) {
           distributeCasingColor(true);
           setStatus(MachineStatus.MISSING_STRUCTURE);
         } else {
           distributeCasingColor(false);
-          componentManager.updateComponents();
+          componentManager.updateComponents(false);
           if (!status.isCrafting()) {
             setStatus(MachineStatus.IDLE);
           } else {
@@ -228,9 +222,8 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
     if (ModularMachineryReborn.MACHINES.get(id) != DynamicMachine.DUMMY) {
       distributeCasingColor(default_, getFoundMachine().getPattern().getBlocks(getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).keySet().toArray(BlockPos[]::new));
     } else {
-      getBlueprintMachine();
-      if (!getBlueprintMachine().getPattern().match(getLevel(), getBlockPos(), getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING))) {
-        BlockPos[] blockPos = getBlueprintMachine().getPattern().getBlocks(getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).keySet().toArray(BlockPos[]::new);
+      if (!getFoundMachine().getPattern().match(getLevel(), getBlockPos(), getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING))) {
+        BlockPos[] blockPos = getFoundMachine().getPattern().getBlocks(getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING)).keySet().toArray(BlockPos[]::new);
         distributeCasingColor(true, blockPos);
         for (BlockPos pos : blockPos) {
           if (getLevel().getBlockEntity(getBlockPos().offset(pos)) instanceof BlockEntitySynchronized entity) {
@@ -250,20 +243,8 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
     }
   }
 
-  public float getCurrentActiveRecipeProgress() {
-    return processor.core().getCurrentActiveRecipeProgress();
-  }
-
-  public boolean hasActiveRecipe() {
-    return status == MachineStatus.RUNNING;
-  }
-
   public DynamicMachine getFoundMachine() {
     return ModularMachineryReborn.MACHINES.getOrDefault(id, DynamicMachine.DUMMY);
-  }
-
-  public DynamicMachine getBlueprintMachine() {
-    return getFoundMachine();
   }
 
   @Override
@@ -272,6 +253,8 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
     this.craftingStatus = CraftingStatus.deserialize(compound.getCompound("status"), pRegistries);
     this.id = ResourceLocation.parse(compound.getString("machine"));
     processor.deserialize(compound.getCompound("craftingManager"));
+    if (getLevel() != null && !getLevel().isClientSide)
+      checkStructure(true);
   }
 
   @Override
@@ -304,9 +287,10 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
   public void getStuffToSync(Consumer<ISyncable<?, ?>> container) {
     if (this.getLevel() == null)
       return;
-    if (this.processor instanceof ISyncableStuff syncableProcessor)
-      syncableProcessor.getStuffToSync(container);
+    processor.getStuffToSync(container);
+    componentManager.getStuffToSync(container);
     RegistryAccess registries = this.getLevel().registryAccess();
+    container.accept(StringSyncable.create(() -> id.toString(), s -> id = ResourceLocation.parse(s)));
     container.accept(IntegerSyncable.create(() -> lastFocus, i -> lastFocus = i));
     container.accept(NbtSyncable.create(() -> craftingStatus.serializeNBT(getLevel().registryAccess()), s -> craftingStatus = CraftingStatus.deserialize(s, getLevel().registryAccess())));
     container.accept(StringSyncable.create(() -> this.status.toString(), status -> this.status = MachineStatus.value(status)));

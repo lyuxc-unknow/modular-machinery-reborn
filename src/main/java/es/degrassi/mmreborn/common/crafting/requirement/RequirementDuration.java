@@ -36,7 +36,7 @@ public class RequirementDuration implements IRequirement<DurationComponent> {
 
   @Override
   public RequirementType<RequirementDuration> getType() {
-    return RequirementTypeRegistration.DURATION.get();
+    return RequirementTypeRegistration.SPEED.get();
   }
 
   @Override

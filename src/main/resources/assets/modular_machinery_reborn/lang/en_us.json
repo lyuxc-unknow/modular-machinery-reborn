@@ -1,6 +1,5 @@
 {
   "itemgroup.modular_machinery_reborn.group": "Modular Machinery Reborn",
-  "itemgroup.modular_machinery_reborn_mekanism.group": "Modular Machinery Reborn Mekanism",
   "item.modular_machinery_reborn.structure_creator": "Structure Creator",
   "modular_machinery_reborn.command.reload.machines": "Successfully reloaded modular machinery machines !",
   "modular_machinery_reborn.command.reload.recipes": "Successfully reloaded modular machinery recipes !",
@@ -23,6 +22,7 @@
   "modular_machinery_reborn.gui.title.energy_hatch": "Energy Hatch",
   "modular_machinery_reborn.gui.title.fluid_hatch": "Fluid Hatch",
   "modular_machinery_reborn.gui.title.item_bus": "Item Bus",
+  "modular_machinery_reborn.gui.title.parallel_hatch": "Parallel Hatch",
 
   "gui.controller.blueprint": "Blueprint Found: %s",
   "gui.controller.blueprint.none": "None",
@@ -36,6 +36,25 @@
   "gui.controller.status.failure": "",
   "gui.controller.status.crafting": "Processing...",
   "gui.controller.status.crafting.progress": "Progress: %s",
+
+  "mmr.core.active.true": "Core is able to run recipes",
+  "mmr.core.active.false": "Core is not able to run recipes",
+  "mmr.core.number": "Core number: %s",
+  "mmr.gui.core.button": "Click to show info about core number %s",
+  "mmr.gui.tooltip.core.action.button.single.add": "Add 1 active core",
+  "mmr.gui.tooltip.core.action.button.single.remove": "Remove 1 active core ",
+  "mmr.gui.tooltip.core.action.button.shift.add": "Add 10 active core",
+  "mmr.gui.tooltip.core.action.button.shift.remove": "Remove 10 active core ",
+  "mmr.gui.tooltip.core.action.button.control.add": "Add all active cores",
+  "mmr.gui.tooltip.core.action.button.control.remove": "Remove all active cores less 1",
+  "mmr.gui.button.back": "Back",
+  "mmr.gui.button.close": "Close",
+  "mmr.gui.button.page.next": "Next Page",
+  "mmr.gui.button.page.prev": "Prev Page",
+  "modular_machinery_reborn.gui.core_button": "Show info about cores",
+  "mmr.waila.cores": "%s %s %s",
+  "mmr.waila.cores.1": "Running:",
+  "mmr.waila.cores.2": "cores",
 
   "craftcheck.failure.item.input": "Missing input item!, required: %sx %s",
   "craftcheck.failure.item.output.space": "Not enough inventory space for item output(s)!",
@@ -52,6 +71,8 @@
   "craftcheck.failure.biome.true": "Not in the correct biome, expected to not be: %s, found: %s",
   "craftcheck.failure.weather": "Invalid weather time, expected: %s",
   "craftcheck.failure.time": "Invalid time, expected: %s but found: %s",
+  "craftcheck.failure.height": "Invalid height, expected: %s but found: %s",
+  "craftcheck.failure.parallel.loot_table": "Can't process multiple Loot Tables at the same time, remove the Parallel Hatch to process this recipe.",
 
   "component.missing.energy.output": "No Energy Output Hatch found!",
   "component.missing.energy.input": "No Energy Input Hatch found!",
@@ -65,6 +86,7 @@
   "component.missing.weather": "No Weather Sensor found!",
   "component.missing.biome": "No Biome Reader found!",
   "component.missing.time": "No Time Counter found!",
+  "component.missing.height": "No Height Meter found!",
   "component.missing.chunkload": "No Chunkloader found!",
 
   "gui.blueprint.popout.info": "Sneak to freeze the current preview to be able to preview it in world.",
@@ -144,6 +166,8 @@
   "tooltip.energyhatch.gregtech.voltage.out": "Voltage OUT: §a%s §7(§a%s§7)",
   "tooltip.energyhatch.gregtech.amperage": "Amperage: §e%s",
   "tooltip.energyhatch.gregtech.storage": "Internal Energy Capacity: §9%s",
+
+  "tooltip.parallelhatch.size": "Can make the multiblock run up to %s recipes",
 
   "tooltip.ic2.powertier.0.name": "ULV",
   "tooltip.ic2.powertier.1.name": "LV",
@@ -261,10 +285,17 @@
   "block.modular_machinery_reborn.energyoutputhatch_ludicrous": "Ludicrous Energy Output Hatch",
   "block.modular_machinery_reborn.energyoutputhatch_ultimate": "Ultimate Energy Output Hatch",
 
+  "block.modular_machinery_reborn.parallel_hatch_basic": "Basic Parallel Hatch",
+  "block.modular_machinery_reborn.parallel_hatch_medium": "Medium Parallel Hatch",
+  "block.modular_machinery_reborn.parallel_hatch_advanced": "Advanced Parallel Hatch",
+  "block.modular_machinery_reborn.parallel_hatch_ultimate": "Ultimate Parallel Hatch",
+  "block.modular_machinery_reborn.parallel_hatch_max": "Max Parallel Hatch",
+
   "block.modular_machinery_reborn.dimensional_detector": "Dimensional Detector",
   "block.modular_machinery_reborn.biome_reader": "Biome Reader",
   "block.modular_machinery_reborn.weather_sensor": "Weather Sensor",
   "block.modular_machinery_reborn.time_counter": "Time Counter",
+  "block.modular_machinery_reborn.height_meter": "Height Meter",
   "block.modular_machinery_reborn.chunkloader": "Chunkloader",
 
   "tooltip.blueprint": "Click on any machine controller to show the structure",
@@ -278,6 +309,7 @@
   "modular_machinery_reborn.ingredient.chance.nc": "NC",
 
   "modular_machinery_reborn.jei.ingredient.long": "%s",
+  "modular_machinery_reborn.jei.ingredient.int": "%s",
 
   "modular_machinery_reborn.jei.ingredient.energy.input": "Require: %s RF/t",
   "modular_machinery_reborn.jei.ingredient.energy.output": "Produce: %s RF/t",
@@ -307,6 +339,7 @@
   "modular_machinery_reborn.jei.ingredient.weather": "Weather time: %s",
 
   "modular_machinery_reborn.jei.ingredient.time": "Time: %s",
+  "modular_machinery_reborn.jei.ingredient.height": "Height: %s",
   "modular_machinery_reborn.jei.ingredient.chunkload": "Chunkload radius: %s",
 
   "modular_machinery_reborn.controller.tooltip.0": "Click in placed controller with blueprint",
@@ -330,12 +363,13 @@
 
   "mmr.place.non_air": "Tried to place %s in %s but found no valid structure block",
   "mmr.place.no_item": "Tried to place %s in %s but couldn't find the item %s in the player inventory",
+  "mmr.place.replace": "Breaking %s at %s to place new block...",
 
   "key.categories.modular_machinery_reborn": "Modular Machinery Reborn",
   "key.modular_machinery_reborn.structure_mode_change": "Structure Creator Mode",
 
-  "mmr.recipe.modifier.duration.add": " (%s the duration of the recipe)",
-  "mmr.recipe.modifier.duration.multiply": " (x%s the duration of the recipe)",
+  "mmr.recipe.modifier.speed.add": " (%s the speed of processing the recipe)",
+  "mmr.recipe.modifier.speed.multiply": " (x%s the speed of processing the recipe)",
   "mmr.recipe.modifier.item.add": " (%s item(s) %s to recipe, affects chance: %s)",
   "mmr.recipe.modifier.item.multiply": " (x%s item %s of recipe, affects chance: %s)",
   "mmr.recipe.modifier.fluid.add": " (%s fluid mB(s) %s to recipe, affects chance: %s)",
@@ -356,5 +390,7 @@
   "mmr.gui.structure.place.cancel.modifier": "Without modifiers",
 
   "mmr.gui.popup.confirm": "Confirm",
-  "mmr.gui.popup.cancel": "Cancel"
+  "mmr.gui.popup.cancel": "Cancel",
+  "emi.tooltip.show.recipes": "Show Recipes",
+  "mmr.emi.no_items": "No items in recipe"
 }

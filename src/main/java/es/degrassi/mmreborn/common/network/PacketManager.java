@@ -2,8 +2,10 @@ package es.degrassi.mmreborn.common.network;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.network.client.CBreakStructurePacket;
+import es.degrassi.mmreborn.common.network.client.CCoreButtonClickedPacked;
 import es.degrassi.mmreborn.common.network.client.CExperienceButtonClickedPacket;
 import es.degrassi.mmreborn.common.network.client.CPlaceStructurePacket;
+import es.degrassi.mmreborn.common.network.client.emi.FillRecipeC2SPacket;
 import es.degrassi.mmreborn.common.network.server.SAddControllerRenderer;
 import es.degrassi.mmreborn.common.network.server.SLootTablesPacket;
 import es.degrassi.mmreborn.common.network.server.SMachineUpdatePacket;
@@ -15,10 +17,13 @@ import es.degrassi.mmreborn.common.network.server.SUpdateContainerPacket;
 import es.degrassi.mmreborn.common.network.server.SUpdateCraftingStatusPacket;
 import es.degrassi.mmreborn.common.network.server.SUpdateMachineColorPacket;
 import es.degrassi.mmreborn.common.network.server.SUpdateRecipePacket;
+import es.degrassi.mmreborn.common.network.server.component.SUpdateCoresPacket;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateEnergyComponentPacket;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateExperienceComponentPacket;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateFluidComponentPacket;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateItemComponentPacket;
+import es.degrassi.mmreborn.common.util.Mods;
+import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -45,10 +50,17 @@ public class PacketManager {
     registrar.playToClient(SAddControllerRenderer.TYPE, SAddControllerRenderer.CODEC, SAddControllerRenderer::handle);
     registrar.playToClient(SRemoveControllerRenderer.TYPE, SRemoveControllerRenderer.CODEC, SRemoveControllerRenderer::handle);
     registrar.playToClient(SUpdateContainerPacket.TYPE, SUpdateContainerPacket.CODEC, SUpdateContainerPacket::handle);
+    registrar.playToClient(SUpdateCoresPacket.TYPE, SUpdateCoresPacket.CODEC, SUpdateCoresPacket::handle);
 
     // TO SERVER
     registrar.playToServer(CPlaceStructurePacket.TYPE, CPlaceStructurePacket.CODEC, CPlaceStructurePacket::handle);
     registrar.playToServer(CBreakStructurePacket.TYPE, CBreakStructurePacket.CODEC, CBreakStructurePacket::handle);
     registrar.playToServer(CExperienceButtonClickedPacket.TYPE, CExperienceButtonClickedPacket.CODEC, CExperienceButtonClickedPacket::handle);
+    registrar.playToServer(CCoreButtonClickedPacked.TYPE, CCoreButtonClickedPacked.CODEC, CCoreButtonClickedPacked::handle);
+
+    // EMI packet
+    if (Mods.isJEIorEMILoaded()) {
+      registrar.playToServer(FillRecipeC2SPacket.TYPE, FillRecipeC2SPacket.CODEC, FillRecipeC2SPacket::handle);
+    }
   }
 }

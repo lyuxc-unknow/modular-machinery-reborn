@@ -75,6 +75,9 @@ public class BlockController extends BlockMachineComponent {
     ResourceLocation id = ModularMachineryReborn.MACHINES_BLOCK.inverse().get(this);
     if (id != null && pLevel.getBlockEntity(pPos) instanceof MachineControllerEntity entity) {
       entity.setId(id);
+      if (pLevel instanceof ServerLevel serverLevel)
+        serverLevel.getServer().tell(new TickTask(1, () -> PacketDistributor.sendToPlayersTrackingChunk(serverLevel,
+            new ChunkPos(pPos), new SMachineUpdatePacket(id, pPos))));
     }
   }
 
@@ -84,6 +87,7 @@ public class BlockController extends BlockMachineComponent {
     ControllerItem.getMachine(stack).ifPresent(machine -> {
       BlockEntity tile = level.getBlockEntity(pos);
       if (tile instanceof MachineControllerEntity machineTile) {
+        //machineTile.setMachine(machine.getRegistryName());
         machineTile.setId(machine.getRegistryName());
         if (level instanceof ServerLevel serverLevel)
           level.getServer().tell(new TickTask(1, () -> PacketDistributor.sendToPlayersTrackingChunk(serverLevel, new ChunkPos(pos), new SMachineUpdatePacket(machine.getRegistryName(), pos))));
@@ -137,7 +141,6 @@ public class BlockController extends BlockMachineComponent {
   }
 
   @Override
-  @SuppressWarnings("deprecation")
   public BlockState rotate(BlockState state, Rotation rotation) {
     return state.setValue(BlockStateProperties.HORIZONTAL_FACING, rotation.rotate(state.getValue(BlockStateProperties.HORIZONTAL_FACING)));
   }
@@ -154,24 +157,21 @@ public class BlockController extends BlockMachineComponent {
         }
         ControllerContainer.open(serverPlayer, controller);
       }
-      return ItemInteractionResult.SUCCESS;
+      return ItemInteractionResult.sidedSuccess(level.isClientSide);
     }
     return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public boolean isSignalSource(BlockState state) {
     return true;
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public boolean hasAnalogOutputSignal(BlockState state) {
     return true;
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
     BlockEntity tile = level.getBlockEntity(pos);
@@ -180,7 +180,6 @@ public class BlockController extends BlockMachineComponent {
     return 0;
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction side) {
     BlockEntity tile = level.getBlockEntity(pos);
@@ -189,7 +188,6 @@ public class BlockController extends BlockMachineComponent {
     return 0;
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction side) {
     BlockEntity tile = level.getBlockEntity(pos);

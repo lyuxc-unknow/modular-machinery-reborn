@@ -129,6 +129,15 @@ public class MMRBlockTagProvider extends BlockTagsProvider {
         .addTag(MMRTags.Blocks.EXPERIENCE_INPUT)
         .addTag(MMRTags.Blocks.EXPERIENCE_OUTPUT);
 
+    tag(MMRTags.Blocks.PARALLEL)
+        .add(
+            BlockRegistration.PARALLEL_HATCH_BASIC.get(),
+            BlockRegistration.PARALLEL_HATCH_MEDIUM.get(),
+            BlockRegistration.PARALLEL_HATCH_ADVANCED.get(),
+            BlockRegistration.PARALLEL_HATCH_ULTIMATE.get(),
+            BlockRegistration.PARALLEL_HATCH_MAX.get()
+        );
+
     tag(MMRTags.Blocks.CASINGS)
         .add(
             BlockRegistration.CASING_PLAIN.get(),
@@ -145,18 +154,23 @@ public class MMRBlockTagProvider extends BlockTagsProvider {
         .addTag(MMRTags.Blocks.ITEM)
         .addTag(MMRTags.Blocks.FLUID)
         .addTag(MMRTags.Blocks.EXPERIENCE)
+        .addTag(MMRTags.Blocks.PARALLEL)
         .add(BlockRegistration.BIOME_READER.get())
         .add(BlockRegistration.DIMENSIONAL_DETECTOR.get())
         .add(BlockRegistration.WEATHER_SENSOR.get())
         .add(BlockRegistration.TIME_COUNTER.get())
-        .add(BlockRegistration.CHUNKLOADER.get());
+        .add(BlockRegistration.CHUNKLOADER.get())
+        .add(BlockRegistration.HEIGHT_METER.get());
+
+    tag(MMRTags.Blocks.REPLACEABLE)
+        .addTag(MMRTags.Blocks.ALL_CASINGS)
+        .add(BlockRegistration.CONTROLLER.get());
 
     tag(BlockTags.MINEABLE_WITH_PICKAXE)
         .addTag(MMRTags.Blocks.ALL_CASINGS)
         .add(BlockRegistration.CONTROLLER.get());
 
     tag(BlockTags.NEEDS_STONE_TOOL)
-        .addTag(MMRTags.Blocks.ALL_CASINGS)
-        .add(BlockRegistration.CONTROLLER.get());
+        .addTag(MMRTags.Blocks.ALL_CASINGS);
   }
 }

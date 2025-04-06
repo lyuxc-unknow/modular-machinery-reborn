@@ -6,6 +6,7 @@ import es.degrassi.mmreborn.client.container.EnergyHatchContainer;
 import es.degrassi.mmreborn.client.container.ExperienceHatchContainer;
 import es.degrassi.mmreborn.client.container.FluidHatchContainer;
 import es.degrassi.mmreborn.client.container.ItemBusContainer;
+import es.degrassi.mmreborn.client.container.ParallelHatchContainer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.bus.api.IEventBus;
@@ -28,6 +29,8 @@ public class ContainerRegistration {
       CONTAINERS.register(rootLC("item_bus"), () -> IMenuTypeExtension.create(ItemBusContainer::new));
   public static final DeferredHolder<MenuType<?>, MenuType<ExperienceHatchContainer>> EXPERIENCE_HATCH =
       CONTAINERS.register(rootLC("experience_hatch"), () -> IMenuTypeExtension.create(ExperienceHatchContainer::new));
+  public static final DeferredHolder<MenuType<?>, MenuType<ParallelHatchContainer>> PARALLEL_HATCH =
+      CONTAINERS.register(rootLC("parallel_hatch"), () -> IMenuTypeExtension.create(ParallelHatchContainer::new));
 
   public static void register(IEventBus bus) {
     CONTAINERS.register(bus);

@@ -1,6 +1,5 @@
 {
-  "itemGroup.modular_machinery_reborn.group": "模块化机械:重制",
-  "itemGroup.modular_machinery_reborn_mekanism.group": "模块化机械:重置 通用机械附属",
+  "itemgroup.modular_machinery_reborn.group": "模块化机械:重制",
   "item.modular_machinery_reborn.structure_creator": "结构创建器",
   "modular_machinery_reborn.command.reload.machines": "成功重载模块化机械！",
   "modular_machinery_reborn.command.reload.recipes": "成功重载模块化机械的配方",
@@ -356,5 +355,6 @@
   "mmr.gui.structure.place.cancel.modifier": "仅放置结构",
 
   "mmr.gui.popup.confirm": "确认",
-  "mmr.gui.popup.cancel": "取消"
+  "mmr.gui.popup.cancel": "取消",
+  "emi.tooltip.show.recipes": "显示配方"
 }

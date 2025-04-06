@@ -16,14 +16,17 @@ import es.degrassi.mmreborn.common.block.BlockExperienceOutputHatch;
 import es.degrassi.mmreborn.common.block.BlockFluidHatch;
 import es.degrassi.mmreborn.common.block.BlockFluidInputHatch;
 import es.degrassi.mmreborn.common.block.BlockFluidOutputHatch;
+import es.degrassi.mmreborn.common.block.BlockHeightMeter;
 import es.degrassi.mmreborn.common.block.BlockInputBus;
 import es.degrassi.mmreborn.common.block.BlockOutputBus;
 import es.degrassi.mmreborn.common.block.BlockTimeCounter;
 import es.degrassi.mmreborn.common.block.BlockWeatherSensor;
+import es.degrassi.mmreborn.common.block.ParallelHatchBlock;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ExperienceHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
+import es.degrassi.mmreborn.common.block.prop.ParallelHatchSize;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -178,7 +181,24 @@ public class BlockRegistration {
   public static final DeferredBlock<BlockBiomeReader> BIOME_READER = BLOCKS.register(rootLC("biome_reader"), BlockBiomeReader::new);
   public static final DeferredBlock<BlockWeatherSensor> WEATHER_SENSOR = BLOCKS.register(rootLC("weather_sensor"), BlockWeatherSensor::new);
   public static final DeferredBlock<BlockTimeCounter> TIME_COUNTER = BLOCKS.register(rootLC("time_counter"), BlockTimeCounter::new);
+  public static final DeferredBlock<BlockHeightMeter> HEIGHT_METER = BLOCKS.register(rootLC("height_meter"), BlockHeightMeter::new);
   public static final DeferredBlock<BlockChunkloader> CHUNKLOADER = BLOCKS.register(rootLC("chunkloader"), BlockChunkloader::new);
+
+  public static final DeferredBlock<ParallelHatchBlock> PARALLEL_HATCH_BASIC =
+      BLOCKS.register(rootLC("parallel_hatch_" + ParallelHatchSize.BASIC.getSerializedName()),
+      () -> new ParallelHatchBlock(ParallelHatchSize.BASIC));
+  public static final DeferredBlock<ParallelHatchBlock> PARALLEL_HATCH_MEDIUM =
+      BLOCKS.register(rootLC("parallel_hatch_" + ParallelHatchSize.MEDIUM.getSerializedName()),
+      () -> new ParallelHatchBlock(ParallelHatchSize.MEDIUM));
+  public static final DeferredBlock<ParallelHatchBlock> PARALLEL_HATCH_ADVANCED =
+      BLOCKS.register(rootLC("parallel_hatch_" + ParallelHatchSize.ADVANCED.getSerializedName()),
+      () -> new ParallelHatchBlock(ParallelHatchSize.ADVANCED));
+  public static final DeferredBlock<ParallelHatchBlock> PARALLEL_HATCH_ULTIMATE =
+      BLOCKS.register(rootLC("parallel_hatch_" + ParallelHatchSize.ULTIMATE.getSerializedName()),
+      () -> new ParallelHatchBlock(ParallelHatchSize.ULTIMATE));
+  public static final DeferredBlock<ParallelHatchBlock> PARALLEL_HATCH_MAX =
+      BLOCKS.register(rootLC("parallel_hatch_" + ParallelHatchSize.MAX.getSerializedName()),
+      () -> new ParallelHatchBlock(ParallelHatchSize.MAX));
 
   public static void register(final IEventBus bus) {
     BLOCKS.register(bus);

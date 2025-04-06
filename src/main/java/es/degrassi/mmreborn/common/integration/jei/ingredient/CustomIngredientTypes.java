@@ -4,5 +4,6 @@ import mezz.jei.api.ingredients.IIngredientType;
 
 public class CustomIngredientTypes {
   public static final IIngredientType<Long> LONG = () -> Long.class;
-  public static final IIngredientType<Integer> SOURCE = () -> Integer.class;
+  // TODO: change on ars addon
+  public static final IIngredientType<Integer> INTEGER = () -> Integer.class;
 }

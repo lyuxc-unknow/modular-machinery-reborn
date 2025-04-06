@@ -1,4 +1,13 @@
-// Visit the wiki for more info - https://kubejs.com/
+// IMPORTANT NOTE: structure auto-build can replace blocks now in survival with the BLOCK TAG: 'modular_machinery_reborn:replaceable'
+// By default the blocks added to that tag are:
+//      contained in the tag 'modular_machinery_reborn:all_casing'
+// Recommendation: Don't add the controller block to the tag just in case could be replaced from other multiblock.
+
+// IMPORTANT NOTE:
+// Loot Table requirement is not compatible with parallel hatches.
+// I had to block that feature due to high TPS impact with it.
+// So, keep it in mind when creating structures, recipes and potential quests
+
 ServerEvents.recipes(event => {
     event.recipes.modular_machinery_reborn.machine_recipe("mmr:testing", 150)
         // OPTIONAL CUSTOMIZATION {
@@ -7,6 +16,8 @@ ServerEvents.recipes(event => {
         .width(number) // default 256
         .height(number) // default 256
         // }
+        // All "x" and "y" parameters can be avoided, but, the result is both are 0,
+        // JEI and EMI could not render them as expected(will be on the same spot, so, it not viewable at all)
         .requireEnergy(100000, x, y)
         .produceEnergy(100, x, y)
         .requireItem("2x modular_machinery_reborn:casing_plain", x, y) // valid for item tags too(uses sized ingredient)
@@ -29,6 +40,8 @@ ServerEvents.recipes(event => {
         .weather('clear', x, y)
         // time
         .time('[0,24000]', x, y)
+        // height [from controller but requires height meter in structure to validate]
+        .requireHeight('[0, 255)', x, y)
         // chunkload
         .chunkload(3, x, y)
         // loottable
@@ -222,7 +235,7 @@ MMREvents.machines(event => {
                     .addModifier(
                         MMRRecipeModifier.create()
                             // modifier target, can be:
-                            // - modular_machinery_reborn:duration -> needs to be on input() or nothing `json -> "mode": "input"`
+                            // - modular_machinery_reborn:speed -> needs to be on input() or nothing `json -> "mode": "input"`
                             // - modular_machinery_reborn:item
                             // - modular_machinery_reborn:fluid
                             // - modular_machinery_reborn:energy

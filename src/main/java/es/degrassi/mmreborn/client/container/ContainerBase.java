@@ -1,18 +1,20 @@
 package es.degrassi.mmreborn.client.container;
 
 import com.google.common.collect.Lists;
-import es.degrassi.mmreborn.api.network.DataType;
 import es.degrassi.mmreborn.api.network.IData;
 import es.degrassi.mmreborn.api.network.ISyncable;
 import es.degrassi.mmreborn.api.network.ISyncableStuff;
 import es.degrassi.mmreborn.api.network.syncable.IntegerSyncable;
 import es.degrassi.mmreborn.api.network.syncable.ItemStackSyncable;
+import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
 import es.degrassi.mmreborn.common.entity.base.ColorableMachineComponentEntity;
 import es.degrassi.mmreborn.common.network.server.SUpdateContainerPacket;
+import es.degrassi.mmreborn.common.util.IOInventory;
 import lombok.Getter;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.MenuType;
@@ -24,27 +26,47 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
 public abstract class ContainerBase<T extends ColorableMachineComponentEntity> extends AbstractContainerMenu {
-  private final Player player;
-  private final T entity;
-  private final List<ISyncable<?, ?>> stuffToSync = Lists.newArrayList();
+  protected final Player player;
+  protected final T entity;
+  protected final List<ISyncable<?, ?>> stuffToSync = Lists.newArrayList();
+  protected final List<SlotItemComponent> inputSlotComponents = new ArrayList<>();
+  protected int firstComponentSlotIndex = 0;
 
   protected ContainerBase(T entity, Player player, @Nullable MenuType<?> menuType, int containerId) {
     super(menuType, containerId);
     this.player = player;
     this.entity = entity;
-    addPlayerSlots();
     init();
   }
 
   public void init() {
     this.stuffToSync.clear();
-    this.stuffToSync.add(DataType.createSyncable(ItemStack.class, this::getCarried, this::setCarried));
+    this.stuffToSync.add(ItemStackSyncable.create(this::getCarried, this::setCarried));
     if (entity instanceof ISyncableStuff syncableStuff) {
       syncableStuff.getStuffToSync(this.stuffToSync::add);
     }
+    this.slots.clear();
+    this.inputSlotComponents.clear();
+
+    AtomicInteger slotIndex = new AtomicInteger(0);
+    addPlayerSlots(slotIndex);
+    this.firstComponentSlotIndex = slotIndex.get() + 1;
+  }
+
+
+  /**
+   * Adds an item slot to this container
+   */
+  protected Slot addSlot(Slot slot) {
+    slot = super.addSlot(slot);
+    if (slot instanceof SlotItemComponent sic) {
+      this.inputSlotComponents.add(sic);
+    }
+    return slot;
   }
 
   public boolean needFullSync() {
@@ -52,21 +74,27 @@ public abstract class ContainerBase<T extends ColorableMachineComponentEntity> e
   }
 
   @Override
+  public void clicked(int slotId, int button, ClickType clickType, Player player) {
+    getEntity().setChanged();
+    super.clicked(slotId, button, clickType, player);
+  }
+
+  @Override
   public void broadcastChanges() {
-    if(this.player != null && player instanceof ServerPlayer sp) {
-      if(this.needFullSync()) {
+    if (this.player != null && player instanceof ServerPlayer sp) {
+      if (this.needFullSync()) {
         List<IData<?>> toSync = new ArrayList<>();
-        for(short id = 0; id < this.stuffToSync.size(); id++)
+        for (short id = 0; id < this.stuffToSync.size(); id++)
           toSync.add(this.stuffToSync.get(id).getData(id));
         PacketDistributor.sendToPlayer(sp, new SUpdateContainerPacket(this.containerId, toSync));
         return;
       }
       List<IData<?>> toSync = new ArrayList<>();
-      for(short id = 0; id < this.stuffToSync.size(); id++) {
-        if(this.stuffToSync.get(id).needSync())
+      for (short id = 0; id < this.stuffToSync.size(); id++) {
+        if (this.stuffToSync.get(id).needSync())
           toSync.add(this.stuffToSync.get(id).getData(id));
       }
-      if(!toSync.isEmpty())
+      if (!toSync.isEmpty())
         PacketDistributor.sendToPlayer(sp, new SUpdateContainerPacket(this.containerId, toSync));
     }
   }
@@ -79,7 +107,7 @@ public abstract class ContainerBase<T extends ColorableMachineComponentEntity> e
 
   @Override
   protected void addDataSlots(ContainerData array) {
-    for(int i = 0; i < array.getCount(); i++) {
+    for (int i = 0; i < array.getCount(); i++) {
       int index = i;
       this.stuffToSync.add(IntegerSyncable.create(() -> array.get(index), integer -> array.set(index, integer)));
     }
@@ -89,7 +117,7 @@ public abstract class ContainerBase<T extends ColorableMachineComponentEntity> e
   public void handleData(IData<?> data) {
     short id = data.getID();
     ISyncable syncable = this.stuffToSync.get(id);
-    if(syncable != null)
+    if (syncable != null)
       syncable.set(data.getValue());
   }
 
@@ -98,51 +126,46 @@ public abstract class ContainerBase<T extends ColorableMachineComponentEntity> e
     return this.addSlot(slot);
   }
 
-  protected void addPlayerSlots() {
+  protected void addPlayerSlots(AtomicInteger slotIndex) {
+    for (int i = 0; i < 9; i++) {
+      addSyncedSlot(new Slot(player.getInventory(), slotIndex.getAndIncrement(), 8 + i * 18, 142));
+    }
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 9; j++) {
-        addSyncedSlot(new Slot(player.getInventory(), j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+        addSyncedSlot(new Slot(player.getInventory(), slotIndex.getAndIncrement(), 8 + j * 18, 84 + i * 18));
       }
-    }
-    for (int i = 0; i < 9; i++) {
-      addSyncedSlot(new Slot(player.getInventory(), i, 8 + i * 18, 142));
     }
   }
 
   @Override
   public ItemStack quickMoveStack(Player player, int index) {
-    ItemStack itemstack = ItemStack.EMPTY;
     Slot slot = this.slots.get(index);
+    if(slot.getItem().isEmpty())
+      return ItemStack.EMPTY;
 
-    if (slot.hasItem()) {
-      ItemStack itemstack1 = slot.getItem();
-      itemstack = itemstack1.copy();
-      if (index >= 0 && index < 27) {
-        if (!this.moveItemStackTo(itemstack1, 27, 36, false)) {
-          return ItemStack.EMPTY;
-        }
-      } else if (index >= 27 && index < 36) {
-        if (!this.moveItemStackTo(itemstack1, 0, 27, false)) {
-          return ItemStack.EMPTY;
-        }
-      } else if (!this.moveItemStackTo(itemstack1, 0, 36, false)) {
+    if (slot.container == this.player.getInventory()) {
+      ItemStack stack = slot.getItem().copy();
+      List<SlotItemComponent> components;
+      components = this.inputSlotComponents;
+      for (SlotItemComponent slotComponent : components) {
+        stack = slotComponent.getComponent().insertItemBypassLimit(stack, false);
+        if(stack.isEmpty())
+          break;
+      }
+      if(stack.isEmpty())
+        slot.remove(slot.getItem().getCount());
+      else
+        slot.remove(slot.getItem().getCount() - stack.getCount());
+    } else {
+      if (!(slot instanceof SlotItemComponent slotComponent))
         return ItemStack.EMPTY;
-      }
 
-      if (itemstack1.getCount() == 0) {
-        slot.set(ItemStack.EMPTY);
-      } else {
-        slot.setChanged();
-      }
-
-      if (itemstack1.getCount() == itemstack.getCount()) {
+      ItemStack removed = slotComponent.getItem();
+      if(!moveItemStackTo(removed, 0, this.firstComponentSlotIndex - 1, false))
         return ItemStack.EMPTY;
-      }
-
-      slot.onTake(player, itemstack1);
+      slotComponent.setChanged();
     }
-
-    return itemstack;
+    return ItemStack.EMPTY;
   }
 
   @Override

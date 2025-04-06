@@ -119,6 +119,8 @@ public enum Icon implements IExtensibleEnum {
   CONDENSER_OUTPUT_TRASH(0, 112),
   CONDENSER_OUTPUT_MATTER_BALL(16, 112),
   CONDENSER_OUTPUT_SINGULARITY(32, 112),
+  CORE_INACTIVE(48, 112),
+  CORE_ACTIVE(64, 112),
   BACKGROUND_ENCODED_PATTERN(240, 112),
 
   // ROW 8
@@ -202,7 +204,11 @@ public enum Icon implements IExtensibleEnum {
   S_PROCESSOR(208, 234, 10, 10),
   S_CRAFT(208, 244, 10, 10),
   S_TERMINAL(192, 224, 10, 10),
-  S_MACHINE(192, 234, 10, 10);
+  S_MACHINE(192, 234, 10, 10),
+
+  // plus minus icons
+  PLUS(64, 192),
+  MINUS(64, 176);
 
   public final int x;
   public final int y;

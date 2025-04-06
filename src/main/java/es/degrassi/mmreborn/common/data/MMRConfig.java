@@ -5,6 +5,7 @@ import es.degrassi.mmreborn.client.util.EnergyDisplayUtil;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ExperienceHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
+import es.degrassi.mmreborn.common.block.prop.ParallelHatchSize;
 import es.degrassi.mmreborn.common.util.LoggingLevel;
 import lombok.Getter;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -32,6 +33,12 @@ public class MMRConfig {
   public final ConfigValue<String> chance_color;
   public final ConfigValue<Integer> checkStructureTicks;
   public final ConfigValue<Integer> checkRecipeTicks;
+  public final ConfigValue<Integer> maxParallel;
+
+  public final ConfigValue<Boolean> shouldReplace;
+  public final ConfigValue<Boolean> sendReplaceMessage;
+  public final ConfigValue<Boolean> sendMissingBlockMessage;
+  public final ConfigValue<Boolean> sendErrorMessage;
 
   public final ConfigValue<Integer> structureRenderTime;
   public final ConfigValue<Integer> blockTagCycleTime;
@@ -76,6 +83,12 @@ public class MMRConfig {
   public final ConfigValue<Integer> LUDICROUS_experience_size;
   public final ConfigValue<Integer> VACUUM_experience_size;
 
+  public final ConfigValue<Integer> BASIC_parallel;
+  public final ConfigValue<Integer> MEDIUM_parallel;
+  public final ConfigValue<Integer> ADVANCED_parallel;
+  public final ConfigValue<Integer> ULTIMATE_parallel;
+  public final ConfigValue<Integer> MAX_parallel;
+
   public static MMRConfig get() {
     return INSTANCE;
   }
@@ -113,6 +126,27 @@ public class MMRConfig {
         this.checkRecipeTicks = builder
             .comment("Defines the time in ticks that the machine should check for a recipe update.\n20 ticks = 1 second. Default: 80")
             .defineInRange("check_recipe_ticks", 20, 1, Integer.MAX_VALUE);
+        this.maxParallel = builder
+            .comment("Defines the number of max parallel recipes that can be run on multiblocks. Default: 256")
+            .defineInRange("check_recipe_ticks", 256, 1, Integer.MAX_VALUE);
+        builder.pop();
+      }
+
+      // STRUCTURE
+      {
+        builder.push("Structure");
+        this.shouldReplace = builder
+            .comment("Defines if it should break and place the non-matching blocks on trying to place structure. Default: true")
+            .define("should_replace", true);
+        this.sendReplaceMessage = builder
+            .comment("Defines if should sent a message to the player for each replaced block. Default: true")
+            .define("replaceMessage", true);
+        this.sendMissingBlockMessage = builder
+            .comment("Defines if should sent a message to the player for each missing block. Default: true")
+            .define("missingBlockMessage", true);
+        this.sendErrorMessage = builder
+            .comment("Defines if should sent a message to the player for each error on place block. Default: true")
+            .define("errorMessage", true);
         builder.pop();
       }
 
@@ -316,10 +350,39 @@ public class MMRConfig {
       builder.pop();
     }
     builder.pop();
+    builder.push("parallel hatch");
+    {
+      builder.push(ParallelHatchSize.BASIC.getSerializedName());
+      BASIC_parallel = builder
+          .comment("Defined the max amount of running recipes")
+          .defineInRange("max", ParallelHatchSize.BASIC.defaultMax, 1, Integer.MAX_VALUE);
+      builder.pop();
+      builder.push(ParallelHatchSize.MEDIUM.getSerializedName());
+      MEDIUM_parallel = builder
+          .comment("Defined the max amount of running recipes")
+          .defineInRange("max", ParallelHatchSize.MEDIUM.defaultMax, 1, Integer.MAX_VALUE);
+      builder.pop();
+      builder.push(ParallelHatchSize.ADVANCED.getSerializedName());
+      ADVANCED_parallel = builder
+          .comment("Defined the max amount of running recipes")
+          .defineInRange("max", ParallelHatchSize.ADVANCED.defaultMax, 1, Integer.MAX_VALUE);
+      builder.pop();
+      builder.push(ParallelHatchSize.ULTIMATE.getSerializedName());
+      ULTIMATE_parallel = builder
+          .comment("Defined the max amount of running recipes")
+          .defineInRange("max", ParallelHatchSize.ULTIMATE.defaultMax, 1, Integer.MAX_VALUE);
+      builder.pop();
+      builder.push(ParallelHatchSize.MAX.getSerializedName());
+      MAX_parallel = builder
+          .comment("Defined the max amount of running recipes")
+          .defineInRange("max", ParallelHatchSize.MAX.defaultMax, 1, Integer.MAX_VALUE);
+      builder.pop();
+    }
+    builder.pop();
   }
 
   public int fluidSize(FluidHatchSize size) {
-    return switch(size) {
+    return switch (size) {
       case TINY -> TINY_fluid_size.get();
       case SMALL -> SMALL_fluid_size.get();
       case NORMAL -> NORMAL_fluid_size.get();
@@ -358,7 +421,7 @@ public class MMRConfig {
   }
 
   public int experienceSize(ExperienceHatchSize size) {
-    return switch(size) {
+    return switch (size) {
       case TINY -> TINY_experience_size.get();
       case SMALL -> SMALL_experience_size.get();
       case NORMAL -> NORMAL_experience_size.get();
@@ -368,5 +431,24 @@ public class MMRConfig {
       case LUDICROUS -> LUDICROUS_experience_size.get();
       case VACUUM -> VACUUM_experience_size.get();
     };
+  }
+
+  public int maxParallel(ParallelHatchSize size) {
+    return switch (size) {
+      case BASIC -> BASIC_parallel.get();
+      case MEDIUM -> MEDIUM_parallel.get();
+      case ADVANCED -> ADVANCED_parallel.get();
+      case ULTIMATE -> ULTIMATE_parallel.get();
+      case MAX -> MAX_parallel.get();
+    };
+  }
+
+  public int getMaxParallel() {
+    int max = BASIC_parallel.get();
+    for (ParallelHatchSize size : ParallelHatchSize.values()) {
+      int probable = maxParallel(size);
+      if (probable > max) max = probable;
+    }
+    return max;
   }
 }

@@ -7,6 +7,7 @@ import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.BlockIngredient;
 import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
 import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
+import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier.ModifierOperation;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
@@ -55,11 +56,11 @@ public class ModifierBuilderJS {
   }
 
   public static class RecipeModifierBuilderJS {
-    private RequirementType<?> target = RequirementTypeRegistration.DURATION.get();
+    private RequirementType<?> target = RequirementTypeRegistration.SPEED.get();
     private IOType mode = IOType.INPUT;
     private float modifier;
-    private int operation;
-    private boolean chance;
+    private ModifierOperation operation = ModifierOperation.ADDITION;
+    private boolean chance = true;
 
     @HideFromJS
     private RecipeModifierBuilderJS() {}
@@ -75,12 +76,12 @@ public class ModifierBuilderJS {
     }
 
     public RecipeModifierBuilderJS addition() {
-      this.operation = 0;
+      this.operation = ModifierOperation.ADDITION;
       return this;
     }
 
     public RecipeModifierBuilderJS multiply() {
-      this.operation = 1;
+      this.operation = ModifierOperation.MULTIPLY;
       return this;
     }
 

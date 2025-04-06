@@ -45,8 +45,12 @@ public class MMRTags {
     public static final TagKey<Block> EXPERIENCE_INPUT = new Blocks(false, "experienceinputhatch").get();
     public static final TagKey<Block> EXPERIENCE_OUTPUT = new Blocks(false, "experienceoutputhatch").get();
 
+    public static final TagKey<Block> PARALLEL = new Blocks(false, "parallelhatch").get();
+
     public static final TagKey<Block> CASINGS = new Blocks(false, "casing").get();
     public static final TagKey<Block> ALL_CASINGS = new Blocks(false, "all_casing").get();
+
+    public static final TagKey<Block> REPLACEABLE = new Blocks(false, "replaceable").get();
 
     private Blocks(boolean isNeoForge, String name) {
       super(blockTag(name, isNeoForge));
@@ -54,6 +58,27 @@ public class MMRTags {
   }
 
   public static class Items extends Tag<Item> {
+    public static final TagKey<Item> ENERGY = new Items(false, "energyhatch").get();
+    public static final TagKey<Item> ENERGY_INPUT = new Items(false, "energyinputhatch").get();
+    public static final TagKey<Item> ENERGY_OUTPUT = new Items(false, "energyoutputhatch").get();
+
+    public static final TagKey<Item> ITEM = new Items(false, "itembus").get();
+    public static final TagKey<Item> INPUT_BUS = new Items(false, "inputbus").get();
+    public static final TagKey<Item> OUTPUT_BUS = new Items(false, "outputbus").get();
+
+    public static final TagKey<Item> FLUID = new Items(false, "fluidhatch").get();
+    public static final TagKey<Item> FLUID_INPUT = new Items(false, "fluidinputhatch").get();
+    public static final TagKey<Item> FLUID_OUTPUT = new Items(false, "fluidoutputhatch").get();
+
+    public static final TagKey<Item> EXPERIENCE = new Items(false, "experiencehatch").get();
+    public static final TagKey<Item> EXPERIENCE_INPUT = new Items(false, "experienceinputhatch").get();
+    public static final TagKey<Item> EXPERIENCE_OUTPUT = new Items(false, "experienceoutputhatch").get();
+
+    public static final TagKey<Item> PARALLEL = new Items(false, "parallelhatch").get();
+
+    public static final TagKey<Item> CASINGS = new Items(false, "casing").get();
+    public static final TagKey<Item> ALL_CASINGS = new Items(false, "all_casing").get();
+
     private Items(boolean isNeoForge, String name) {
       super(itemTag(name, isNeoForge));
     }

@@ -15,27 +15,26 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class TileInventory extends ColorableMachineComponentEntity {
+  protected final IOInventory inventory;
+  private final int slots;
 
-  protected IOInventory inventory;
-
-  public TileInventory(BlockEntityType<?> entityType, BlockPos pos, BlockState blockState, int size) {
+  public TileInventory(BlockEntityType<?> entityType, BlockPos pos, BlockState blockState, int slots) {
     super(entityType, pos, blockState);
-    this.inventory = buildInventory(size);
+    this.inventory = buildInventory(slots);
+    this.slots = slots;
   }
 
-  public abstract IOInventory buildInventory(int size);
+  public abstract IOInventory buildInventory(int slots);
 
   @Override
   protected void loadAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
     super.loadAdditional(compound, pRegistries);
-
-    this.inventory = IOInventory.deserialize(compound.getCompound("inventory"), pRegistries);
+    this.inventory.deserialize(compound.getCompound("inventory"), pRegistries);
   }
 
   @Override
   protected void saveAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
     super.saveAdditional(compound, pRegistries);
-
     compound.put("inventory", this.inventory.writeNBT(pRegistries));
   }
 }
