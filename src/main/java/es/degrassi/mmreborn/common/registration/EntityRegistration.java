@@ -2,6 +2,7 @@ package es.degrassi.mmreborn.common.registration;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.block.BlockDynamicColor;
+import es.degrassi.mmreborn.common.block.BlockHeightMeter;
 import es.degrassi.mmreborn.common.entity.BiomeReaderEntity;
 import es.degrassi.mmreborn.common.entity.ChunkloaderEntity;
 import es.degrassi.mmreborn.common.entity.DimensionalDetectorEntity;
@@ -11,9 +12,11 @@ import es.degrassi.mmreborn.common.entity.ExperienceInputHatchEntity;
 import es.degrassi.mmreborn.common.entity.ExperienceOutputHatchEntity;
 import es.degrassi.mmreborn.common.entity.FluidInputHatchEntity;
 import es.degrassi.mmreborn.common.entity.FluidOutputHatchEntity;
+import es.degrassi.mmreborn.common.entity.HeightMeterEntity;
 import es.degrassi.mmreborn.common.entity.ItemInputBusEntity;
 import es.degrassi.mmreborn.common.entity.ItemOutputBusEntity;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
+import es.degrassi.mmreborn.common.entity.ParallelHatchEntity;
 import es.degrassi.mmreborn.common.entity.TimeCounterEntity;
 import es.degrassi.mmreborn.common.entity.WeatherSensorEntity;
 import es.degrassi.mmreborn.common.entity.base.ColorableMachineComponentEntity;
@@ -29,11 +32,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import static es.degrassi.mmreborn.ModularMachineryReborn.rootLC;
+
 public class EntityRegistration {
   public static final DeferredRegister<BlockEntityType<?>> ENTITY_TYPE = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, ModularMachineryReborn.MODID);
 
   public static final Supplier<BlockEntityType<ColorableMachineComponentEntity>> COLORABLE_MACHINE = ENTITY_TYPE.register(
-      "colorable_entity",
+      rootLC("colorable_entity"),
       () -> new BlockEntityType<>(
           ColorableMachineComponentEntity::new,
           Set.of(
@@ -43,7 +48,7 @@ public class EntityRegistration {
   );
 
   public static final Supplier<BlockEntityType<MachineControllerEntity>> CONTROLLER = ENTITY_TYPE.register(
-      "controller",
+      rootLC("controller"),
       () -> new BlockEntityType<>(
           MachineControllerEntity::new,
           validMachineBlocks(),
@@ -51,7 +56,7 @@ public class EntityRegistration {
   );
 
   public static final Supplier<BlockEntityType<EnergyHatchEntity>> ENERGY_INPUT_HATCH = ENTITY_TYPE.register(
-      "energy_hatch_input",
+      rootLC("energy_hatch_input"),
       () -> new BlockEntityType<>(
           EnergyInputHatchEntity::new,
           Set.of(
@@ -67,7 +72,7 @@ public class EntityRegistration {
           null)
   );
   public static final Supplier<BlockEntityType<EnergyHatchEntity>> ENERGY_OUTPUT_HATCH = ENTITY_TYPE.register(
-      "energy_hatch_output",
+      rootLC("energy_hatch_output"),
       () -> new BlockEntityType<>(
           EnergyOutputHatchEntity::new,
           Set.of(
@@ -83,7 +88,7 @@ public class EntityRegistration {
           null)
   );
   public static final Supplier<BlockEntityType<ItemInputBusEntity>> ITEM_INPUT_BUS = ENTITY_TYPE.register(
-      "item_input_bus",
+      rootLC("item_input_bus"),
       () -> new BlockEntityType<>(
           ItemInputBusEntity::new,
           Set.of(
@@ -98,7 +103,7 @@ public class EntityRegistration {
           null)
   );
   public static final Supplier<BlockEntityType<ItemOutputBusEntity>> ITEM_OUTPUT_BUS = ENTITY_TYPE.register(
-      "item_output_bus",
+      rootLC("item_output_bus"),
       () -> new BlockEntityType<>(
           ItemOutputBusEntity::new,
           Set.of(
@@ -113,7 +118,7 @@ public class EntityRegistration {
           null)
   );
   public static final Supplier<BlockEntityType<FluidInputHatchEntity>> FLUID_INPUT_HATCH = ENTITY_TYPE.register(
-      "fluid_hatch_input",
+      rootLC("fluid_hatch_input"),
       () -> new BlockEntityType<>(
           FluidInputHatchEntity::new,
           Set.of(
@@ -129,7 +134,7 @@ public class EntityRegistration {
           null)
   );
   public static final Supplier<BlockEntityType<FluidOutputHatchEntity>> FLUID_OUTPUT_HATCH = ENTITY_TYPE.register(
-      "fluid_hatch_output",
+      rootLC("fluid_hatch_output"),
       () -> new BlockEntityType<>(
           FluidOutputHatchEntity::new,
           Set.of(
@@ -146,7 +151,7 @@ public class EntityRegistration {
   );
   public static final Supplier<BlockEntityType<ExperienceInputHatchEntity>> EXPERIENCE_INPUT_HATCH =
       ENTITY_TYPE.register(
-      "experience_hatch_input",
+          rootLC("experience_hatch_input"),
       () -> new BlockEntityType<>(
           ExperienceInputHatchEntity::new,
           Set.of(
@@ -163,7 +168,7 @@ public class EntityRegistration {
   );
   public static final Supplier<BlockEntityType<ExperienceOutputHatchEntity>> EXPERIENCE_OUTPUT_HATCH =
       ENTITY_TYPE.register(
-      "experience_hatch_output",
+          rootLC("experience_hatch_output"),
       () -> new BlockEntityType<>(
           ExperienceOutputHatchEntity::new,
           Set.of(
@@ -180,7 +185,7 @@ public class EntityRegistration {
   );
 
   public static final Supplier<BlockEntityType<DimensionalDetectorEntity>> DIMENSIONAL_DETECTOR = ENTITY_TYPE.register(
-      "dimensional_detector",
+      rootLC("dimensional_detector"),
       () -> new BlockEntityType<>(
           DimensionalDetectorEntity::new,
           Set.of(
@@ -190,7 +195,7 @@ public class EntityRegistration {
   );
 
   public static final Supplier<BlockEntityType<BiomeReaderEntity>> BIOME_READER = ENTITY_TYPE.register(
-      "biome_reader",
+      rootLC("biome_reader"),
       () -> new BlockEntityType<>(
           BiomeReaderEntity::new,
           Set.of(
@@ -200,7 +205,7 @@ public class EntityRegistration {
   );
 
   public static final Supplier<BlockEntityType<WeatherSensorEntity>> WEATHER_SENSOR = ENTITY_TYPE.register(
-      "weather_sensor",
+      rootLC("weather_sensor"),
       () -> new BlockEntityType<>(
           WeatherSensorEntity::new,
           Set.of(
@@ -210,7 +215,7 @@ public class EntityRegistration {
   );
 
   public static final Supplier<BlockEntityType<TimeCounterEntity>> TIME_COUNTER = ENTITY_TYPE.register(
-      "time_counter",
+      rootLC("time_counter"),
       () -> new BlockEntityType<>(
           TimeCounterEntity::new,
           Set.of(
@@ -219,12 +224,36 @@ public class EntityRegistration {
           null)
   );
 
+  public static final Supplier<BlockEntityType<HeightMeterEntity>> HEIGHT_METER = ENTITY_TYPE.register(
+      rootLC("height_meter"),
+      () -> new BlockEntityType<>(
+          HeightMeterEntity::new,
+          Set.of(
+              BlockRegistration.HEIGHT_METER.get()
+          ),
+          null)
+  );
+
   public static final Supplier<BlockEntityType<ChunkloaderEntity>> CHUNKLOADER = ENTITY_TYPE.register(
-      "chunkloader",
+      rootLC("chunkloader"),
       () -> new BlockEntityType<>(
           ChunkloaderEntity::new,
           Set.of(
               BlockRegistration.CHUNKLOADER.get()
+          ),
+          null)
+  );
+
+  public static final Supplier<BlockEntityType<ParallelHatchEntity>> PARALLEL_HATCH = ENTITY_TYPE.register(
+      rootLC("parallel_hatch"),
+      () -> new BlockEntityType<>(
+          ParallelHatchEntity::new,
+          Set.of(
+              BlockRegistration.PARALLEL_HATCH_BASIC.get(),
+              BlockRegistration.PARALLEL_HATCH_MEDIUM.get(),
+              BlockRegistration.PARALLEL_HATCH_ADVANCED.get(),
+              BlockRegistration.PARALLEL_HATCH_ULTIMATE.get(),
+              BlockRegistration.PARALLEL_HATCH_MAX.get()
           ),
           null)
   );

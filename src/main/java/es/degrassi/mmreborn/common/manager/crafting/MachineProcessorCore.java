@@ -1,24 +1,25 @@
 package es.degrassi.mmreborn.common.manager.crafting;
 
+import com.google.common.collect.Lists;
 import es.degrassi.mmreborn.api.crafting.CraftingContext;
 import es.degrassi.mmreborn.api.crafting.CraftingResult;
 import es.degrassi.mmreborn.api.network.ISyncable;
 import es.degrassi.mmreborn.api.network.ISyncableStuff;
+import es.degrassi.mmreborn.api.network.syncable.BooleanSyncable;
 import es.degrassi.mmreborn.api.network.syncable.FloatSyncable;
 import es.degrassi.mmreborn.api.network.syncable.IntegerSyncable;
-import es.degrassi.mmreborn.api.network.syncable.StringSyncable;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.manager.crafting.RequirementList.RequirementWithFunction;
 import es.degrassi.mmreborn.common.util.Utils;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -32,7 +33,9 @@ public class MachineProcessorCore implements ISyncableStuff {
   private final MachineControllerEntity tile;
   private final Random rand = Utils.RAND;
   private final MachineRecipeFinder recipeFinder;
-
+  @Getter
+  @Setter
+  private boolean active = false;
   @Nullable
   @Getter
   private RecipeHolder<MachineRecipe> currentRecipe;
@@ -49,13 +52,22 @@ public class MachineProcessorCore implements ISyncableStuff {
   private Component error = null;
   private boolean isLastRecipeTick = false;
 
+  @Getter
+  private boolean hasActiveRecipe;
+
   private RequirementList<MachineComponent<?>> requirementList;
   private final List<RequirementWithFunction> currentProcessRequirements = Lists.newArrayList();
+  private int core;
 
-  public MachineProcessorCore(MachineProcessor processor, MachineControllerEntity tile) {
+  public MachineProcessorCore(MachineProcessor processor, MachineControllerEntity tile, int core) {
     this.processor = processor;
     this.tile = tile;
-    this.recipeFinder = new MachineRecipeFinder(tile, new CraftingContext.Mutable(tile));
+    this.recipeFinder = new MachineRecipeFinder(tile, new CraftingContext.Mutable(tile, core - 1), this);
+    this.core = core;
+  }
+
+  public int getCore() {
+    return this.processor.cores().indexOf(this) + 1;
   }
 
   public float getRecipeTotalTime() {
@@ -64,19 +76,27 @@ public class MachineProcessorCore implements ISyncableStuff {
 
   @SuppressWarnings("unchecked")
   public void init() {
-    //Search for previous recipe
-    if (this.futureRecipeID != null && this.tile.getLevel() != null) {
-      this.tile.getLevel().getRecipeManager()
-          .byKey(this.futureRecipeID)
-          .filter(holder -> holder.value() instanceof MachineRecipe)
-          .map(holder -> (RecipeHolder<MachineRecipe>) holder)
-          .ifPresent(this::setRecipe);
-      this.futureRecipeID = null;
+    if (isActive()) {
+      //Search for previous recipe
+      if (this.futureRecipeID != null && this.tile.getLevel() != null) {
+        this.tile.getLevel().getRecipeManager()
+            .byKey(this.futureRecipeID)
+            .filter(holder -> holder.value() instanceof MachineRecipe)
+            .map(holder -> (RecipeHolder<MachineRecipe>) holder)
+            .ifPresent(this::setRecipe);
+        this.futureRecipeID = null;
+        this.tile.getComponentManager().updateComponents(true);
+      }
     }
     this.recipeFinder.init();
   }
 
+  public boolean hasActiveRecipe() {
+    return getCurrentRecipe() != null;
+  }
+
   public void tick() {
+    if (!isActive()) return;
     if (this.currentRecipe == null) {
       this.recipeFinder.findRecipe(this.searchImmediately).ifPresent(this::setRecipe);
       this.searchImmediately = false;
@@ -84,6 +104,13 @@ public class MachineProcessorCore implements ISyncableStuff {
     }
 
     if (this.currentRecipe != null) {
+      tile.checkStructure(true);
+      if (tile.getStatus().isMissingStructure()) {
+        processor.reset();
+        tile.getComponentManager().updateComponents(true);
+        return;
+      }
+
       if (this.phase == Phase.CONDITIONS)
         this.checkConditions();
 
@@ -171,10 +198,7 @@ public class MachineProcessorCore implements ISyncableStuff {
       if (!requirement.requirement().shouldSkip(this.rand, this.context)) {
         CraftingResult result = requirement.process(this.tile.getComponentManager(), this.context);
         if (!result.isSuccess()) {
-//          if (this.currentRecipe.value().isVoidPerTickFailure())
-//            this.reset();
-//          else
-            this.setError(result.getMessage());
+          this.setError(result.getMessage());
           return;
         }
       }
@@ -189,7 +213,7 @@ public class MachineProcessorCore implements ISyncableStuff {
   @SuppressWarnings({"unchecked", "rawtypes"})
   private void setRecipe(@NotNull RecipeHolder<MachineRecipe> recipe) {
     this.currentRecipe = recipe;
-    this.context = new CraftingContext(this.tile, recipe, () -> this.recipeProgressTime);
+    this.context = new CraftingContext(this.tile, recipe, () -> this.recipeProgressTime, this.processor.cores().indexOf(this));
     this.recipeTotalTime = this.currentRecipe.value().getRecipeTotalTickTime();
     this.requirementList = new RequirementList<>();
     this.currentRecipe.value().getRequirements().forEach(requirement -> {
@@ -231,6 +255,8 @@ public class MachineProcessorCore implements ISyncableStuff {
 
   public CompoundTag serialize() {
     CompoundTag nbt = new CompoundTag();
+    nbt.putBoolean("active", active);
+    nbt.putInt("core", core);
     if (this.currentRecipe != null)
       nbt.putString("recipe", this.currentRecipe.id().toString());
     nbt.putString("phase", this.phase.toString());
@@ -239,6 +265,8 @@ public class MachineProcessorCore implements ISyncableStuff {
   }
 
   public void deserialize(CompoundTag nbt) {
+    this.active = nbt.getBoolean("active");
+    this.core = nbt.getInt("core");
     if (nbt.contains("recipe", Tag.TAG_STRING))
       this.futureRecipeID = ResourceLocation.parse(nbt.getString("recipe"));
     if (nbt.contains("phase", Tag.TAG_STRING))
@@ -249,9 +277,11 @@ public class MachineProcessorCore implements ISyncableStuff {
 
   @Override
   public void getStuffToSync(Consumer<ISyncable<?, ?>> container) {
+    container.accept(BooleanSyncable.create(() -> active, active -> this.active = active));
+    container.accept(IntegerSyncable.create(() -> core, core -> this.core = core));
     container.accept(FloatSyncable.create(() -> this.recipeProgressTime, recipeProgressTime -> this.recipeProgressTime = recipeProgressTime));
     container.accept(IntegerSyncable.create(() -> this.recipeTotalTime, recipeTotalTime -> this.recipeTotalTime = recipeTotalTime));
-    container.accept(StringSyncable.create(() -> phase.name(), phase -> this.phase = Phase.valueOf(phase)));
+    container.accept(BooleanSyncable.create(() -> getCurrentRecipe() != null, hasActiveRecipe -> this.hasActiveRecipe = hasActiveRecipe));
   }
 
   public float getCurrentActiveRecipeProgress() {

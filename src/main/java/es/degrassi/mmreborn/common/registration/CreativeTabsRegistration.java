@@ -11,11 +11,13 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
+import static es.degrassi.mmreborn.ModularMachineryReborn.rootLC;
+
 public class CreativeTabsRegistration {
   public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ModularMachineryReborn.MODID);
 
   public static final Supplier<CreativeModeTab> MODULAR_MACHINERY_REBORN_TAB = CREATIVE_TABS.register("modular_machinery_reborn", () -> CreativeModeTab.builder()
-    .title(Component.translatable("itemGroup.modular_machinery_reborn.group"))
+    .title(Component.translatable(rootLC("itemGroup.modular_machinery_reborn.group")))
     .icon(ItemRegistration.MODULARIUM.get()::getDefaultInstance)
     .displayItems((params, output) -> {
       ItemRegistration.ITEMS.getEntries().forEach(entry -> {

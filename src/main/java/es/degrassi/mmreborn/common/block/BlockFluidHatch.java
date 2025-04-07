@@ -48,18 +48,17 @@ public class BlockFluidHatch extends BlockMachineComponent {
 
   @Override
   protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
-    if (level.isClientSide()) return ItemInteractionResult.sidedSuccess(true);
     BlockEntity te = level.getBlockEntity(pos);
     if (te instanceof FluidTankEntity fluidTank) {
       if (!stack.isEmpty() && FluidUtil.getFluidHandler(stack).isPresent()) {
         FluidTank ft = fluidTank.getTank();
         FluidUtil.interactWithFluidHandler(player, hand, ft);
-        return ItemInteractionResult.SUCCESS;
+        return ItemInteractionResult.sidedSuccess(level.isClientSide);
       }
       if (player instanceof ServerPlayer serverPlayer) {
         FluidHatchContainer.open(serverPlayer, fluidTank);
       }
-      return ItemInteractionResult.SUCCESS;
+      return ItemInteractionResult.sidedSuccess(level.isClientSide);
     }
     return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
   }

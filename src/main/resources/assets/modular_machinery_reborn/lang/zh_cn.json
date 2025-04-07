@@ -355,5 +355,6 @@
   "mmr.gui.structure.place.cancel.modifier": "仅放置结构",
 
   "mmr.gui.popup.confirm": "确认",
-  "mmr.gui.popup.cancel": "取消"
+  "mmr.gui.popup.cancel": "取消",
+  "emi.tooltip.show.recipes": "显示配方"
 }

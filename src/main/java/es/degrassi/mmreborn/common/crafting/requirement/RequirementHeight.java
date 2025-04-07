@@ -1,0 +1,95 @@
+package es.degrassi.mmreborn.common.crafting.requirement;
+
+import es.degrassi.mmreborn.api.codec.NamedCodec;
+import es.degrassi.mmreborn.api.crafting.CraftingResult;
+import es.degrassi.mmreborn.api.crafting.ICraftingContext;
+import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
+import es.degrassi.mmreborn.api.crafting.requirement.IRequirementList;
+import es.degrassi.mmreborn.common.crafting.ComponentType;
+import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
+import es.degrassi.mmreborn.common.machine.IOType;
+import es.degrassi.mmreborn.common.machine.component.HeightComponent;
+import es.degrassi.mmreborn.common.registration.ComponentRegistration;
+import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
+import es.degrassi.mmreborn.common.util.IntRange;
+import lombok.Getter;
+import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+public class RequirementHeight implements IRequirement<HeightComponent> {
+  public static final NamedCodec<RequirementHeight> CODEC = NamedCodec.record(instance -> instance.group(
+      IntRange.CODEC.fieldOf("range").forGetter(RequirementHeight::height),
+      PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(IRequirement::getPosition)
+  ).apply(instance, RequirementHeight::new), "Height Requirement");
+
+  private final IntRange height;
+  @Getter
+  private final PositionedRequirement position;
+
+  public RequirementHeight(IntRange height, PositionedRequirement position) {
+    this.height = height;
+    this.position = position;
+  }
+
+  public IntRange height() {
+    return height;
+  }
+
+  @Override
+  public RequirementType<RequirementHeight> getType() {
+    return RequirementTypeRegistration.HEIGHT.get();
+  }
+
+  @Override
+  public ComponentType getComponentType() {
+    return ComponentRegistration.COMPONENT_HEIGHT.get();
+  }
+
+  @Override
+  public IOType getMode() {
+    return IOType.INPUT;
+  }
+
+  @Override
+  public boolean test(HeightComponent component, ICraftingContext context) {
+    return this.height.contains(context.getMachineTile().getBlockPos().getY());
+  }
+
+  @Override
+  public void gatherRequirements(IRequirementList<HeightComponent> list) {
+    list.worldCondition(this::check);
+  }
+
+  private CraftingResult check(HeightComponent component, ICraftingContext context) {
+    int height = context.getMachineTile().getBlockPos().getY();
+    if (this.height.contains(height))
+      return CraftingResult.success();
+    return CraftingResult.error(Component.translatable(
+        "craftcheck.failure.height",
+        this.height.toFormattedString(),
+        height
+    ));
+  }
+
+  @Override
+  public RequirementHeight deepCopyModified(List<RecipeModifier> modifiers) {
+    return this;
+  }
+
+  @Override
+  public RequirementHeight deepCopy() {
+    return this;
+  }
+
+  @Override
+  public @NotNull Component getMissingComponentErrorMessage(IOType ioType) {
+    return Component.translatable("component.missing.height");
+  }
+
+  @Override
+  public boolean isComponentValid(HeightComponent m, ICraftingContext context) {
+    return getMode().equals(m.getIOType());
+  }
+}

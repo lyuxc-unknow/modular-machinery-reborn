@@ -2,6 +2,7 @@ package es.degrassi.mmreborn.client.screen.popup;
 
 import com.google.common.collect.Maps;
 import es.degrassi.mmreborn.ModularMachineryReborn;
+import es.degrassi.mmreborn.api.client.screen.TooltipRender;
 import es.degrassi.mmreborn.common.util.LRU;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -20,10 +21,12 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+@ParametersAreNonnullByDefault
 public abstract class BasePopupScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
   protected static final ResourceLocation BLANK_BACKGROUND = ModularMachineryReborn.rl("background");
 
@@ -158,6 +161,14 @@ public abstract class BasePopupScreen<T extends AbstractContainerMenu> extends A
     }
 
     return false;
+  }
+
+  @Override
+  public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    getChildAt(mouseX, mouseY)
+        .filter(listener -> listener instanceof TooltipRender)
+        .map(listener -> (TooltipRender) listener)
+        .ifPresent(render -> render.renderTooltip(guiGraphics, mouseX, mouseY));
   }
 
   @Override

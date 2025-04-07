@@ -22,6 +22,7 @@
   "modular_machinery_reborn.gui.title.energy_hatch": "Energy Hatch",
   "modular_machinery_reborn.gui.title.fluid_hatch": "Fluid Hatch",
   "modular_machinery_reborn.gui.title.item_bus": "Item Bus",
+  "modular_machinery_reborn.gui.title.parallel_hatch": "Parallel Hatch",
 
   "gui.controller.blueprint": "Blueprint Found: %s",
   "gui.controller.blueprint.none": "None",
@@ -35,6 +36,25 @@
   "gui.controller.status.failure": "",
   "gui.controller.status.crafting": "Procesando...",
   "gui.controller.status.crafting.progress": "Progreso: %s",
+
+  "mmr.core.active.true": "Core is able to run recipes",
+  "mmr.core.active.false": "Core is not able to run recipes",
+  "mmr.core.number": "Core number: %s",
+  "mmr.gui.core.button": "Click to show info about core number %s",
+  "mmr.gui.tooltip.core.action.button.single.add": "Add 1 active core",
+  "mmr.gui.tooltip.core.action.button.single.remove": "Remove 1 active core ",
+  "mmr.gui.tooltip.core.action.button.shift.add": "Add 10 active core",
+  "mmr.gui.tooltip.core.action.button.shift.remove": "Remove 10 active core ",
+  "mmr.gui.tooltip.core.action.button.control.add": "Add all active cores",
+  "mmr.gui.tooltip.core.action.button.control.remove": "Remove all active cores less 1",
+  "mmr.gui.button.back": "Back",
+  "mmr.gui.button.close": "Close",
+  "mmr.gui.button.page.next": "Next Page",
+  "mmr.gui.button.page.prev": "Prev Page",
+  "modular_machinery_reborn.gui.core_button": "Show info about cores",
+  "mmr.waila.cores": "%s %s %s",
+  "mmr.waila.cores.1": "Running:",
+  "mmr.waila.cores.2": "cores",
 
   "craftcheck.failure.item.input": "Sin item de entrada!, necesario: %sx %s",
   "craftcheck.failure.item.output.space": "No hay suficiente espacio en el inventario para la salida de item(s)!",
@@ -51,6 +71,8 @@
   "craftcheck.failure.biome.true": "No está en la bioma correcto, se esperaba no estar en: %s, estando en: %s",
   "craftcheck.failure.weather": "Tiempo atmosférico inválido, se esperaba: %s",
   "craftcheck.failure.time": "Tiempo del día inválido, se esperaba: %s se ecnontró: %s",
+  "craftcheck.failure.height": "Altura del controlador inválida, se esperaba: %s se ecnontró: %s",
+  "craftcheck.failure.parallel.loot_table": "No se pueden procesar varias Loot Tables al mismo tiempo, elimina el Parallel Hatch para procesar esta receta.",
 
   "component.missing.energy.output": "No se ha encontrado Energy Output Hatch!",
   "component.missing.energy.input": "No se ha encontrado Energy Input Hatch!",
@@ -64,6 +86,7 @@
   "component.missing.weather": "No se ha encontrado Weather Sensor!",
   "component.missing.biome": "No se ha encontrado Biome Reader!",
   "component.missing.time": "No se ha encontrado Time Counter!",
+  "component.missing.height": "No se ha encontrado Height Meter!",
   "component.missing.chunkload": "No se ha encontrado Chunkloader!",
 
   "gui.blueprint.popout.info": "Sneak to freeze the current preview to be able to preview it in world.",
@@ -144,6 +167,8 @@
   "tooltip.energyhatch.gregtech.amperage": "Amperage: §e%s",
   "tooltip.energyhatch.gregtech.storage": "Internal Energy Capacity: §9%s",
 
+  "tooltip.parallelhatch.size": "Can make the multiblock run up to %s recipes",
+
   "tooltip.ic2.powertier.0.name": "ULV",
   "tooltip.ic2.powertier.1.name": "LV",
   "tooltip.ic2.powertier.2.name": "MV",
@@ -181,21 +206,21 @@
   "block.modular_machinery_reborn.casing_reinforced": "Reinforced Machine Casing",
   "block.modular_machinery_reborn.casing_circuitry": "Machine Circuitry",
 
-  "block.modular_machinery_reborn.inputbus_tiny": "Tiny Item Input",
-  "block.modular_machinery_reborn.inputbus_small": "Small Item Input",
-  "block.modular_machinery_reborn.inputbus_normal": "Normal Item Input",
-  "block.modular_machinery_reborn.inputbus_reinforced": "Reinforced Item Input",
-  "block.modular_machinery_reborn.inputbus_big": "Big Item Input",
-  "block.modular_machinery_reborn.inputbus_huge": "Huge Item Input",
-  "block.modular_machinery_reborn.inputbus_ludicrous": "Ludicrous Item Input",
+  "block.modular_machinery_reborn.inputbus_tiny": "Tiny Item Input Bus",
+  "block.modular_machinery_reborn.inputbus_small": "Small Item Input Bus",
+  "block.modular_machinery_reborn.inputbus_normal": "Normal Item Input Bus",
+  "block.modular_machinery_reborn.inputbus_reinforced": "Reinforced Item Input Bus",
+  "block.modular_machinery_reborn.inputbus_big": "Big Item Input Bus",
+  "block.modular_machinery_reborn.inputbus_huge": "Huge Item Input Bus",
+  "block.modular_machinery_reborn.inputbus_ludicrous": "Ludicrous Item Input Bus",
 
-  "block.modular_machinery_reborn.outputbus_tiny": "Tiny Item Output",
-  "block.modular_machinery_reborn.outputbus_small": "Small Item Output",
-  "block.modular_machinery_reborn.outputbus_normal": "Normal Item Output",
-  "block.modular_machinery_reborn.outputbus_reinforced": "Reinforced Item Output",
-  "block.modular_machinery_reborn.outputbus_big": "Big Item Output",
-  "block.modular_machinery_reborn.outputbus_huge": "Huge Item Output",
-  "block.modular_machinery_reborn.outputbus_ludicrous": "Ludicrous Item Output",
+  "block.modular_machinery_reborn.outputbus_tiny": "Tiny Item Output Bus",
+  "block.modular_machinery_reborn.outputbus_small": "Small Item Output Bus",
+  "block.modular_machinery_reborn.outputbus_normal": "Normal Item Output Bus",
+  "block.modular_machinery_reborn.outputbus_reinforced": "Reinforced Item Output Bus",
+  "block.modular_machinery_reborn.outputbus_big": "Big Item Output Bus",
+  "block.modular_machinery_reborn.outputbus_huge": "Huge Item Output Bus",
+  "block.modular_machinery_reborn.outputbus_ludicrous": "Ludicrous Item Output Bus",
 
   "block.modular_machinery_reborn.fluidinputhatch_tiny": "Tiny Fluid Input Hatch",
   "block.modular_machinery_reborn.fluidinputhatch_small": "Small Fluid Input Hatch",
@@ -260,10 +285,17 @@
   "block.modular_machinery_reborn.energyoutputhatch_ludicrous": "Ludicrous Energy Output Hatch",
   "block.modular_machinery_reborn.energyoutputhatch_ultimate": "Ultimate Energy Output Hatch",
 
+  "block.modular_machinery_reborn.parallel_hatch_basic": "Basic Parallel Hatch",
+  "block.modular_machinery_reborn.parallel_hatch_medium": "Medium Parallel Hatch",
+  "block.modular_machinery_reborn.parallel_hatch_advanced": "Advanced Parallel Hatch",
+  "block.modular_machinery_reborn.parallel_hatch_ultimate": "Ultimate Parallel Hatch",
+  "block.modular_machinery_reborn.parallel_hatch_max": "Max Parallel Hatch",
+
   "block.modular_machinery_reborn.dimensional_detector": "Dimensional Detector",
   "block.modular_machinery_reborn.biome_reader": "Biome Reader",
   "block.modular_machinery_reborn.weather_sensor": "Weather Sensor",
   "block.modular_machinery_reborn.time_counter": "Time Counter",
+  "block.modular_machinery_reborn.height_meter": "Height Meter",
   "block.modular_machinery_reborn.chunkloader": "Chunkloader",
 
   "tooltip.blueprint": "Click en cualquier controlador para mostrar la previsualización de la estructura",
@@ -277,6 +309,7 @@
   "modular_machinery_reborn.ingredient.chance.nc": "NC",
 
   "modular_machinery_reborn.jei.ingredient.long": "%s",
+  "modular_machinery_reborn.jei.ingredient.int": "%s",
 
   "modular_machinery_reborn.jei.ingredient.energy.input": "Requiere: %s RF/t",
   "modular_machinery_reborn.jei.ingredient.energy.output": "Produce: %s RF/t",
@@ -306,6 +339,7 @@
   "modular_machinery_reborn.jei.ingredient.weather": "Tiempo atmosférico: %s",
 
   "modular_machinery_reborn.jei.ingredient.time": "Tiempo: %s",
+  "modular_machinery_reborn.jei.ingredient.height": "Altura: %s",
   "modular_machinery_reborn.jei.ingredient.chunkload": "Radio de carga de chunk: %s",
 
   "modular_machinery_reborn.controller.tooltip.0": "Click en el controlador colocado con un blueprint",
@@ -329,12 +363,13 @@
 
   "mmr.place.non_air": "Se ha tratado de colocar %s en %s pero se encontró con algún bloque que no es válido en la estructura",
   "mmr.place.no_item": "Se ha tratado de colocar %s en %s pero no se pudo encontrar el item %s en el inventario del jugador",
+  "mmr.place.replace": "Rompiendo %s en %s para colocar nuevo bloque...",
 
   "key.categories.modular_machinery_reborn": "Modular Machinery Reborn",
   "key.modular_machinery_reborn.structure_mode_change": "Modo del Creador de estructuras",
 
-  "mmr.recipe.modifier.duration.add": " (%s la duración de la receta)",
-  "mmr.recipe.modifier.duration.multiply": " (x%s la duración de la receta)",
+  "mmr.recipe.modifier.speed.add": " (%s la velocidad de proceso de la receta)",
+  "mmr.recipe.modifier.speed.multiply": " (x%s la velocidad de proceso de la receta)",
   "mmr.recipe.modifier.item.add": " (%s item(s) %s a la receta, afecta probabilidad: %s)",
   "mmr.recipe.modifier.item.multiply": " (x%s item %s de la receta, afecta probabilidad: %s)",
   "mmr.recipe.modifier.fluid.add": " (%s líquido mB(s) %s a la receta, afecta probabilidad: %s)",
@@ -355,5 +390,7 @@
   "mmr.gui.structure.place.cancel.modifier": "Sin modificadores",
 
   "mmr.gui.popup.confirm": "Confirmar",
-  "mmr.gui.popup.cancel": "Cancelar"
+  "mmr.gui.popup.cancel": "Cancelar",
+  "emi.tooltip.show.recipes": "Mostrar recetas",
+  "mmr.emi.no_items": "Sin items en la receta"
 }

@@ -11,6 +11,7 @@ import es.degrassi.mmreborn.common.block.prop.ConfigLoaded;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ExperienceHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
+import es.degrassi.mmreborn.common.block.prop.ParallelHatchSize;
 import es.degrassi.mmreborn.common.command.MMRCommand;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
@@ -97,7 +98,9 @@ public class ModularMachineryReborn {
           size.transferLimit = MiscUtils.clamp(size.transferLimit, 1, Long.MAX_VALUE);
         }),
         Pair.of(FluidHatchSize.class, (FluidHatchSize size) -> size.size = MMRConfig.get().fluidSize(size)),
-        Pair.of(ExperienceHatchSize.class, (ExperienceHatchSize size) -> size.capacity = MMRConfig.get().experienceSize(size))
+        Pair.of(ExperienceHatchSize.class, (ExperienceHatchSize size) -> size.capacity =
+            MMRConfig.get().experienceSize(size)),
+        Pair.of(ParallelHatchSize.class, (ParallelHatchSize size) -> size.max = MMRConfig.get().maxParallel(size))
     );
   }
 
@@ -191,6 +194,14 @@ public class ModularMachineryReborn {
   @Contract("_ -> new")
   public static @NotNull ResourceLocation rl(String path) {
     return ResourceLocation.fromNamespaceAndPath(MODID, path.toLowerCase(Locale.ROOT));
+  }
+
+  public static String rootLC(String s) {
+    return s.toLowerCase(Locale.ROOT);
+  }
+
+  public static String rootUC(String s) {
+    return s.toUpperCase(Locale.ROOT);
   }
 
   private void registerCommands(final RegisterCommandsEvent event) {

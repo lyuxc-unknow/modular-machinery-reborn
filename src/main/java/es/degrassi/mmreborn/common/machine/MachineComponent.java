@@ -3,6 +3,7 @@ package es.degrassi.mmreborn.common.machine;
 import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.manager.crafting.MachineStatus;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +35,7 @@ public abstract class MachineComponent<T> implements Comparable<MachineComponent
     return json;
   }
 
-  public CompoundTag asTag() {
+  public CompoundTag asTag(HolderLookup.Provider provider) {
     CompoundTag tag = new CompoundTag();
     tag.putString("type", getComponentType().getId().toString());
     tag.putString("mode", getIOType().getSerializedName());
@@ -43,7 +44,7 @@ public abstract class MachineComponent<T> implements Comparable<MachineComponent
 
   @Override
   public String toString() {
-    return asTag().toString();
+    return asJson().toString();
   }
 
   public abstract <C extends MachineComponent<?>> C merge(C c);

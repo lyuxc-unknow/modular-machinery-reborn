@@ -21,18 +21,30 @@ import java.util.Objects;
 
 public class RecipeModifier {
   public static final NamedCodec<RecipeModifier> CODEC = NamedCodec.record(instance -> instance.group(
-      DefaultCodecs.RESOURCE_LOCATION.optionalFieldOf("target", ModularMachineryReborn.rl("duration")).forGetter(modifier -> ModularMachineryReborn.getRequirementRegistrar().getKey(modifier.target)),
+      DefaultCodecs.RESOURCE_LOCATION.fieldOf("target").forGetter(modifier -> ModularMachineryReborn.getRequirementRegistrar().getKey(modifier.target)),
       NamedCodec.enumCodec(IOType.class).optionalFieldOf("mode", IOType.INPUT).forGetter(RecipeModifier::getIOTarget),
       NamedCodec.FLOAT.fieldOf("modifier").forGetter(RecipeModifier::getModifier),
-      NamedCodec.intRange(0, 1).fieldOf("operation").forGetter(RecipeModifier::getOperation),
+      NamedCodec.enumCodec(ModifierOperation.class).fieldOf("operation").forGetter(RecipeModifier::getOperation),
       NamedCodec.BOOL.optionalFieldOf("chance", false).forGetter(RecipeModifier::affectsChance)
   ).apply(instance, (reqId, mode, modifier, operation, chance) -> new RecipeModifier(
-      Objects.requireNonNullElse(ModularMachineryReborn.getRequirementRegistrar().get(reqId), RequirementTypeRegistration.DURATION.get()),
+      Objects.requireNonNullElse(ModularMachineryReborn.getRequirementRegistrar().get(reqId), RequirementTypeRegistration.SPEED.get()),
       mode,
       modifier,
       operation,
       chance
   )), "Recipe Modifier");
+
+  public enum ModifierOperation {
+    MULTIPLY, ADDITION;
+
+    public boolean isAddition() {
+      return this == ADDITION;
+    }
+
+    public boolean isMultiply() {
+      return this == MULTIPLY;
+    }
+  }
 
   private static final List<RequirementType<?>> blacklist = Lists.newArrayList();
 
@@ -58,10 +70,10 @@ public class RecipeModifier {
   @Getter
   protected final float modifier;
   @Getter
-  protected final int operation;
+  protected final ModifierOperation operation;
   protected final boolean chance;
 
-  public RecipeModifier(RequirementType<?> target, IOType ioTarget, float modifier, int operation, boolean affectsChance) {
+  public RecipeModifier(RequirementType<?> target, IOType ioTarget, float modifier, ModifierOperation operation, boolean affectsChance) {
     if (blacklist.contains(target)) throw new IllegalArgumentException(ModularMachineryReborn.getRequirementRegistrar().getKey(target) + " is not valid for a recipe modifier");
     this.target = target;
     this.ioTarget = ioTarget;
@@ -97,9 +109,9 @@ public class RecipeModifier {
     float add = OPERATION_ADD;
     float mul = OPERATION_MULTIPLY;
     for (RecipeModifier mod : applicable) {
-      if (mod.getOperation() == 0) {
+      if (mod.getOperation().isAddition()) {
         add += mod.getModifier();
-      } else if (mod.getOperation() == 1) {
+      } else if (mod.getOperation().isMultiply()) {
         mul *= mod.getModifier();
       } else {
         throw new RuntimeException("Unknown modifier operation: " + mod.getOperation());
@@ -112,7 +124,7 @@ public class RecipeModifier {
     JsonObject json = new JsonObject();
     ResourceLocation key = ModularMachineryReborn.getRequirementRegistrar().getKey(target);
     if (key == null)
-      key = ModularMachineryReborn.rl("duration");
+      key = ModularMachineryReborn.rl("speed");
     json.addProperty("target", key.toString());
     json.addProperty("mode", ioTarget.getSerializedName());
     json.addProperty("modifier", modifier);
@@ -125,7 +137,7 @@ public class RecipeModifier {
     CompoundTag tag = new CompoundTag();
     ResourceLocation key = ModularMachineryReborn.getRequirementRegistrar().getKey(target);
     if (key == null)
-      key = ModularMachineryReborn.rl("duration");
+      key = ModularMachineryReborn.rl("speed");
     tag.putString("target", key.toString());
     tag.putString("mode", ioTarget.getSerializedName());
     tag.putFloat("modifier", modifier);
@@ -139,11 +151,11 @@ public class RecipeModifier {
   }
 
   private String operation() {
-    return operation == 0 ? "add" : operation == 1 ? "multiply" : "";
+    return operation.isAddition() ? "add" : "multiply";
   }
 
   public Component getDescription() {
-    if (target == RequirementTypeRegistration.DURATION.get() || target == RequirementTypeRegistration.LOOT_TABLE.get())
+    if (target == RequirementTypeRegistration.SPEED.get() || target == RequirementTypeRegistration.LOOT_TABLE.get())
       return Component.translatable("mmr.recipe.modifier." + getTargetValue() + "." + operation(), modifier);
     return Component.translatable("mmr.recipe.modifier." + getTargetValue() + "." + operation(), modifier, ioTarget.getSerializedName(), chance);
   }

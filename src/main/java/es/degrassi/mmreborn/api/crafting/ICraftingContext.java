@@ -17,6 +17,11 @@ public interface ICraftingContext {
   MachineControllerEntity getMachineTile();
 
   /**
+   * @return The int ID of the {@link es.degrassi.mmreborn.common.manager.crafting.MachineProcessorCore} processing the recipe.
+   */
+  int getCurrentCore();
+
+  /**
    * @return The {@link MachineRecipe} currently processed by the machine.
    */
   MachineRecipe getRecipe();

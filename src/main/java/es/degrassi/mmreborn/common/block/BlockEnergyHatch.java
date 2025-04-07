@@ -37,7 +37,7 @@ public class BlockEnergyHatch extends BlockMachineComponent {
       if (player instanceof ServerPlayer serverPlayer) {
         EnergyHatchContainer.open(serverPlayer, entity);
       }
-      return ItemInteractionResult.SUCCESS;
+      return ItemInteractionResult.sidedSuccess(level.isClientSide);
     }
     return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
   }

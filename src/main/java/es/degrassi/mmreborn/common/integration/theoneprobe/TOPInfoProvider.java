@@ -4,6 +4,7 @@ import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.crafting.helper.CraftingStatus;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.integration.theoneprobe.element.CustomProgress;
+import es.degrassi.mmreborn.common.manager.crafting.MachineProcessorCore;
 import es.degrassi.mmreborn.common.util.Utils;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -55,28 +56,41 @@ public class TOPInfoProvider implements IProbeInfoProvider, Function<ITheOneProb
       case MISSING_STRUCTURE, FAILURE -> message.withStyle(ChatFormatting.RED);
     }
     info.mcText(message);
-    if (tile.hasActiveRecipe()) {
-      float ticks = tile.getProcessor().core().getRecipeProgressTime();
-      int total = (int) tile.getProcessor().core().getRecipeTotalTime();
-      float progress = ticks / total;
-      boolean seconds = total >= 20;
-      info.element(
-          new CustomProgress(
-              ticks,
-              total,
-              info.defaultProgressStyle()
-                  .suffix(Component
-                      .literal(
-                          "/"
-                              + (seconds ? Utils.decimalFormat(total / 20d) : Utils.decimalFormat(total))
-                              + (seconds ? "s" : "")
-                              + " ("
-                              + Utils.decimalFormatWithPercentage(progress * 100)
-                              + ")"
-                      )
-                  )
-          )
-      );
-    }
+    long runningCores = tile.getProcessor()
+        .cores()
+        .stream()
+        .filter(MachineProcessorCore::isActive)
+        .filter(MachineProcessorCore::hasActiveRecipe)
+        .count();
+    Component component = Component.translatable(
+        "mmr.waila.cores",
+        Component.translatable("mmr.waila.cores.1").withStyle(ChatFormatting.GRAY),
+        Component.literal(runningCores + "").withStyle(ChatFormatting.AQUA),
+        Component.translatable("mmr.waila.cores.2").withStyle(ChatFormatting.GRAY)
+    );
+    info.mcText(component);
+//    if (tile.hasActiveRecipe()) {
+//      float ticks = tile.getFirstRunningCore().map(MachineProcessorCore::getRecipeProgressTime).orElse(0f);
+//      int total = tile.getFirstRunningCore().map(MachineProcessorCore::getRecipeTotalTime).map(Float::intValue).orElse(0);
+//      float progress = ticks / total;
+//      boolean seconds = total >= 20;
+//      info.element(
+//          new CustomProgress(
+//              ticks,
+//              total,
+//              info.defaultProgressStyle()
+//                  .suffix(Component
+//                      .literal(
+//                          "/"
+//                              + (seconds ? Utils.decimalFormat(total / 20d) : Utils.decimalFormat(total))
+//                              + (seconds ? "s" : "")
+//                              + " ("
+//                              + Utils.decimalFormatWithPercentage(progress * 100)
+//                              + ")"
+//                      )
+//                  )
+//          )
+//      );
+//    }
   }
 }

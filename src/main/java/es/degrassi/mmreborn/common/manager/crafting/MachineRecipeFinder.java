@@ -25,29 +25,36 @@ public class MachineRecipeFinder {
   private boolean componentChanged = true;
 
   private int recipeCheckCooldown;
+  private final MachineProcessorCore core;
 
-  public MachineRecipeFinder(MachineControllerEntity tile, CraftingContext.Mutable mutableCraftingContext) {
+  public MachineRecipeFinder(MachineControllerEntity tile, CraftingContext.Mutable mutableCraftingContext, MachineProcessorCore core) {
     this.tile = tile;
     this.baseCooldown = MMRConfig.get().checkRecipeTicks.get();
     this.mutableCraftingContext = mutableCraftingContext;
+    this.core = core;
   }
 
   public void init() {
     if (tile.getLevel() == null)
       throw new IllegalStateException("Broken machine " + tile.getFoundMachine().getRegistryName() + "doesn't have a world");
-    this.recipes = tile.getLevel().getRecipeManager()
+    this.recipes = tile.getLevel()
+        .getRecipeManager()
         .getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get())
         .stream()
         .filter(recipe -> recipe.value().getOwningMachineIdentifier().equals(tile.getId()))
-        .sorted((holder1, holder2) -> Comparator.comparingInt(MachineRecipe::getConfiguredPriority).reversed().compare(holder1.value(), holder2.value()))
+        .sorted(Comparator.comparing(RecipeHolder::value))
         .map(RecipeChecker::new)
-        .toList();
+        .toList()
+        .reversed();
     this.okToCheck = Lists.newArrayList();
     this.recipeCheckCooldown = tile.getLevel().random.nextInt(this.baseCooldown);
   }
 
   public Optional<RecipeHolder<MachineRecipe>> findRecipe(boolean immediately) {
     if (tile.getLevel() == null)
+      return Optional.empty();
+
+    if (!this.core.isActive())
       return Optional.empty();
 
     if (immediately || this.recipeCheckCooldown-- <= 0) {

@@ -43,7 +43,7 @@ public record SMachineUpdatePacket(ResourceLocation machine, BlockPos pos) imple
     if (Minecraft.getInstance().level != null) {
       BlockEntity tile = Minecraft.getInstance().level.getBlockEntity(pos);
       if (tile instanceof MachineControllerEntity machineTile) {
-        machineTile.setId(machine);
+        machineTile.setMachine(machine);
         machineTile.refreshClientData();
         Minecraft.getInstance().level.sendBlockUpdated(pos, machineTile.getBlockState(), machineTile.getBlockState(), Block.UPDATE_ALL);
       }

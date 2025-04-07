@@ -97,12 +97,11 @@ public class BlockInputBus extends BlockMachineComponent {
 
   @Override
   protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-    if(level.isClientSide()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     BlockEntity te = level.getBlockEntity(pos);
     if(te instanceof ItemInputBusEntity entity) {
       if (player instanceof ServerPlayer serverPlayer)
         ItemBusContainer.open(serverPlayer, entity);
-      return ItemInteractionResult.SUCCESS;
+      return ItemInteractionResult.sidedSuccess(level.isClientSide);
     }
     return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
   }

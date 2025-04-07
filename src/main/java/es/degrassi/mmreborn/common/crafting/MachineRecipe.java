@@ -116,7 +116,7 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
   public MachineRecipe copy(ResourceLocation newOwningMachineIdentifier, List<RecipeModifier> modifiers) {
     MachineRecipe copy = new MachineRecipe(
         newOwningMachineIdentifier,
-        Math.round(RecipeModifier.applyModifiers(modifiers, RequirementTypeRegistration.DURATION.get(), IOType.INPUT,
+        Math.round(RecipeModifier.applyModifiers(modifiers, RequirementTypeRegistration.SPEED.get(), IOType.INPUT,
             this.getRecipeTotalTickTime(), false)),
         this.getConfiguredPriority(),
         this.doesCancelRecipeOnPerTickFailure(),

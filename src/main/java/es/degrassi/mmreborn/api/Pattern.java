@@ -27,10 +27,10 @@ public class Pattern {
 
   @Getter
   private final List<ModifierReplacement> modifiers = Lists.newArrayList();
-  private final Map<BlockPos, ModifierReplacement> modifiers_north = Maps.newHashMap();
-  private final Map<BlockPos, ModifierReplacement> modifiers_south = Maps.newHashMap();
-  private final Map<BlockPos, ModifierReplacement> modifiers_east = Maps.newHashMap();
-  private final Map<BlockPos, ModifierReplacement> modifiers_west = Maps.newHashMap();
+  private final Map<BlockPos, List<ModifierReplacement>> modifiers_north = Maps.newHashMap();
+  private final Map<BlockPos, List<ModifierReplacement>> modifiers_south = Maps.newHashMap();
+  private final Map<BlockPos, List<ModifierReplacement>> modifiers_east = Maps.newHashMap();
+  private final Map<BlockPos, List<ModifierReplacement>> modifiers_west = Maps.newHashMap();
 
   public Pattern(Map<BlockPos, BlockIngredient> pattern, List<List<String>> strings, Map<Character, BlockIngredient> keys) {
     this.pattern = pattern;
@@ -64,7 +64,7 @@ public class Pattern {
     return rotate(fromDirection(direction));
   }
 
-  public Map<BlockPos, ModifierReplacement> getModifiers(Direction direction) {
+  public Map<BlockPos, List<ModifierReplacement>> getModifiers(Direction direction) {
     return switch (direction) {
       case WEST -> modifiers_west;
       case EAST -> modifiers_east;
@@ -84,19 +84,19 @@ public class Pattern {
         switch (rotation) {
           case NONE -> {
             pattern_north.put(modifiedPos, modifiedIng.merge(pattern_north.get(modifiedPos)));
-            modifiers_north.put(pos, modifier);
+            modifiers_north.computeIfAbsent(pos, key -> Lists.newArrayList()).add(modifier);
           }
           case CLOCKWISE_180 -> {
             pattern_south.put(modifiedPos, modifiedIng.merge(pattern_south.get(modifiedPos)));
-            modifiers_south.put(pos, modifier);
+            modifiers_south.computeIfAbsent(pos, key -> Lists.newArrayList()).add(modifier);
           }
           case COUNTERCLOCKWISE_90 -> {
             pattern_west.put(modifiedPos, modifiedIng.merge(pattern_west.get(modifiedPos)));
-            modifiers_west.put(pos, modifier);
+            modifiers_west.computeIfAbsent(pos, key -> Lists.newArrayList()).add(modifier);
           }
           case CLOCKWISE_90 -> {
             pattern_east.put(modifiedPos, modifiedIng.merge(pattern_east.get(modifiedPos)));
-            modifiers_east.put(pos, modifier);
+            modifiers_east.computeIfAbsent(pos, key -> Lists.newArrayList()).add(modifier);
           }
         }
       }

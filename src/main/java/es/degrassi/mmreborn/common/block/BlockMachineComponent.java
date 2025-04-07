@@ -41,7 +41,6 @@ public abstract class BlockMachineComponent extends Block implements BlockDynami
   }
 
   @Override
-  @SuppressWarnings("deprecation")
   protected boolean triggerEvent(@NotNull BlockState pState, @NotNull Level pLevel, @NotNull BlockPos pPos, int pId, int pParam) {
     super.triggerEvent(pState, pLevel, pPos, pId, pParam);
     final BlockEntity be = pLevel.getBlockEntity(pPos);

@@ -1,6 +1,5 @@
 package es.degrassi.mmreborn.common.item;
 
-import es.degrassi.mmreborn.common.block.BlockEnergyHatch;
 import es.degrassi.mmreborn.common.block.BlockFluidHatch;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
 import lombok.Getter;

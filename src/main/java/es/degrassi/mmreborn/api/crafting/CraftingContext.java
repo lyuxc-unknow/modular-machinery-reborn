@@ -18,18 +18,24 @@ public class CraftingContext implements ICraftingContext {
   private final MachineControllerEntity tile;
   private final RecipeHolder<? extends MachineRecipe> recipe;
   private final Supplier<Float> progressTimeGetter;
+  private final int core;
   private float baseSpeed = 1.0f;
 
-  public CraftingContext(MachineControllerEntity tile, RecipeHolder<? extends MachineRecipe> recipe,
-                         Supplier<Float> progressTimeGetter) {
+  public CraftingContext(MachineControllerEntity tile, RecipeHolder<? extends MachineRecipe> recipe, Supplier<Float> progressTimeGetter, int core) {
     this.tile = tile;
     this.recipe = recipe;
     this.progressTimeGetter = progressTimeGetter;
+    this.core = core;
   }
 
   @Override
   public MachineControllerEntity getMachineTile() {
     return this.tile;
+  }
+
+  @Override
+  public int getCurrentCore() {
+    return this.core;
   }
 
   @Override
@@ -64,7 +70,7 @@ public class CraftingContext implements ICraftingContext {
     if(getRecipe() == null)
       return this.baseSpeed;
     int baseTime = getRecipe().getRecipeTotalTickTime();
-    float modifiedTime = getModifiedValue(baseTime, RequirementTypeRegistration.DURATION.get(), IOType.INPUT);
+    float modifiedTime = getModifiedValue(baseTime, RequirementTypeRegistration.SPEED.get(), IOType.INPUT);
     float speed = baseTime * this.baseSpeed / modifiedTime;
     return Math.max(0.01f, speed);
   }
@@ -105,8 +111,8 @@ public class CraftingContext implements ICraftingContext {
     private MachineRecipe recipe;
     private ResourceLocation recipeId;
 
-    public Mutable(MachineControllerEntity tile) {
-      super(tile, null, () -> 0.0f);
+    public Mutable(MachineControllerEntity tile, int core) {
+      super(tile, null, () -> 0.0f, core);
     }
 
     public Mutable setRecipe(MachineRecipe recipe, ResourceLocation recipeId) {

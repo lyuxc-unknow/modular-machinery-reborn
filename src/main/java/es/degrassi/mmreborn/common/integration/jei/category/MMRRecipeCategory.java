@@ -2,7 +2,10 @@ package es.degrassi.mmreborn.common.integration.jei.category;
 
 import com.mojang.datafixers.util.Pair;
 import es.degrassi.mmreborn.ModularMachineryReborn;
+import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
+import es.degrassi.mmreborn.common.crafting.requirement.RequirementDuration;
+import es.degrassi.mmreborn.common.crafting.requirement.jei.JeiDurationComponent;
 import es.degrassi.mmreborn.common.integration.jei.JeiComponentRegistry;
 import es.degrassi.mmreborn.common.integration.jei.MMRJeiPlugin;
 import es.degrassi.mmreborn.common.integration.jei.category.drawable.DrawableWrappedText;
@@ -13,19 +16,17 @@ import lombok.Getter;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.drawable.IDrawableAnimated;
+import mezz.jei.api.gui.placement.IPlaceable;
 import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
   private DynamicMachine machine;
@@ -77,13 +78,13 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
     this.height = recipe.getHeight();
     recipe.textsToRender.clear();
     recipe.chanceTexts.clear();
-
-    recipe.textsToRender.add(
-        Component.translatable(
-            "modular_machinery_reborn.jei.ingredient.duration",
-            recipe.getRecipeTotalTickTime()
-        )
-    );
+    if (recipe.isShouldRenderProgress()) {
+      new JeiDurationComponent(
+          new RecipeRequirement<>(new RequirementDuration(recipe.getRecipeTotalTickTime(),
+              recipe.getProgressPosition()), 1),
+          20, IDrawableAnimated.StartDirection.LEFT
+      ).setRecipe(this, builder, recipe, focuses);
+    }
 
     recipe.getRequirements()
         .stream()
@@ -95,20 +96,16 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
 
   @Override
   public void createRecipeExtras(IRecipeExtrasBuilder builder, @NotNull MachineRecipe recipe, @NotNull IFocusGroup focuses) {
-    if (recipe.isShouldRenderProgress())
-      builder.addAnimatedRecipeArrow(20)
-        .setPosition(recipe.getProgressPosition().x(), recipe.getProgressPosition().y());
 
-    Font font = Minecraft.getInstance().font;
-    AtomicInteger nextHeight = new AtomicInteger(0);
-    AtomicInteger toRemove = new AtomicInteger(0);
 
-    recipe.textsToRender.forEach(component -> {
-      nextHeight.set(recipe.getHeight() - gap - font.wordWrapHeight(component, recipe.getWidth() - 8) - toRemove.get());
-      builder.addDrawable(new DrawableWrappedText(List.of(component), recipe.getWidth() - 8, false))
-          .setPosition(initialX, nextHeight.get());
-      toRemove.getAndAdd(font.wordWrapHeight(component, recipe.getWidth() - 8) + 2);
-    });
+    IPlaceable<?> text = builder.addDrawable(
+        new DrawableWrappedText(
+            Lists.newArrayList(recipe.textsToRender.iterator()),
+            recipe.getWidth() - 8,
+            false
+        )
+    );
+    text.setPosition(initialX, recipe.getHeight() - gap - text.getHeight());
 
     recipe.chanceTexts.stream()
         .map(Pair::getSecond)

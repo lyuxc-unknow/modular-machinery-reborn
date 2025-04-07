@@ -104,6 +104,7 @@ repositories {
     url = "https://modmaven.dev/"
     content {
       includeGroup "mcjty.theoneprobe"
+      includeGroup "mezz.jei"
       includeGroup "mekanism"
       includeGroup "appeng"
     }
@@ -117,6 +118,12 @@ repositories {
   maven {
     name = "OctoStudios"
     url = uri("https://maven.octo-studios.com/releases")
+  }
+  maven { // TOP
+    url "https://maven.k-4u.nl"
+    content {
+      includeGroup "mcjty.theoneprobe"
+    }
   }
   maven {
     name = 'GeckoLib'
@@ -144,13 +151,20 @@ repositories {
       includeGroup "dev.emi"
     }
   }
+  maven {
+    name = "AlecRepository"
+    url = 'https://maven.degrassi.es/releases'
+    content {
+      includeGroup "es.degrassi"
+    }
+  }
 }
 
 dependencies {
   // lombok
   compileOnly "org.projectlombok:lombok:${project.lombok_version}"
   annotationProcessor "org.projectlombok:lombok:${project.lombok_version}"
-  implementation "net.neoforged:neoforge:${neo_version}"
+  compileOnly localRuntime ("net.neoforged:neoforge:${neo_version}")
   compileOnly localRuntime ("es.degrassi:experiencelib:${minecraft_version}-${experiencelib_version}")
 
   // ProbeJS
@@ -184,7 +198,7 @@ dependencies {
   localRuntime("es.degrassi:modular_machinery_reborn_ars:${minecraft_version}-2.0.0")
   localRuntime("es.degrassi:modular_machinery_reborn_mekanism:${minecraft_version}-2.0.3")
   localRuntime("appeng:appliedenergistics2:19.1.2-beta")
-  localRuntime("es.degrassi:applied-experienced:${minecraft_version}-1.0.3")
+  localRuntime("es.degrassi:applied-experienced:${minecraft_version}-1.1.1")
   localRuntime("curse.maven:applied-mekanistics-574300:5978711")
   localRuntime("curse.maven:ars-energistique-905641:5978726")
   localRuntime("software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:4.6.6")
@@ -192,11 +206,12 @@ dependencies {
   localRuntime("top.theillusivec4.curios:curios-neoforge:9.0.12+1.21")
   localRuntime("com.hollingsworth.ars_nouveau:ars_nouveau-${project.minecraft_version}:5.3.6.856")
 
-  // experiencias
+  // experience fluids
   localRuntime("curse.maven:mob-grinding-utils-254241:${project.MGU}")
   localRuntime("curse.maven:titanium-287342:${titanium}")
   localRuntime("curse.maven:industrial-foregoing-266515:${project.IF}")
 
+  // Observable profiling
   localRuntime "curse.maven:architectury-api-419699:5786327"
   localRuntime "curse.maven:kotlin-for-forge-351264:5978393"
   localRuntime("curse.maven:observable-509575:5733591")
@@ -218,7 +233,12 @@ tasks.withType(ProcessResources).configureEach {
       mod_url                : mod_url,
       icon                   : icon,
       experiencelib_version  : experiencelib_version,
-      pack_format_number     : pack_format_number
+      pack_format_number     : pack_format_number,
+      top_version            : top_version,
+      emi_version            : emi_version,
+      kubejs_version         : kubejs_version,
+      jei_version            : jei_version,
+      almostunified_version  : almostunified_version
   ]
   inputs.properties replaceProperties
 
@@ -266,7 +286,11 @@ publishing {
   repositories {
     maven {
       name = 'maven'
-      url = 'D:\\local_maven'
+      url = 'https://maven.degrassi.es/releases'
+      credentials {
+        username = "Alec_016GG"
+        password = System.getenv("MAVEN_PASSWORD")
+      }
     }
   }
 }
@@ -306,6 +330,7 @@ unifiedPublishing {
           optional "jei"
           optional "emi"
           optional "jade"
+          optional "the-one-probe"
           optional "almost-unified"
         }
       }
@@ -322,6 +347,7 @@ unifiedPublishing {
           optional "jei"
           optional "emi"
           optional "jade"
+          optional "the-one-probe"
           optional "almost-unified"
         }
       }

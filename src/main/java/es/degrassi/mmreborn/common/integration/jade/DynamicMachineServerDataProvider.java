@@ -2,9 +2,8 @@ package es.degrassi.mmreborn.common.integration.jade;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
-import es.degrassi.mmreborn.common.manager.crafting.MachineStatus;
+import es.degrassi.mmreborn.common.manager.crafting.MachineProcessorCore;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IServerDataProvider;
@@ -22,10 +21,18 @@ public class DynamicMachineServerDataProvider implements IServerDataProvider<Blo
         tag.putBoolean("paused", true);
       } else {
         tag.put("status", machine.getCraftingStatus().serializeNBT(accessor.getLevel().registryAccess()));
-        if (machine.hasActiveRecipe()) {
-          tag.putDouble("progress", machine.getProcessor().core().getRecipeProgressTime());
-          tag.putInt("total", (int) machine.getProcessor().core().getRecipeTotalTime());
-        }
+        tag.putLong("runningCores",
+            machine.getProcessor()
+                .cores()
+                .stream()
+                .filter(MachineProcessorCore::isActive)
+                .filter(MachineProcessorCore::hasActiveRecipe)
+                .count()
+        );
+//        if (machine.hasActiveRecipe()) {
+//          tag.putDouble("progress", machine.getFirstRunningCore().map(MachineProcessorCore::getRecipeProgressTime).orElse(0f));
+//          tag.putInt("total", machine.getFirstRunningCore().map(MachineProcessorCore::getRecipeTotalTime).map(Float::intValue).orElse(0));
+//        }
       }
       nbt.put(ModularMachineryReborn.MODID, tag);
     }

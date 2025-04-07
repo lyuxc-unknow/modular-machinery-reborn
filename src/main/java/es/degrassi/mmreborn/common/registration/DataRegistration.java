@@ -29,19 +29,30 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
+import static es.degrassi.mmreborn.ModularMachineryReborn.rootLC;
+
 public class DataRegistration {
   public static final DeferredRegister<DataType<?, ?>> DATAS = DeferredRegister.create(DataType.REGISTRY_KEY, ModularMachineryReborn.MODID);
   public static final Registry<DataType<?, ?>> DATA_REGISTRY = DATAS.makeRegistry(builder -> {});
 
-  public static final Supplier<DataType<BooleanData, Boolean>> BOOLEAN_DATA = DATAS.register("boolean", () -> DataType.create(Boolean.class, BooleanSyncable::create, BooleanData::new));
-  public static final Supplier<DataType<IntegerData, Integer>> INTEGER_DATA = DATAS.register("integer", () -> DataType.create(Integer.class, IntegerSyncable::create, IntegerData::new));
-  public static final Supplier<DataType<DoubleData, Double>> DOUBLE_DATA = DATAS.register("double", () -> DataType.create(Double.class, DoubleSyncable::create, DoubleData::new));
-  public static final Supplier<DataType<FloatData, Float>> FLOAT_DATA = DATAS.register("float", () -> DataType.create(Float.class, FloatSyncable::create, FloatData::new));
-  public static final Supplier<DataType<ItemStackData, ItemStack>> ITEMSTACK_DATA = DATAS.register("itemstack", () -> DataType.create(ItemStack.class, ItemStackSyncable::create, ItemStackData::new));
-  public static final Supplier<DataType<FluidStackData, FluidStack>> FLUIDSTACK_DATA = DATAS.register("fluidstack", () -> DataType.create(FluidStack.class, FluidStackSyncable::create, FluidStackData::new));
-  public static final Supplier<DataType<StringData, String>> STRING_DATA = DATAS.register("string", () -> DataType.create(String.class, StringSyncable::create, StringData::new));
-  public static final Supplier<DataType<LongData, Long>> LONG_DATA = DATAS.register("long", () -> DataType.create(Long.class, LongSyncable::create, LongData::new));
-  public static final Supplier<DataType<NbtData, CompoundTag>> NBT_DATA = DATAS.register("nbt", () -> DataType.create(CompoundTag.class, NbtSyncable::create, NbtData::new));
+  public static final Supplier<DataType<BooleanData, Boolean>> BOOLEAN_DATA = DATAS.register(rootLC("boolean"),
+      () -> DataType.create(Boolean.class, BooleanSyncable::create, BooleanData::new));
+  public static final Supplier<DataType<IntegerData, Integer>> INTEGER_DATA = DATAS.register(rootLC("integer"),
+      () -> DataType.create(Integer.class, IntegerSyncable::create, IntegerData::new));
+  public static final Supplier<DataType<DoubleData, Double>> DOUBLE_DATA = DATAS.register(rootLC("double"),
+      () -> DataType.create(Double.class, DoubleSyncable::create, DoubleData::new));
+  public static final Supplier<DataType<FloatData, Float>> FLOAT_DATA = DATAS.register(rootLC("float"),
+      () -> DataType.create(Float.class, FloatSyncable::create, FloatData::new));
+  public static final Supplier<DataType<ItemStackData, ItemStack>> ITEMSTACK_DATA = DATAS.register(rootLC("itemstack"),
+      () -> DataType.create(ItemStack.class, ItemStackSyncable::create, ItemStackData::new));
+  public static final Supplier<DataType<FluidStackData, FluidStack>> FLUIDSTACK_DATA = DATAS.register(rootLC("fluidstack"),
+      () -> DataType.create(FluidStack.class, FluidStackSyncable::create, FluidStackData::new));
+  public static final Supplier<DataType<StringData, String>> STRING_DATA = DATAS.register(rootLC("string"),
+      () -> DataType.create(String.class, StringSyncable::create, StringData::new));
+  public static final Supplier<DataType<LongData, Long>> LONG_DATA = DATAS.register(rootLC("long"),
+      () -> DataType.create(Long.class, LongSyncable::create, LongData::new));
+  public static final Supplier<DataType<NbtData, CompoundTag>> NBT_DATA = DATAS.register(rootLC("nbt"),
+      () -> DataType.create(CompoundTag.class, NbtSyncable::create, NbtData::new));
 
 
   public static void register(final IEventBus bus) {

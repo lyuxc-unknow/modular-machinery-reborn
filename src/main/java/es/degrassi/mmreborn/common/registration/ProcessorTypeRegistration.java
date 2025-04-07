@@ -12,6 +12,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
+import static es.degrassi.mmreborn.ModularMachineryReborn.rootLC;
+
 public class ProcessorTypeRegistration {
   public static final DeferredRegister<ProcessorType<? extends IProcessor>> MACHINE_PROCESSORS =
       DeferredRegister.create(ProcessorType.REGISTRY_KEY, ModularMachineryReborn.MODID);
@@ -20,7 +22,8 @@ public class ProcessorTypeRegistration {
       MACHINE_PROCESSORS.makeRegistry(builder -> {});
 
   public static final NamedCodec<ProcessorType<?>> PROCESSOR = RegistrarCodec.of(PROCESSOR_REGISTRY, true);
-  public static final Supplier<ProcessorType<MachineProcessor>> MACHINE_PROCESSOR = MACHINE_PROCESSORS.register("machine", () -> ProcessorType.create(MachineProcessor.Template.CODEC));
+  public static final Supplier<ProcessorType<MachineProcessor>> MACHINE_PROCESSOR =
+      MACHINE_PROCESSORS.register(rootLC("machine"), () -> ProcessorType.create(MachineProcessor.Template.CODEC));
 
 
   public static void register(final IEventBus bus) {
