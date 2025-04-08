@@ -35,26 +35,37 @@
   "gui.controller.status.no_recipe": "没有相匹配的配方",
   "gui.controller.status.failure": "",
   "gui.controller.status.crafting": "工作中……",
-  "gui.controller.status.crafting.progress": "进度：%s",
+  "gui.controller.status.crafting.progress": "处理中：%s",
 
-  "mmr.core.active.true": "当前内核能为配方工作",
-  "mmr.core.active.false": "当前内核不能能为配方工作",
-  "mmr.core.number": "内核编号: %s",
-  "mmr.gui.core.button": "单击显示 %s 内核的信息",
-  "mmr.gui.tooltip.core.action.button.single.add": "添加 1 个可用内核",
-  "mmr.gui.tooltip.core.action.button.single.remove": "移除 1 个可用内核",
-  "mmr.gui.tooltip.core.action.button.shift.add": "添加 10 个可用内核",
-  "mmr.gui.tooltip.core.action.button.shift.remove": "移除 10 个可用内核",
-  "mmr.gui.tooltip.core.action.button.control.add": "添加所有可用内核",
-  "mmr.gui.tooltip.core.action.button.control.remove": "移除可用内核数至 1 ",
+  "mmr.core.active.true": "当前核心能为配方工作",
+  "mmr.core.active.false": "当前核心不能能为配方工作",
+  "mmr.core.number": "核心编号: %s",
+  "mmr.gui.core.button": "单击显示 %s 核心的信息",
+  "mmr.gui.tooltip.core.action.button.single.add": "启用 1 个可用核心",
+  "mmr.gui.tooltip.core.action.button.single.remove": "禁用 1 个可用核心",
+  "mmr.gui.tooltip.core.action.button.shift.add": "启用 10 个可用核心",
+  "mmr.gui.tooltip.core.action.button.shift.remove": "禁用 10 个可用核心",
+  "mmr.gui.tooltip.core.action.button.control.add": "启用所有可用核心",
+  "mmr.gui.tooltip.core.action.button.control.remove": "禁用可用核心数至 1 ",
   "mmr.gui.button.back": "返回",
   "mmr.gui.button.close": "关闭",
   "mmr.gui.button.page.next": "下一页",
   "mmr.gui.button.page.prev": "上一页",
-  "modular_machinery_reborn.gui.core_button": "显示关于内核的信息",
-  "mmr.waila.cores": "%s %s %s",
-  "mmr.waila.cores.1": "运行中:",
-  "mmr.waila.cores.2": "内核",
+  "modular_machinery_reborn.gui.core_button": "显示核心信息",
+  "mmr.waila.cores": [
+    {
+      "text": "正在使用：",
+      "color": "gray"
+    },
+    {
+      "index": 0,
+      "color": "aqua"
+    },
+    {
+      "text": " 核心",
+      "color": "gray"
+    }
+  ],
 
   "craftcheck.failure.item.input": "缺少物品输入, 需要 %sx %s！",
   "craftcheck.failure.item.output.space": "没有足够的库存空间用于物品输出！",
@@ -167,7 +178,7 @@
   "tooltip.energyhatch.gregtech.amperage": "Amperage: §e%s",
   "tooltip.energyhatch.gregtech.storage": "Internal Energy Capacity: §9%s",
 
-  "tooltip.parallelhatch.size": "Can make the multiblock run up to %s recipes",
+  "tooltip.parallelhatch.size": "使多方快结构最多同时处理 %s 个配方",
 
   "tooltip.ic2.powertier.0.name": "ULV",
   "tooltip.ic2.powertier.1.name": "LV",
@@ -339,7 +350,7 @@
   "modular_machinery_reborn.jei.ingredient.weather": "天气时间: %s",
 
   "modular_machinery_reborn.jei.ingredient.time": "时间: %s",
-  "modular_machinery_reborn.jei.ingredient.height": "Height: %s",
+  "modular_machinery_reborn.jei.ingredient.height": "高度: %s",
   "modular_machinery_reborn.jei.ingredient.chunkload": "区块加载器半径: %s",
 
   "modular_machinery_reborn.controller.tooltip.0": "使用蓝图右键已放置的控制器",
@@ -363,7 +374,7 @@
 
   "mmr.place.non_air": "尝试放置 %s 在 %s 但是找到了不属于当前结构的方块",
   "mmr.place.no_item": "尝试放置 %s 在 %s 但是在玩家库存中未找到 %s ",
-  "mmr.place.replace": "Breaking %s at %s to place new block...",
+  "mmr.place.replace": "正在破坏 %s 位于 %s 以放置新方块",
 
   "key.categories.modular_machinery_reborn": "模块化机械:重置",
   "key.modular_machinery_reborn.structure_mode_change": "结构创建器模式",

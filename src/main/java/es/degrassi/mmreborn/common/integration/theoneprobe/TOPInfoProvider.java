@@ -5,12 +5,7 @@ import es.degrassi.mmreborn.common.crafting.helper.CraftingStatus;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.integration.theoneprobe.element.CustomProgress;
 import es.degrassi.mmreborn.common.manager.crafting.MachineProcessorCore;
-import es.degrassi.mmreborn.common.util.Utils;
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.api.IProbeInfoProvider;
-import mcjty.theoneprobe.api.ITheOneProbe;
-import mcjty.theoneprobe.api.ProbeMode;
+import mcjty.theoneprobe.api.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -64,9 +59,7 @@ public class TOPInfoProvider implements IProbeInfoProvider, Function<ITheOneProb
         .count();
     Component component = Component.translatable(
         "mmr.waila.cores",
-        Component.translatable("mmr.waila.cores.1").withStyle(ChatFormatting.GRAY),
-        Component.literal(runningCores + "").withStyle(ChatFormatting.AQUA),
-        Component.translatable("mmr.waila.cores.2").withStyle(ChatFormatting.GRAY)
+        runningCores
     );
     info.mcText(component);
 //    if (tile.hasActiveRecipe()) {
