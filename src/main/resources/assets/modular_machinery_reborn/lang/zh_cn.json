@@ -22,7 +22,7 @@
   "modular_machinery_reborn.gui.title.energy_hatch": "能量仓",
   "modular_machinery_reborn.gui.title.fluid_hatch": "流体仓",
   "modular_machinery_reborn.gui.title.item_bus": "物品仓",
-  "modular_machinery_reborn.gui.title.parallel_hatch": "并行仓",
+  "modular_machinery_reborn.gui.title.parallel_hatch": "并行处理仓",
 
   "gui.controller.blueprint": "已找到蓝图: %s",
   "gui.controller.blueprint.none": "无",
