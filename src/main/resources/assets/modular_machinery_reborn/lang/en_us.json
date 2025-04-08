@@ -54,7 +54,7 @@
   "modular_machinery_reborn.gui.core_button": "Show info about cores",
   "mmr.waila.cores": [
     {
-      "text": "Running：",
+      "text": "Running: ",
       "color": "gray"
     },
     {
