@@ -241,8 +241,8 @@ MMREvents.machines(event => {
                             // - modular_machinery_reborn:energy
                             // - modular_machinery_reborn:loot_table -> only affects the luck
                             // - modular_machinery_reborn:experience
-                            // - modular_machinery_reborn:chemical //not tested
-                            // - modular_machinery_reborn:source // not tested
+                            // - modular_machinery_reborn:chemical
+                            // - modular_machinery_reborn:source
                             .target("modular_machinery_reborn:item")
                             // if this is not present acts like input(), you can specify it if needed
                             .output()
@@ -252,9 +252,10 @@ MMREvents.machines(event => {
                             // the value of the modifier between negative infinity to positive infinity(not recomended
                             // negatives for multipliers
                             .modifier(7)
-                            // by default does not affect chanced requirements [.notAffectsChance()]
-                            // same as multiply/add, only the last one will be processed
-                            // to affect the chance use .affectsChance()
+                            // to change the chance of the modifier use .chance(<amount>) mut be between 0 and 1, inclusive
+                            // you can add a min modifier value with .min(amount)
+                            // you can add a max modifier value with .max(amount)
+                            // both min and max are designed for the final calculated value
                     )
             )
         // CUSTOM SOUNDS, depends on the current machine status to play it, the interaction sounds too
