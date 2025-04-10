@@ -11,8 +11,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.resources.Resource;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class KubeJSIntegration {
   public static MachineLocation getMachineLocation(Resource resource, String packName, ResourceLocation id) {
@@ -32,13 +32,15 @@ public class KubeJSIntegration {
     MMRKubeJSPlugin.MACHINES.post(event);
 
     Map<ResourceLocation, DynamicMachine> machines = Maps.newHashMap();
+    AtomicReference<ResourceLocation> machineId = new AtomicReference<>();
     try {
       event.getBuilders().forEach(builder -> {
+        machineId.set(builder.getId());
         DynamicMachine machine = builder.build();
         machines.put(machine.getRegistryName(), machine);
       });
     } catch (Exception e) {
-      ScriptType.SERVER.console.warn("Couldn't build machine", e);
+      ScriptType.SERVER.console.warn("Couldn't build machine: " + machineId.get(), e);
     }
     ScriptType.SERVER.console.infof("Successfully added %s Modular Machines ", event.getBuilders().size());
     return machines;

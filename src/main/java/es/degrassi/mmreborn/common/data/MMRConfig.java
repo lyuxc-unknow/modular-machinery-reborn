@@ -127,8 +127,9 @@ public class MMRConfig {
             .comment("Defines the time in ticks that the machine should check for a recipe update.\n20 ticks = 1 second. Default: 80")
             .defineInRange("check_recipe_ticks", 20, 1, Integer.MAX_VALUE);
         this.maxParallel = builder
-            .comment("Defines the number of max parallel recipes that can be run on multiblocks. Default: 256")
-            .defineInRange("check_recipe_ticks", 256, 1, Integer.MAX_VALUE);
+            .comment("Defines the number of max parallel recipes that can be run on multiblocks. If this number is " +
+                "below than any on [parallel hatch] config path, it will use the max value of them instead.")
+            .defineInRange("maxParallel", 256, 1, Integer.MAX_VALUE);
         builder.pop();
       }
 

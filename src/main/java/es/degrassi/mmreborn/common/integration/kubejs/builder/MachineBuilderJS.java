@@ -26,11 +26,12 @@ import java.util.Optional;
 
 public class MachineBuilderJS {
   @NotNull
+  @Getter
   private final ResourceLocation id;
   private String name;
   private String color;
   private Integer intColor;
-  private Structure structure;
+  private StructureBuilderJS structure;
   private MachineModelLocation controllerModel;
   private final List<ModifierReplacement> modifiers;
   private final Map<MachineStatus, Sounds> sounds;
@@ -57,7 +58,7 @@ public class MachineBuilderJS {
   }
 
   public MachineBuilderJS structure(StructureBuilderJS structure) {
-    this.structure = structure.build();
+    this.structure = structure;
     return this;
   }
 
@@ -77,18 +78,14 @@ public class MachineBuilderJS {
   }
 
   public DynamicMachine build() {
-    if (structure == null)
-      structure = Structure.EMPTY;
     DynamicMachine machine = new DynamicMachine(id, sounds);
-    machine.setPattern(structure);
+    machine.setPattern(structure == null ? Structure.EMPTY : structure.build(modifiers));
     machine.setControllerModel(Objects.requireNonNullElse(controllerModel, MachineModelLocation.DEFAULT));
     machine.setLocalizedName(Optional.ofNullable(name));
     if (intColor != null)
       machine.setDefinedColor(intColor);
     else if(color != null)
       machine.setDefinedColor(DefaultCodecs.HEX.decode(JsonOps.INSTANCE, new JsonPrimitive(color)).result().orElse(new Pair<>(Config.toInt(MMRConfig.get().general_casing_color.get(), 0xFF4900), null)).getFirst());
-
-    machine.setModifiers(modifiers);
 
     return machine;
   }

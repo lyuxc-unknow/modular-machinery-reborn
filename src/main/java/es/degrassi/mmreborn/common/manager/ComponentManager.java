@@ -13,6 +13,7 @@ import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
 import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
+import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.entity.base.MachineComponentEntity;
 import es.degrassi.mmreborn.common.entity.base.TileItemBus;
@@ -59,6 +60,16 @@ public class ComponentManager implements INBTSerializable<CompoundTag>, ISyncabl
     foundComponentsValues.clear();
   }
 
+  public final void updateModifiers(boolean force) {
+    if (controller.getFoundMachine() == DynamicMachine.DUMMY) return;
+    if (controller.getLevel() == null) return;
+    if (force || controller.getLevel().getGameTime() % MMRConfig.get().checkStructureTicks.get() == 0) {
+      foundModifiers.clear();
+      foundModifiers.putAll(gatherModifiers());
+    }
+    controller.setChanged();
+  }
+
   public final void updateComponents(boolean force) {
     if (controller.getFoundMachine() == DynamicMachine.DUMMY) return;
     if (controller.getLevel() == null) return;
@@ -66,7 +77,7 @@ public class ComponentManager implements INBTSerializable<CompoundTag>, ISyncabl
       reset();
       foundComponents.putAll(gatherComponents());
       foundComponentsValues.putAll(filter());
-      foundModifiers.putAll(gatherModifiers());
+      updateModifiers(force);
       controller.getProcessor().setMachineInventoryChanged();
     }
     controller.setChanged();
@@ -144,7 +155,10 @@ public class ComponentManager implements INBTSerializable<CompoundTag>, ISyncabl
   }
 
   public List<RecipeModifier> getModifiers(RequirementType<?> type) {
-    if (foundModifiers.isEmpty()) updateComponents(true);
+    if (foundModifiers.isEmpty()) {
+      if (!getController().getFoundMachine().getModifiers().isEmpty())
+        updateModifiers(false);
+    }
     return foundModifiers.values()
         .stream()
         .flatMap(List::stream)

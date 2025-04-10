@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import es.degrassi.mmreborn.api.BlockIngredient;
 import es.degrassi.mmreborn.api.Structure;
+import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
 
 import java.util.List;
 import java.util.Map;
@@ -29,11 +30,11 @@ public class StructureBuilderJS {
     return this;
   }
 
-  public Structure build() {
+  public Structure build(List<ModifierReplacement> modifiers) {
     for (List<String> levels : pattern)
       builder.aisle(levels.toArray(new String[0]));
     for (Map.Entry<Character, BlockIngredient> key : keys.entrySet())
       builder.where(key.getKey(), key.getValue());
-    return builder.build(pattern, keys);
+    return builder.build(pattern, keys, modifiers);
   }
 }

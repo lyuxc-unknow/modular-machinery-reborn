@@ -1,6 +1,5 @@
 package es.degrassi.mmreborn.common.machine;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.Structure;
@@ -20,7 +19,6 @@ import net.minecraft.world.level.block.SoundType;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,16 +32,13 @@ public class DynamicMachine {
       Structure.CODEC.fieldOf("structure").forGetter(DynamicMachine::getPattern),
       DefaultCodecs.HEX.optionalFieldOf("color", Config.machineColor).forGetter(DynamicMachine::getMachineColor),
       MachineModelLocation.CODEC.optionalFieldOf("controller", MachineModelLocation.DEFAULT).forGetter(DynamicMachine::getControllerModel),
-      ModifierReplacement.CODEC.listOf().optionalFieldOf("modifiers", new LinkedList<>()).forGetter(DynamicMachine::getModifiers),
       NamedCodec.unboundedMap(MachineStatus.CODEC, Sounds.CODEC, "Sounds by status").optionalFieldOf("sound", new HashMap<>()).forGetter(DynamicMachine::getSounds)
-  ).apply(instance, (registryName, localizedName, pattern, color, controllerModel, modifiers, sounds) -> {
+  ).apply(instance, (registryName, localizedName, pattern, color, controllerModel, sounds) -> {
     DynamicMachine machine = new DynamicMachine(registryName, sounds);
-    pattern.getPattern().addModifiers(modifiers);
     machine.setPattern(pattern);
     machine.setLocalizedName(localizedName);
     machine.setDefinedColor(color);
     machine.setControllerModel(controllerModel);
-    machine.setModifiers(modifiers);
     return machine;
   }), "Dynamic Machine");
 
@@ -62,12 +57,15 @@ public class DynamicMachine {
   private Structure pattern = Structure.EMPTY;
   private int definedColor = Config.machineColor;
   private MachineModelLocation controllerModel;
-  private List<ModifierReplacement> modifiers;
   private final Map<MachineStatus, Sounds> sounds;
 
   public DynamicMachine(@Nonnull ResourceLocation registryName, Map<MachineStatus, Sounds> sounds) {
     this.registryName = registryName;
     this.sounds = sounds;
+  }
+
+  public List<ModifierReplacement> getModifiers() {
+    return getPattern().getPattern().getModifiers();
   }
 
   public String getLocalizedName() {
@@ -100,9 +98,6 @@ public class DynamicMachine {
     json.addProperty("definedColor", definedColor);
     if (controllerModel != null && controllerModel.getLoc() != null)
       json.addProperty("controllerModel", controllerModel.toString());
-    JsonArray mods = new JsonArray();
-    modifiers.stream().map(ModifierReplacement::asJson).forEachOrdered(mods::add);
-    json.add("modifiers", mods);
     return json;
   }
 

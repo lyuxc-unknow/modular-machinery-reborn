@@ -74,6 +74,7 @@ repositories {
     content {
       includeGroup "mezz.jei"
       includeGroup "com.hollingsworth.ars_nouveau"
+      includeGroup "com.hollingsworth.nuggets"
       includeGroup "vazkii.patchouli"
       includeGroup "com.almostreliable.mods"
     }
@@ -195,8 +196,8 @@ dependencies {
 
   // Addons for testing
 //  localRuntime("es.degrassi:modular_machinery_reborn_energistics:${minecraft_version}-2.0.0")
-  localRuntime("es.degrassi:modular_machinery_reborn_ars:${minecraft_version}-2.0.0")
-  localRuntime("es.degrassi:modular_machinery_reborn_mekanism:${minecraft_version}-2.0.3")
+  localRuntime("es.degrassi:modular_machinery_reborn_ars:${minecraft_version}-2.0.3")
+  localRuntime("es.degrassi:modular_machinery_reborn_mekanism:${minecraft_version}-2.0.6")
   localRuntime("appeng:appliedenergistics2:19.1.2-beta")
   localRuntime("es.degrassi:applied-experienced:${minecraft_version}-1.1.1")
   localRuntime("curse.maven:applied-mekanistics-574300:5978711")
@@ -204,7 +205,7 @@ dependencies {
   localRuntime("software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:4.6.6")
   localRuntime("vazkii.patchouli:Patchouli:1.21-88-NEOFORGE-SNAPSHOT")
   localRuntime("top.theillusivec4.curios:curios-neoforge:9.0.12+1.21")
-  localRuntime("com.hollingsworth.ars_nouveau:ars_nouveau-${project.minecraft_version}:5.3.6.856")
+  localRuntime("com.hollingsworth.ars_nouveau:ars_nouveau-${project.minecraft_version}:5.8.0.4.1051")
 
   // experience fluids
   localRuntime("curse.maven:mob-grinding-utils-254241:${project.MGU}")

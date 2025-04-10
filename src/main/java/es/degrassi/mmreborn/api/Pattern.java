@@ -26,11 +26,11 @@ public class Pattern {
   private final Map<BlockPos, BlockIngredient> pattern_west;
 
   @Getter
-  private final List<ModifierReplacement> modifiers = Lists.newArrayList();
-  private final Map<BlockPos, List<ModifierReplacement>> modifiers_north = Maps.newHashMap();
-  private final Map<BlockPos, List<ModifierReplacement>> modifiers_south = Maps.newHashMap();
-  private final Map<BlockPos, List<ModifierReplacement>> modifiers_east = Maps.newHashMap();
-  private final Map<BlockPos, List<ModifierReplacement>> modifiers_west = Maps.newHashMap();
+  private final List<ModifierReplacement> modifiers;
+  private final Map<BlockPos, List<ModifierReplacement>> modifiers_north;
+  private final Map<BlockPos, List<ModifierReplacement>> modifiers_south;
+  private final Map<BlockPos, List<ModifierReplacement>> modifiers_east;
+  private final Map<BlockPos, List<ModifierReplacement>> modifiers_west;
 
   public Pattern(Map<BlockPos, BlockIngredient> pattern, List<List<String>> strings, Map<Character, BlockIngredient> keys) {
     this.pattern = pattern;
@@ -40,6 +40,51 @@ public class Pattern {
     this.pattern_south = rotate(Rotation.CLOCKWISE_180);
     this.pattern_west = rotate(Rotation.COUNTERCLOCKWISE_90);
     this.pattern_east = rotate(Rotation.CLOCKWISE_90);
+    this.modifiers = Lists.newArrayList();
+    this.modifiers_north = Maps.newHashMap();
+    this.modifiers_south = Maps.newHashMap();
+    this.modifiers_east = Maps.newHashMap();
+    this.modifiers_west = Maps.newHashMap();
+  }
+
+  public Pattern(Map<BlockPos, BlockIngredient> pattern, List<List<String>> strings,
+                 Map<Character, BlockIngredient> keys, List<ModifierReplacement> modifiers) {
+    this.pattern = pattern;
+    this.strings = strings;
+    this.keys = keys;
+    this.pattern_north = rotate(Rotation.NONE);
+    this.pattern_south = rotate(Rotation.CLOCKWISE_180);
+    this.pattern_west = rotate(Rotation.COUNTERCLOCKWISE_90);
+    this.pattern_east = rotate(Rotation.CLOCKWISE_90);
+    this.modifiers = modifiers;
+    this.modifiers_north = rotateModifiers(Rotation.NONE);
+    this.modifiers_south = rotateModifiers(Rotation.CLOCKWISE_180);
+    this.modifiers_west = rotateModifiers(Rotation.COUNTERCLOCKWISE_90);
+    this.modifiers_east = rotateModifiers(Rotation.CLOCKWISE_90);
+
+    modifiers_north.forEach((pos, modifierList) -> {
+      modifierList.forEach(modifier -> {
+        pattern_north.put(pos, modifier.getIngredient().copyWithRotation(Rotation.NONE).merge(pattern_north.get(pos)));
+      });
+    });
+
+    modifiers_south.forEach((pos, modifierList) -> {
+      modifierList.forEach(modifier -> {
+        pattern_south.put(pos, modifier.getIngredient().copyWithRotation(Rotation.CLOCKWISE_180).merge(pattern_south.get(pos)));
+      });
+    });
+
+    modifiers_west.forEach((pos, modifierList) -> {
+      modifierList.forEach(modifier -> {
+        pattern_west.put(pos, modifier.getIngredient().copyWithRotation(Rotation.COUNTERCLOCKWISE_90).merge(pattern_west.get(pos)));
+      });
+    });
+
+    modifiers_east.forEach((pos, modifierList) -> {
+      modifierList.forEach(modifier -> {
+        pattern_east.put(pos, modifier.getIngredient().copyWithRotation(Rotation.CLOCKWISE_90).merge(pattern_east.get(pos)));
+      });
+    });
   }
 
   public Map<BlockPos, BlockIngredient> get(Direction direction) {
@@ -73,34 +118,11 @@ public class Pattern {
     };
   }
 
-  public void addModifiers(List<ModifierReplacement> modifiers) {
-    modifiers.forEach(modifier -> {
-      BlockPos pos = modifier.getPosition();
-      BlockIngredient ing = modifier.getIngredient();
-      this.modifiers.add(modifier);
-      for (Rotation rotation : Rotation.values()) {
-        BlockPos modifiedPos = pos.rotate(rotation);
-        BlockIngredient modifiedIng = ing.copyWithRotation(rotation);
-        switch (rotation) {
-          case NONE -> {
-            pattern_north.put(modifiedPos, modifiedIng.merge(pattern_north.get(modifiedPos)));
-            modifiers_north.computeIfAbsent(pos, key -> Lists.newArrayList()).add(modifier);
-          }
-          case CLOCKWISE_180 -> {
-            pattern_south.put(modifiedPos, modifiedIng.merge(pattern_south.get(modifiedPos)));
-            modifiers_south.computeIfAbsent(pos, key -> Lists.newArrayList()).add(modifier);
-          }
-          case COUNTERCLOCKWISE_90 -> {
-            pattern_west.put(modifiedPos, modifiedIng.merge(pattern_west.get(modifiedPos)));
-            modifiers_west.computeIfAbsent(pos, key -> Lists.newArrayList()).add(modifier);
-          }
-          case CLOCKWISE_90 -> {
-            pattern_east.put(modifiedPos, modifiedIng.merge(pattern_east.get(modifiedPos)));
-            modifiers_east.computeIfAbsent(pos, key -> Lists.newArrayList()).add(modifier);
-          }
-        }
-      }
-    });
+  public Map<BlockPos, List<ModifierReplacement>> rotateModifiers(Rotation rotation) {
+    Map<BlockPos, List<ModifierReplacement>> map = Maps.newHashMap();
+    modifiers.forEach(modifier -> map
+        .computeIfAbsent(modifier.getPosition().rotate(rotation), key -> Lists.newArrayList()).add(modifier));
+    return map;
   }
 
   private Map<BlockPos, BlockIngredient> rotate(Rotation rotation) {
