@@ -7,7 +7,6 @@ import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirementList;
 import es.degrassi.mmreborn.api.crafting.requirement.WeatherType;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
-import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.component.WeatherComponent;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
@@ -19,7 +18,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Locale;
 
 public class RequirementWeather implements IRequirement<WeatherComponent> {
@@ -84,16 +82,6 @@ public class RequirementWeather implements IRequirement<WeatherComponent> {
         "craftcheck.failure.weather",
         weather.name().toLowerCase(Locale.ROOT)
     ));
-  }
-
-  @Override
-  public RequirementWeather deepCopyModified(List<RecipeModifier> modifiers) {
-    return this;
-  }
-
-  @Override
-  public RequirementWeather deepCopy() {
-    return this;
   }
 
   @Override

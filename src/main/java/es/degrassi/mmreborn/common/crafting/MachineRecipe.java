@@ -9,14 +9,11 @@ import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.codec.NamedMapCodec;
 import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
-import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.crafting.requirement.PositionedRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.PositionedSizedRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
-import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
-import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.MMRLogger;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -107,29 +104,6 @@ public class MachineRecipe implements Comparable<MachineRecipe>, Recipe<RecipeIn
   @Nullable
   public DynamicMachine getOwningMachine() {
     return ModularMachineryReborn.MACHINES.get(getOwningMachineIdentifier());
-  }
-
-  public MachineRecipe copy() {
-    return copy(owningMachine, Lists.newArrayList());
-  }
-
-  public MachineRecipe copy(ResourceLocation newOwningMachineIdentifier, List<RecipeModifier> modifiers) {
-    MachineRecipe copy = new MachineRecipe(
-        newOwningMachineIdentifier,
-        Math.round(RecipeModifier.applyModifiers(modifiers, RequirementTypeRegistration.SPEED.get(), IOType.INPUT,
-            this.getRecipeTotalTickTime(), false)),
-        this.getConfiguredPriority(),
-        this.doesCancelRecipeOnPerTickFailure(),
-        this.width,
-        this.height,
-        this.shouldRenderProgress,
-        this.progressPosition
-    );
-
-    for (RecipeRequirement<?, ?> requirement : this.getRequirements()) {
-      copy.addRequirement(new RecipeRequirement<>(requirement.deepCopyModified(modifiers)));
-    }
-    return copy;
   }
 
   @Override

@@ -30,14 +30,13 @@ public class ModifierReplacement {
   @Getter
   private final BlockPos position;
 
-  public ModifierReplacement(BlockIngredient info, List<RecipeModifier> modifier,
-                             BlockPos pos) {
+  public ModifierReplacement(BlockIngredient info, List<RecipeModifier> modifier, BlockPos pos) {
     this.info = info;
     this.modifier = modifier;
     this.position = pos;
     this.description = Lists.newArrayList();
     description.add(info.getNamesUnified());
-    description.addAll(getModifiers().stream().map(RecipeModifier::getDescription).toList());
+    description.addAll(getModifiers().stream().map(RecipeModifier::getTooltip).toList());
   }
 
   public BlockIngredient getIngredient() {

@@ -7,9 +7,7 @@ import es.degrassi.mmreborn.api.crafting.CraftingResult;
 import es.degrassi.mmreborn.api.crafting.ICraftingContext;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirementList;
-import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
-import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.component.EnergyComponent;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
@@ -18,8 +16,6 @@ import es.degrassi.mmreborn.common.util.IEnergyHandler;
 import lombok.Getter;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class RequirementEnergy implements IRequirement<EnergyComponent> {
   public static final NamedMapCodec<RequirementEnergy> CODEC = NamedCodec.record(instance -> instance.group(
@@ -107,17 +103,6 @@ public class RequirementEnergy implements IRequirement<EnergyComponent> {
     json.addProperty("actionType", mode.name());
     json.addProperty("amount", requirementPerTick);
     return json;
-  }
-
-  @Override
-  public RequirementEnergy deepCopyModified(List<RecipeModifier> modifiers) {
-    long requirement = Math.round(RecipeModifier.applyModifiers(modifiers, new RecipeRequirement<>(this), this.requirementPerTick, false));
-    return new RequirementEnergy(mode, requirement, position);
-  }
-
-  @Override
-  public RequirementEnergy deepCopy() {
-    return new RequirementEnergy(mode, requirementPerTick, position);
   }
 
   @Override

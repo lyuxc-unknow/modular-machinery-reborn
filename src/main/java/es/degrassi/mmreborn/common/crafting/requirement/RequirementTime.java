@@ -6,7 +6,6 @@ import es.degrassi.mmreborn.api.crafting.ICraftingContext;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirementList;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
-import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.component.TimeComponent;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
@@ -15,8 +14,6 @@ import es.degrassi.mmreborn.common.util.IntRange;
 import lombok.Getter;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class RequirementTime implements IRequirement<TimeComponent> {
   public static final NamedCodec<RequirementTime> CODEC = NamedCodec.record(instance -> instance.group(
@@ -76,16 +73,6 @@ public class RequirementTime implements IRequirement<TimeComponent> {
         this.time.toFormattedString(),
         time
     ));
-  }
-
-  @Override
-  public RequirementTime deepCopyModified(List<RecipeModifier> modifiers) {
-    return this;
-  }
-
-  @Override
-  public RequirementTime deepCopy() {
-    return this;
   }
 
   @Override

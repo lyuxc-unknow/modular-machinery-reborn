@@ -8,9 +8,7 @@ import es.degrassi.mmreborn.api.crafting.CraftingResult;
 import es.degrassi.mmreborn.api.crafting.ICraftingContext;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirementList;
-import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
-import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.integration.ingredient.HybridFluid;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.component.FluidComponent;
@@ -23,7 +21,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Optional;
 
 public class RequirementFluid implements IRequirement<FluidComponent> {
@@ -143,17 +140,6 @@ public class RequirementFluid implements IRequirement<FluidComponent> {
     json.addProperty("fluid", required.asFluidStack().getHoverName().getString());
     json.addProperty("amount", required.asFluidStack().getAmount());
     return json;
-  }
-
-  @Override
-  public RequirementFluid deepCopyModified(List<RecipeModifier> modifiers) {
-    int amount = Math.round(RecipeModifier.applyModifiers(modifiers, new RecipeRequirement<>(this), this.amount, false));
-    return new RequirementFluid(this.getMode(), new FluidIngredient(required.asFluidStack().getFluid()), amount, getPosition());
-  }
-
-  @Override
-  public RequirementFluid deepCopy() {
-    return new RequirementFluid(this.getMode(), new FluidIngredient(required.asFluidStack().getFluid()), amount, getPosition());
   }
 
   @Override

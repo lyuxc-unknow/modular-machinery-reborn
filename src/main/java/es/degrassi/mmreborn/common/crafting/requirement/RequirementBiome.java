@@ -8,7 +8,6 @@ import es.degrassi.mmreborn.api.crafting.ICraftingContext;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirementList;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
-import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.component.BiomeComponent;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
@@ -89,16 +88,6 @@ public class RequirementBiome implements IRequirement<BiomeComponent> {
     filter.stream().map(ResourceLocation::toString).forEach(array::add);
     json.add("filter", array);
     return json;
-  }
-
-  @Override
-  public RequirementBiome deepCopyModified(List<RecipeModifier> modifiers) {
-    return new RequirementBiome(filter, blacklist, position);
-  }
-
-  @Override
-  public RequirementBiome deepCopy() {
-    return new RequirementBiome(filter, blacklist, position);
   }
 
   @Override

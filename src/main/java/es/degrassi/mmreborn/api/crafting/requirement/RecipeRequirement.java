@@ -4,14 +4,12 @@ import com.google.gson.JsonObject;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.crafting.CraftingResult;
 import es.degrassi.mmreborn.api.crafting.ICraftingContext;
-import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.manager.ComponentManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
-import java.util.List;
 import java.util.Random;
 
 public class RecipeRequirement<C extends MachineComponent<?>, R extends IRequirement<C>> {
@@ -67,13 +65,8 @@ public class RecipeRequirement<C extends MachineComponent<?>, R extends IRequire
   }
 
   public boolean shouldSkip(Random rand, ICraftingContext context) {
-    float chance = RecipeModifier.applyModifiers(context.getModifiers(getType()), this, this.chance, true);
+    float chance = context.getModifiedValue(this.chance, this.requirement);
     return rand.nextFloat() > chance;
-  }
-
-  @SuppressWarnings("unchecked")
-  public R deepCopyModified(List<RecipeModifier> modifiers) {
-    return (R) requirement.deepCopyModified(modifiers);
   }
 
   public boolean isModified() {

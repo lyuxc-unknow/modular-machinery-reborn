@@ -7,7 +7,6 @@ import es.degrassi.mmreborn.api.crafting.ICraftingContext;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirementList;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
-import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.component.ChunkloadComponent;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
@@ -16,8 +15,6 @@ import lombok.Getter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class RequirementChunkload implements IRequirement<ChunkloadComponent> {
   public static final NamedCodec<RequirementChunkload> CODEC = NamedCodec.record(instance -> instance.group(
@@ -72,15 +69,6 @@ public class RequirementChunkload implements IRequirement<ChunkloadComponent> {
     }));
   }
 
-  @Override
-  public RequirementChunkload deepCopyModified(List<RecipeModifier> modifiers) {
-    return new RequirementChunkload(radius, position);
-  }
-
-  @Override
-  public RequirementChunkload deepCopy() {
-    return new RequirementChunkload(radius, position);
-  }
   @Override
   public JsonObject asJson() {
     JsonObject json = IRequirement.super.asJson();

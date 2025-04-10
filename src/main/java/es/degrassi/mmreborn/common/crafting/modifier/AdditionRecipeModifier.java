@@ -1,0 +1,33 @@
+package es.degrassi.mmreborn.common.crafting.modifier;
+
+import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
+import es.degrassi.mmreborn.common.machine.IOType;
+import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+
+public class AdditionRecipeModifier extends RecipeModifier{
+
+  public AdditionRecipeModifier(RequirementType<?> requirementType, IOType mode, float modifier,
+                                float chance, float max, float min) {
+    super(requirementType, mode, modifier, chance, max, min);
+  }
+
+  @Override
+  public float apply(float original) {
+    return Mth.clamp(original + this.modifier, this.min, this.max);
+  }
+
+  @Override
+  public Component getDefaultTooltip() {
+    if (requirementType == RequirementTypeRegistration.SPEED.get() || requirementType == RequirementTypeRegistration.LOOT_TABLE.get())
+      return Component.translatable("mmr.recipe.modifier." +  getTargetValue() + "." + getOperation(), modifier);
+    return Component.translatable("mmr.recipe.modifier." + getTargetValue() + "." + getOperation(), modifier,
+        getMode().getSerializedName(), chance);
+  }
+
+  @Override
+  public OPERATION getOperation() {
+    return OPERATION.ADDITION;
+  }
+}

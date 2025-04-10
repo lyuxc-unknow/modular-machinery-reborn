@@ -11,7 +11,6 @@ import es.degrassi.mmreborn.api.crafting.ICraftingContext;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirementList;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
-import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.integration.almostunified.AlmostUnifiedAdapter;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.component.ItemComponent;
@@ -29,7 +28,6 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.List;
 
 @Getter
 public class RequirementItem implements IRequirement<ItemComponent> {
@@ -169,25 +167,6 @@ public class RequirementItem implements IRequirement<ItemComponent> {
     JsonObject json = IRequirement.super.asJson();
     json.add("ingredient", asJson(ingredient));
     return json;
-  }
-
-  @Override
-  public RequirementItem deepCopyModified(List<RecipeModifier> modifiers) {
-    int inAmt = Math.round(RecipeModifier.applyModifiers(modifiers, this.getType(), getMode(), ingredient.count(), false));
-    RequirementItem item = new RequirementItem(getMode(), new SizedIngredient(ingredient.ingredient(), inAmt), getPosition());
-    item.setModified(item.isModified() || isModified());
-    item.setUsesDataComponents(item.isUsesDataComponents() || isUsesDataComponents());
-    return item;
-  }
-
-  @Override
-  public RequirementItem deepCopy() {
-    RequirementItem item = new RequirementItem(getMode(), new SizedIngredient(ingredient.ingredient(),
-        ingredient.count()),
-        getPosition());
-    item.setModified(item.isModified() || isModified());
-    item.setUsesDataComponents(item.isUsesDataComponents() || isUsesDataComponents());
-    return item;
   }
 
   @Override

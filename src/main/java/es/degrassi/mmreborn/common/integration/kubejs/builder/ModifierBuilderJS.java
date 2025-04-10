@@ -5,9 +5,12 @@ import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.BlockIngredient;
+import es.degrassi.mmreborn.common.crafting.modifier.AdditionRecipeModifier;
 import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
+import es.degrassi.mmreborn.common.crafting.modifier.MultiplicationRecipeModifier;
 import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
-import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier.ModifierOperation;
+import es.degrassi.mmreborn.common.crafting.modifier.IRecipeModifier.OPERATION;
+import es.degrassi.mmreborn.common.crafting.modifier.SpeedRecipeModifier;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
@@ -59,8 +62,10 @@ public class ModifierBuilderJS {
     private RequirementType<?> target = RequirementTypeRegistration.SPEED.get();
     private IOType mode = IOType.INPUT;
     private float modifier;
-    private ModifierOperation operation = ModifierOperation.ADDITION;
-    private boolean chance = true;
+    private OPERATION operation = OPERATION.ADDITION;
+    private float chance = 1F;
+    private float min = Float.NEGATIVE_INFINITY;
+    private float max = Float.POSITIVE_INFINITY;
 
     @HideFromJS
     private RecipeModifierBuilderJS() {}
@@ -72,16 +77,18 @@ public class ModifierBuilderJS {
     public RecipeModifierBuilderJS target(ResourceLocation target) {
       this.target = ModularMachineryReborn.getRequirementRegistrar().get(target);
       if (this.target == null) throw new IllegalArgumentException("Invalid recipe target");
+      if (RecipeModifier.blacklist.stream().map(RequirementType::getId).anyMatch(target::equals))
+        throw new IllegalArgumentException("This type is not allowed as recipe modifier type");
       return this;
     }
 
     public RecipeModifierBuilderJS addition() {
-      this.operation = ModifierOperation.ADDITION;
+      this.operation = OPERATION.ADDITION;
       return this;
     }
 
     public RecipeModifierBuilderJS multiply() {
-      this.operation = ModifierOperation.MULTIPLY;
+      this.operation = OPERATION.MULTIPLICATION;
       return this;
     }
 
@@ -100,18 +107,28 @@ public class ModifierBuilderJS {
       return this;
     }
 
-    public RecipeModifierBuilderJS affectsChance() {
-      this.chance = true;
+    public RecipeModifierBuilderJS chance(float chance) {
+      this.chance = chance;
       return this;
     }
 
-    public RecipeModifierBuilderJS notAffectsChance() {
-      this.chance = false;
+    public RecipeModifierBuilderJS min(float min) {
+      this.min = min;
+      return this;
+    }
+
+    public RecipeModifierBuilderJS max(float max) {
+      this.max = max;
       return this;
     }
 
     public RecipeModifier build() {
-      return new RecipeModifier(target, mode, modifier, operation, chance);
+      if (target == RequirementTypeRegistration.SPEED.get())
+        return new SpeedRecipeModifier(operation, modifier, chance, max, min);
+      return switch (operation) {
+        case ADDITION -> new AdditionRecipeModifier(target, mode, modifier, chance, max, min);
+        case MULTIPLICATION -> new MultiplicationRecipeModifier(target, mode, modifier, chance, max, min);
+      };
     }
   }
 }

@@ -7,9 +7,7 @@ import es.degrassi.mmreborn.api.crafting.CraftingResult;
 import es.degrassi.mmreborn.api.crafting.ICraftingContext;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirementList;
-import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
-import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.component.ItemComponent;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
@@ -110,22 +108,8 @@ public class RequirementLootTable implements IRequirement<ItemComponent> {
   }
 
   @Override
-  public RequirementLootTable deepCopyModified(List<RecipeModifier> modifiers) {
-    return new RequirementLootTable(
-        lootTable,
-        RecipeModifier.applyModifiers(modifiers, new RecipeRequirement<>(this), luck, false),
-        new PositionedRequirement(getPosition().x(), getPosition().y())
-    );
-  }
-
-  @Override
   public IOType getMode() {
     return IOType.OUTPUT;
-  }
-
-  @Override
-  public RequirementLootTable deepCopy() {
-    return new RequirementLootTable(lootTable, luck, new PositionedRequirement(getPosition().x(), getPosition().y()));
   }
 
   @Override

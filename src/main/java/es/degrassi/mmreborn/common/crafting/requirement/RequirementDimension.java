@@ -8,7 +8,6 @@ import es.degrassi.mmreborn.api.crafting.ICraftingContext;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirementList;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
-import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.component.DimensionComponent;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
@@ -71,15 +70,6 @@ public class RequirementDimension implements IRequirement<DimensionComponent> {
 
   }
 
-  @Override
-  public RequirementDimension deepCopyModified(List<RecipeModifier> modifiers) {
-    return new RequirementDimension(filter, blacklist, position);
-  }
-
-  @Override
-  public RequirementDimension deepCopy() {
-    return new RequirementDimension(filter, blacklist, position);
-  }
   @Override
   public JsonObject asJson() {
     JsonObject json = IRequirement.super.asJson();

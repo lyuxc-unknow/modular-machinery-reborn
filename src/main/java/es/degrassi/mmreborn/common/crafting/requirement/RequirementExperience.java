@@ -8,9 +8,7 @@ import es.degrassi.mmreborn.api.crafting.CraftingResult;
 import es.degrassi.mmreborn.api.crafting.ICraftingContext;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirementList;
-import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
-import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.component.ExperienceComponent;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
@@ -18,8 +16,6 @@ import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import lombok.Getter;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 @Getter
 public class RequirementExperience implements IRequirement<ExperienceComponent> {
@@ -98,18 +94,6 @@ public class RequirementExperience implements IRequirement<ExperienceComponent> 
     JsonObject json = IRequirement.super.asJson();
     json.addProperty("amount", required);
     return json;
-  }
-
-  @Override
-  public RequirementExperience deepCopyModified(List<RecipeModifier> modifiers) {
-    long requirement = (long) RecipeModifier.applyModifiers(modifiers, new RecipeRequirement<>(this), this.required,
-        false);
-    return new RequirementExperience(this.getMode(), requirement, new PositionedRequirement(getPosition().x(), getPosition().y()));
-  }
-
-  @Override
-  public RequirementExperience deepCopy() {
-    return new RequirementExperience(getMode(), required, new PositionedRequirement(getPosition().x(), getPosition().y()));
   }
 
   @Override

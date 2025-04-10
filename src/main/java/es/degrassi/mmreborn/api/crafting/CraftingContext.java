@@ -103,7 +103,16 @@ public class CraftingContext implements ICraftingContext {
   }
 
   private float getModifiedValue(float value, RequirementType<?> type, IOType mode) {
-    return RecipeModifier.applyModifiers(tile.getComponentManager().getModifiers(type), type, mode, value, false);
+    float modified = value;
+    var modifiers = tile.getComponentManager().getModifiers(type);
+    for (var modifier : modifiers) {
+      if (modifier.shouldApply(type, mode)) {
+        modified = modifier.apply(modified);
+      }
+    }
+    return modified;
+
+    // return RecipeModifierOld.applyModifiers(tile.getComponentManager().getModifiers(type), type, mode, value, false);
   }
 
   public static class Mutable extends CraftingContext {

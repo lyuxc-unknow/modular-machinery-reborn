@@ -164,7 +164,7 @@ public class ComponentManager implements INBTSerializable<CompoundTag>, ISyncabl
         .flatMap(List::stream)
         .map(ModifierReplacement::getModifiers)
         .flatMap(List::stream)
-        .filter(mod -> mod.getTarget().equals(type))
+        .filter(mod -> mod.getRequirementType().equals(type))
         .toList();
   }
 
@@ -273,11 +273,19 @@ public class ComponentManager implements INBTSerializable<CompoundTag>, ISyncabl
       componentsByType.put(type.getId().toString(), listByMode);
     });
     nbt.put("components", componentsByType);
-    ListTag modifiers = foundModifiers.values()
-        .stream()
-        .flatMap(List::stream)
-        .map(ModifierReplacement::asTag)
-        .collect(ListTag::new, ListTag::add, ListTag::add);
+    ListTag modifiers = new ListTag();
+    foundModifiers
+        .forEach((pos, list) -> {
+          ListTag mods = list.stream().map(ModifierReplacement::asTag).collect(ListTag::new, ListTag::add, ListTag::add);
+          CompoundTag mod = new CompoundTag();
+          CompoundTag position = new CompoundTag();
+          position.putInt("x", pos.getX());
+          position.putInt("y", pos.getY());
+          position.putInt("z", pos.getZ());
+          mod.put("position", position);
+          mod.put("modifiers", mods);
+          modifiers.add(mod);
+        });
     nbt.put("modifiers", modifiers);
     return nbt;
   }

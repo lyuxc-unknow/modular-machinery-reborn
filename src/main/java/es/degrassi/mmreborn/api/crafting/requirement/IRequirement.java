@@ -8,7 +8,6 @@ import es.degrassi.mmreborn.api.crafting.ComponentNotFoundException;
 import es.degrassi.mmreborn.api.crafting.ICraftingContext;
 import es.degrassi.mmreborn.api.crafting.IProcessor;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
-import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.crafting.requirement.PositionedRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
 import es.degrassi.mmreborn.common.machine.IOType;
@@ -17,7 +16,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 public interface IRequirement<C extends MachineComponent<?>> {
 
@@ -79,10 +77,6 @@ public interface IRequirement<C extends MachineComponent<?>> {
     json.addProperty("modified", isModified());
     return json;
   }
-
-  IRequirement<C> deepCopyModified(List<RecipeModifier> modifiers);
-
-  IRequirement<C> deepCopy();
 
   @Nonnull
   Component getMissingComponentErrorMessage(IOType ioType);
