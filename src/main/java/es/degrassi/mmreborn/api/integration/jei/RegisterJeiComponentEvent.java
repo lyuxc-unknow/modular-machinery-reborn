@@ -8,7 +8,6 @@ import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
 import net.neoforged.bus.api.Event;
 import net.neoforged.fml.event.IModBusEvent;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class RegisterJeiComponentEvent extends Event implements IModBusEvent {

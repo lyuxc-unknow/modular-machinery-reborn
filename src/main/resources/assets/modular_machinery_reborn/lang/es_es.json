@@ -52,9 +52,20 @@
   "mmr.gui.button.page.next": "Next Page",
   "mmr.gui.button.page.prev": "Prev Page",
   "modular_machinery_reborn.gui.core_button": "Show info about cores",
-  "mmr.waila.cores": "%s %s %s",
-  "mmr.waila.cores.1": "Running:",
-  "mmr.waila.cores.2": "cores",
+  "mmr.waila.cores": [
+    {
+      "text": "Running: ",
+      "color": "gray"
+    },
+    {
+      "index": 0,
+      "color": "aqua"
+    },
+    {
+      "text": " cores",
+      "color": "gray"
+    }
+  ],
 
   "craftcheck.failure.item.input": "Sin item de entrada!, necesario: %sx %s",
   "craftcheck.failure.item.output.space": "No hay suficiente espacio en el inventario para la salida de item(s)!",

@@ -3,7 +3,6 @@ package es.degrassi.mmreborn.common.integration.jade;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.crafting.helper.CraftingStatus;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
-import es.degrassi.mmreborn.common.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -14,7 +13,6 @@ import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
-import snownee.jade.api.ui.BoxStyle;
 import snownee.jade.api.ui.IElementHelper;
 
 public class DynamicMachineComponentProvider implements IBlockComponentProvider {
@@ -48,9 +46,7 @@ public class DynamicMachineComponentProvider implements IBlockComponentProvider 
         long runningCores = tag.getLong("runningCores");
         Component component = Component.translatable(
             "mmr.waila.cores",
-            Component.translatable("mmr.waila.cores.1").withStyle(ChatFormatting.GRAY),
-            Component.literal(runningCores + "").withStyle(ChatFormatting.AQUA),
-            Component.translatable("mmr.waila.cores.2").withStyle(ChatFormatting.GRAY)
+            runningCores
         );
         tooltip.add(component);
       }
