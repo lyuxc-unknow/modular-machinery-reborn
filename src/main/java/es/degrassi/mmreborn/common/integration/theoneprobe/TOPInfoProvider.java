@@ -66,28 +66,5 @@ public class TOPInfoProvider implements IProbeInfoProvider, Function<ITheOneProb
         runningCores
     );
     info.mcText(component);
-//    if (tile.hasActiveRecipe()) {
-//      float ticks = tile.getFirstRunningCore().map(MachineProcessorCore::getRecipeProgressTime).orElse(0f);
-//      int total = tile.getFirstRunningCore().map(MachineProcessorCore::getRecipeTotalTime).map(Float::intValue).orElse(0);
-//      float progress = ticks / total;
-//      boolean seconds = total >= 20;
-//      info.element(
-//          new CustomProgress(
-//              ticks,
-//              total,
-//              info.defaultProgressStyle()
-//                  .suffix(Component
-//                      .literal(
-//                          "/"
-//                              + (seconds ? Utils.decimalFormat(total / 20d) : Utils.decimalFormat(total))
-//                              + (seconds ? "s" : "")
-//                              + " ("
-//                              + Utils.decimalFormatWithPercentage(progress * 100)
-//                              + ")"
-//                      )
-//                  )
-//          )
-//      );
-//    }
   }
 }

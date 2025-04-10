@@ -50,19 +50,6 @@ public class DynamicMachineComponentProvider implements IBlockComponentProvider 
         );
         tooltip.add(component);
       }
-//      if (tag.contains("progress", Tag.TAG_DOUBLE) && tag.contains("total", Tag.TAG_INT)) {
-//        double ticks = tag.getDouble("progress");
-//        float total = tag.getInt("total");
-//        float progress = (float) (ticks / total);
-//        String ticksTotal = ticks + " / " + total;
-//        if (total >= 20) {
-//          ticksTotal = Utils.decimalFormat(ticks / 20) + " / " + Utils.decimalFormat(total / 20) + "s";
-//        }
-//        Component component = Component
-//            .literal(ticksTotal + " (" + Utils.decimalFormatWithPercentage(progress * 100) + ")")
-//            .withStyle(ChatFormatting.WHITE);
-//        tooltip.add(helper.progress(progress, component, helper.progressStyle(), BoxStyle.getNestedBox(), true));
-//      }
     }
   }
 
