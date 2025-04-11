@@ -44,7 +44,7 @@ body:
         - 1.0.1
         - 1.0.0
       default: 0
-    validation:
+    validations:
       required: true
   - type: textarea
     id: what-happen
@@ -52,7 +52,7 @@ body:
       label: What happened?
       description: Also tell us, what did you expect to happen?
       placeholder: Tell us what you see!
-    validation:
+    validations:
       required: true
   - type: textarea
     attributes:
