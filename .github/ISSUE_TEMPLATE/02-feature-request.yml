@@ -13,5 +13,5 @@ body:
       label: Feature
       description: Tell us, what is the feature, how it works, why should we add it?
       placeholder: Tell us what you see!
-    validation:
+    validations:
       required: true
