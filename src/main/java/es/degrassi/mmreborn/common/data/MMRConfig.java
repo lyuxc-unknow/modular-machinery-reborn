@@ -5,6 +5,7 @@ import es.degrassi.mmreborn.client.util.EnergyDisplayUtil;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ExperienceHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
+import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
 import es.degrassi.mmreborn.common.block.prop.ParallelHatchSize;
 import es.degrassi.mmreborn.common.util.LoggingLevel;
 import lombok.Getter;
@@ -73,6 +74,25 @@ public class MMRConfig {
   public final ConfigValue<Integer> HUGE_fluid_size;
   public final ConfigValue<Integer> LUDICROUS_fluid_size;
   public final ConfigValue<Integer> VACUUM_fluid_size;
+
+  public final ConfigValue<Integer> itemSlotXOffset;
+  public final ConfigValue<Integer> itemSlotYOffset;
+
+  public final ConfigValue<Integer> TINY_item_size;
+  public final ConfigValue<Integer> SMALL_item_size;
+  public final ConfigValue<Integer> NORMAL_item_size;
+  public final ConfigValue<Integer> REINFORCED_item_size;
+  public final ConfigValue<Integer> BIG_item_size;
+  public final ConfigValue<Integer> HUGE_item_size;
+  public final ConfigValue<Integer> LUDICROUS_item_size;
+
+  public final ConfigValue<Integer> TINY_item_cols;
+  public final ConfigValue<Integer> SMALL_item_cols;
+  public final ConfigValue<Integer> NORMAL_item_cols;
+  public final ConfigValue<Integer> REINFORCED_item_cols;
+  public final ConfigValue<Integer> BIG_item_cols;
+  public final ConfigValue<Integer> HUGE_item_cols;
+  public final ConfigValue<Integer> LUDICROUS_item_cols;
 
   public final ConfigValue<Integer> TINY_experience_size;
   public final ConfigValue<Integer> SMALL_experience_size;
@@ -303,10 +323,76 @@ public class MMRConfig {
       builder.pop();
     }
     builder.pop();
-//    builder.push("itemBus");
-//    {
-//    }
-//    builder.pop();
+    builder.push("itemBus");
+    {
+      builder.push("container");
+      {
+        itemSlotXOffset = builder
+            .comment("Defines the container X offset relative to top-left corner of the texture")
+            .defineInRange("xOffset", 8, 0, Integer.MAX_VALUE);
+        itemSlotYOffset = builder
+            .comment("Defines the container Y offset relative to top-left corner of the texture")
+            .defineInRange("yOffset", 8, 0, Integer.MAX_VALUE);
+      }
+      builder.pop();
+      builder.push(ItemBusSize.TINY.getSerializedName());
+      TINY_item_size = builder
+          .comment("Defines the slots number of item bus")
+          .defineInRange("slots", ItemBusSize.TINY.defaultSlots, 1, Integer.MAX_VALUE);
+      TINY_item_cols = builder
+          .comment("Defines the slot cols number of item bus")
+          .defineInRange("cols", ItemBusSize.TINY.defaultCols, 1, Integer.MAX_VALUE);
+      builder.pop();
+      builder.push(ItemBusSize.SMALL.getSerializedName());
+      SMALL_item_size = builder
+          .comment("Defines the slots number of item bus")
+          .defineInRange("slots", ItemBusSize.SMALL.defaultSlots, 1, Integer.MAX_VALUE);
+      SMALL_item_cols = builder
+          .comment("Defines the slot cols number of item bus")
+          .defineInRange("cols", ItemBusSize.SMALL.defaultCols, 1, Integer.MAX_VALUE);
+      builder.pop();
+      builder.push(ItemBusSize.NORMAL.getSerializedName());
+      NORMAL_item_size = builder
+          .comment("Defines the slots number of item bus")
+          .defineInRange("slots", ItemBusSize.NORMAL.defaultSlots, 1, Integer.MAX_VALUE);
+      NORMAL_item_cols = builder
+          .comment("Defines the slot cols number of item bus")
+          .defineInRange("cols", ItemBusSize.NORMAL.defaultCols, 1, Integer.MAX_VALUE);
+      builder.pop();
+      builder.push(ItemBusSize.REINFORCED.getSerializedName());
+      REINFORCED_item_size = builder
+          .comment("Defines the slots number of item bus")
+          .defineInRange("slots", ItemBusSize.REINFORCED.defaultSlots, 1, Integer.MAX_VALUE);
+      REINFORCED_item_cols = builder
+          .comment("Defines the slot cols number of item bus")
+          .defineInRange("cols", ItemBusSize.REINFORCED.defaultCols, 1, Integer.MAX_VALUE);
+      builder.pop();
+      builder.push(ItemBusSize.BIG.getSerializedName());
+      BIG_item_size = builder
+          .comment("Defines the slots number of item bus")
+          .defineInRange("slots", ItemBusSize.BIG.defaultSlots, 1, Integer.MAX_VALUE);
+      BIG_item_cols = builder
+          .comment("Defines the slot cols number of item bus")
+          .defineInRange("cols", ItemBusSize.BIG.defaultCols, 1, Integer.MAX_VALUE);
+      builder.pop();
+      builder.push(ItemBusSize.HUGE.getSerializedName());
+      HUGE_item_size = builder
+          .comment("Defines the slots number of item bus")
+          .defineInRange("slots", ItemBusSize.HUGE.defaultSlots, 1, Integer.MAX_VALUE);
+      HUGE_item_cols = builder
+          .comment("Defines the slot cols number of item bus")
+          .defineInRange("cols", ItemBusSize.HUGE.defaultCols, 1, Integer.MAX_VALUE);
+      builder.pop();
+      builder.push(ItemBusSize.LUDICROUS.getSerializedName());
+      LUDICROUS_item_size = builder
+          .comment("Defines the slots number of item bus")
+          .defineInRange("slots", ItemBusSize.LUDICROUS.defaultSlots, 1, Integer.MAX_VALUE);
+      LUDICROUS_item_cols = builder
+          .comment("Defines the slot cols number of item bus")
+          .defineInRange("cols", ItemBusSize.LUDICROUS.defaultCols, 1, Integer.MAX_VALUE);
+      builder.pop();
+    }
+    builder.pop();
     builder.push("experienceHatch");
     {
       builder.push(ExperienceHatchSize.TINY.getSerializedName());
@@ -392,6 +478,30 @@ public class MMRConfig {
       case HUGE -> HUGE_fluid_size.get();
       case LUDICROUS -> LUDICROUS_fluid_size.get();
       case VACUUM -> VACUUM_fluid_size.get();
+    };
+  }
+
+  public int itemSize(ItemBusSize size) {
+    return switch (size) {
+      case TINY -> TINY_item_size.get();
+      case SMALL -> SMALL_item_size.get();
+      case NORMAL -> NORMAL_item_size.get();
+      case REINFORCED -> REINFORCED_item_size.get();
+      case BIG -> BIG_item_size.get();
+      case HUGE -> HUGE_item_size.get();
+      case LUDICROUS -> LUDICROUS_item_size.get();
+    };
+  }
+
+  public int itemCols(ItemBusSize size) {
+    return switch (size) {
+      case TINY -> TINY_item_cols.get();
+      case SMALL -> SMALL_item_cols.get();
+      case NORMAL -> NORMAL_item_cols.get();
+      case REINFORCED -> REINFORCED_item_cols.get();
+      case BIG -> BIG_item_cols.get();
+      case HUGE -> HUGE_item_cols.get();
+      case LUDICROUS -> LUDICROUS_item_cols.get();
     };
   }
 

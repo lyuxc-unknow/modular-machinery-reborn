@@ -5,21 +5,24 @@ import net.minecraft.util.StringRepresentable;
 import java.util.Locale;
 
 public enum ItemBusSize implements StringRepresentable, ConfigLoaded {
-  TINY(1),
-  SMALL(4),
-  NORMAL(6),
-  REINFORCED(9),
-  BIG(12),
-  HUGE(16),
-  LUDICROUS(32);
+  TINY(1, 9),
+  SMALL(4, 9),
+  NORMAL(6, 9),
+  REINFORCED(9, 9),
+  BIG(12, 9),
+  HUGE(16, 9),
+  LUDICROUS(32, 9);
 
-  private int slots;
+  public int slots;
+  public int cols;
 
-  public final int defaultConfigSize;
+  public final int defaultSlots;
+  public final int defaultCols;
 
-  ItemBusSize(int defaultConfigSize) {
-    this.defaultConfigSize = defaultConfigSize;
-    this.slots = this.defaultConfigSize; //Temp. TODO configurable and GUI building
+  ItemBusSize(int defaultSlots, int defaultCols) {
+    this.defaultSlots = defaultSlots;
+    this.defaultCols = defaultCols;
+    // this.slots = this.defaultSlots; //Temp. TODO configurable and GUI building
   }
 
   public static ItemBusSize value(String value) {
@@ -32,6 +35,10 @@ public enum ItemBusSize implements StringRepresentable, ConfigLoaded {
       case "LUDICROUS" -> LUDICROUS;
       default -> TINY;
     };
+  }
+
+  public boolean isSameAsDefault() {
+    return slots == defaultSlots && cols == defaultCols;
   }
 
   public int getSlotCount() {

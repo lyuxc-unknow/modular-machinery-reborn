@@ -11,6 +11,7 @@ import es.degrassi.mmreborn.common.block.prop.ConfigLoaded;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ExperienceHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
+import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
 import es.degrassi.mmreborn.common.block.prop.ParallelHatchSize;
 import es.degrassi.mmreborn.common.command.MMRCommand;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
@@ -98,6 +99,10 @@ public class ModularMachineryReborn {
           size.transferLimit = MiscUtils.clamp(size.transferLimit, 1, Long.MAX_VALUE);
         }),
         Pair.of(FluidHatchSize.class, (FluidHatchSize size) -> size.size = MMRConfig.get().fluidSize(size)),
+        Pair.of(ItemBusSize.class, (ItemBusSize size) -> {
+          size.slots = MMRConfig.get().itemSize(size);
+          size.cols = MMRConfig.get().itemCols(size);
+        }),
         Pair.of(ExperienceHatchSize.class, (ExperienceHatchSize size) -> size.capacity =
             MMRConfig.get().experienceSize(size)),
         Pair.of(ParallelHatchSize.class, (ParallelHatchSize size) -> size.max = MMRConfig.get().maxParallel(size))
