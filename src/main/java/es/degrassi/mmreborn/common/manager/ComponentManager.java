@@ -20,6 +20,7 @@ import es.degrassi.mmreborn.common.entity.base.TileItemBus;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
+import es.degrassi.mmreborn.common.machine.component.FunctionComponent;
 import es.degrassi.mmreborn.common.machine.component.ItemComponent;
 import es.degrassi.mmreborn.common.machine.component.ParallelComponent;
 import lombok.Getter;
@@ -135,6 +136,7 @@ public class ComponentManager implements INBTSerializable<CompoundTag>, ISyncabl
         }
       }
     }
+    map.put(controllerPos, new FunctionComponent(controllerPos));
     return map;
   }
 

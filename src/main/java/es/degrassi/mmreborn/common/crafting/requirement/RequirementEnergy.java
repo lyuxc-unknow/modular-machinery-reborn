@@ -55,6 +55,7 @@ public class RequirementEnergy implements IRequirement<EnergyComponent> {
     return switch (mode) {
       case INPUT -> handler.getCurrentEnergy() >= requirementPerTick;
       case OUTPUT -> handler.getMaxEnergy() >= handler.getCurrentEnergy() + requirementPerTick;
+      case NONE -> true;
     };
   }
 

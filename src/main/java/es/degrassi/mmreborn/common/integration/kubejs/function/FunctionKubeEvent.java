@@ -1,0 +1,58 @@
+package es.degrassi.mmreborn.common.integration.kubejs.function;
+
+import dev.latvian.mods.kubejs.event.KubeEvent;
+import dev.latvian.mods.kubejs.level.BlockContainerJS;
+import dev.latvian.mods.rhino.Context;
+import es.degrassi.mmreborn.api.crafting.CraftingResult;
+import es.degrassi.mmreborn.api.crafting.ICraftingContext;
+import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
+import lombok.Getter;
+
+public class FunctionKubeEvent implements KubeEvent {
+
+  private final ICraftingContext internal;
+  @Getter
+  private final MachineControllerJS machine;
+
+  public FunctionKubeEvent(ICraftingContext internal) {
+    this.internal = internal;
+    this.machine = new MachineControllerJS((MachineControllerEntity) getTile());
+  }
+
+  public FunctionKubeEvent getContext() {
+    return this;
+  }
+
+  public FunctionKubeEvent getCtx() {
+    return this;
+  }
+
+  public float getRemainingTime() {
+    return this.internal.getRemainingTime();
+  }
+
+  public float getBaseSpeed() {
+    return this.internal.getBaseSpeed();
+  }
+
+  public void setBaseSpeed(float baseSpeed) {
+    this.internal.setBaseSpeed(baseSpeed);
+  }
+
+  public float getModifiedSpeed() {
+    return this.internal.getModifiedSpeed();
+  }
+
+  public MachineControllerEntity getTile() {
+    return this.internal.getMachineTile();
+  }
+
+  public BlockContainerJS getBlock() {
+    return new BlockContainerJS(getTile().getLevel(), getTile().getBlockPos());
+  }
+
+  @Override
+  public Object defaultExitValue(Context cx) {
+    return CraftingResult.pass();
+  }
+}

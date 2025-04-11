@@ -52,6 +52,11 @@ ServerEvents.recipes(event => {
         // Experience
         .produceExperience(100)
         .requireExperience(100)
+        // Functions ONLY AVAILABLE ON KUBEJS
+        .requireFunctionToStart("id")
+        .requireFunctionOnStart("id")
+        .requireFunctionEachTick("id")
+        .requireFunctionOnEnd("id")
         // only if mekanism addon available
         .produceChemical('10x mekanism:sulfuric_acid', x, y)
         .requireChemical('10x mekanism:sulfuric_acid', x, y)
@@ -79,6 +84,26 @@ ServerEvents.recipes(event => {
      *
      * Source buffer width/height: internal 14, external 18
      */
+})
+
+// REQUIRED FOR FUNCTION REQUIREMENTS
+// change id for the requirement function id you want, must be equals on the requirement itself
+MMREvents.recipeFunction("id", event => {
+  //Print the machine id in logs when the function is run.
+  console.info(event.machine.id)
+
+  //Immediately stop the function and allows the recipe to run.
+  event.success()
+
+  //Immediately stop the function and display and error in the controller
+  event.error("Error")
+
+  /**
+  * If neither event.success() nor event.error() are called the recipe will be allowed to run.
+  * if event.error() is called without specifying an error message it will show the default one.
+  * The event object containing several useful methods. see:
+  *     https://github.com/alec016/modular-machinery-reborn/tree/1.21-NeoForge/kubejsExample/server_scripts/function_event.md
+  */
 })
 
 MMREvents.machines(event => {

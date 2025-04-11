@@ -40,6 +40,8 @@ public class ComponentRegistration {
       ComponentType::create);
   public static final Supplier<ComponentType> COMPONENT_PARALLEL = MACHINE_COMPONENTS.register(rootLC("parallel"),
       ComponentType::create);
+  public static final Supplier<ComponentType> COMPONENT_FUNCTION = MACHINE_COMPONENTS.register(rootLC("function"),
+      ComponentType::create);
 
   public static void register(final IEventBus bus) {
     MACHINE_COMPONENTS.register(bus);

@@ -84,6 +84,9 @@
   "craftcheck.failure.time": "Invalid time, expected: %s but found: %s",
   "craftcheck.failure.height": "Invalid height, expected: %s but found: %s",
   "craftcheck.failure.parallel.loot_table": "Can't process multiple Loot Tables at the same time, remove the Parallel Hatch to process this recipe.",
+  "craftcheck.failure.function": "Can't execute function requirement, check logs for errors !",
+  "craftcheck.failure.function.no_listener": "Function requirement with id: %s has no associated KubeJS event",
+  "craftcheck.failure.function.interrupt": "Stopped by KubeJS event",
 
   "component.missing.energy.output": "No Energy Output Hatch found!",
   "component.missing.energy.input": "No Energy Input Hatch found!",
@@ -99,6 +102,7 @@
   "component.missing.time": "No Time Counter found!",
   "component.missing.height": "No Height Meter found!",
   "component.missing.chunkload": "No Chunkloader found!",
+  "component.missing.function": "No Function Component(Controller) found!",
 
   "gui.blueprint.popout.info": "Sneak to freeze the current preview to be able to preview it in world.",
   "gui.blueprint.popout.place": "Rightclick to place preview; move away from the placed one or open another structure preview (blueprint) to remove the one in-world.",

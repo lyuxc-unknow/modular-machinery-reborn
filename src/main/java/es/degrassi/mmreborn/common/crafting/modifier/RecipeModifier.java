@@ -46,6 +46,7 @@ public abstract class RecipeModifier implements IRecipeModifier {
     addToBlacklist(RequirementTypeRegistration.WEATHER.get());
     addToBlacklist(RequirementTypeRegistration.TIME.get());
     addToBlacklist(RequirementTypeRegistration.CHUNKLOAD.get());
+    addToBlacklist(RequirementTypeRegistration.FUNCTION.get());
   }
 
   public static void addToBlacklist(RequirementType<?> requirementType) {

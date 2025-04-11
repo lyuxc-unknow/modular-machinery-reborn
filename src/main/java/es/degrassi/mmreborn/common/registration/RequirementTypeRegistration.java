@@ -9,6 +9,7 @@ import es.degrassi.mmreborn.common.crafting.requirement.RequirementDuration;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementExperience;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementFluid;
+import es.degrassi.mmreborn.common.crafting.requirement.RequirementFunction;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementItem;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementLootTable;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementTime;
@@ -66,6 +67,9 @@ public class RequirementTypeRegistration {
   public static final Supplier<RequirementType<RequirementExperience>> EXPERIENCE =
       MACHINE_REQUIREMENTS.register(rootLC("experience"),
       () -> RequirementType.inventory(RequirementExperience.CODEC));
+  public static final Supplier<RequirementType<RequirementFunction>> FUNCTION =
+      MACHINE_REQUIREMENTS.register(rootLC("function"),
+      () -> RequirementType.world(RequirementFunction.CODEC));
 
   public static void register(IEventBus bus) {
     MACHINE_REQUIREMENTS.register(bus);

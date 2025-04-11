@@ -51,6 +51,7 @@ public class RequirementExperience implements IRequirement<ExperienceComponent> 
     return switch (mode) {
       case INPUT -> handler.getExperience() >= required;
       case OUTPUT -> handler.getExperienceCapacity() >= handler.getExperience() + required;
+      case NONE -> true;
     };
   }
 

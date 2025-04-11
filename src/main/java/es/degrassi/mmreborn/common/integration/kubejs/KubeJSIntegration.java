@@ -1,12 +1,17 @@
 package es.degrassi.mmreborn.common.integration.kubejs;
 
 import com.google.common.collect.Maps;
+import dev.latvian.mods.kubejs.event.EventResult;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.script.data.KubeFileResourcePack;
 import dev.latvian.mods.kubejs.script.data.VirtualDataPack;
+import es.degrassi.mmreborn.api.crafting.CraftingResult;
+import es.degrassi.mmreborn.api.crafting.ICraftingContext;
 import es.degrassi.mmreborn.common.integration.kubejs.builder.MachineBuilderJS;
+import es.degrassi.mmreborn.common.integration.kubejs.function.FunctionKubeEvent;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.machine.MachineLocation;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.resources.Resource;
@@ -44,5 +49,23 @@ public class KubeJSIntegration {
     }
     ScriptType.SERVER.console.infof("Successfully added %s Modular Machines ", event.getBuilders().size());
     return machines;
+  }
+
+  public static CraftingResult sendFunctionRequirementEvent(String id, ICraftingContext context) {
+    if(!MMRKubeJSPlugin.FUNCTIONS.hasListeners(id))
+      return CraftingResult.error(Component.translatable("craftcheck.failure.function.no_listener", id));
+    EventResult result = MMRKubeJSPlugin.FUNCTIONS.post(new FunctionKubeEvent(context), id);
+    if(result.interruptTrue() || result.interruptDefault() || result.pass())
+      return CraftingResult.success();
+    else if(result.value() instanceof Component error)
+      return CraftingResult.error(error);
+    else if(result.value() instanceof CharSequence charSequence)
+      return CraftingResult.error(Component.literal(charSequence.toString()));
+    else
+      return CraftingResult.error(Component.translatable("craftcheck.failure.function.interrupt"));
+  }
+
+  public static void logError(Throwable error) {
+    ScriptType.SERVER.console.error("Error while processing function requirement: ", error);
   }
 }

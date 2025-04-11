@@ -115,10 +115,12 @@ public class RequirementItem implements IRequirement<ItemComponent> {
     int amount = (int) context.getIntegerModifiedValue(this.ingredient.count(), this);
     if (getMode() == IOType.INPUT) {
       return Arrays.stream(this.ingredient.getItems()).mapToInt(component::getItemAmount).sum() >= amount;
-    } else {
+    } else if(getMode() == IOType.OUTPUT) {
       if (this.ingredient.getItems().length > 0)
         return component.getSpaceForItem(this.ingredient.getItems()[0]) >= amount;
       else throw new IllegalStateException("Can't use output empty item");
+    } else {
+      return true;
     }
   }
 

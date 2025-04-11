@@ -9,7 +9,8 @@ import java.util.Locale;
 
 public enum IOType implements StringRepresentable {
   INPUT,
-  OUTPUT;
+  OUTPUT,
+  NONE;
 
   public static final NamedCodec<IOType> CODEC = NamedCodec.enumCodec(IOType.class);
 

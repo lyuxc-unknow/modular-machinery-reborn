@@ -31,7 +31,9 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class IOInventory implements IItemHandlerModifiable, Container, ISyncableStuff {
+  @Getter
   private final List<ItemSlot> inputs = new ArrayList<>();
+  @Getter
   private final List<ItemSlot> outputs = new ArrayList<>();
 
   private final Map<Integer, Integer> slotLimits = Maps.newHashMap(); //Value not present means default, aka 64.
@@ -371,7 +373,7 @@ public class IOInventory implements IItemHandlerModifiable, Container, ISyncable
     setChanged();
   }
 
-  private boolean canPlaceOutput(@NotNull ItemSlot component, ItemStack stack) {
+  public boolean canPlaceOutput(@NotNull ItemSlot component, ItemStack stack) {
     //Check component filter and variant
     if (!component.isItemValid(0, stack))
       return false;

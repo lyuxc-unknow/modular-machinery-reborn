@@ -71,6 +71,7 @@ public class RequirementFluid implements IRequirement<FluidComponent> {
         int filled = handler.fill(required.asFluidStack().copyWithAmount(amount), IFluidHandler.FluidAction.SIMULATE);
         yield filled == amount;
       }
+      case NONE -> true;
     };
   }
 
