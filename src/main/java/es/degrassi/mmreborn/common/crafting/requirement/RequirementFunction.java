@@ -48,7 +48,7 @@ public class RequirementFunction implements IRequirement<FunctionComponent> {
 
   @Override
   public IOType getMode() {
-    return IOType.INPUT;
+    return IOType.NONE;
   }
 
   @Override
