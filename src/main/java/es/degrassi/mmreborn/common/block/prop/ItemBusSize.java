@@ -22,7 +22,6 @@ public enum ItemBusSize implements StringRepresentable, ConfigLoaded {
   ItemBusSize(int defaultSlots, int defaultCols) {
     this.defaultSlots = defaultSlots;
     this.defaultCols = defaultCols;
-    // this.slots = this.defaultSlots; //Temp. TODO configurable and GUI building
   }
 
   public static ItemBusSize value(String value) {
@@ -35,10 +34,6 @@ public enum ItemBusSize implements StringRepresentable, ConfigLoaded {
       case "LUDICROUS" -> LUDICROUS;
       default -> TINY;
     };
-  }
-
-  public boolean isSameAsDefault() {
-    return slots == defaultSlots && cols == defaultCols;
   }
 
   public int getSlotCount() {
