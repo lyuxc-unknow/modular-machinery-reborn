@@ -67,6 +67,8 @@ ServerEvents.recipes(event => {
         .produceHeat(double amount, int x, int y)
         // only if mekanism addon available (TEMPERATURE)
         // AVAILABLE UNITS: KELVIN, CELSIUS, RANKINE, FAHRENHEIT, AMBIENT
+        // intRange examples(quote or double quote is required, must be a string:
+        //      '[0,24000]'; '[0, 255)', '(0, 255)', '(,9999)', '[0,)', '273'
         .requireTemp(intRange, unit)
         .requireTemp(intRange, unit, x, y)
         // try to use the methods below over .requireTemp to avoid mistakes in unit spelling
@@ -97,10 +99,11 @@ ServerEvents.recipes(event => {
      *
      * Fluid tank width/height: internal 16, external 18
      *
-     * Dimension, Biome, Time, Weather, Chunkload width/height: 18
+     * Dimension, Biome, Time, Weather, Chunkload, Height width/height: 18
      *
      * Addons:
      * Chemical tank width/height: internal 16, external 18
+     * Heat/Temperature width/height: internal 16, external 18
      *
      * Source buffer width/height: internal 14, external 18
      */
@@ -161,7 +164,8 @@ MMREvents.machines(event => {
                     ]
                 )
                 /**
-                 * Sets the block/blockstate, block tag or array of block/blockstates for the key defined in the patten
+                 * Sets the block/blockstate, block tag or array of block/blockstates for the key defined in the patten,
+                 *      this also can have nbt tags to be loaded.
                  * if any key defined in pattern is missing here (except `m` of machine) the machine will not be loaded and an error is thrown
                  * if any key defined below is not present in the pattern it will be ignored
                  *
@@ -186,6 +190,9 @@ MMREvents.machines(event => {
                  * #modular_machinery_reborn_mekanism:chemicalhatch -> includes input and output tags for chemicals(ae2 included)
                  * #modular_machinery_reborn_mekanism:chemicalinputhatch
                  * #modular_machinery_reborn_mekanism:chemicaloutputhatch
+                 * #modular_machinery_reborn_mekanism:heat_vent -> includes input and output tags for heat
+                 * #modular_machinery_reborn_mekanism:heat_input_vent
+                 * #modular_machinery_reborn_mekanism:heat_output_vent
                  * Only if mekanism and ae2 addon available
                  * #modular_machinery_reborn_energistics:me_chemical_hatch
                  * #modular_machinery_reborn_energistics:me_chemical_inputhatch
@@ -241,6 +248,7 @@ MMREvents.machines(event => {
                 )
         )
         .controllerModel(ControllerModel.of("<namespace>:<path under assets/models/(controller|controllers)>")) // Ex: minecraft:furnace, mekanism:chemical_infuser, etc
+        // the recipe modifiers affects function requirement modifications, so keep it in mind
         .addModifier(
                 MMRModifierReplacement.create()
                     // same as the key definition right side, can be tags, blocks, blockstates
@@ -284,9 +292,10 @@ MMREvents.machines(event => {
                             // - modular_machinery_reborn:item
                             // - modular_machinery_reborn:fluid
                             // - modular_machinery_reborn:energy
-                            // - modular_machinery_reborn:loot_table -> only affects the luck
+                            // - modular_machinery_reborn:loot_table -> needs to be on output(), only affects the luck
                             // - modular_machinery_reborn:experience
                             // - modular_machinery_reborn:chemical
+                            // - modular_machinery_reborn:heat
                             // - modular_machinery_reborn:source
                             .target("modular_machinery_reborn:item")
                             // if this is not present acts like input(), you can specify it if needed
