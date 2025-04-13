@@ -60,6 +60,26 @@ ServerEvents.recipes(event => {
         // only if mekanism addon available
         .produceChemical('10x mekanism:sulfuric_acid', x, y)
         .requireChemical('10x mekanism:sulfuric_acid', x, y)
+        // only if mekanism addon available (HEAT)
+        .requireHeat(double amount)
+        .requireHeat(double amount, int x, int y)
+        .produceHeat(double amount)
+        .produceHeat(double amount, int x, int y)
+        // only if mekanism addon available (TEMPERATURE)
+        // AVAILABLE UNITS: KELVIN, CELSIUS, RANKINE, FAHRENHEIT, AMBIENT
+        .requireTemp(intRange, unit)
+        .requireTemp(intRange, unit, x, y)
+        // try to use the methods below over .requireTemp to avoid mistakes in unit spelling
+        .requireTempKelvin(intRange)
+        .requireTempKelvin(intRange, int x, int y)
+        .requireTempCelsius(intRange)
+        .requireTempCelsius(intRange, int x, int y)
+        .requireTempFahrenheit(intRange)
+        .requireTempFahrenheit(intRange, int x, int y)
+        .requireTempRankine(intRange)
+        .requireTempRankine(intRange, int x, int y)
+        .requireTempAmbient(intRange)
+        .requireTempAmbient(intRange, int x, int y)
         // only if ars addon available
         .produceSource(100, x, y)
         .requireSource(100, x, y)
