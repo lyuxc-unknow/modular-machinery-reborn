@@ -98,3 +98,26 @@ let active = machine.isChunkloadEnabled()
 let radius = machine.getChunkloadRadius()
 ```
 ___
+### Chemicals (ONLY IF MMR MEKANISM IS PRESENT)
+```js
+let machine = event.machine
+let chemicals = machine.getChemicalsStored(IOType.INPUT || IOType.OUTPUT) // returns List<ChemicalStack>
+let capcity = machine.getChemicalCapacity(IOType.INPUT || IOType.OUTPUT) // return the sum of every chemical hatch by IO 
+mode
+// The given chemical must be a KubeJS ChemicalStackJS
+// Returns the sum of every chemical hatch by IO mode that contains the given chemical
+let chemicalCapacity = machine.getChemicalCapacity(chemical, IOType.INPUT || IOType.OUTPUT)
+
+// Add the specified chemical to the first available chemical output hatch
+// return the chemical that couldn't be added.
+// The passed chemical must be a KubeJS ChemicalStackJS
+// It will always be really inserted
+let added = machine.addChemical(chemical)
+
+// Extracts the specified chemical from the first available chemical input hatch
+// return the amount of chemical that was extracted.
+// The passed chemical must be a KubeJS ChemicalStackJS
+// It will always be really extracted
+let removed = machine.removeChemical(chemical)
+
+```
