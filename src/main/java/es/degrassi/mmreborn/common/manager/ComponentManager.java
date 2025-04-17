@@ -23,6 +23,7 @@ import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.machine.component.FunctionComponent;
 import es.degrassi.mmreborn.common.machine.component.ItemComponent;
 import es.degrassi.mmreborn.common.machine.component.ParallelComponent;
+import es.degrassi.mmreborn.common.util.Utils;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -51,6 +52,10 @@ public class ComponentManager implements INBTSerializable<CompoundTag>, ISyncabl
   private final Map<ComponentType, Map<IOType, List<MachineComponent<?>>>> foundComponentsValues = Maps.newHashMap();
   private final Map<BlockPos, List<ModifierReplacement>> foundModifiers = Maps.newHashMap();
 
+  private final long tickOffset = Utils.RAND.nextLong(0, Long.MAX_VALUE);
+  private long lastComponentsCheckTick;
+  private long lastModifiersCheckTick;
+
   public ComponentManager(MachineControllerEntity entity) {
     this.controller = entity;
   }
@@ -62,25 +67,37 @@ public class ComponentManager implements INBTSerializable<CompoundTag>, ISyncabl
   }
 
   public final void updateModifiers(boolean force) {
-    if (controller.getFoundMachine() == DynamicMachine.DUMMY) return;
-    if (controller.getLevel() == null) return;
-    if (force || controller.getLevel().getGameTime() % MMRConfig.get().checkStructureTicks.get() == 0) {
-      foundModifiers.clear();
-      foundModifiers.putAll(gatherModifiers());
-    }
+    if (controller.getFoundMachine() == DynamicMachine.DUMMY)
+      return;
+    Level level = controller.getLevel();
+    if (level == null)
+      return;
+    long gameTime = level.getGameTime();
+    if (!Utils.shouldRunPeriodicCheck(force, gameTime, lastModifiersCheckTick, tickOffset,
+        MMRConfig.get().checkStructureTicks.get()))
+      return;
+    lastModifiersCheckTick = gameTime;
+    foundModifiers.clear();
+    foundModifiers.putAll(gatherModifiers());
     controller.setChanged();
   }
 
   public final void updateComponents(boolean force) {
-    if (controller.getFoundMachine() == DynamicMachine.DUMMY) return;
-    if (controller.getLevel() == null) return;
-    if (force || controller.getLevel().getGameTime() % 20 == 0) {
-      reset();
-      foundComponents.putAll(gatherComponents());
-      foundComponentsValues.putAll(filter());
-      updateModifiers(force);
-      controller.getProcessor().setMachineInventoryChanged();
-    }
+    if (controller.getFoundMachine() == DynamicMachine.DUMMY)
+      return;
+    Level level = controller.getLevel();
+    if (level == null)
+      return;
+    long gameTime = level.getGameTime();
+    if (!Utils.shouldRunPeriodicCheck(force, gameTime, lastComponentsCheckTick, tickOffset,
+        MMRConfig.get().checkStructureTicks.get()))
+      return;
+    lastComponentsCheckTick = gameTime;
+    reset();
+    foundComponents.putAll(gatherComponents());
+    foundComponentsValues.putAll(filter());
+    updateModifiers(force);
+    controller.getProcessor().setMachineInventoryChanged();
     controller.setChanged();
   }
 

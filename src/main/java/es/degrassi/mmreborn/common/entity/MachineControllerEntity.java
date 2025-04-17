@@ -28,6 +28,7 @@ import es.degrassi.mmreborn.common.network.server.SUpdateCraftingStatusPacket;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.util.RedstoneHelper;
 import es.degrassi.mmreborn.common.util.SoundManager;
+import es.degrassi.mmreborn.common.util.Utils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -67,6 +68,9 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
   private final MachineProcessor processor;
   private int lastFocus;
   private SoundManager soundManager;
+
+  private final long tickOffset = Utils.RAND.nextLong(0, Long.MAX_VALUE);
+  private long lastCheckTick;
 
   public MachineControllerEntity(BlockPos pos, BlockState state) {
     super(EntityRegistration.CONTROLLER.get(), pos, state);
@@ -187,24 +191,28 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
   }
 
   public void checkStructure(boolean immediate) {
-    if (immediate || level.getGameTime() % MMRConfig.get().checkStructureTicks.get() == 0) {
-      if (this.getFoundMachine() != DynamicMachine.DUMMY) {
-        if (!getFoundMachine().getPattern().match(getLevel(), getBlockPos(), getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING))) {
-          distributeCasingColor(true);
-          setStatus(MachineStatus.MISSING_STRUCTURE);
-        } else {
-          distributeCasingColor(false);
-          componentManager.updateComponents(false);
-          if (!status.isCrafting()) {
-            setStatus(MachineStatus.IDLE);
-          } else {
-            setStatus(status);
-          }
-        }
-        setRequestModelUpdate(true);
-        setChanged();
+    if (this.getFoundMachine() == DynamicMachine.DUMMY)
+      return;
+    long gameTime = getLevel().getGameTime();
+    if (!Utils.shouldRunPeriodicCheck(immediate, gameTime, lastCheckTick, tickOffset,
+        MMRConfig.get().checkStructureTicks.get()))
+      return;
+    lastCheckTick = gameTime;
+    if (!getFoundMachine().getPattern().match(getLevel(), getBlockPos(),
+        getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING))) {
+      distributeCasingColor(true);
+      setStatus(MachineStatus.MISSING_STRUCTURE);
+    } else {
+      distributeCasingColor(false);
+      componentManager.updateComponents(false);
+      if (!status.isCrafting()) {
+        setStatus(MachineStatus.IDLE);
+      } else {
+        setStatus(status);
       }
     }
+    setRequestModelUpdate(true);
+    setChanged();
   }
 
   public void distributeCasingColor(boolean default_, BlockPos... poss) {
