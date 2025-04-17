@@ -70,7 +70,7 @@ public class ModularMachineryReborn {
   public static final BiMap<ResourceLocation, BlockController> MACHINES_BLOCK = HashBiMap.create();
 
   public ModularMachineryReborn(final ModContainer CONTAINER, final IEventBus MOD_BUS) {
-    CONTAINER.registerConfig(ModConfig.Type.COMMON, MMRConfig.getSpec());
+    CONTAINER.registerConfig(ModConfig.Type.COMMON, MMRConfig.getSpec(), String.format("%s/base/common.toml", MODID));
 
     addConfigLoaders();
 
