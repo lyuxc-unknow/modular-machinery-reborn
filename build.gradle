@@ -26,11 +26,6 @@ if (transformer.exists()) {
   minecraft.accessTransformers.file transformer
 }
 
-// TODO: add to appex, experiencelib, cm botania, cm ars
-tasks.build {
-  finalizedBy(tasks.publishToMavenLocal)
-}
-
 runs {
   configureEach {
     systemProperty 'forge.logging.markers', 'REGISTRIES'
@@ -88,7 +83,7 @@ repositories {
   }
   maven {
     name = "Lat's maven"
-    url = "https://maven.saps.dev/releases"
+    url = "https://maven.latvian.dev/releases"
     content {
       includeGroup "dev.latvian.mods"
       includeGroup "dev.latvian.apps"
