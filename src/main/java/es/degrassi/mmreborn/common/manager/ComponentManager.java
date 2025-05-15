@@ -8,13 +8,13 @@ import es.degrassi.mmreborn.api.crafting.ICraftingContext;
 import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
 import es.degrassi.mmreborn.api.network.ISyncable;
 import es.degrassi.mmreborn.api.network.ISyncableStuff;
-import es.degrassi.mmreborn.client.ModularMachineryRebornClient;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
 import es.degrassi.mmreborn.common.crafting.modifier.RecipeModifier;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
+import es.degrassi.mmreborn.common.entity.ParallelHatchEntity;
 import es.degrassi.mmreborn.common.entity.base.MachineComponentEntity;
 import es.degrassi.mmreborn.common.entity.base.TileItemBus;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
@@ -201,7 +201,9 @@ public class ComponentManager implements INBTSerializable<CompoundTag>, ISyncabl
     for (BlockPos potentialPosition : filteredMap.keySet()) {
       BlockPos realPos = controllerPos.offset(potentialPosition);
       try {
-        return Optional.of(ModularMachineryRebornClient.getClientSideParallelHatchEntity(realPos).provideComponent());
+        if (level.getBlockEntity(realPos) instanceof ParallelHatchEntity entity) {
+          return Optional.of(entity.provideComponent());
+        }
       } catch (Exception ignored) {}
     }
     return Optional.empty();
@@ -218,10 +220,11 @@ public class ComponentManager implements INBTSerializable<CompoundTag>, ISyncabl
     for (BlockPos potentialPosition : filteredMap.keySet()) {
       BlockPos realPos = controllerPos.offset(potentialPosition);
       try {
-        TileItemBus entity = ModularMachineryRebornClient.getClientSideItemBusEntity(realPos);
-        if (!entity.getIoType().equals(mode)) continue;
-        if (entity.provideComponent() == null) continue;
-        components.add(entity.provideComponent());
+        if (level.getBlockEntity(realPos) instanceof TileItemBus entity) {
+          if (!entity.getIoType().equals(mode)) continue;
+          if (entity.provideComponent() == null) continue;
+          components.add(entity.provideComponent());
+        }
       } catch (Exception ignored) {}
     }
     if (components.isEmpty())
