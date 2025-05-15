@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import org.jetbrains.annotations.NotNull;
@@ -76,5 +77,10 @@ public abstract class BlockMachineComponent extends Block implements BlockDynami
       }
     }
     return drops;
+  }
+
+  @Override
+  protected boolean canBeReplaced(BlockState state, Fluid fluid) {
+    return false;
   }
 }
