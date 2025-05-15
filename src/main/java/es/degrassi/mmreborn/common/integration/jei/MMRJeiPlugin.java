@@ -102,17 +102,6 @@ public class MMRJeiPlugin implements IModPlugin {
       public Collection<IGuiClickableArea> getGuiClickableAreas(ControllerScreen containerScreen, double mouseX, double mouseY) {
         if (containerScreen.getPopupUnderMouse(mouseX, mouseY) != null)
           return List.of();
-        /*return getCategory(containerScreen.getMenu().getId())
-            .map(category -> List.of(
-                IGuiClickableArea.createBasic(
-                    TextureSizeHelper.getWidth(ControllerScreen.TAB) * 3,
-                    -TextureSizeHelper.getHeight(ControllerScreen.TAB),
-                    TextureSizeHelper.getWidth(ControllerScreen.TAB),
-                    TextureSizeHelper.getHeight(ControllerScreen.TAB),
-                    category.getRecipeType()
-                )
-            ))
-            .orElse(List.of());*/
         return List.of(createBasic(
             TextureSizeHelper.getWidth(ControllerScreen.TAB) * 3,
             -TextureSizeHelper.getHeight(ControllerScreen.TAB),
@@ -206,10 +195,6 @@ public class MMRJeiPlugin implements IModPlugin {
             .addRecipes(cat.getRecipeType(), recipes)
         )
     );
-
-    machineRecipes.forEach((id, recipes) -> {
-      MMRLogger.INSTANCE.info("Registered {} recipes for {}", recipes.size(), id);
-    });
   }
 
   @Override
