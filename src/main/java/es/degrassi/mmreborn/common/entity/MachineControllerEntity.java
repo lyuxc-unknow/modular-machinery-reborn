@@ -90,6 +90,12 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
     }
   }
 
+  @Override
+  public void setChanged() {
+    if(this.level != null)
+      this.level.blockEntityChanged(this.worldPosition);
+  }
+
   private CraftingStatus craftingByMachine(MachineStatus status) {
     return switch (status) {
       case IDLE -> CraftingStatus.NO_RECIPE;
