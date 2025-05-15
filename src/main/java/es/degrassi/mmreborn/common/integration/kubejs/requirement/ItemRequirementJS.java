@@ -40,7 +40,7 @@ public interface ItemRequirementJS extends RecipeJSBuilder {
     if (chance < 0)
       return this.error("Chance can not bellow 0");
     if (chance > 1)
-      return this.error("Chance can not be greater than 0");
+      return this.error("Chance can not be greater than 1");
     RequirementItem requirement = new RequirementItem(IOType.INPUT, stack, new PositionedRequirement(x, y));
     return addRequirement(new RecipeRequirement<>(requirement, chance));
   }
@@ -53,7 +53,7 @@ public interface ItemRequirementJS extends RecipeJSBuilder {
     if (chance < 0)
       return this.error("Chance can not bellow 0");
     if (chance > 1)
-      return this.error("Chance can not be greater than 0");
+      return this.error("Chance can not be greater than 1");
     RequirementItem requirement = new RequirementItem(IOType.OUTPUT, stack, new PositionedRequirement(x, y));
     return addRequirement(new RecipeRequirement<>(requirement, chance));
   }
