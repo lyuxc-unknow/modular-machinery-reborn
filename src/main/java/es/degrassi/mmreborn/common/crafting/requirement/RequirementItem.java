@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
-import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.crafting.CraftingResult;
 import es.degrassi.mmreborn.api.crafting.ICraftingContext;
@@ -32,7 +31,7 @@ import java.util.Arrays;
 @Getter
 public class RequirementItem implements IRequirement<ItemComponent> {
   public static final NamedCodec<RequirementItem> CODEC = NamedCodec.record(instance -> instance.group(
-          DefaultCodecs.SIZED_INGREDIENT_WITH_NBT.fieldOf("sizedIngredient").forGetter(req -> req.ingredient),
+          NamedCodec.of(SizedIngredient.FLAT_CODEC).fieldOf("sizedIngredient").forGetter(req -> req.ingredient),
           NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(IRequirement::getMode),
           PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(IRequirement::getPosition),
           // WARING: do not use this property, this is used to adapt the almost unified to show in JEI/EMI only the
@@ -134,19 +133,10 @@ public class RequirementItem implements IRequirement<ItemComponent> {
 
   private CraftingResult processInput(ItemComponent component, ICraftingContext context) {
     int amount = (int) context.getIntegerModifiedValue(this.ingredient.count(), this);
-    int maxExtract = Arrays.stream(this.ingredient.getItems()).mapToInt(component::getItemAmount).sum();
+    int maxExtract = component.getIngredientAmount(this.ingredient.ingredient());
     if (maxExtract >= amount) {
-      int toExtract = amount;
-      for (ItemStack item : this.ingredient.getItems()) {
-        int canExtract = component.getItemAmount(item);
-        if (canExtract > 0) {
-          canExtract = Math.min(canExtract, toExtract);
-          component.removeFromInputs(item, canExtract);
-          toExtract -= canExtract;
-          if (toExtract == 0)
-            return CraftingResult.success();
-        }
-      }
+      component.removeFromInputs(this.ingredient.ingredient(), this.ingredient.count());
+      return CraftingResult.success();
     }
     return CraftingResult.error(Component.translatable("craftcheck.failure.item.input", amount, ingredient.ingredient().toString()));
   }
