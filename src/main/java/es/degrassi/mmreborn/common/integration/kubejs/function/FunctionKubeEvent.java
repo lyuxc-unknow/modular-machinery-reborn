@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.integration.kubejs.function;
 
+import dev.latvian.mods.kubejs.event.EventExit;
 import dev.latvian.mods.kubejs.event.KubeEvent;
 import dev.latvian.mods.kubejs.level.BlockContainerJS;
 import dev.latvian.mods.rhino.Context;
@@ -7,6 +8,7 @@ import es.degrassi.mmreborn.api.crafting.CraftingResult;
 import es.degrassi.mmreborn.api.crafting.ICraftingContext;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import lombok.Getter;
+import net.minecraft.network.chat.Component;
 
 public class FunctionKubeEvent implements KubeEvent {
 
@@ -54,5 +56,9 @@ public class FunctionKubeEvent implements KubeEvent {
   @Override
   public Object defaultExitValue(Context cx) {
     return CraftingResult.pass();
+  }
+
+  public void error(Context cx, Component error) throws EventExit {
+    this.cancel(cx, error);
   }
 }
