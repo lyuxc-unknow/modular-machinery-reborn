@@ -133,7 +133,11 @@ public class ControllerBakedModel implements IDynamicBakedModel {
 
   @Override
   public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
-    return getMachineModel(data).getRenderTypes(state, rand, data);
+    try {
+      return getMachineModel(data).getRenderTypes(state, rand, data);
+    } catch (IllegalArgumentException ignored) {
+      return ChunkRenderTypeSet.all();
+    }
   }
 
   @Override

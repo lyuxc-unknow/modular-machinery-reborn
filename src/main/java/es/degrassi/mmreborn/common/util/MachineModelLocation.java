@@ -51,16 +51,16 @@ public class MachineModelLocation {
       state = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), new StringReader(loc), false).blockState();
     } catch (CommandSyntaxException ignored) {
     }
-    ResourceLocation id;
+    ResourceLocation id = null;
     String properties = null;
     if (loc.contains("#")) {
       id = ResourceLocation.parse(loc.substring(0, loc.indexOf("#")));
       properties = loc.substring(loc.indexOf("#") + 1);
-    } else
+    } else if (state == null)
       id = ResourceLocation.parse(loc);
 
     Item item = null;
-    if (BuiltInRegistries.ITEM.containsKey(id))
+    if (id != null && BuiltInRegistries.ITEM.containsKey(id))
       item = BuiltInRegistries.ITEM.get(id);
 
     return new MachineModelLocation(loc, state, item, id, properties);
