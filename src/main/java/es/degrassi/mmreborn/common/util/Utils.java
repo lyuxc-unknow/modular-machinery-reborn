@@ -66,4 +66,17 @@ public class Utils {
   public static long clamp(long value, long min, long max) {
     return value < min ? min : Math.min(value, max);
   }
+
+  public static boolean shouldRunPeriodicCheck(boolean immediate, long gameTime, long lastGameTime, long offset,
+      long period) {
+    if (lastGameTime == gameTime)
+      return false;
+    if (immediate)
+      return true;
+    long roundGameTime = gameTime % period;
+    long roundOffset = offset % period;
+    if ((roundGameTime + roundOffset) % period != 0)
+      return false;
+    return true;
+  }
 }
