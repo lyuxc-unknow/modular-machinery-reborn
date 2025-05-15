@@ -221,8 +221,8 @@ public class ModularMachineryReborn {
   private void onReloadStart(final CommandEvent event) {
     if (event.getParseResults().getReader().getString().equals("reload") && event.getParseResults().getContext().getSource().hasPermission(2)) {
       MMRLogger.reset();
-      Config.load();
       ConfigLoaded.load();
+      Config.load();
       EnergyDisplayUtil.loadFromConfig();
       if (event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayer player) {
         MMRCommand.reloadMachines(player.server, player);

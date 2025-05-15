@@ -12,6 +12,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -97,5 +98,9 @@ public class ControllerContainer extends ContainerBase<MachineControllerEntity> 
 
   public void setPage(int corePage) {
     this.corePage = corePage;
+  }
+
+  public ResourceLocation getId() {
+    return getEntity().getFoundMachine().getRegistryName();
   }
 }

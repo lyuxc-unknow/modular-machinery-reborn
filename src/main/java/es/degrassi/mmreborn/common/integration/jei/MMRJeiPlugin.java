@@ -14,19 +14,22 @@ import es.degrassi.mmreborn.common.integration.jei.ingredient.CustomIngredientTy
 import es.degrassi.mmreborn.common.integration.jei.ingredient.DummyIngredientRenderer;
 import es.degrassi.mmreborn.common.integration.jei.ingredient.IntegerIngredientHelper;
 import es.degrassi.mmreborn.common.integration.jei.ingredient.LongIngredientHelper;
-import es.degrassi.mmreborn.common.integration.jei.recipe.MMRJeiRecipeTransferHandler;
 import es.degrassi.mmreborn.common.item.ControllerItem;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
 import es.degrassi.mmreborn.common.registration.Registration;
+import es.degrassi.mmreborn.common.util.MMRLogger;
 import es.degrassi.mmreborn.common.util.TextureSizeHelper;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IJeiHelpers;
+import mezz.jei.api.recipe.IFocusFactory;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.recipe.category.extensions.IRecipeCategoryDecorator;
 import mezz.jei.api.registration.IAdvancedRegistration;
@@ -39,9 +42,9 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
+import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -50,20 +53,26 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @JeiPlugin
 public class MMRJeiPlugin implements IModPlugin {
   public static final ResourceLocation PLUGIN_ID = ModularMachineryReborn.rl("jei_plugin");
-  private static final Map<DynamicMachine, MMRRecipeCategory> recipeCategories = Maps.newHashMap();
+  private static final Map<ResourceLocation, MMRRecipeCategory> recipeCategories = Maps.newHashMap();
   public static IJeiHelpers jeiHelpers;
 
+  @Nullable
   public static MMRRecipeCategory getCategory(DynamicMachine machine) {
-    return recipeCategories.get(machine);
+    return recipeCategories.get(machine.getRegistryName());
+  }
+
+  public static Optional<MMRRecipeCategory> getCategory(ResourceLocation machine) {
+    return Optional.ofNullable(recipeCategories.get(machine));
   }
 
   @Override
@@ -93,12 +102,23 @@ public class MMRJeiPlugin implements IModPlugin {
       public Collection<IGuiClickableArea> getGuiClickableAreas(ControllerScreen containerScreen, double mouseX, double mouseY) {
         if (containerScreen.getPopupUnderMouse(mouseX, mouseY) != null)
           return List.of();
-        return List.of(IGuiClickableArea.createBasic(
+        /*return getCategory(containerScreen.getMenu().getId())
+            .map(category -> List.of(
+                IGuiClickableArea.createBasic(
+                    TextureSizeHelper.getWidth(ControllerScreen.TAB) * 3,
+                    -TextureSizeHelper.getHeight(ControllerScreen.TAB),
+                    TextureSizeHelper.getWidth(ControllerScreen.TAB),
+                    TextureSizeHelper.getHeight(ControllerScreen.TAB),
+                    category.getRecipeType()
+                )
+            ))
+            .orElse(List.of());*/
+        return List.of(createBasic(
             TextureSizeHelper.getWidth(ControllerScreen.TAB) * 3,
             -TextureSizeHelper.getHeight(ControllerScreen.TAB),
             TextureSizeHelper.getWidth(ControllerScreen.TAB),
             TextureSizeHelper.getHeight(ControllerScreen.TAB),
-            getCategory(containerScreen.getMenu().getEntity().getFoundMachine()).getRecipeType()
+            containerScreen.getMenu().getId()
         ));
       }
 
@@ -111,6 +131,29 @@ public class MMRJeiPlugin implements IModPlugin {
         return extraAreas;
       }
     });
+  }
+
+  private static IGuiClickableArea createBasic(
+      int xPos,
+      int yPos,
+      int width,
+      int height,
+      ResourceLocation id
+  ) {
+    Rect2i area = new Rect2i(xPos, yPos, width, height);
+    ItemStack stack = new ItemStack(ItemRegistration.CONTROLLER.get());
+    stack.set(Registration.MACHINE_DATA, id);
+    return new IGuiClickableArea() {
+      @Override
+      public Rect2i getArea() {
+        return area;
+      }
+
+      @Override
+      public void onClick(IFocusFactory focusFactory, IRecipesGui recipesGui) {
+        recipesGui.show(focusFactory.createFocus(RecipeIngredientRole.CATALYST, VanillaTypes.ITEM_STACK, stack));
+      }
+    };
   }
 
   @Override
@@ -126,10 +169,11 @@ public class MMRJeiPlugin implements IModPlugin {
   @Override
   public void registerCategories(IRecipeCategoryRegistration registration) {
     if (jeiHelpers == null) jeiHelpers = registration.getJeiHelpers();
+    recipeCategories.clear();
     for (DynamicMachine machine : ModularMachineryReborn.MACHINES.values()) {
       if (machine == null || machine == DynamicMachine.DUMMY) continue;
       MMRRecipeCategory recipe = new MMRRecipeCategory(machine);
-      recipeCategories.put(machine, recipe);
+      recipeCategories.put(machine.getRegistryName(), recipe);
       registration.addRecipeCategories(recipe);
     }
   }
@@ -137,30 +181,35 @@ public class MMRJeiPlugin implements IModPlugin {
   @Override
   public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
     if (jeiHelpers == null) jeiHelpers = registration.getJeiHelpers();
+    int catalystsForMachines = 0;
     for (DynamicMachine machine : ModularMachineryReborn.MACHINES.values()) {
       if (machine == null || machine == DynamicMachine.DUMMY) continue;
       ItemStack stack = new ItemStack(ItemRegistration.CONTROLLER.get());
       stack.set(Registration.MACHINE_DATA, machine.getRegistryName());
-      registration.addRecipeCatalyst(stack, getCategory(machine).getRecipeType());
-      registration.addRecipeCatalyst(ItemRegistration.BLUEPRINT.get(), getCategory(machine).getRecipeType());
+      registration.addRecipeCatalysts(getCategory(machine).getRecipeType(), ItemRegistration.BLUEPRINT.get().getDefaultInstance(), stack);
+      catalystsForMachines++;
     }
   }
 
   @Override
   public void registerRecipes(IRecipeRegistration registration) {
-    for (DynamicMachine machine : ModularMachineryReborn.MACHINES.values()) {
-      if (machine == null || machine.equals(DynamicMachine.DUMMY)) continue;
-      registration.addRecipes(getCategory(machine).getRecipeType(),
-          Optional.ofNullable(Minecraft.getInstance().level)
-              .map(ClientLevel::getRecipeManager)
-              .map(r -> r.getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get()))
-              .stream()
-              .flatMap(List::stream)
-              .map(RecipeHolder::value)
-              .filter(recipe -> Objects.requireNonNull(recipe.getOwningMachine()).getRegistryName().equals(machine.getRegistryName()))
-              .toList()
-      );
-    }
+    if (Minecraft.getInstance().level == null) return;
+    Map<ResourceLocation, List<MachineRecipe>> machineRecipes = Minecraft.getInstance().level.getRecipeManager()
+            .getAllRecipesFor(RecipeRegistration.RECIPE_TYPE.get())
+            .stream()
+            .map(RecipeHolder::value)
+            .sorted(Comparator.comparingInt(MachineRecipe::getConfiguredPriority).reversed())
+            .collect(Collectors.groupingBy(MachineRecipe::getOwningMachineIdentifier));
+
+    machineRecipes.forEach((id, recipes) -> getCategory(id)
+        .ifPresent(cat -> registration
+            .addRecipes(cat.getRecipeType(), recipes)
+        )
+    );
+
+    machineRecipes.forEach((id, recipes) -> {
+      MMRLogger.INSTANCE.info("Registered {} recipes for {}", recipes.size(), id);
+    });
   }
 
   @Override

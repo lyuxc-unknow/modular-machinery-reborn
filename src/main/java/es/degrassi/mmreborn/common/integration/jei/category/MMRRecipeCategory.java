@@ -1,7 +1,6 @@
 package es.degrassi.mmreborn.common.integration.jei.category;
 
 import com.mojang.datafixers.util.Pair;
-import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementDuration;
@@ -59,7 +58,7 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
 
   @Override
   public @NotNull RecipeType<MachineRecipe> getRecipeType() {
-    return RecipeType.create(ModularMachineryReborn.MODID, machine.getRegistryName().getPath(), MachineRecipe.class);
+    return RecipeType.create(machine.getRegistryName().getNamespace(), machine.getRegistryName().getPath(), MachineRecipe.class);
   }
 
   @Override
@@ -96,8 +95,6 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
 
   @Override
   public void createRecipeExtras(IRecipeExtrasBuilder builder, @NotNull MachineRecipe recipe, @NotNull IFocusGroup focuses) {
-
-
     IPlaceable<?> text = builder.addDrawable(
         new DrawableWrappedText(
             Lists.newArrayList(recipe.textsToRender.iterator()),

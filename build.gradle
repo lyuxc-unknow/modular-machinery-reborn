@@ -82,6 +82,10 @@ repositories {
     }
   }
   maven {
+    name = "Illusive Soulworks maven"
+    url = "https://maven.theillusivec4.top/"
+  }
+  maven {
     name = "Lat's maven"
     url = "https://maven.latvian.dev/releases"
     content {
@@ -172,7 +176,7 @@ dependencies {
 
   // EMI
   compileOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}:api")
-  compileOnly localRuntime("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}")
+  compileOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}")
 
   // KubeJS
   compileOnly localRuntime("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
@@ -197,10 +201,10 @@ dependencies {
   localRuntime("es.degrassi:applied-experienced:${minecraft_version}-1.1.1")
   localRuntime("curse.maven:applied-mekanistics-574300:5978711")
   localRuntime("curse.maven:ars-energistique-905641:5978726")
-  localRuntime("software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:4.6.6")
+  localRuntime("software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:4.7.5.1")
   localRuntime("vazkii.patchouli:Patchouli:1.21-88-NEOFORGE-SNAPSHOT")
-  localRuntime("top.theillusivec4.curios:curios-neoforge:9.0.12+1.21")
-  localRuntime("com.hollingsworth.ars_nouveau:ars_nouveau-${project.minecraft_version}:5.8.0.4.1051")
+  localRuntime("top.theillusivec4.curios:curios-neoforge:9.4.2+1.21.1")
+  localRuntime("com.hollingsworth.ars_nouveau:ars_nouveau-${project.minecraft_version}:5.8.2.1100")
 
   // experience fluids
   localRuntime("curse.maven:mob-grinding-utils-254241:${project.MGU}")

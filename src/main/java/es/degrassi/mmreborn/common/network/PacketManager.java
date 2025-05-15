@@ -23,7 +23,6 @@ import es.degrassi.mmreborn.common.network.server.component.SUpdateExperienceCom
 import es.degrassi.mmreborn.common.network.server.component.SUpdateFluidComponentPacket;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateItemComponentPacket;
 import es.degrassi.mmreborn.common.util.Mods;
-import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;

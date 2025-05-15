@@ -61,13 +61,13 @@ public class ControllerScreen extends BasePopupScreen<ControllerContainer> {
     tabs = addRenderableWidget(new TabGroupWidget(x, y - TextureSizeHelper.getHeight(TAB)));
     tabs.addTab(new StructurePlacerWidget(
             this,
-            getMenu().getEntity().getId(),
+            getMenu().getId(),
             getMenu().getEntity().getBlockPos())
         )
         .addTab(
             new StructureBreakWidget(
                 this,
-                getMenu().getEntity().getId(),
+                getMenu().getId(),
                 getMenu().getEntity().getBlockPos()
             )
         )

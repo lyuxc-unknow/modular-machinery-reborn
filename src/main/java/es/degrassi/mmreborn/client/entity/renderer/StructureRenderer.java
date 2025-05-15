@@ -41,9 +41,9 @@ public class StructureRenderer {
       this.blocksGetter.put(direction, blocksGetter.apply(direction));
       Map<BlockPos, BlockIngredient> map = this.blocksGetter.get(direction);
       map.forEach((pos, ing) -> {
-        timers.put(map, new CycleTimer(() -> MMRConfig.get().blockTagCycleTime.get(), false));
         maxTime.set(Math.max(maxTime.get(), map.size() * MMRConfig.get().blockTagCycleTime.get()));
       });
+      timers.put(map, new CycleTimer(() -> MMRConfig.get().blockTagCycleTime.get(), false));
     }
     this.time = maxTime.get();
   }
@@ -51,13 +51,18 @@ public class StructureRenderer {
   public void render(PoseStack matrix, MultiBufferSource buffer, Direction direction, Level world, BlockPos machinePos) {
     Map<BlockPos, BlockIngredient> blocks = this.blocksGetter.get(direction);
     CycleTimer timer = this.timers.get(blocks);
+    if (timer == null) {
+      this.timers.put(blocks, new CycleTimer(() -> MMRConfig.get().blockTagCycleTime.get(), false));
+      timer = timers.get(blocks);
+    }
     timer.onDraw();
     MMRLogger.INSTANCE.debug(blocks);
+    CycleTimer finalTimer = timer;
     blocks.forEach((pos, ingredient) -> {
       matrix.pushPose();
       matrix.translate(pos.getX(), pos.getY(), pos.getZ());
       if (!(pos.getX() == 0 && pos.getY() == 0 && pos.getZ() == 0) && ingredient != BlockIngredient.ANY) {
-        PartialBlockState state = timer.get(ingredient.getAll());
+        PartialBlockState state = finalTimer.get(ingredient.getAll());
         BlockPos blockPos = machinePos.offset(pos);
         if (state != null && state != PartialBlockState.ANY && !state.getBlockState().isAir()) {
           if (world.getBlockState(blockPos).isAir()) {
