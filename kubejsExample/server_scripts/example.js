@@ -8,6 +8,9 @@
 // I had to block that feature due to high TPS impact with it.
 // So, keep it in mind when creating structures, recipes and potential quests
 
+// WARNING:
+// Temperature and Heat requirements are not published yet
+
 ServerEvents.recipes(event => {
     event.recipes.modular_machinery_reborn.machine_recipe("mmr:testing", 150)
         // OPTIONAL CUSTOMIZATION {
