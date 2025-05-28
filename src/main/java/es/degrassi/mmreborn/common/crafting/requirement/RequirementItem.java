@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
+import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.api.crafting.CraftingResult;
 import es.degrassi.mmreborn.api.crafting.ICraftingContext;
@@ -31,7 +32,7 @@ import java.util.Arrays;
 @Getter
 public class RequirementItem implements IRequirement<ItemComponent> {
   public static final NamedCodec<RequirementItem> CODEC = NamedCodec.record(instance -> instance.group(
-          NamedCodec.of(SizedIngredient.FLAT_CODEC).fieldOf("sizedIngredient").forGetter(req -> req.ingredient),
+          DefaultCodecs.SIZED_INGREDIENT_WITH_NBT.fieldOf("sizedIngredient").forGetter(req -> req.ingredient),
           NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(IRequirement::getMode),
           PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(IRequirement::getPosition),
           // WARING: do not use this property, this is used to adapt the almost unified to show in JEI/EMI only the
