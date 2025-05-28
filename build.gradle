@@ -176,7 +176,7 @@ dependencies {
 
   // EMI
   compileOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}:api")
-  compileOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}")
+  compileOnly localRuntime("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}")
 
   // KubeJS
   compileOnly localRuntime("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
