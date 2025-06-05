@@ -28,7 +28,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-@SuppressWarnings("deprecation")
 public class BlockExperienceHatch extends BlockMachineComponent {
   protected final ExperienceHatchSize size;
 
@@ -78,9 +77,12 @@ public class BlockExperienceHatch extends BlockMachineComponent {
     if (level.getBlockEntity(pos) instanceof ExperienceHatchEntity entity) {
       IExperienceHandler tank = entity.getTank();
       if (tank.getExperience() > 0) {
-        while (tank.getExperience() > Integer.MAX_VALUE) {
-          popExperience((ServerLevel) level, pos, Integer.MAX_VALUE);
-          tank.extractExperienceRecipe(Integer.MAX_VALUE, false);
+        for (int i = 0; i < tank.getTanks(); i++) {
+          long extracted = tank.extractExperienceRecipe(i, Long.MAX_VALUE, false);
+          while (extracted > Integer.MAX_VALUE) {
+            popExperience((ServerLevel) level, pos, Integer.MAX_VALUE);
+            extracted -= Integer.MAX_VALUE;
+          }
         }
         return (int) tank.getExperience();
       }

@@ -66,9 +66,18 @@ public class RequirementExperience implements IRequirement<ExperienceComponent> 
 
   private CraftingResult processInput(ExperienceComponent component, ICraftingContext context) {
     long amount = (long) context.getModifiedValue(required, this);
-    long canExtract = component.getContainerProvider().extractExperienceRecipe(amount, true);
-    if (canExtract == required) {
-      component.getContainerProvider().extractExperienceRecipe(amount, false);
+    final long originAmount = amount;
+    long canExtract = 0;
+    for (int i = 0; i < component.getContainerProvider().getTanks(); i++) {
+       long toExtract = component.getContainerProvider().extractExperienceRecipe(i, amount, true);
+       canExtract += toExtract;
+       amount -= toExtract;
+    }
+    if (canExtract == originAmount) {
+      for (int i = 0; i < component.getContainerProvider().getTanks(); i++) {
+        long toExtract = component.getContainerProvider().extractExperienceRecipe(i, canExtract, false);
+        canExtract += toExtract;
+      }
       return CraftingResult.success();
     }
     return CraftingResult.error(Component.translatable(
@@ -81,7 +90,9 @@ public class RequirementExperience implements IRequirement<ExperienceComponent> 
     long amount = (long) context.getModifiedValue(required, this);
     long remaining = handler.getExperienceCapacity() - handler.getExperience();
     if (remaining - this.required < 0) {
-      handler.receiveExperienceRecipe(amount, false);
+      for (int i = 0; i < component.getContainerProvider().getTanks(); i++) {
+        amount -= component.getContainerProvider().receiveExperienceRecipe(i, amount, false);
+      }
       return CraftingResult.success();
     }
     return CraftingResult.error(Component.translatable(

@@ -45,13 +45,13 @@ public class ItemComponent extends MachineComponent<IOInventory> {
     return handler.getSpaceForItem(stack);
   }
 
-
   public void removeFromInputs(Ingredient ingredient, int amount) {
     AtomicInteger toRemove = new AtomicInteger(amount);
     this.handler.getInputs().stream().filter(component -> ingredient.test(component.getItemStack())).forEach(component -> {
       int maxExtract = Math.min(component.getItemStack().getCount(), toRemove.get());
       toRemove.addAndGet(-maxExtract);
       component.getItemStack().shrink(maxExtract);
+      component.getManager().setChanged();
     });
   }
 

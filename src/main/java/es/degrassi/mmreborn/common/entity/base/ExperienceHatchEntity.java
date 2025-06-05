@@ -1,6 +1,6 @@
 package es.degrassi.mmreborn.common.entity.base;
 
-import es.degrassi.experiencelib.impl.capability.BasicExperienceTank;
+import es.degrassi.experiencelib.impl.capability.BasicExperienceHandler;
 import es.degrassi.mmreborn.api.controller.ControllerAccessible;
 import es.degrassi.mmreborn.common.block.prop.ExperienceHatchSize;
 import es.degrassi.mmreborn.common.entity.ExperienceInputHatchEntity;
@@ -27,7 +27,7 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
   @Getter
   private BlockPos controllerPos;
 
-  private final BasicExperienceTank experienceTank;
+  private final BasicExperienceHandler experienceTank;
 
   public ExperienceHatchEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, ExperienceHatchSize size, IOType ioType) {
     super(type, pos, state);
@@ -36,7 +36,7 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
     this.experienceTank = buildTank();
   }
 
-  public BasicExperienceTank getTank() {
+  public BasicExperienceHandler getTank() {
     return experienceTank;
   }
 
@@ -46,8 +46,9 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
     return new ExperienceComponent(this.getTank(), ioType);
   }
 
-  private BasicExperienceTank buildTank() {
-    return new BasicExperienceTank(
+  private BasicExperienceHandler buildTank() {
+    return new BasicExperienceHandler(
+        1,
         size == null ? 0 : size.getCapacity(),
         () -> {
           if (getLevel() != null && !getLevel().isClientSide)
@@ -61,33 +62,33 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
         }
     ) {
       @Override
-      public boolean canExtract() {
+      public boolean canExtract(int tank) {
         return ioType == null || !ioType.isInput();
       }
 
       @Override
-      public boolean canReceive() {
+      public boolean canReceive(int tank) {
         return ioType == null || ioType.isInput();
       }
 
       @Override
-      public boolean canAcceptExperience(long l) {
-        return canReceive() && receiveExperience(l, true) > 0;
+      public boolean canAcceptExperience(int tank, long l) {
+        return canReceive(tank) && receiveExperience(tank, l, true) > 0;
       }
 
       @Override
-      public boolean canProvideExperience(long l) {
-        return canExtract() && extractExperience(l, true) > 0;
+      public boolean canProvideExperience(int tank, long l) {
+        return canExtract(tank) && extractExperience(tank, l, true) > 0;
       }
 
       @Override
-      public long getMaxExtract() {
-        return canExtract() ? getExperienceCapacity() : 0;
+      public long getMaxExtract(int tank) {
+        return canExtract(tank) ? getExperienceCapacity() : 0;
       }
 
       @Override
-      public long getMaxReceive() {
-        return canReceive() ? getExperienceCapacity() : 0;
+      public long getMaxReceive(int tank) {
+        return canReceive(tank) ? getExperienceCapacity() : 0;
       }
     };
   }
@@ -100,7 +101,9 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
 
     if (compound.contains("experience", Tag.TAG_COMPOUND))
       this.experienceTank.deserializeNBT(pRegistries, compound.getCompound("experience"));
-    experienceTank.setCapacity(size.getCapacity());
+    for (int i = 0; i < experienceTank.getTanks(); i++) {
+      experienceTank.setCapacity(i, size.getCapacity());
+    }
     if (compound.contains("controllerPos")) {
       controllerPos = BlockPos.of(compound.getLong("controllerPos"));
     }

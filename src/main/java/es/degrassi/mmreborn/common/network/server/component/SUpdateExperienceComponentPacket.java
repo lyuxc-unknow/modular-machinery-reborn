@@ -30,7 +30,7 @@ public record SUpdateExperienceComponentPacket(long amount, BlockPos pos) implem
     if (context.flow().isClientbound())
       context.enqueueWork(() -> {
         if (context.player().level().getBlockEntity(packet.pos) instanceof ExperienceHatchEntity entity) {
-          entity.getTank().setExperience(packet.amount);
+          entity.getTank().setExperience(0, packet.amount);
         }
       });
   }
