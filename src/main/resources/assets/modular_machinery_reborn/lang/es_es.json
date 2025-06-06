@@ -159,12 +159,6 @@
   "tooltip.fluidhatch.tank.gas": "%s / %s",
   "tooltip.fluidhatch.tank.info": "Puede contener %s mb",
 
-  "tooltip.chemicalhatch.empty": "Vacío",
-  "tooltip.chemicalhatch.chemical": "[Químico]",
-  "tooltip.chemicalhatch.tank": "%smb / %smb",
-  "tooltip.chemicalhatch.tank.chemical": "%s / %s",
-  "tooltip.chemicalhatch.tank.info": "Puede contener %s mb",
-
   "tooltip.energyhatch.charge": "%s / %s %s",
   "tooltip.energyhatch.storage": "Almacena %s FE",
   "tooltip.energyhatch.out.transfer": "Transfiere %s FE por tick",

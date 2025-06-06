@@ -159,12 +159,6 @@
   "tooltip.fluidhatch.tank.gas": "%s / %s",
   "tooltip.fluidhatch.tank.info": "Can hold %s mb",
 
-  "tooltip.chemicalhatch.empty": "Empty",
-  "tooltip.chemicalhatch.chemical": "[Chemical]",
-  "tooltip.chemicalhatch.tank": "%smb / %smb",
-  "tooltip.chemicalhatch.tank.chemical": "%s / %s",
-  "tooltip.chemicalhatch.tank.info": "Can hold %s mb",
-
   "tooltip.energyhatch.charge": "%s / %s %s",
   "tooltip.energyhatch.storage": "Stores %s FE",
   "tooltip.energyhatch.out.transfer": "Transfers %s FE per tick",
