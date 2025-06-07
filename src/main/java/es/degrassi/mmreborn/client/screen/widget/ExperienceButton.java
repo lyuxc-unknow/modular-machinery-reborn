@@ -15,9 +15,8 @@ public class ExperienceButton extends IconButton {
   }
 
   public ExperienceButton(int x, int y, OnPressT onPress, ExperienceButtonType type) {
-    super(x, y, btn -> onPress.onPress(type));
+    super(x, y, type.icon(), btn -> onPress.onPress(type));
     setTooltip(Tooltip.create(type.component()));
-    setIcon(type.icon());
     this.type = type;
   }
 

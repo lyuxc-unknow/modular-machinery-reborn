@@ -53,13 +53,12 @@ public class CorePopupScreen extends PopupScreen<ControllerContainer> {
     row.addChild(new StringWidget(this.initialXSize - 10, 0, Component.literal(""), font), cols);
 
     if (closeButton) {
-      IconButton returnButton = new IconButton(0, 0, (btn) -> {
+      IconButton returnButton = new IconButton(0, 0, Icon.BACK, (btn) -> {
         CoreGridPopupScreen screen = new CoreGridPopupScreen((ControllerScreen) this.parent, 10 * 16 + 5*3 + 5*9, 9 * 20).addCloseButton();
         screen.setPage(page);
         this.parent.closePopup(this);
         this.parent.openPopup(screen, "popup");
       }).setTooltips(Component.translatable("mmr.gui.button.back"));
-      returnButton.setIcon(Icon.BACK);
       row.addChild(
           returnButton,
           cols,

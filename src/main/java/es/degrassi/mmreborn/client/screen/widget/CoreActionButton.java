@@ -18,8 +18,7 @@ public class CoreActionButton extends IconButton {
   }
 
   public CoreActionButton(int x, int y, OnPressT onPress, CoreActionType type) {
-    super(x, y, btn -> onPress.onPress(type));
-    setIcon(type.icon());
+    super(x, y, type.icon(), btn -> onPress.onPress(type));
     this.type = type;
   }
 

@@ -2,12 +2,13 @@ package es.degrassi.mmreborn.client.screen.widget.tabs;
 
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Either;
+import es.degrassi.mmreborn.client.screen.widget.IconButton;
+import es.degrassi.mmreborn.client.screen.widget.ItemButton;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 
 import javax.annotation.Nullable;
@@ -48,22 +49,22 @@ public class TabGroupWidget extends AbstractWidget {
     return this;
   }
 
-  public TabGroupWidget addTab(ResourceLocation icon, @Nullable TabWidget.OnClick action) {
-   return addTab(0, 0, icon, action);
+  public TabGroupWidget addTab(IconButton icon, ItemButton itemIcon, @Nullable TabWidget.OnClick action) {
+   return addTab(0, 0, icon, itemIcon, action);
   }
 
-  public TabGroupWidget addTab(int xOffset, int yOffset, ResourceLocation icon, @Nullable TabWidget.OnClick action) {
-    TabWidget tab = new TabWidget(lastX.get() + xOffset, getY() + yOffset, icon, action);
+  public TabGroupWidget addTab(int xOffset, int yOffset, IconButton icon, ItemButton itemIcon, @Nullable TabWidget.OnClick action) {
+    TabWidget tab = new TabWidget(lastX.get() + xOffset, getY() + yOffset, icon, itemIcon, action);
     lastX.getAndAdd(tab.getWidth() + xOffset);
     return addTab(tab);
   }
 
-  public TabGroupWidget addTab(ResourceLocation icon) {
-    return addTab(0, 0, icon);
+  public TabGroupWidget addTab(IconButton icon, ItemButton itemIcon) {
+    return addTab(0, 0, icon, itemIcon);
   }
 
-  public TabGroupWidget addTab(int xOffset, int yOffset, ResourceLocation icon) {
-    TabWidget tab = new TabWidget(lastX.get() + xOffset, getY() + yOffset, icon);
+  public TabGroupWidget addTab(int xOffset, int yOffset, IconButton icon, ItemButton itemIcon) {
+    TabWidget tab = new TabWidget(lastX.get() + xOffset, getY() + yOffset, icon, itemIcon);
     lastX.getAndAdd(tab.getWidth() + xOffset);
     return addTab(tab);
   }

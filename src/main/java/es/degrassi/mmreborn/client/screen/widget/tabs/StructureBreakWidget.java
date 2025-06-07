@@ -1,14 +1,15 @@
 package es.degrassi.mmreborn.client.screen.widget.tabs;
 
-import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.client.screen.ControllerScreen;
 import es.degrassi.mmreborn.client.screen.popup.ConfirmationPopup;
+import es.degrassi.mmreborn.client.screen.widget.ItemButton;
 import es.degrassi.mmreborn.common.network.client.CBreakStructurePacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -16,8 +17,6 @@ import java.util.List;
 
 @ParametersAreNonnullByDefault
 public class StructureBreakWidget extends TabWidget {
-  private static final ResourceLocation TEXTURE = ModularMachineryReborn.rl("textures/gui/structure_breaker.png");
-
   private final ControllerScreen parentScreen;
 
   private final ResourceLocation machine;
@@ -26,7 +25,7 @@ public class StructureBreakWidget extends TabWidget {
   public final Component component = Component.translatable("modular_machinery_reborn.gui.structure_break_button");
 
   public StructureBreakWidget(ControllerScreen parentScreen, ResourceLocation machine, BlockPos controllerPos) {
-    super(0, 0, TEXTURE);
+    super(0, 0, null, new ItemButton(5, 5, Items.DIAMOND_PICKAXE, button -> {}));
     this.parentScreen = parentScreen;
     this.machine = machine;
     this.controllerPos = controllerPos;
@@ -34,6 +33,7 @@ public class StructureBreakWidget extends TabWidget {
 
   @Override
   public void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
+    super.renderTooltip(guiGraphics, x, y);
       guiGraphics.renderTooltip(
           Minecraft.getInstance().font,
           List.of(component.getVisualOrderText()),

@@ -2,6 +2,7 @@ package es.degrassi.mmreborn.client.screen.widget;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.client.Blitter;
+import es.degrassi.mmreborn.common.util.TextureSizeHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.common.asm.enumextension.ExtensionInfo;
 import net.neoforged.fml.common.asm.enumextension.IExtensibleEnum;
@@ -208,26 +209,46 @@ public enum Icon implements IExtensibleEnum {
 
   // plus minus icons
   PLUS(64, 192),
-  MINUS(64, 176);
+  MINUS(64, 176),
+
+  // CUSTOM TEXTURES
+  CHECK(ModularMachineryReborn.rl("textures/gui/check.png"))
+
+  ;
 
   public final int x;
   public final int y;
   public final int width;
   public final int height;
 
-  public static final ResourceLocation TEXTURE = ModularMachineryReborn.rl("textures/gui/widget/states.png");
-  public static final int TEXTURE_WIDTH = 256;
-  public static final int TEXTURE_HEIGHT = 256;
+  public final ResourceLocation TEXTURE;
+  public final int TEXTURE_WIDTH;
+  public final int TEXTURE_HEIGHT;
 
   Icon(int x, int y) {
     this(x, y, 16, 16);
   }
 
+  Icon(int x, int y, ResourceLocation texture) {
+    this(x, y, 16, 16, texture);
+  }
+
   Icon(int x, int y, int width, int height) {
+    this(x, y, width, height, ModularMachineryReborn.rl("textures/gui/widget/states.png"));
+  }
+
+  Icon(int x, int y, int width, int height, ResourceLocation texture) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
+    this.TEXTURE = texture;
+    this.TEXTURE_WIDTH = TextureSizeHelper.getWidth(texture);
+    this.TEXTURE_HEIGHT = TextureSizeHelper.getHeight(texture);
+  }
+
+  Icon(ResourceLocation texture) {
+    this(0, 0, texture);
   }
 
   public Blitter getBlitter() {

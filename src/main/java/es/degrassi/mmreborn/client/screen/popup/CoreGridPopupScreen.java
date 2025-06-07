@@ -116,11 +116,10 @@ public class CoreGridPopupScreen extends PopupScreen<ControllerContainer> {
   }
 
   private @NotNull IconButton createCoreButton(MachineProcessorCore core) {
-    IconButton button = new IconButton(0, 0, (btn) -> {
+    IconButton button = new IconButton(0, 0, core.isActive() ? Icon.CORE_ACTIVE : Icon.CORE_INACTIVE, (btn) -> {
       parent.closePopup(this);
       parent.openPopup(new CorePopupScreen((ControllerScreen) parent, 180, 96, getPage(), core.getCore()).addCloseButton(), "popup");
     }).renderTooltip(true).setTooltips(Component.translatable("mmr.gui.core.button", core.getCore()));
-    button.setIcon(core.isActive() ? Icon.CORE_ACTIVE : Icon.CORE_INACTIVE);
     button.setTooltip(null);
     return button;
   }

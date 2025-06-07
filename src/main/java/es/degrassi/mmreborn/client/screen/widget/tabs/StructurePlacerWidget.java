@@ -4,11 +4,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
-import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.BlockIngredient;
 import es.degrassi.mmreborn.client.item.MMRItemTooltipComponent;
 import es.degrassi.mmreborn.client.screen.ControllerScreen;
 import es.degrassi.mmreborn.client.screen.popup.ConfirmationPopup;
+import es.degrassi.mmreborn.client.screen.widget.ItemButton;
 import es.degrassi.mmreborn.common.network.client.CPlaceStructurePacket;
 import es.degrassi.mmreborn.common.util.CycleTimer;
 import net.minecraft.ChatFormatting;
@@ -22,6 +22,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -34,8 +35,6 @@ import java.util.stream.Collectors;
 
 @ParametersAreNonnullByDefault
 public class StructurePlacerWidget extends TabWidget {
-  private static final ResourceLocation TEXTURE = ModularMachineryReborn.rl("textures/gui/structure_placer.png");
-
   private final ControllerScreen parentScreen;
 
   private final ResourceLocation machine;
@@ -45,7 +44,7 @@ public class StructurePlacerWidget extends TabWidget {
   public final Component component = Component.translatable("modular_machinery_reborn.gui.structure_placer_button");
 
   public StructurePlacerWidget(ControllerScreen parentScreen, ResourceLocation machine, BlockPos controllerPos) {
-    super(0, 0, TEXTURE);
+    super(0, 0, null, new ItemButton(5, 5, Blocks.STRUCTURE_BLOCK.asItem(), button -> {}));
     this.parentScreen = parentScreen;
     this.machine = machine;
     this.controllerPos = controllerPos;
@@ -95,6 +94,7 @@ public class StructurePlacerWidget extends TabWidget {
 
   @Override
   public void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
+    super.renderTooltip(guiGraphics, x, y);
     List<Either<FormattedText, TooltipComponent>> components = Lists.newArrayList();
     gatherComponents(components);
     guiGraphics.renderComponentTooltipFromElements(

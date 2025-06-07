@@ -21,37 +21,37 @@ import java.util.List;
 @Getter
 @Setter
 @ParametersAreNonnullByDefault
-public class IconButton extends Button implements TooltipRender {
+public class ItemButton extends Button implements TooltipRender {
   private boolean halfSize = false;
   private boolean disableClickSound = false;
   private boolean disableBackground = false;
   @Nullable
-  private final Icon icon;
+  private final Item item;
 
   private boolean renderTooltip = true;
   private List<Component> tooltips;
 
-  public IconButton(int x, int y, Button.OnPress onPress) {
+  public ItemButton(int x, int y, OnPress onPress) {
     super(x, y, 16, 16, Component.empty(), onPress, Button.DEFAULT_NARRATION);
-    this.icon = null;
+    this.item = null;
   }
 
-  public IconButton(int x, int y, Icon icon, Button.OnPress onPress) {
+  public ItemButton(int x, int y, Item item, OnPress onPress) {
     super(x, y, 16, 16, Component.empty(), onPress, Button.DEFAULT_NARRATION);
-    this.icon = icon;
+    this.item = item;
   }
 
-  public IconButton(Button.Builder builder) {
+  public ItemButton(Builder builder) {
     super(builder);
-    this.icon = null;
+    this.item = null;
   }
 
-  public IconButton renderTooltip(boolean render) {
+  public ItemButton renderTooltip(boolean render) {
     this.renderTooltip = render;
     return this;
   }
 
-  public IconButton setTooltips(Component... components) {
+  public ItemButton setTooltips(Component... components) {
     this.tooltips = Lists.newArrayList(components);
     return this;
   }
@@ -114,6 +114,10 @@ public class IconButton extends Button implements TooltipRender {
   }
 
   protected @Nullable Item getItemOverlay() {
+    return item;
+  }
+
+  protected @Nullable Icon getIcon() {
     return null;
   }
 
@@ -140,11 +144,11 @@ public class IconButton extends Button implements TooltipRender {
 
   @Override
   public String toString() {
-    return "IconButton{" +
+    return "ItemButton{" +
         "halfSize=" + halfSize +
         ", disableClickSound=" + disableClickSound +
         ", disableBackground=" + disableBackground +
-        ", icon=" + icon +
+        ", item=" + item +
         ", renderTooltip=" + renderTooltip +
         ", x=" + getX() +
         ", y=" + getY() +
