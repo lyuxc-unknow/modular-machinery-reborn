@@ -80,7 +80,6 @@ public class HatchBakedModel implements IDynamicBakedModel {
       String baseTextureName = data.get(BASE_TEXTURE_NAME);
       String overlayTextureName = data.get(OVERLAY_TEXTURE_NAME);
       ResourceLocation model = data.get(MODEL);
-      MMRLogger.INSTANCE.debug("state: {}, model: {}, baseTexture: {} -> {}, overlayTexture: {} -> {}", state, model, baseTextureName, baseTexture, overlayTextureName, overlayTexture);
       if (model == null) return List.of();
       var oldBlockModel = ((BlockModel) baker.getModel(model));
       Map<String, Either<Material, String>> textureMap = Maps.newHashMap();
