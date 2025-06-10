@@ -148,6 +148,12 @@ MMREvents.machines(event => {
          */
         .name('Testing machineJS')
         /**
+        * [Available types in lowercase](https://github.com/alec016/modular-machinery-reborn/blob/1.21-NeoForge/src/main/java/es/degrassi/mmreborn/common/machine/MachineHatchType.java)
+        * baseTexture -> ResourceLocation or null (null means no override/customization, uses default one instead)
+        * overlayTexture -> ResourceLocation or null (null means no override/customization, uses default one instead)
+        */
+        .texture(type, baseTexture, overlayTexture)
+        /**
          * The multiblock definition
          */
         .structure(
