@@ -1,19 +1,7 @@
 {
   "variants": {
-    "facing=north": {
+    "": {
       "model":"modular_machinery_reborn:block/height_meter"
-    },
-    "facing=east": {
-      "model":"modular_machinery_reborn:block/height_meter",
-      "y": 90
-    },
-    "facing=south": {
-      "model":"modular_machinery_reborn:block/height_meter",
-      "y": 180
-    },
-    "facing=west": {
-      "model":"modular_machinery_reborn:block/height_meter",
-      "y": 270
     }
   }
 }

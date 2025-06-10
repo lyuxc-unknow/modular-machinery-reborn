@@ -1,4 +1,4 @@
-package es.degrassi.mmreborn.client.model;
+package es.degrassi.mmreborn.client.model.controller;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;

@@ -17,6 +17,7 @@ import es.degrassi.mmreborn.api.PartialBlockState;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.block.BlockController;
+import es.degrassi.mmreborn.common.registration.DataComponentRegistration;
 import es.degrassi.mmreborn.common.registration.KeyMappings;
 import es.degrassi.mmreborn.common.registration.Registration;
 import net.minecraft.ChatFormatting;
@@ -140,33 +141,33 @@ public class StructureCreatorItem extends Item {
   public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
     ItemStack stack = player.getItemInHand(hand);
     if (player.isCrouching() && stack.getItem() == this) {
-      stack.remove(Registration.STRUCTURE_CREATOR_DATA);
-      stack.remove(Registration.STRUCTURE_CREATOR_BOX);
-      stack.remove(Registration.STRUCTURE_CREATOR_BOX_CURRENT);
+      stack.remove(DataComponentRegistration.STRUCTURE_CREATOR_DATA);
+      stack.remove(DataComponentRegistration.STRUCTURE_CREATOR_BOX);
+      stack.remove(DataComponentRegistration.STRUCTURE_CREATOR_BOX_CURRENT);
       return InteractionResultHolder.success(stack);
     }
     return super.use(level, player, hand);
   }
 
   public static List<BlockPos> getSelectedBlocks(ItemStack stack) {
-    return Optional.ofNullable(stack.get(Registration.STRUCTURE_CREATOR_DATA)).orElse(new ArrayList<>());
+    return Optional.ofNullable(stack.get(DataComponentRegistration.STRUCTURE_CREATOR_DATA)).orElse(new ArrayList<>());
   }
 
   public static StructureCreatorItemMode getCurrentMode(ItemStack stack) {
-    return Optional.ofNullable(stack.get(Registration.STRUCTURE_CREATOR_MODE)).orElse(StructureCreatorItemMode.SINGLE);
+    return Optional.ofNullable(stack.get(DataComponentRegistration.STRUCTURE_CREATOR_MODE)).orElse(StructureCreatorItemMode.SINGLE);
   }
 
   public static void nextMode(ItemStack stack) {
-    stack.update(Registration.STRUCTURE_CREATOR_MODE, StructureCreatorItemMode.SINGLE, StructureCreatorItemMode::next);
+    stack.update(DataComponentRegistration.STRUCTURE_CREATOR_MODE, StructureCreatorItemMode.SINGLE, StructureCreatorItemMode::next);
   }
 
   public static boolean isFirst(ItemStack stack) {
-    return stack.getOrDefault(Registration.STRUCTURE_CREATOR_BOX_CURRENT, true);
+    return stack.getOrDefault(DataComponentRegistration.STRUCTURE_CREATOR_BOX_CURRENT, true);
   }
 
   public static void setSecond(ItemStack stack) {
     stack.update(
-        Registration.STRUCTURE_CREATOR_BOX_CURRENT,
+        DataComponentRegistration.STRUCTURE_CREATOR_BOX_CURRENT,
         true,
         current -> false
     );
@@ -174,19 +175,19 @@ public class StructureCreatorItem extends Item {
 
   public static void setFirst(ItemStack stack) {
     stack.update(
-        Registration.STRUCTURE_CREATOR_BOX_CURRENT,
+        DataComponentRegistration.STRUCTURE_CREATOR_BOX_CURRENT,
         true,
         current -> true
     );
   }
 
   public static BlockPos getBox(ItemStack stack) {
-    return stack.getOrDefault(Registration.STRUCTURE_CREATOR_BOX, new BlockPos(0, 0, 0));
+    return stack.getOrDefault(DataComponentRegistration.STRUCTURE_CREATOR_BOX, new BlockPos(0, 0, 0));
   }
 
   public static void selectFirst(ItemStack stack, BlockPos pos) {
     stack.update(
-        Registration.STRUCTURE_CREATOR_BOX,
+        DataComponentRegistration.STRUCTURE_CREATOR_BOX,
         new BlockPos(0, 0, 0),
         box -> pos.immutable()
     );
@@ -211,18 +212,18 @@ public class StructureCreatorItem extends Item {
         }
       }
     }
-    stack.remove(Registration.STRUCTURE_CREATOR_BOX);
+    stack.remove(DataComponentRegistration.STRUCTURE_CREATOR_BOX);
   }
 
   public static void addSelectedBlock(ItemStack stack, BlockPos pos) {
-    stack.update(Registration.STRUCTURE_CREATOR_DATA, new ArrayList<>(), list -> {
+    stack.update(DataComponentRegistration.STRUCTURE_CREATOR_DATA, new ArrayList<>(), list -> {
       list.add(pos);
       return list;
     });
   }
 
   public static void removeSelectedBlock(ItemStack stack, BlockPos pos) {
-    stack.update(Registration.STRUCTURE_CREATOR_DATA, new ArrayList<>(), list -> {
+    stack.update(DataComponentRegistration.STRUCTURE_CREATOR_DATA, new ArrayList<>(), list -> {
       list.remove(pos);
       return list;
     });

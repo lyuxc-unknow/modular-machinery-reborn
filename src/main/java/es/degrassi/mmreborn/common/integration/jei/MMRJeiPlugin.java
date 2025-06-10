@@ -16,9 +16,9 @@ import es.degrassi.mmreborn.common.integration.jei.ingredient.IntegerIngredientH
 import es.degrassi.mmreborn.common.integration.jei.ingredient.LongIngredientHelper;
 import es.degrassi.mmreborn.common.item.ControllerItem;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
+import es.degrassi.mmreborn.common.registration.DataComponentRegistration;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
-import es.degrassi.mmreborn.common.registration.Registration;
 import es.degrassi.mmreborn.common.util.TextureSizeHelper;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -130,7 +130,7 @@ public class MMRJeiPlugin implements IModPlugin {
   ) {
     Rect2i area = new Rect2i(xPos, yPos, width, height);
     ItemStack stack = new ItemStack(ItemRegistration.CONTROLLER.get());
-    stack.set(Registration.MACHINE_DATA, id);
+    stack.set(DataComponentRegistration.MACHINE_DATA, id);
     return new IGuiClickableArea() {
       @Override
       public Rect2i getArea() {
@@ -173,7 +173,7 @@ public class MMRJeiPlugin implements IModPlugin {
     for (DynamicMachine machine : ModularMachineryReborn.MACHINES.values()) {
       if (machine == null || machine == DynamicMachine.DUMMY) continue;
       ItemStack stack = new ItemStack(ItemRegistration.CONTROLLER.get());
-      stack.set(Registration.MACHINE_DATA, machine.getRegistryName());
+      stack.set(DataComponentRegistration.MACHINE_DATA, machine.getRegistryName());
       registration.addRecipeCatalysts(getCategory(machine).getRecipeType(), ItemRegistration.BLUEPRINT.get().getDefaultInstance(), stack);
       catalystsForMachines++;
     }

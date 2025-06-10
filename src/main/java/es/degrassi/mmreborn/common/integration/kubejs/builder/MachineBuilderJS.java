@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.integration.kubejs.builder;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonPrimitive;
 import com.mojang.datafixers.util.Pair;
@@ -11,13 +12,14 @@ import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
+import es.degrassi.mmreborn.common.machine.MachineHatchType;
 import es.degrassi.mmreborn.common.machine.Sounds;
 import es.degrassi.mmreborn.common.manager.crafting.MachineStatus;
 import es.degrassi.mmreborn.common.util.MachineModelLocation;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
-import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -35,11 +37,13 @@ public class MachineBuilderJS {
   private MachineModelLocation controllerModel;
   private final List<ModifierReplacement> modifiers;
   private final Map<MachineStatus, Sounds> sounds;
+  private final Map<MachineHatchType, Pair<Optional<ResourceLocation>, Optional<ResourceLocation>>> textureMap;
 
   public MachineBuilderJS(@NotNull ResourceLocation id) {
     this.id = id;
     modifiers = Lists.newArrayList();
     sounds = Maps.newEnumMap(MachineStatus.class);
+    textureMap = Maps.newEnumMap(MachineHatchType.class);
   }
 
   public MachineBuilderJS name(String name) {
@@ -67,6 +71,14 @@ public class MachineBuilderJS {
     return this;
   }
 
+  public MachineBuilderJS texture(MachineHatchType type, @Nullable ResourceLocation baseTexture, @Nullable ResourceLocation overlayTexture) {
+    var base = Optional.ofNullable(baseTexture);
+    var overlay = Optional.ofNullable(overlayTexture);
+    var pair = Pair.of(base, overlay);
+    textureMap.put(type, pair);
+    return this;
+  }
+
   public MachineBuilderJS addModifier(ModifierBuilderJS modifier) {
     this.modifiers.add(modifier.build());
     return this;
@@ -78,7 +90,7 @@ public class MachineBuilderJS {
   }
 
   public DynamicMachine build() {
-    DynamicMachine machine = new DynamicMachine(id, sounds);
+    DynamicMachine machine = new DynamicMachine(id, sounds, textureMap);
     machine.setPattern(structure == null ? Structure.EMPTY : structure.build(modifiers));
     machine.setControllerModel(Objects.requireNonNullElse(controllerModel, MachineModelLocation.DEFAULT));
     machine.setLocalizedName(Optional.ofNullable(name));

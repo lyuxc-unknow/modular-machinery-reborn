@@ -1,4 +1,4 @@
-package es.degrassi.mmreborn.client.model;
+package es.degrassi.mmreborn.client.model.controller;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.item.ControllerItem;
@@ -30,17 +30,19 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector4f;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
 
+@ParametersAreNonnullByDefault
 public class ControllerBakedModel implements IDynamicBakedModel {
   public static final ModelProperty<DynamicMachine> MACHINE = new ModelProperty<>();
 
   private final ControllerOverrideList overrideList = new ControllerOverrideList();
 
   @Override
-  public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand,
-                                  ModelData data, @Nullable RenderType type) {
+  public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand,
+                                           ModelData data, @Nullable RenderType type) {
     BakedModel model = getMachineModel(data);
     if (state != null && state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
       return getRotatedQuads(model, state.getValue(BlockStateProperties.HORIZONTAL_FACING), side, rand, type);
@@ -48,7 +50,7 @@ public class ControllerBakedModel implements IDynamicBakedModel {
     return model.getQuads(state, side, rand, ModelData.EMPTY, type);
   }
 
-  private List<BakedQuad> getRotatedQuads(BakedModel model, Direction machineFacing, Direction side, RandomSource random, RenderType type) {
+  private List<BakedQuad> getRotatedQuads(BakedModel model, Direction machineFacing, @Nullable Direction side, RandomSource random, @Nullable RenderType type) {
     //side of the model before rotation
     Direction originalSide = getRotatedDirection(machineFacing, side);
     List<BakedQuad> finalQuads = model.getQuads(null, originalSide, random, ModelData.EMPTY, type);
@@ -84,7 +86,7 @@ public class ControllerBakedModel implements IDynamicBakedModel {
     return new BakedQuad(newQuadData, quad.getTintIndex(), side, quad.getSprite(), quad.isShade());
   }
 
-  public Direction getRotatedDirection(Direction machineFacing, @Nullable Direction quad) {
+  public @Nullable Direction getRotatedDirection(Direction machineFacing, @Nullable Direction quad) {
     if (quad == null || quad.getAxis() == Direction.Axis.Y)
       return quad;
 

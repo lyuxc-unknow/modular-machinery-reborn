@@ -7,7 +7,8 @@ import es.degrassi.mmreborn.client.integration.emi.MMREmiClientIntegration;
 import es.degrassi.mmreborn.client.integration.jei.MMRJeiClientIntegration;
 import es.degrassi.mmreborn.client.item.MMRItemTooltip;
 import es.degrassi.mmreborn.client.item.MMRItemTooltipComponent;
-import es.degrassi.mmreborn.client.model.ControllerModelLoader;
+import es.degrassi.mmreborn.client.model.controller.ControllerModelLoader;
+import es.degrassi.mmreborn.client.model.hatch.HatchModelLoader;
 import es.degrassi.mmreborn.client.screen.ControllerScreen;
 import es.degrassi.mmreborn.client.screen.EnergyHatchScreen;
 import es.degrassi.mmreborn.client.screen.ExperienceHatchScreen;
@@ -83,6 +84,7 @@ public class ModularMachineryRebornClient {
   @SubscribeEvent
   public void registerModelLoader(final ModelEvent.RegisterGeometryLoaders event) {
     event.register(ModularMachineryReborn.rl("controller"), ControllerModelLoader.INSTANCE);
+    event.register(ModularMachineryReborn.rl("hatch"), HatchModelLoader.INSTANCE);
   }
 
   @SubscribeEvent
@@ -328,6 +330,12 @@ public class ModularMachineryRebornClient {
   public void onModelRegister(ModelEvent.RegisterAdditional event) {
     event.register(ModelResourceLocation.standalone(ModularMachineryReborn.rl("block/nope")));
     event.register(ModelResourceLocation.standalone(ModularMachineryReborn.rl("default/controller")));
+    event.register(ModelResourceLocation.standalone(ModularMachineryReborn.rl("default/hatch_all")));
+    event.register(ModelResourceLocation.standalone(ModularMachineryReborn.rl("default/hatch_orientable")));
+    Minecraft.getInstance().getResourceManager().listResources("models/default/hatches", s -> s.getPath().endsWith(".json")).forEach((rl, resource) -> {
+      ResourceLocation modelRL = ResourceLocation.fromNamespaceAndPath(rl.getNamespace(), rl.getPath().substring(7).replace(".json", ""));
+      event.register(ModelResourceLocation.standalone(modelRL));
+    });
     for (String folder : MMRConfig.get().modelFolders.get()) {
       Minecraft.getInstance().getResourceManager().listResources("models/" + folder, s -> s.getPath().endsWith(".json")).forEach((rl, resource) -> {
         ResourceLocation modelRL = ResourceLocation.fromNamespaceAndPath(rl.getNamespace(), rl.getPath().substring(7).replace(".json", ""));

@@ -20,9 +20,9 @@ import es.degrassi.mmreborn.common.integration.almostunified.AlmostUnifiedAdapte
 import es.degrassi.mmreborn.common.integration.emi.recipe.MMREmiRecipe;
 import es.degrassi.mmreborn.common.item.ControllerItem;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
+import es.degrassi.mmreborn.common.registration.DataComponentRegistration;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
 import es.degrassi.mmreborn.common.registration.RecipeRegistration;
-import es.degrassi.mmreborn.common.registration.Registration;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -39,7 +39,7 @@ public class MMREmiPlugin implements EmiPlugin {
   public void register(EmiRegistry registry) {
     EmiStack controller = EmiStack.of(ItemRegistration.CONTROLLER);
 
-    registry.setDefaultComparison(controller, Comparison.compareData(stack -> stack.get(Registration.MACHINE_DATA.get())));
+    registry.setDefaultComparison(controller, Comparison.compareData(stack -> stack.get(DataComponentRegistration.MACHINE_DATA.get())));
 
     registry.addEmiStack(controller);
 
@@ -48,7 +48,7 @@ public class MMREmiPlugin implements EmiPlugin {
 
     ModularMachineryReborn.MACHINES.forEach((id, machine) -> {
       ItemStack is = new ItemStack(ItemRegistration.CONTROLLER.get());
-      is.set(Registration.MACHINE_DATA.get(), id);
+      is.set(DataComponentRegistration.MACHINE_DATA.get(), id);
       EmiStack stack = EmiStack.of(is);
       EmiRecipeCategory category = new EmiRecipeCategory(id, stack) {
         @Override
@@ -97,7 +97,7 @@ public class MMREmiPlugin implements EmiPlugin {
     });
 
     registry.removeEmiStacks(stack -> {
-      ResourceLocation machineId = stack.getItemStack().getComponents().get(Registration.MACHINE_DATA.get());
+      ResourceLocation machineId = stack.getItemStack().getComponents().get(DataComponentRegistration.MACHINE_DATA.get());
       return stack.isEqual(controller) && (machineId == null || machineId.toString().equals(ControllerItem.DUMMY.toString()));
     });
   }

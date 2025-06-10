@@ -9,8 +9,8 @@ import es.degrassi.mmreborn.common.integration.jei.JeiComponentRegistry;
 import es.degrassi.mmreborn.common.integration.jei.MMRJeiPlugin;
 import es.degrassi.mmreborn.common.integration.jei.category.drawable.DrawableWrappedText;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
+import es.degrassi.mmreborn.common.registration.DataComponentRegistration;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
-import es.degrassi.mmreborn.common.registration.Registration;
 import lombok.Getter;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -41,7 +41,7 @@ public class MMRRecipeCategory implements IRecipeCategory<MachineRecipe> {
     this.title = machine.getLocalizedName();
     this.background = MMRJeiPlugin.jeiHelpers.getGuiHelper().createBlankDrawable(256, 256);
     ItemStack stack = new ItemStack(ItemRegistration.CONTROLLER.get());
-    stack.set(Registration.MACHINE_DATA, machine.getRegistryName());
+    stack.set(DataComponentRegistration.MACHINE_DATA, machine.getRegistryName());
     this.icon = MMRJeiPlugin.jeiHelpers.getGuiHelper().createDrawableIngredient(VanillaTypes.ITEM_STACK, stack);
   }
 
