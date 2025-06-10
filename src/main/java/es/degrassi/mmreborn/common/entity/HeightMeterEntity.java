@@ -66,10 +66,10 @@ public class HeightMeterEntity extends ColorableMachineComponentEntity implement
       controllerPos = BlockPos.of(nbt.getLong("controllerPos"));
     }
     if (nbt.contains("baseTexture")) {
-      setBaseTexture(ResourceLocation.parse(nbt.getString("baseTexture")));
+      setMachineBaseTexture(ResourceLocation.parse(nbt.getString("baseTexture")));
     }
     if (nbt.contains("overlayTexture")) {
-      setOverlayTexture(ResourceLocation.parse(nbt.getString("overlayTexture")));
+      setMachineOverlayTexture(ResourceLocation.parse(nbt.getString("overlayTexture")));
     }
   }
 

@@ -62,10 +62,10 @@ public class ChunkloaderEntity extends BlockEntityRestrictedTick implements Mach
     chunkloader.deserializeNBT(pRegistries, nbt.getCompound("chunkloader"));
 
     if (nbt.contains("baseTexture")) {
-      setBaseTexture(ResourceLocation.parse(nbt.getString("baseTexture")));
+      setMachineBaseTexture(ResourceLocation.parse(nbt.getString("baseTexture")));
     }
     if (nbt.contains("overlayTexture")) {
-      setOverlayTexture(ResourceLocation.parse(nbt.getString("overlayTexture")));
+      setMachineOverlayTexture(ResourceLocation.parse(nbt.getString("overlayTexture")));
     }
   }
 

@@ -56,10 +56,10 @@ public class WeatherSensorEntity extends ColorableMachineComponentEntity impleme
   protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider pRegistries) {
     super.loadAdditional(nbt, pRegistries);
     if (nbt.contains("baseTexture")) {
-      setBaseTexture(ResourceLocation.parse(nbt.getString("baseTexture")));
+      setMachineBaseTexture(ResourceLocation.parse(nbt.getString("baseTexture")));
     }
     if (nbt.contains("overlayTexture")) {
-      setOverlayTexture(ResourceLocation.parse(nbt.getString("overlayTexture")));
+      setMachineOverlayTexture(ResourceLocation.parse(nbt.getString("overlayTexture")));
     }
   }
 

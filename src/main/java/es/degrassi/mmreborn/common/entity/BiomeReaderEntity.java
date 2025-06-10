@@ -56,10 +56,10 @@ public class BiomeReaderEntity extends ColorableMachineComponentEntity implement
     super.loadAdditional(nbt, pRegistries);
 
     if (nbt.contains("baseTexture")) {
-      setBaseTexture(ResourceLocation.parse(nbt.getString("baseTexture")));
+      setMachineBaseTexture(ResourceLocation.parse(nbt.getString("baseTexture")));
     }
     if (nbt.contains("overlayTexture")) {
-      setOverlayTexture(ResourceLocation.parse(nbt.getString("overlayTexture")));
+      setMachineOverlayTexture(ResourceLocation.parse(nbt.getString("overlayTexture")));
     }
   }
 

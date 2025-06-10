@@ -74,10 +74,10 @@ public abstract class FluidTankEntity extends ColorableMachineComponentEntity im
       controllerPos = BlockPos.of(compound.getLong("controllerPos"));
     }
     if (compound.contains("baseTexture")) {
-      setBaseTexture(ResourceLocation.parse(compound.getString("baseTexture")));
+      setMachineBaseTexture(ResourceLocation.parse(compound.getString("baseTexture")));
     }
     if (compound.contains("overlayTexture")) {
-      setOverlayTexture(ResourceLocation.parse(compound.getString("overlayTexture")));
+      setMachineOverlayTexture(ResourceLocation.parse(compound.getString("overlayTexture")));
     }
 
     this.tank.setListener(() -> {

@@ -3,6 +3,7 @@ package es.degrassi.mmreborn.client.model.hatch;
 import com.google.common.collect.Maps;
 import com.mojang.datafixers.util.Either;
 import es.degrassi.mmreborn.common.registration.DataComponentRegistration;
+import es.degrassi.mmreborn.common.util.MMRLogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -34,7 +35,6 @@ import org.joml.Vector4f;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -48,14 +48,16 @@ public class HatchBakedModel implements IDynamicBakedModel {
   public static final ModelProperty<String> OVERLAY_TEXTURE_NAME = new ModelProperty<>();
   public static final ModelProperty<ResourceLocation> MODEL = new ModelProperty<>();
 
-  private static final Map<ModelData, BakedModel> modelByModelData = new HashMap<>();
+  private static final Map<ModelData, BakedModel> modelByModelData = Maps.newConcurrentMap();
 
   private final Function<Material, TextureAtlasSprite> spriteGetter;
+  private final ModelBaker baker;
 
   private final HatchOverrideList overrideList = new HatchOverrideList();
 
-  public HatchBakedModel(Function<Material, TextureAtlasSprite> spriteGetter) {
+  public HatchBakedModel(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter) {
     this.spriteGetter = spriteGetter;
+    this.baker = baker;
   }
 
   private static Material createMaterial(ResourceLocation texture) {
@@ -73,16 +75,14 @@ public class HatchBakedModel implements IDynamicBakedModel {
     if (modelByModelData.containsKey(data)) {
       bakedModel = modelByModelData.get(data);
     } else {
-
-
       ResourceLocation baseTexture = data.get(BASE_TEXTURE);
       ResourceLocation overlayTexture = data.get(OVERLAY_TEXTURE);
       String baseTextureName = data.get(BASE_TEXTURE_NAME);
       String overlayTextureName = data.get(OVERLAY_TEXTURE_NAME);
-      var modelManager = Minecraft.getInstance().getModelManager();
-      var modelBakery = modelManager.getModelBakery();
-      ModelBaker baker = modelBakery.new ModelBakerImpl((mrl, material) -> material.sprite(), ModelResourceLocation.standalone(data.get(MODEL)));
-      var oldBlockModel = ((BlockModel) modelBakery.getModel(data.get(MODEL)));
+      ResourceLocation model = data.get(MODEL);
+      MMRLogger.INSTANCE.debug("state: {}, model: {}, baseTexture: {} -> {}, overlayTexture: {} -> {}", state, model, baseTextureName, baseTexture, overlayTextureName, overlayTexture);
+      if (model == null) return List.of();
+      var oldBlockModel = ((BlockModel) baker.getModel(model));
       Map<String, Either<Material, String>> textureMap = Maps.newHashMap();
       textureMap.putAll(oldBlockModel.textureMap);
 

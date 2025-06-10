@@ -90,10 +90,10 @@ public class ParallelHatchEntity extends ColorableMachineComponentEntity impleme
       this.setCores(compound.getInt("cores"));
     }
     if (compound.contains("baseTexture")) {
-      setBaseTexture(ResourceLocation.parse(compound.getString("baseTexture")));
+      setMachineBaseTexture(ResourceLocation.parse(compound.getString("baseTexture")));
     }
     if (compound.contains("overlayTexture")) {
-      setOverlayTexture(ResourceLocation.parse(compound.getString("overlayTexture")));
+      setMachineOverlayTexture(ResourceLocation.parse(compound.getString("overlayTexture")));
     }
   }
 

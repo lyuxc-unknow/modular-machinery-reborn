@@ -33,7 +33,7 @@ public class HatchModelLoader implements IGeometryLoader<HatchModelLoader.HatchM
         ModelState modelState,
         ItemOverrides itemOverrides
     ) {
-      return new HatchBakedModel(textureGetter);
+      return new HatchBakedModel(baker, textureGetter);
     }
   }
 }
