@@ -1,12 +1,15 @@
 package es.degrassi.mmreborn.common.machine;
 
+import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.Structure;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
 import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
 import es.degrassi.mmreborn.common.data.Config;
+import es.degrassi.mmreborn.common.entity.base.TextureableMachineEntity;
 import es.degrassi.mmreborn.common.manager.crafting.MachineStatus;
 import es.degrassi.mmreborn.common.util.MachineModelLocation;
 import lombok.Getter;
@@ -32,9 +35,14 @@ public class DynamicMachine {
       Structure.CODEC.fieldOf("structure").forGetter(DynamicMachine::getPattern),
       DefaultCodecs.HEX.optionalFieldOf("color", Config.machineColor).forGetter(DynamicMachine::getMachineColor),
       MachineModelLocation.CODEC.optionalFieldOf("controller", MachineModelLocation.DEFAULT).forGetter(DynamicMachine::getControllerModel),
-      NamedCodec.unboundedMap(MachineStatus.CODEC, Sounds.CODEC, "Sounds by status").optionalFieldOf("sound", new HashMap<>()).forGetter(DynamicMachine::getSounds)
-  ).apply(instance, (registryName, localizedName, pattern, color, controllerModel, sounds) -> {
-    DynamicMachine machine = new DynamicMachine(registryName, sounds);
+      NamedCodec.unboundedMap(MachineStatus.CODEC, Sounds.CODEC, "Sounds by status").optionalFieldOf("sound", new HashMap<>()).forGetter(DynamicMachine::getSounds),
+      NamedCodec.unboundedMap(
+          MachineHatchType.CODEC,
+          TextureableMachineEntity.CODEC,
+          "Formed Textures by HatchType"
+      ).optionalFieldOf("formed_textures", Maps.newHashMap()).forGetter(DynamicMachine::getFormedTextures)
+  ).apply(instance, (registryName, localizedName, pattern, color, controllerModel, sounds, formedTextures) -> {
+    DynamicMachine machine = new DynamicMachine(registryName, sounds, formedTextures);
     machine.setPattern(pattern);
     machine.setLocalizedName(localizedName);
     machine.setDefinedColor(color);
@@ -48,7 +56,7 @@ public class DynamicMachine {
     for (MachineStatus status : MachineStatus.values()) {
       sounds.put(status, Sounds.DEFAULT);
     }
-    DUMMY = new DynamicMachine(ModularMachineryReborn.rl("dummy"), sounds);
+    DUMMY = new DynamicMachine(ModularMachineryReborn.rl("dummy"), sounds, Maps.newHashMap());
   }
 
   @Nonnull
@@ -56,12 +64,14 @@ public class DynamicMachine {
   private Optional<String> localizedName = Optional.empty();
   private Structure pattern = Structure.EMPTY;
   private int definedColor = Config.machineColor;
-  private MachineModelLocation controllerModel;
+  private @Nullable MachineModelLocation controllerModel;
   private final Map<MachineStatus, Sounds> sounds;
+  private final Map<MachineHatchType, Pair<Optional<ResourceLocation>, Optional<ResourceLocation>>> formedTextures;
 
-  public DynamicMachine(@Nonnull ResourceLocation registryName, Map<MachineStatus, Sounds> sounds) {
+  public DynamicMachine(@Nonnull ResourceLocation registryName, Map<MachineStatus, Sounds> sounds, Map<MachineHatchType, Pair<Optional<ResourceLocation>, Optional<ResourceLocation>>> formedTextures) {
     this.registryName = registryName;
     this.sounds = sounds;
+    this.formedTextures = formedTextures;
   }
 
   public List<ModifierReplacement> getModifiers() {

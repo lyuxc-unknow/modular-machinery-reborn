@@ -1,19 +1,7 @@
 {
   "variants": {
-    "facing=north": {
+    "": {
       "model":"modular_machinery_reborn:block/parallel_hatch_advanced"
-    },
-    "facing=east": {
-      "model":"modular_machinery_reborn:block/parallel_hatch_advanced",
-      "y": 90
-    },
-    "facing=south": {
-      "model":"modular_machinery_reborn:block/parallel_hatch_advanced",
-      "y": 180
-    },
-    "facing=west": {
-      "model":"modular_machinery_reborn:block/parallel_hatch_advanced",
-      "y": 270
     }
   }
 }

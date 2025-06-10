@@ -107,7 +107,6 @@ public class MachineProcessorCore implements ISyncableStuff {
       tile.checkStructure(true);
       if (tile.getStatus().isMissingStructure()) {
         processor.reset();
-        tile.getComponentManager().updateComponents(true);
         return;
       }
 

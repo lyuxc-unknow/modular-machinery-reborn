@@ -1,28 +1,35 @@
 package es.degrassi.mmreborn.common.entity.base;
 
+import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.controller.ControllerAccessible;
+import es.degrassi.mmreborn.client.model.hatch.HatchBakedModel;
 import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.entity.EnergyInputHatchEntity;
 import es.degrassi.mmreborn.common.machine.IOType;
+import es.degrassi.mmreborn.common.machine.MachineHatchType;
 import es.degrassi.mmreborn.common.machine.component.EnergyComponent;
+import es.degrassi.mmreborn.common.network.server.SUpdateMachineTexturePacket;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateEnergyComponentPacket;
 import es.degrassi.mmreborn.common.util.IEnergyHandler;
 import es.degrassi.mmreborn.common.util.MiscUtils;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.Locale;
 
 public abstract class EnergyHatchEntity extends ColorableMachineComponentEntity implements IEnergyHandler,
-    MachineComponentEntity<EnergyComponent>, ControllerAccessible {
+    MachineComponentEntity<EnergyComponent>, ControllerAccessible, TextureableMachineEntity {
 
   protected long energy = 0;
   protected EnergyHatchSize size;
@@ -33,10 +40,23 @@ public abstract class EnergyHatchEntity extends ColorableMachineComponentEntity 
   private boolean canExtract = false;
   private boolean canInsert = false;
 
+  @Getter
+  @Setter
+  private ResourceLocation baseTexture;
+  @Getter
+  @Setter
+  private ResourceLocation overlayTexture;
+  @Getter
+  private final ResourceLocation defaultOverlayTexture;
+  @Getter
+  private static final ResourceLocation defaultBaseTexture = ModularMachineryReborn.rl("block/casing_plain");
+
   public EnergyHatchEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, EnergyHatchSize size, IOType ioType) {
     super(type, pos, state);
     this.size = size;
     this.ioType = ioType;
+    this.defaultOverlayTexture = ModularMachineryReborn.rl("block/overlay_energy" + ioType.getSerializedName() + "hatch_" + size.getSerializedName());
+    this.overlayTexture = defaultOverlayTexture;
   }
 
   @Nullable
@@ -122,6 +142,13 @@ public abstract class EnergyHatchEntity extends ColorableMachineComponentEntity 
     }
     if (getController() != null)
       getController().getProcessor().setMachineInventoryChanged();
+
+    if (compound.contains("baseTexture")) {
+      setBaseTexture(ResourceLocation.parse(compound.getString("baseTexture")));
+    }
+    if (compound.contains("overlayTexture")) {
+      setOverlayTexture(ResourceLocation.parse(compound.getString("overlayTexture")));
+    }
   }
 
   @Override
@@ -136,6 +163,10 @@ public abstract class EnergyHatchEntity extends ColorableMachineComponentEntity 
     compound.putString("hatchSize", this.size.getSerializedName());
     if (controllerPos != null)
       compound.putLong("controllerPos", controllerPos.asLong());
+    if (baseTexture != null)
+      compound.putString("baseTexture", baseTexture.toString());
+    if (overlayTexture != null)
+      compound.putString("overlayTexture", overlayTexture.toString());
   }
 
   @Override
@@ -172,4 +203,81 @@ public abstract class EnergyHatchEntity extends ColorableMachineComponentEntity 
     return this.size.maxEnergy;
   }
 
+  @Override
+  public ModelData getModelData() {
+    ModelData.Builder builder = getModelDataBuilder("all");
+    builder.with(HatchBakedModel.BASE_TEXTURE, baseTexture)
+        .with(HatchBakedModel.BASE_TEXTURE_NAME, "bg_all");
+    builder.with(HatchBakedModel.OVERLAY_TEXTURE, overlayTexture)
+        .with(HatchBakedModel.OVERLAY_TEXTURE_NAME, "ov_all");
+    return builder.build();
+  }
+
+  @Override
+  public ResourceLocation getMachineBaseTexture() {
+    return baseTexture;
+  }
+
+  @Override
+  public ResourceLocation getMachineOverlayTexture() {
+    return overlayTexture;
+  }
+
+  @Override
+  public void setMachineBaseTexture(ResourceLocation newTexture) {
+    setChanged();
+    this.baseTexture = newTexture;
+    setRequestModelUpdate(true);
+    triggerEvent(1, 0);
+    this.markForUpdate();
+    if (getLevel() instanceof ServerLevel l) {
+      PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getBlockPos()),
+          new SUpdateMachineTexturePacket(baseTexture, true, getBlockPos()));
+    }
+  }
+
+  @Override
+  public void setMachineOverlayTexture(ResourceLocation newTexture) {
+    setChanged();
+    this.overlayTexture = newTexture;
+    setRequestModelUpdate(true);
+    triggerEvent(1, 0);
+    this.markForUpdate();
+    if (getLevel() instanceof ServerLevel l) {
+      PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getBlockPos()),
+          new SUpdateMachineTexturePacket(overlayTexture, false, getBlockPos()));
+    }
+  }
+
+  @Override
+  public MachineHatchType getHatchType() {
+    return switch(ioType) {
+      case INPUT -> switch (size) {
+        case TINY -> MachineHatchType.ENERGY_INPUT_HATCH_TINY;
+        case SMALL -> MachineHatchType.ENERGY_INPUT_HATCH_SMALL;
+        case NORMAL -> MachineHatchType.ENERGY_INPUT_HATCH_NORMAL;
+        case REINFORCED -> MachineHatchType.ENERGY_INPUT_HATCH_REINFORCED;
+        case BIG -> MachineHatchType.ENERGY_INPUT_HATCH_BIG;
+        case HUGE -> MachineHatchType.ENERGY_INPUT_HATCH_HUGE;
+        case LUDICROUS -> MachineHatchType.ENERGY_INPUT_HATCH_LUDICROUS;
+        case ULTIMATE -> MachineHatchType.ENERGY_INPUT_HATCH_ULTIMATE;
+      };
+      case OUTPUT -> switch(size) {
+        case TINY -> MachineHatchType.ENERGY_OUTPUT_HATCH_TINY;
+        case SMALL -> MachineHatchType.ENERGY_OUTPUT_HATCH_SMALL;
+        case NORMAL -> MachineHatchType.ENERGY_OUTPUT_HATCH_NORMAL;
+        case REINFORCED -> MachineHatchType.ENERGY_OUTPUT_HATCH_REINFORCED;
+        case BIG -> MachineHatchType.ENERGY_OUTPUT_HATCH_BIG;
+        case HUGE -> MachineHatchType.ENERGY_OUTPUT_HATCH_HUGE;
+        case LUDICROUS -> MachineHatchType.ENERGY_OUTPUT_HATCH_LUDICROUS;
+        case ULTIMATE -> MachineHatchType.ENERGY_OUTPUT_HATCH_ULTIMATE;
+      };
+      default -> null;
+    };
+  }
+
+  public void resetTextures() {
+    setMachineBaseTexture(defaultBaseTexture);
+    setMachineOverlayTexture(defaultOverlayTexture);
+  }
 }

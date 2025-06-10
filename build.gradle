@@ -86,11 +86,16 @@ repositories {
     url = "https://maven.theillusivec4.top/"
   }
   maven {
-    name = "Lat's maven"
-    url = "https://maven.latvian.dev/releases"
+    url "https://maven.latvian.dev/releases"
     content {
       includeGroup "dev.latvian.mods"
       includeGroup "dev.latvian.apps"
+    }
+  }
+  maven {
+    url 'https://jitpack.io'
+    content {
+      includeGroup "com.github.rtyley"
     }
   }
   maven {
@@ -135,13 +140,6 @@ repositories {
     // for rf stuffs
     url = "https://maven.covers1624.net"
   }
-  //Needed for KubeJS
-  maven {
-    url 'https://jitpack.io'
-    content {
-      includeGroup "com.github.rtyley"
-    }
-  }
   maven {
     name = "TerraformersMC"
     url = "https://maven.terraformersmc.com/"
@@ -177,7 +175,7 @@ dependencies {
   compileOnly localRuntime("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}")
 
   // KubeJS
-  compileOnly localRuntime("dev.latvian.mods:kubejs-neoforge:${kubejs_version}")
+  compileOnly localRuntime("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
 
   // Jade
   compileOnly localRuntime("curse.maven:jade-324717:${jade_version}")

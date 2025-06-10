@@ -24,48 +24,8 @@ public class Registration {
       builder.optional(LootContextParams.ORIGIN).optional(LootContextParams.BLOCK_ENTITY)
   );
 
-  public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, ModularMachineryReborn.MODID);
-
-  public static final Supplier<DataComponentType<ResourceLocation>> MACHINE_DATA =
-      DATA_COMPONENTS.register(rootLC("machine"), () -> DataComponentType.<ResourceLocation>builder()
-    .persistent(ResourceLocation.CODEC)
-    .networkSynchronized(ResourceLocation.STREAM_CODEC)
-    .build()
-  );
-
-  public static final Supplier<DataComponentType<List<BlockPos>>> STRUCTURE_CREATOR_DATA =
-      DATA_COMPONENTS.register(rootLC("structure_creator"), () -> DataComponentType.<List<BlockPos>>builder()
-      .persistent(BlockPos.CODEC.listOf())
-      .networkSynchronized(BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list()))
-      .build()
-  );
-
-  public static final Supplier<DataComponentType<StructureCreatorItemMode>> STRUCTURE_CREATOR_MODE =
-      DATA_COMPONENTS.register(
-          rootLC("structure_creator_mode"), () -> DataComponentType.<StructureCreatorItemMode>builder()
-      .persistent(StructureCreatorItemMode.CODEC)
-      .networkSynchronized(StructureCreatorItemMode.STREAM_CODEC)
-      .build()
-  );
-
-  public static final Supplier<DataComponentType<BlockPos>> STRUCTURE_CREATOR_BOX =
-      DATA_COMPONENTS.register(
-          rootLC("structure_creator_selected_corner"), () -> DataComponentType.<BlockPos>builder()
-      .persistent(BlockPos.CODEC)
-      .networkSynchronized(BlockPos.STREAM_CODEC)
-      .build()
-  );
-
-  public static final Supplier<DataComponentType<Boolean>> STRUCTURE_CREATOR_BOX_CURRENT =
-      DATA_COMPONENTS.register(
-          rootLC("structure_creator_box_current"), () -> DataComponentType.<Boolean>builder()
-      .persistent(NamedCodec.BOOL.codec())
-      .networkSynchronized(ByteBufCodecs.BOOL)
-      .build()
-  );
-
   public static void register(final IEventBus bus) {
-    DATA_COMPONENTS.register(bus);
+    DataComponentRegistration.register(bus);
     ComponentRegistration.register(bus);
     DataRegistration.register(bus);
     ProcessorTypeRegistration.register(bus);

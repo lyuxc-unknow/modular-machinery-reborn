@@ -5,8 +5,8 @@ import es.degrassi.mmreborn.api.BlockIngredient;
 import es.degrassi.mmreborn.common.block.BlockController;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.registration.BlockRegistration;
+import es.degrassi.mmreborn.common.registration.DataComponentRegistration;
 import es.degrassi.mmreborn.common.registration.ItemRegistration;
-import es.degrassi.mmreborn.common.registration.Registration;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -42,12 +42,12 @@ public class ControllerItem extends ItemBlockMachineComponent {
     super(
         BlockRegistration.CONTROLLER.get(),
         new Properties()
-            .component(Registration.MACHINE_DATA, DUMMY)
+            .component(DataComponentRegistration.MACHINE_DATA, DUMMY)
     );
   }
 
   public static Optional<DynamicMachine> getMachine(ItemStack stack) {
-    return Optional.ofNullable(stack.get(Registration.MACHINE_DATA)).flatMap(id -> Optional.ofNullable(ModularMachineryReborn.MACHINES.get(id))).or(() -> Optional.of(DynamicMachine.DUMMY));
+    return Optional.ofNullable(stack.get(DataComponentRegistration.MACHINE_DATA)).flatMap(id -> Optional.ofNullable(ModularMachineryReborn.MACHINES.get(id))).or(() -> Optional.of(DynamicMachine.DUMMY));
   }
 
   @Override
@@ -124,7 +124,7 @@ public class ControllerItem extends ItemBlockMachineComponent {
       return ModularMachineryReborn.MACHINES_BLOCK.get(machine).asItem().getDefaultInstance();
 
     ItemStack stack = ItemRegistration.CONTROLLER.get().getDefaultInstance();
-    stack.set(Registration.MACHINE_DATA, machine);
+    stack.set(DataComponentRegistration.MACHINE_DATA, machine);
     return stack;
   }
 

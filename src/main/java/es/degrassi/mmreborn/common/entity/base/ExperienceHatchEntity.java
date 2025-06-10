@@ -1,27 +1,34 @@
 package es.degrassi.mmreborn.common.entity.base;
 
 import es.degrassi.experiencelib.impl.capability.BasicExperienceHandler;
+import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.controller.ControllerAccessible;
+import es.degrassi.mmreborn.client.model.hatch.HatchBakedModel;
 import es.degrassi.mmreborn.common.block.prop.ExperienceHatchSize;
 import es.degrassi.mmreborn.common.entity.ExperienceInputHatchEntity;
 import es.degrassi.mmreborn.common.machine.IOType;
+import es.degrassi.mmreborn.common.machine.MachineHatchType;
 import es.degrassi.mmreborn.common.machine.component.ExperienceComponent;
+import es.degrassi.mmreborn.common.network.server.SUpdateMachineTexturePacket;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateExperienceComponentPacket;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.Locale;
 
-public abstract class ExperienceHatchEntity extends ColorableMachineComponentEntity implements MachineComponentEntity<ExperienceComponent>, ControllerAccessible {
+public abstract class ExperienceHatchEntity extends ColorableMachineComponentEntity implements MachineComponentEntity<ExperienceComponent>, ControllerAccessible, TextureableMachineEntity {
   protected ExperienceHatchSize size;
   protected IOType ioType;
   @Getter
@@ -29,10 +36,23 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
 
   private final BasicExperienceHandler experienceTank;
 
+  @Getter
+  @Setter
+  private ResourceLocation baseTexture;
+  @Getter
+  @Setter
+  private ResourceLocation overlayTexture;
+  @Getter
+  private final ResourceLocation defaultOverlayTexture;
+  @Getter
+  private static final ResourceLocation defaultBaseTexture = ModularMachineryReborn.rl("block/casing_plain");
+
   public ExperienceHatchEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, ExperienceHatchSize size, IOType ioType) {
     super(type, pos, state);
     this.size = size;
     this.ioType = ioType;
+    this.defaultOverlayTexture = ModularMachineryReborn.rl("block/overlay_experience" + ioType.getSerializedName() + "hatch_" + size.getSerializedName());
+    this.overlayTexture = defaultOverlayTexture;
     this.experienceTank = buildTank();
   }
 
@@ -107,6 +127,12 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
     if (compound.contains("controllerPos")) {
       controllerPos = BlockPos.of(compound.getLong("controllerPos"));
     }
+    if (compound.contains("baseTexture")) {
+      setBaseTexture(ResourceLocation.parse(compound.getString("baseTexture")));
+    }
+    if (compound.contains("overlayTexture")) {
+      setOverlayTexture(ResourceLocation.parse(compound.getString("overlayTexture")));
+    }
   }
 
   @Override
@@ -121,10 +147,93 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
     compound.put("experience", experienceTank.serializeNBT(pRegistries));
     if (controllerPos != null)
       compound.putLong("controllerPos", controllerPos.asLong());
+    if (baseTexture != null)
+      compound.putString("baseTexture", baseTexture.toString());
+    if (overlayTexture != null)
+      compound.putString("overlayTexture", overlayTexture.toString());
   }
 
   @Override
   public void setControllerPos(BlockPos pos) {
     this.controllerPos = pos;
+  }
+
+
+  @Override
+  public ModelData getModelData() {
+    ModelData.Builder builder = getModelDataBuilder("all");
+    builder.with(HatchBakedModel.BASE_TEXTURE, baseTexture)
+        .with(HatchBakedModel.BASE_TEXTURE_NAME, "bg_all");
+    builder.with(HatchBakedModel.OVERLAY_TEXTURE, overlayTexture)
+        .with(HatchBakedModel.OVERLAY_TEXTURE_NAME, "ov_all");
+    return builder.build();
+  }
+
+  @Override
+  public ResourceLocation getMachineBaseTexture() {
+    return baseTexture;
+  }
+
+  @Override
+  public ResourceLocation getMachineOverlayTexture() {
+    return overlayTexture;
+  }
+
+  @Override
+  public void setMachineBaseTexture(ResourceLocation newTexture) {
+    setChanged();
+    this.baseTexture = newTexture;
+    setRequestModelUpdate(true);
+    triggerEvent(1, 0);
+    this.markForUpdate();
+    if (getLevel() instanceof ServerLevel l) {
+      PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getBlockPos()),
+          new SUpdateMachineTexturePacket(baseTexture, true, getBlockPos()));
+    }
+  }
+
+  @Override
+  public void setMachineOverlayTexture(ResourceLocation newTexture) {
+    setChanged();
+    this.overlayTexture = newTexture;
+    setRequestModelUpdate(true);
+    triggerEvent(1, 0);
+    this.markForUpdate();
+    if (getLevel() instanceof ServerLevel l) {
+      PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getBlockPos()),
+          new SUpdateMachineTexturePacket(overlayTexture, false, getBlockPos()));
+    }
+  }
+
+  public void resetTextures() {
+    setMachineBaseTexture(defaultBaseTexture);
+    setMachineOverlayTexture(defaultOverlayTexture);
+  }
+
+  @Override
+  public MachineHatchType getHatchType() {
+    return switch(ioType) {
+      case INPUT -> switch (size) {
+        case TINY -> MachineHatchType.EXPERIENCE_INPUT_HATCH_TINY;
+        case SMALL -> MachineHatchType.EXPERIENCE_INPUT_HATCH_SMALL;
+        case NORMAL -> MachineHatchType.EXPERIENCE_INPUT_HATCH_NORMAL;
+        case REINFORCED -> MachineHatchType.EXPERIENCE_INPUT_HATCH_REINFORCED;
+        case BIG -> MachineHatchType.EXPERIENCE_INPUT_HATCH_BIG;
+        case HUGE -> MachineHatchType.EXPERIENCE_INPUT_HATCH_HUGE;
+        case LUDICROUS -> MachineHatchType.EXPERIENCE_INPUT_HATCH_LUDICROUS;
+        case VACUUM -> MachineHatchType.EXPERIENCE_INPUT_HATCH_VACUUM;
+      };
+      case OUTPUT -> switch(size) {
+        case TINY -> MachineHatchType.EXPERIENCE_OUTPUT_HATCH_TINY;
+        case SMALL -> MachineHatchType.EXPERIENCE_OUTPUT_HATCH_SMALL;
+        case NORMAL -> MachineHatchType.EXPERIENCE_OUTPUT_HATCH_NORMAL;
+        case REINFORCED -> MachineHatchType.EXPERIENCE_OUTPUT_HATCH_REINFORCED;
+        case BIG -> MachineHatchType.EXPERIENCE_OUTPUT_HATCH_BIG;
+        case HUGE -> MachineHatchType.EXPERIENCE_OUTPUT_HATCH_HUGE;
+        case LUDICROUS -> MachineHatchType.EXPERIENCE_OUTPUT_HATCH_LUDICROUS;
+        case VACUUM -> MachineHatchType.EXPERIENCE_INPUT_HATCH_VACUUM;
+      };
+      default -> null;
+    };
   }
 }

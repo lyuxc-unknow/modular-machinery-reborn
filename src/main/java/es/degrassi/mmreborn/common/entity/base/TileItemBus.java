@@ -1,35 +1,55 @@
 package es.degrassi.mmreborn.common.entity.base;
 
+import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.controller.ControllerAccessible;
+import es.degrassi.mmreborn.client.model.hatch.HatchBakedModel;
 import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
 import es.degrassi.mmreborn.common.entity.ItemInputBusEntity;
 import es.degrassi.mmreborn.common.machine.IOType;
+import es.degrassi.mmreborn.common.machine.MachineHatchType;
 import es.degrassi.mmreborn.common.machine.component.ItemComponent;
+import es.degrassi.mmreborn.common.network.server.SUpdateMachineTexturePacket;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateItemComponentPacket;
 import es.degrassi.mmreborn.common.util.IOInventory;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 
 @Getter
-public abstract class TileItemBus extends TileInventory implements MachineComponentEntity<ItemComponent>, ControllerAccessible {
+public abstract class TileItemBus extends TileInventory implements MachineComponentEntity<ItemComponent>, ControllerAccessible, TextureableMachineEntity {
   private BlockPos controllerPos;
   private ItemBusSize size;
   private IOType ioType;
+
+  @Getter
+  @Setter
+  private ResourceLocation baseTexture;
+  @Getter
+  @Setter
+  private ResourceLocation overlayTexture;
+  @Getter
+  private final ResourceLocation defaultOverlayTexture;
+  @Getter
+  private static final ResourceLocation defaultBaseTexture = ModularMachineryReborn.rl("block/casing_plain");
 
   public TileItemBus(BlockEntityType<?> entityType, BlockPos pos, BlockState blockState, ItemBusSize size, IOType ioType) {
     super(entityType, pos, blockState, size.getSlotCount());
     this.size = size;
     this.ioType = ioType;
+    this.defaultOverlayTexture = ModularMachineryReborn.rl("block/overlay_" + ioType.getSerializedName() + "bus_" + size.getSerializedName());
+    this.overlayTexture = defaultOverlayTexture;
     this.inventory.setListener(new IOInventory.IOInventoryChangedListener() {
       @Override
       public void onChange(int slot, ItemStack stack) {
@@ -63,6 +83,12 @@ public abstract class TileItemBus extends TileInventory implements MachineCompon
     if (compound.contains("controllerPos")) {
       controllerPos = BlockPos.of(compound.getLong("controllerPos"));
     }
+    if (compound.contains("baseTexture")) {
+      setBaseTexture(ResourceLocation.parse(compound.getString("baseTexture")));
+    }
+    if (compound.contains("overlayTexture")) {
+      setOverlayTexture(ResourceLocation.parse(compound.getString("overlayTexture")));
+    }
 
     this.inventory.setListener(new IOInventory.IOInventoryChangedListener() {
       @Override
@@ -94,10 +120,91 @@ public abstract class TileItemBus extends TileInventory implements MachineCompon
     compound.putString("ioType", this.ioType.getSerializedName());
     if (controllerPos != null)
       compound.putLong("controllerPos", controllerPos.asLong());
+    if (baseTexture != null)
+      compound.putString("baseTexture", baseTexture.toString());
+    if (overlayTexture != null)
+      compound.putString("overlayTexture", overlayTexture.toString());
   }
 
   @Override
   public void setControllerPos(BlockPos pos) {
     this.controllerPos = pos;
+  }
+
+
+  @Override
+  public ModelData getModelData() {
+    ModelData.Builder builder = getModelDataBuilder("all");
+    builder.with(HatchBakedModel.BASE_TEXTURE, baseTexture)
+        .with(HatchBakedModel.BASE_TEXTURE_NAME, "bg_all");
+    builder.with(HatchBakedModel.OVERLAY_TEXTURE, overlayTexture)
+        .with(HatchBakedModel.OVERLAY_TEXTURE_NAME, "ov_all");
+    return builder.build();
+  }
+
+  @Override
+  public ResourceLocation getMachineBaseTexture() {
+    return baseTexture;
+  }
+
+  @Override
+  public ResourceLocation getMachineOverlayTexture() {
+    return overlayTexture;
+  }
+
+  @Override
+  public void setMachineBaseTexture(ResourceLocation newTexture) {
+    setChanged();
+    this.baseTexture = newTexture;
+    setRequestModelUpdate(true);
+    triggerEvent(1, 0);
+    this.markForUpdate();
+    if (getLevel() instanceof ServerLevel l) {
+      PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getBlockPos()),
+          new SUpdateMachineTexturePacket(baseTexture, true, getBlockPos()));
+    }
+  }
+
+  @Override
+  public void setMachineOverlayTexture(ResourceLocation newTexture) {
+    setChanged();
+    this.overlayTexture = newTexture;
+    setRequestModelUpdate(true);
+    triggerEvent(1, 0);
+    this.markForUpdate();
+    if (getLevel() instanceof ServerLevel l) {
+      PacketDistributor.sendToPlayersTrackingChunk(l, new ChunkPos(getBlockPos()),
+          new SUpdateMachineTexturePacket(overlayTexture, false, getBlockPos()));
+    }
+  }
+
+  public void resetTextures() {
+    setMachineBaseTexture(defaultBaseTexture);
+    setMachineOverlayTexture(defaultOverlayTexture);
+  }
+
+  @Override
+  public MachineHatchType getHatchType() {
+    return switch(ioType) {
+      case INPUT -> switch (size) {
+        case TINY -> MachineHatchType.ITEM_INPUT_BUS_TINY;
+        case SMALL -> MachineHatchType.ITEM_INPUT_BUS_SMALL;
+        case NORMAL -> MachineHatchType.ITEM_INPUT_BUS_NORMAL;
+        case REINFORCED -> MachineHatchType.ITEM_INPUT_BUS_REINFORCED;
+        case BIG -> MachineHatchType.ITEM_INPUT_BUS_BIG;
+        case HUGE -> MachineHatchType.ITEM_INPUT_BUS_HUGE;
+        case LUDICROUS -> MachineHatchType.ITEM_INPUT_BUS_LUDICROUS;
+      };
+      case OUTPUT -> switch(size) {
+        case TINY -> MachineHatchType.ITEM_OUTPUT_BUS_TINY;
+        case SMALL -> MachineHatchType.ITEM_OUTPUT_BUS_SMALL;
+        case NORMAL -> MachineHatchType.ITEM_OUTPUT_BUS_NORMAL;
+        case REINFORCED -> MachineHatchType.ITEM_OUTPUT_BUS_REINFORCED;
+        case BIG -> MachineHatchType.ITEM_OUTPUT_BUS_BIG;
+        case HUGE -> MachineHatchType.ITEM_OUTPUT_BUS_HUGE;
+        case LUDICROUS -> MachineHatchType.ITEM_OUTPUT_BUS_LUDICROUS;
+      };
+      default -> null;
+    };
   }
 }

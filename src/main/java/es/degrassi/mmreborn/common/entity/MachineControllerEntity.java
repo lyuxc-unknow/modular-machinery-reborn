@@ -8,7 +8,7 @@ import es.degrassi.mmreborn.api.network.ISyncableStuff;
 import es.degrassi.mmreborn.api.network.syncable.IntegerSyncable;
 import es.degrassi.mmreborn.api.network.syncable.NbtSyncable;
 import es.degrassi.mmreborn.api.network.syncable.StringSyncable;
-import es.degrassi.mmreborn.client.model.ControllerBakedModel;
+import es.degrassi.mmreborn.client.model.controller.ControllerBakedModel;
 import es.degrassi.mmreborn.common.crafting.helper.CraftingStatus;
 import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
 import es.degrassi.mmreborn.common.data.Config;
@@ -16,6 +16,7 @@ import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.entity.base.BlockEntityRestrictedTick;
 import es.degrassi.mmreborn.common.entity.base.BlockEntitySynchronized;
 import es.degrassi.mmreborn.common.entity.base.ColorableMachineEntity;
+import es.degrassi.mmreborn.common.entity.base.TextureableMachineEntity;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
 import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.machine.Sounds;
@@ -51,6 +52,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 @Getter
@@ -86,10 +88,10 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
       setCraftingStatus(craftingByMachine(status));
       setRequestModelUpdate(true);
       setChanged();
-      if (this.getLevel() instanceof ServerLevel level) {
+      if (this.getLevel() instanceof ServerLevel sl) {
         BlockPos pos = this.getBlockPos();
-        level.updateNeighborsAt(pos, this.getBlockState().getBlock());
-        PacketDistributor.sendToPlayersTrackingChunk(level, new ChunkPos(pos), new SUpdateCraftingStatusPacket(this.status, pos));
+        sl.updateNeighborsAt(pos, this.getBlockState().getBlock());
+        PacketDistributor.sendToPlayersTrackingChunk(sl, new ChunkPos(pos), new SUpdateCraftingStatusPacket(this.status, pos));
       }
     }
   }
@@ -131,8 +133,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
 
   public void setPaused(boolean paused) {
     this.isPaused = paused;
-    if (paused)
-      setStatus(MachineStatus.PAUSED);
+    if (paused) setStatus(MachineStatus.PAUSED);
     if (!getLevel().isClientSide) {
       PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) getLevel(), new ChunkPos(getBlockPos()),
           new SSyncPauseStatePacket(isPaused, getBlockPos()));
@@ -210,7 +211,7 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
       setStatus(MachineStatus.MISSING_STRUCTURE);
     } else {
       distributeCasingColor(false);
-      componentManager.updateComponents(false);
+      componentManager.updateComponents(immediate);
       if (!status.isCrafting()) {
         setStatus(MachineStatus.IDLE);
       } else {
@@ -225,11 +226,11 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
     int color = default_ ? Config.machineColor : getFoundMachine().getMachineColor();
     for (BlockPos pos : poss) {
       if (getLevel().getBlockEntity(pos) instanceof MachineControllerEntity entity)
-        tryColorize(pos, entity.getFoundMachine().getMachineColor());
+        tryColorize(pos, entity.getFoundMachine().getMachineColor(), default_);
       else
-        tryColorize(this.getBlockPos().offset(pos), color);
+        tryColorize(this.getBlockPos().offset(pos), color, default_);
     }
-    tryColorize(getBlockPos(), getFoundMachine().getMachineColor());
+    tryColorize(getBlockPos(), getFoundMachine().getMachineColor(), default_);
   }
 
   public void distributeCasingColor(boolean default_) {
@@ -249,8 +250,18 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
     }
   }
 
-  private void tryColorize(BlockPos pos, int color) {
+  private void tryColorize(BlockPos pos, int color, boolean _default) {
     BlockEntity te = this.getLevel().getBlockEntity(pos);
+    if (te instanceof TextureableMachineEntity entity) {
+      entity.resetTextures();
+      if (!_default) {
+        Optional.ofNullable(getFoundMachine().getFormedTextures().get(entity.getHatchType())).ifPresent(pair -> {
+          pair.getFirst().ifPresent(entity::setMachineBaseTexture);
+          pair.getSecond().ifPresent(entity::setMachineOverlayTexture);
+        });
+      }
+      te.setChanged();
+    }
     if (te instanceof ColorableMachineEntity entity) {
       entity.setMachineColor(color);
       te.setChanged();
