@@ -230,7 +230,7 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
         case BIG -> MachineHatchType.EXPERIENCE_OUTPUT_HATCH_BIG;
         case HUGE -> MachineHatchType.EXPERIENCE_OUTPUT_HATCH_HUGE;
         case LUDICROUS -> MachineHatchType.EXPERIENCE_OUTPUT_HATCH_LUDICROUS;
-        case VACUUM -> MachineHatchType.EXPERIENCE_INPUT_HATCH_VACUUM;
+        case VACUUM -> MachineHatchType.EXPERIENCE_OUTPUT_HATCH_VACUUM;
       };
       default -> null;
     };

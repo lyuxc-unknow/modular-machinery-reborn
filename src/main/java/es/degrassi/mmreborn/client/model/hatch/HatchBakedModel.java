@@ -3,7 +3,6 @@ package es.degrassi.mmreborn.client.model.hatch;
 import com.google.common.collect.Maps;
 import com.mojang.datafixers.util.Either;
 import es.degrassi.mmreborn.common.registration.DataComponentRegistration;
-import es.degrassi.mmreborn.common.util.MMRLogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
