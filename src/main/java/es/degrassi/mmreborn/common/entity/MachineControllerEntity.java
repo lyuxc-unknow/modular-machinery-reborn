@@ -262,9 +262,11 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
       }
       te.setChanged();
     }
-    if (te instanceof ColorableMachineEntity entity) {
-      entity.setMachineColor(color);
-      te.setChanged();
+    if (getFoundMachine().shouldColor()) {
+      if (te instanceof ColorableMachineEntity entity) {
+        entity.setMachineColor(color);
+        te.setChanged();
+      }
     }
   }
 

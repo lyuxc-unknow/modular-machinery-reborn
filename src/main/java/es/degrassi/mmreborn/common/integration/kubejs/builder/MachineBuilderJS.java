@@ -38,12 +38,14 @@ public class MachineBuilderJS {
   private final List<ModifierReplacement> modifiers;
   private final Map<MachineStatus, Sounds> sounds;
   private final Map<MachineHatchType, Pair<Optional<ResourceLocation>, Optional<ResourceLocation>>> textureMap;
+  private boolean shouldColor;
 
   public MachineBuilderJS(@NotNull ResourceLocation id) {
     this.id = id;
     modifiers = Lists.newArrayList();
     sounds = Maps.newEnumMap(MachineStatus.class);
     textureMap = Maps.newEnumMap(MachineHatchType.class);
+    shouldColor = true;
   }
 
   public MachineBuilderJS name(String name) {
@@ -79,6 +81,16 @@ public class MachineBuilderJS {
     return this;
   }
 
+  public MachineBuilderJS skipColor() {
+    shouldColor = false;
+    return this;
+  }
+
+  public MachineBuilderJS forceColor() {
+    shouldColor = true;
+    return this;
+  }
+
   public MachineBuilderJS addModifier(ModifierBuilderJS modifier) {
     this.modifiers.add(modifier.build());
     return this;
@@ -98,7 +110,7 @@ public class MachineBuilderJS {
       machine.setDefinedColor(intColor);
     else if(color != null)
       machine.setDefinedColor(DefaultCodecs.HEX.decode(JsonOps.INSTANCE, new JsonPrimitive(color)).result().orElse(new Pair<>(Config.toInt(MMRConfig.get().general_casing_color.get(), 0xFF4900), null)).getFirst());
-
+    machine.setColoring(shouldColor);
     return machine;
   }
 
