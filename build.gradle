@@ -202,6 +202,9 @@ dependencies {
   localRuntime("top.theillusivec4.curios:curios-neoforge:9.4.2+1.21.1")
   localRuntime("com.hollingsworth.ars_nouveau:ars_nouveau-${project.minecraft_version}:5.8.2.1100")
 
+  // ProjectE due to a report
+  // localRuntime("curse.maven:projecte-226410:6611984")
+
   // experience fluids
   localRuntime("curse.maven:mob-grinding-utils-254241:${project.MGU}")
   localRuntime("curse.maven:titanium-287342:${titanium}")
