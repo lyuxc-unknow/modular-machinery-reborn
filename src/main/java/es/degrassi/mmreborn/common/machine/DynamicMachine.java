@@ -1,7 +1,6 @@
 package es.degrassi.mmreborn.common.machine;
 
 import com.google.common.collect.Maps;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import es.degrassi.mmreborn.ModularMachineryReborn;
@@ -35,7 +34,6 @@ public class DynamicMachine {
       NamedCodec.STRING.optionalFieldOf("localizedName").forGetter(machine -> Optional.of(machine.getLocalizedName())),
       Structure.CODEC.fieldOf("structure").forGetter(DynamicMachine::getPattern),
       DefaultCodecs.HEX.optionalFieldOf("color", Config.machineColor).forGetter(DynamicMachine::getMachineColor),
-      NamedCodec.BOOL.optionalFieldOf("should_color", true).forGetter(DynamicMachine::shouldColor),
       MachineModelLocation.CODEC.optionalFieldOf("controller", MachineModelLocation.DEFAULT).forGetter(DynamicMachine::getControllerModel),
       NamedCodec.unboundedMap(MachineStatus.CODEC, Sounds.CODEC, "Sounds by status").optionalFieldOf("sound", new HashMap<>()).forGetter(DynamicMachine::getSounds),
       NamedCodec.unboundedMap(
@@ -44,13 +42,12 @@ public class DynamicMachine {
           "Formed Textures by HatchType"
       ).optionalFieldOf("formed_textures", Maps.newHashMap()).forGetter(DynamicMachine::getFormedTextures)
   ).apply(instance,
-      (registryName, localizedName, pattern, color, shouldColor, controllerModel, sounds, formedTextures) -> {
+      (registryName, localizedName, pattern, color, controllerModel, sounds, formedTextures) -> {
     DynamicMachine machine = new DynamicMachine(registryName, sounds, formedTextures);
     machine.setPattern(pattern);
     machine.setLocalizedName(localizedName);
     machine.setDefinedColor(color);
     machine.setControllerModel(controllerModel);
-    machine.setColoring(shouldColor);
     return machine;
   }), "Dynamic Machine");
 
@@ -70,17 +67,14 @@ public class DynamicMachine {
   private int definedColor = Config.machineColor;
   private @Nullable MachineModelLocation controllerModel;
   private final Map<MachineStatus, Sounds> sounds;
-  private final Map<MachineHatchType, Pair<Optional<ResourceLocation>, Optional<ResourceLocation>>> formedTextures;
-  private boolean coloring;
+  private final Map<MachineHatchType, Pair<Boolean, Pair<Optional<ResourceLocation>, Optional<ResourceLocation>>>> formedTextures;
 
-  public DynamicMachine(@Nonnull ResourceLocation registryName, Map<MachineStatus, Sounds> sounds, Map<MachineHatchType, Pair<Optional<ResourceLocation>, Optional<ResourceLocation>>> formedTextures) {
+  public DynamicMachine(@Nonnull ResourceLocation registryName, Map<MachineStatus, Sounds> sounds,
+                        Map<MachineHatchType,
+                            Pair<Boolean, Pair<Optional<ResourceLocation>, Optional<ResourceLocation>>>> formedTextures) {
     this.registryName = registryName;
     this.sounds = sounds;
     this.formedTextures = formedTextures;
-  }
-
-  public boolean shouldColor() {
-    return coloring;
   }
 
   public List<ModifierReplacement> getModifiers() {
@@ -119,15 +113,21 @@ public class DynamicMachine {
       json.addProperty("controllerModel", controllerModel.toString());
     JsonObject formedTexts = new JsonObject();
     formedTextures.forEach((hatchType, pair) -> {
-      var baseTexture = pair.getFirst();
-      var overlayTexture = pair.getSecond();
-      JsonObject textures = new JsonObject();
-      baseTexture.ifPresent(rl -> textures.addProperty("base_texture", rl.toString()));
-      overlayTexture.ifPresent(rl -> textures.addProperty("overlay_texture", rl.toString()));
-      formedTexts.add(hatchType.getSerializedName(), textures);
+      var shouldColor = pair.getFirst();
+      var texts = pair.mapSecond(second -> {
+        var baseTexture = second.getFirst();
+        var overlayTexture = second.getSecond();
+        JsonObject textures = new JsonObject();
+        baseTexture.ifPresent(rl -> textures.addProperty("base_texture", rl.toString()));
+        overlayTexture.ifPresent(rl -> textures.addProperty("overlay_texture", rl.toString()));
+        return textures;
+      }).getSecond();
+      JsonObject withColor = new JsonObject();
+      withColor.addProperty("should_color", shouldColor);
+      withColor.add("textures", texts);
+      formedTexts.add(hatchType.getSerializedName(), withColor);
     });
     json.add("formed_textures", formedTexts);
-    json.addProperty("should_color", coloring);
     return json;
   }
 

@@ -13,9 +13,15 @@ import java.util.Optional;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public interface TextureableMachineEntity {
-  NamedCodec<Pair<Optional<ResourceLocation>, Optional<ResourceLocation>>> CODEC = NamedCodec.record(instance2 -> instance2.group(
+  NamedCodec<Pair<Optional<ResourceLocation>, Optional<ResourceLocation>>> TEXTURES_CODEC = NamedCodec.record(instance -> instance.group(
       DefaultCodecs.RESOURCE_LOCATION.optionalFieldOf("base_texture").forGetter(Pair::getFirst),
       DefaultCodecs.RESOURCE_LOCATION.optionalFieldOf("overlay_texture").forGetter(Pair::getSecond)
+  ).apply(instance, Pair::of), "Textures Pair without coloring");
+
+  NamedCodec<Pair<Boolean, Pair<Optional<ResourceLocation>, Optional<ResourceLocation>>>> CODEC =
+      NamedCodec.record(instance2 -> instance2.group(
+        NamedCodec.BOOL.fieldOf("should_color").forGetter(Pair::getFirst),
+        TEXTURES_CODEC.fieldOf("textures").forGetter(Pair::getSecond)
   ).apply(instance2, Pair::of), "Textures Pair");
 
   ResourceLocation getMachineBaseTexture();

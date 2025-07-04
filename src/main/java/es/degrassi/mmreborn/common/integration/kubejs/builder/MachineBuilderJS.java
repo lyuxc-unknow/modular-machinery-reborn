@@ -37,15 +37,13 @@ public class MachineBuilderJS {
   private MachineModelLocation controllerModel;
   private final List<ModifierReplacement> modifiers;
   private final Map<MachineStatus, Sounds> sounds;
-  private final Map<MachineHatchType, Pair<Optional<ResourceLocation>, Optional<ResourceLocation>>> textureMap;
-  private boolean shouldColor;
+  private final Map<MachineHatchType, Pair<Boolean, Pair<Optional<ResourceLocation>, Optional<ResourceLocation>>>> textureMap;
 
   public MachineBuilderJS(@NotNull ResourceLocation id) {
     this.id = id;
     modifiers = Lists.newArrayList();
     sounds = Maps.newEnumMap(MachineStatus.class);
     textureMap = Maps.newEnumMap(MachineHatchType.class);
-    shouldColor = true;
   }
 
   public MachineBuilderJS name(String name) {
@@ -73,21 +71,12 @@ public class MachineBuilderJS {
     return this;
   }
 
-  public MachineBuilderJS texture(MachineHatchType type, @Nullable ResourceLocation baseTexture, @Nullable ResourceLocation overlayTexture) {
+  public MachineBuilderJS texture(MachineHatchType type, boolean shouldColor, @Nullable ResourceLocation baseTexture,
+                                  @Nullable ResourceLocation overlayTexture) {
     var base = Optional.ofNullable(baseTexture);
     var overlay = Optional.ofNullable(overlayTexture);
     var pair = Pair.of(base, overlay);
-    textureMap.put(type, pair);
-    return this;
-  }
-
-  public MachineBuilderJS skipColor() {
-    shouldColor = false;
-    return this;
-  }
-
-  public MachineBuilderJS forceColor() {
-    shouldColor = true;
+    textureMap.put(type, Pair.of(shouldColor, pair));
     return this;
   }
 
@@ -110,7 +99,6 @@ public class MachineBuilderJS {
       machine.setDefinedColor(intColor);
     else if(color != null)
       machine.setDefinedColor(DefaultCodecs.HEX.decode(JsonOps.INSTANCE, new JsonPrimitive(color)).result().orElse(new Pair<>(Config.toInt(MMRConfig.get().general_casing_color.get(), 0xFF4900), null)).getFirst());
-    machine.setColoring(shouldColor);
     return machine;
   }
 

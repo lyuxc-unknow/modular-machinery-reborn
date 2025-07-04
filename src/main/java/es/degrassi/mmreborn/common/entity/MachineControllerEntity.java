@@ -53,6 +53,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 @Getter
@@ -252,17 +253,22 @@ public class MachineControllerEntity extends BlockEntityRestrictedTick implement
 
   private void tryColorize(BlockPos pos, int color, boolean _default) {
     BlockEntity te = this.getLevel().getBlockEntity(pos);
+    AtomicBoolean shouldColor = new AtomicBoolean(true);
     if (te instanceof TextureableMachineEntity entity) {
       entity.resetTextures();
       if (!_default) {
-        Optional.ofNullable(getFoundMachine().getFormedTextures().get(entity.getHatchType())).ifPresent(pair -> {
-          pair.getFirst().ifPresent(entity::setMachineBaseTexture);
-          pair.getSecond().ifPresent(entity::setMachineOverlayTexture);
+        Optional.ofNullable(getFoundMachine().getFormedTextures().get(entity.getHatchType())).ifPresent(p -> {
+          shouldColor.set(p.getFirst());
+          p.mapSecond(pair -> {
+            pair.getFirst().ifPresent(entity::setMachineBaseTexture);
+            pair.getSecond().ifPresent(entity::setMachineOverlayTexture);
+            return null;
+          });
         });
       }
       te.setChanged();
     }
-    if (getFoundMachine().shouldColor()) {
+    if (shouldColor.get()) {
       if (te instanceof ColorableMachineEntity entity) {
         entity.setMachineColor(color);
         te.setChanged();
