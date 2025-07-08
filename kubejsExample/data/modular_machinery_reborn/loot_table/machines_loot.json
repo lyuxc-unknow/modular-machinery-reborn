@@ -1,0 +1,51 @@
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:tag",
+          "name": "modular_machinery_reborn:all_casing",
+          "expand": true,
+          "weight": 80
+        },
+        {
+          "type": "minecraft:item",
+          "name": "modular_machinery_reborn:controller",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "modular_machinery_reborn:machine": "modular_machinery_reborn:alloy_smelter"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "modular_machinery_reborn:controller",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "modular_machinery_reborn:machine": "modular_machinery_reborn:power_transformer"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "modular_machinery_reborn:controller",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "modular_machinery_reborn:machine": "mmr:testing89"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
