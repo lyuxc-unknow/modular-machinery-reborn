@@ -12,23 +12,24 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ItemComponent extends MachineComponent<IOInventory> {
+public class DurabilityComponent extends MachineComponent<IOInventory> {
   private final IOInventory handler;
 
-  public ItemComponent(IOInventory handler, IOType ioType) {
+  public DurabilityComponent(IOInventory handler, IOType ioType) {
     super(ioType);
     this.handler = handler;
   }
 
   @Override
   public ComponentType getComponentType() {
-    return ComponentRegistration.COMPONENT_ITEM.get();
+    return ComponentRegistration.COMPONENT_DURABILITY.get();
   }
 
   @Override
   public IOInventory getContainerProvider() {
     return handler;
   }
+
 
   public int getIngredientAmount(Ingredient ingredient) {
     return this.handler.getInputs().stream().filter(component -> ingredient.test(component.getItemStack()))
@@ -68,8 +69,8 @@ public class ItemComponent extends MachineComponent<IOInventory> {
   @Override
   @SuppressWarnings("unchecked")
   public <C extends MachineComponent<?>> C merge(C c) {
-    ItemComponent comp = (ItemComponent) c;
-    return (C) new ItemComponent(
+    DurabilityComponent comp = (DurabilityComponent) c;
+    return (C) new DurabilityComponent(
         IOInventory.mergeBuild(handler, comp.handler),
         getIOType()
     );

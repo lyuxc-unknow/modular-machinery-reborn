@@ -6,6 +6,7 @@ import es.degrassi.mmreborn.client.container.EnergyHatchContainer;
 import es.degrassi.mmreborn.client.container.ExperienceHatchContainer;
 import es.degrassi.mmreborn.client.container.FluidHatchContainer;
 import es.degrassi.mmreborn.client.container.ItemBusContainer;
+import es.degrassi.mmreborn.client.container.ItemDurabilityContainer;
 import es.degrassi.mmreborn.client.container.ParallelHatchContainer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.inventory.MenuType;
@@ -27,6 +28,8 @@ public class ContainerRegistration {
       CONTAINERS.register(rootLC("fluid_hatch"), () -> IMenuTypeExtension.create(FluidHatchContainer::new));
   public static final DeferredHolder<MenuType<?>, MenuType<ItemBusContainer>> ITEM_BUS =
       CONTAINERS.register(rootLC("item_bus"), () -> IMenuTypeExtension.create(ItemBusContainer::new));
+  public static final DeferredHolder<MenuType<?>, MenuType<ItemDurabilityContainer>> ITEM_DURABILITY_HATCH =
+      CONTAINERS.register(rootLC("item_durability_hatch"), () -> IMenuTypeExtension.create(ItemDurabilityContainer::new));
   public static final DeferredHolder<MenuType<?>, MenuType<ExperienceHatchContainer>> EXPERIENCE_HATCH =
       CONTAINERS.register(rootLC("experience_hatch"), () -> IMenuTypeExtension.create(ExperienceHatchContainer::new));
   public static final DeferredHolder<MenuType<?>, MenuType<ParallelHatchContainer>> PARALLEL_HATCH =

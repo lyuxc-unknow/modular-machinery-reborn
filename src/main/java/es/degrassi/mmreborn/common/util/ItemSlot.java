@@ -5,6 +5,7 @@ import es.degrassi.mmreborn.api.network.ISyncableStuff;
 import es.degrassi.mmreborn.api.network.syncable.ItemStackSyncable;
 import es.degrassi.mmreborn.common.machine.IOType;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
@@ -19,7 +20,8 @@ public class ItemSlot implements IItemHandlerModifiable, ISyncableStuff {
   private final int capacity;
   private final int maxInput;
   private final int maxOutput;
-  private final Predicate<Item> filter;
+  @Setter
+  private Predicate<ItemStack> filter;
   private ItemStack stack = ItemStack.EMPTY;
   private boolean bypassLimit = false;
   @Getter
@@ -27,7 +29,8 @@ public class ItemSlot implements IItemHandlerModifiable, ISyncableStuff {
   @Getter
   private final int slot;
 
-  public ItemSlot(int slot, IOInventory manager, int capacity, int maxInput, int maxOutput, Predicate<Item> filter) {
+  public ItemSlot(int slot, IOInventory manager, int capacity, int maxInput, int maxOutput,
+                  Predicate<ItemStack> filter) {
     this.capacity = capacity;
     this.maxInput = maxInput;
     this.maxOutput = maxOutput;
@@ -36,7 +39,7 @@ public class ItemSlot implements IItemHandlerModifiable, ISyncableStuff {
     this.slot = slot;
   }
 
-  public ItemSlot(IOInventory manager, Predicate<Item> filter, CompoundTag nbt, HolderLookup.Provider registries) {
+  public ItemSlot(IOInventory manager, Predicate<ItemStack> filter, CompoundTag nbt, HolderLookup.Provider registries) {
     this.manager = manager;
     this.filter = filter;
     if (nbt.contains("item"))
@@ -184,7 +187,7 @@ public class ItemSlot implements IItemHandlerModifiable, ISyncableStuff {
 
   @Override
   public boolean isItemValid(int slot, ItemStack stack) {
-    return filter.test(stack.getItem());
+    return filter.test(stack);
   }
 
   @Override

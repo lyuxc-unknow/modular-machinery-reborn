@@ -13,8 +13,10 @@ import es.degrassi.mmreborn.common.entity.ExperienceOutputHatchEntity;
 import es.degrassi.mmreborn.common.entity.FluidInputHatchEntity;
 import es.degrassi.mmreborn.common.entity.FluidOutputHatchEntity;
 import es.degrassi.mmreborn.common.entity.HeightMeterEntity;
+import es.degrassi.mmreborn.common.entity.ItemConsumeDurabilityHatchEntity;
 import es.degrassi.mmreborn.common.entity.ItemInputBusEntity;
 import es.degrassi.mmreborn.common.entity.ItemOutputBusEntity;
+import es.degrassi.mmreborn.common.entity.ItemRepairDurabilityHatchEntity;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.entity.ParallelHatchEntity;
 import es.degrassi.mmreborn.common.entity.TimeCounterEntity;
@@ -114,6 +116,32 @@ public class EntityRegistration {
               BlockRegistration.ITEM_OUTPUT_BUS_BIG.get(),
               BlockRegistration.ITEM_OUTPUT_BUS_HUGE.get(),
               BlockRegistration.ITEM_OUTPUT_BUS_LUDICROUS.get()
+          ),
+          null)
+  );
+  public static final Supplier<BlockEntityType<ItemConsumeDurabilityHatchEntity>> ITEM_CONSUME_DURABILITY_HATCH =
+      ENTITY_TYPE.register(
+      rootLC("item_consume_durability_hatch"),
+      () -> new BlockEntityType<>(
+          ItemConsumeDurabilityHatchEntity::new,
+          Set.of(
+              BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_TINY.get(),
+              BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_SMALL.get(),
+              BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_NORMAL.get(),
+              BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_BIG.get()
+          ),
+          null)
+  );
+  public static final Supplier<BlockEntityType<ItemRepairDurabilityHatchEntity>> ITEM_REPAIR_DURABILITY_HATCH =
+      ENTITY_TYPE.register(
+      rootLC("item_repair_durability_hatch"),
+      () -> new BlockEntityType<>(
+          ItemRepairDurabilityHatchEntity::new,
+          Set.of(
+              BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_TINY.get(),
+              BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_SMALL.get(),
+              BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_NORMAL.get(),
+              BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_BIG.get()
           ),
           null)
   );

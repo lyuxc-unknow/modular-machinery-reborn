@@ -1,9 +1,9 @@
 package es.degrassi.mmreborn.client.container;
 
 import es.degrassi.mmreborn.client.ModularMachineryRebornClient;
-import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
+import es.degrassi.mmreborn.common.block.prop.ItemDurabilityHatchSize;
 import es.degrassi.mmreborn.common.data.MMRConfig;
-import es.degrassi.mmreborn.common.entity.base.TileItemBus;
+import es.degrassi.mmreborn.common.entity.base.TileDurabilityHatch;
 import es.degrassi.mmreborn.common.registration.ContainerRegistration;
 import es.degrassi.mmreborn.common.util.IOInventory;
 import net.minecraft.network.FriendlyByteBuf;
@@ -18,28 +18,28 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ItemBusContainer extends ContainerBase<TileItemBus> {
+public class ItemDurabilityContainer extends ContainerBase<TileDurabilityHatch> {
 
-  public static void open(ServerPlayer player, TileItemBus machine) {
+  public static void open(ServerPlayer player, TileDurabilityHatch machine) {
     player.openMenu(new MenuProvider() {
       @Override
       public @NotNull Component getDisplayName() {
-        return Component.translatable("modular_machinery_reborn.gui.title.item_bus");
+        return Component.translatable("modular_machinery_reborn.gui.title.durability_hatch");
       }
 
       @Override
       public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
-        return new ItemBusContainer(id, inv, machine);
+        return new ItemDurabilityContainer(id, inv, machine);
       }
     }, buf -> buf.writeBlockPos(machine.getBlockPos()));
   }
 
-  public ItemBusContainer(int id, Inventory playerInv, TileItemBus entity) {
-    super(entity, playerInv.player, ContainerRegistration.ITEM_BUS.get(), id);
+  public ItemDurabilityContainer(int id, Inventory playerInv, TileDurabilityHatch entity) {
+    super(entity, playerInv.player, ContainerRegistration.ITEM_DURABILITY_HATCH.get(), id);
   }
 
-  public ItemBusContainer(int id, Inventory inv, FriendlyByteBuf buffer) {
-    this(id, inv, ModularMachineryRebornClient.getClientSideItemBusEntity(buffer.readBlockPos()));
+  public ItemDurabilityContainer(int id, Inventory inv, FriendlyByteBuf buffer) {
+    this(id, inv, ModularMachineryRebornClient.getClientSideItemDurabilityEntity(buffer.readBlockPos()));
   }
 
   @Override
@@ -63,7 +63,7 @@ public class ItemBusContainer extends ContainerBase<TileItemBus> {
     }
   }
 
-  protected void addInventorySlots(IOInventory itemHandler, ItemBusSize size, AtomicInteger atomicInteger) {
+  protected void addInventorySlots(IOInventory itemHandler, ItemDurabilityHatchSize size, AtomicInteger atomicInteger) {
     int xOffset = MMRConfig.get().itemSlotXOffset.get();
     int yOffset = MMRConfig.get().itemSlotYOffset.get();
     int cols = size.cols;

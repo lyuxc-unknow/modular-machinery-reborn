@@ -16,6 +16,7 @@ import es.degrassi.mmreborn.common.crafting.requirement.PositionedRequirement;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.BiomeRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.ChunkloadRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.DimensionRequirementJS;
+import es.degrassi.mmreborn.common.integration.kubejs.requirement.DurabilityRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.EnergyRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.ExperienceRequirementJS;
 import es.degrassi.mmreborn.common.integration.kubejs.requirement.FluidRequirementJS;
@@ -38,7 +39,7 @@ import java.util.Map;
 public class MachineRecipeBuilderJS extends KubeRecipe implements RecipeJSBuilder,
   EnergyRequirementJS, ItemRequirementJS, FluidRequirementJS, DimensionRequirementJS, BiomeRequirementJS,
   WeatherRequirementJS, TimeRequirementJS, ChunkloadRequirementJS, LootTableRequirementJS, ExperienceRequirementJS,
-  HeightRequirementJS, FunctionRequirementJS
+  HeightRequirementJS, FunctionRequirementJS, DurabilityRequirementJS
 {
 
   @HideFromJS

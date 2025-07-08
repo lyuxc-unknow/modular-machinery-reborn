@@ -5,6 +5,7 @@ import es.degrassi.mmreborn.api.crafting.requirement.IRequirement;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementBiome;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementChunkload;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementDimension;
+import es.degrassi.mmreborn.common.crafting.requirement.RequirementDurability;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementDuration;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementEnergy;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementExperience;
@@ -34,6 +35,9 @@ public class RequirementTypeRegistration {
   public static final Supplier<RequirementType<RequirementItem>> ITEM =
       MACHINE_REQUIREMENTS.register(rootLC("item"),
       () -> RequirementType.inventory(RequirementItem.CODEC));
+  public static final Supplier<RequirementType<RequirementDurability>> DURABILITY =
+      MACHINE_REQUIREMENTS.register(rootLC("durability"),
+      () -> RequirementType.inventory(RequirementDurability.CODEC));
   public static final Supplier<RequirementType<RequirementFluid>> FLUID =
       MACHINE_REQUIREMENTS.register(rootLC("fluid"),
       () -> RequirementType.inventory(RequirementFluid.CODEC));

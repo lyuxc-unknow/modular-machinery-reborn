@@ -113,9 +113,29 @@ public class MMRBlockTagProvider extends BlockTagsProvider {
             BlockRegistration.ITEM_OUTPUT_BUS_LUDICROUS.get()
         );
 
+    tag(MMRTags.Blocks.CONSUME_DURABILITY_HATCH)
+        .add(
+            BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_TINY.get(),
+            BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_SMALL.get(),
+            BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_NORMAL.get(),
+            BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_BIG.get()
+        );
+
+    tag(MMRTags.Blocks.REPAIR_DURABILITY_HATCH)
+        .add(
+            BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_TINY.get(),
+            BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_SMALL.get(),
+            BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_NORMAL.get(),
+            BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_BIG.get()
+        );
+
     tag(MMRTags.Blocks.ITEM)
         .addTag(MMRTags.Blocks.INPUT_BUS)
         .addTag(MMRTags.Blocks.OUTPUT_BUS);
+
+    tag(MMRTags.Blocks.DURABILITY)
+        .addTag(MMRTags.Blocks.CONSUME_DURABILITY_HATCH)
+        .addTag(MMRTags.Blocks.REPAIR_DURABILITY_HATCH);
 
     tag(MMRTags.Blocks.ENERGY)
         .addTag(MMRTags.Blocks.ENERGY_INPUT)
@@ -155,6 +175,7 @@ public class MMRBlockTagProvider extends BlockTagsProvider {
         .addTag(MMRTags.Blocks.FLUID)
         .addTag(MMRTags.Blocks.EXPERIENCE)
         .addTag(MMRTags.Blocks.PARALLEL)
+        .addTag(MMRTags.Blocks.DURABILITY)
         .add(BlockRegistration.BIOME_READER.get())
         .add(BlockRegistration.DIMENSIONAL_DETECTOR.get())
         .add(BlockRegistration.WEATHER_SENSOR.get())

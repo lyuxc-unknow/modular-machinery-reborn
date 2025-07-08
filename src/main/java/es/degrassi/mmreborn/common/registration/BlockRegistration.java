@@ -5,6 +5,7 @@ import es.degrassi.mmreborn.common.block.BlockBiomeReader;
 import es.degrassi.mmreborn.common.block.BlockCasing;
 import es.degrassi.mmreborn.common.block.BlockCasing.CasingType;
 import es.degrassi.mmreborn.common.block.BlockChunkloader;
+import es.degrassi.mmreborn.common.block.BlockConsumeDurabilityHatch;
 import es.degrassi.mmreborn.common.block.BlockController;
 import es.degrassi.mmreborn.common.block.BlockDimensionDetector;
 import es.degrassi.mmreborn.common.block.BlockEnergyHatch;
@@ -19,6 +20,7 @@ import es.degrassi.mmreborn.common.block.BlockFluidOutputHatch;
 import es.degrassi.mmreborn.common.block.BlockHeightMeter;
 import es.degrassi.mmreborn.common.block.BlockInputBus;
 import es.degrassi.mmreborn.common.block.BlockOutputBus;
+import es.degrassi.mmreborn.common.block.BlockRepairDurabilityHatch;
 import es.degrassi.mmreborn.common.block.BlockTimeCounter;
 import es.degrassi.mmreborn.common.block.BlockWeatherSensor;
 import es.degrassi.mmreborn.common.block.ParallelHatchBlock;
@@ -26,6 +28,7 @@ import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ExperienceHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
+import es.degrassi.mmreborn.common.block.prop.ItemDurabilityHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ParallelHatchSize;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -108,6 +111,26 @@ public class BlockRegistration {
       () -> new BlockOutputBus(ItemBusSize.HUGE));
   public static final DeferredBlock<BlockOutputBus> ITEM_OUTPUT_BUS_LUDICROUS = BLOCKS.register(rootLC("outputbus_" + ItemBusSize.LUDICROUS.getSerializedName()),
       () -> new BlockOutputBus(ItemBusSize.LUDICROUS));
+
+  public static final DeferredBlock<BlockConsumeDurabilityHatch> ITEM_CONSUME_DURABILITY_HATCH_TINY =
+      BLOCKS.register(rootLC("consumedurabilityhatch_" + ItemDurabilityHatchSize.TINY.getSerializedName()),
+      () -> new BlockConsumeDurabilityHatch(ItemDurabilityHatchSize.TINY));
+  public static final DeferredBlock<BlockConsumeDurabilityHatch> ITEM_CONSUME_DURABILITY_HATCH_SMALL = BLOCKS.register(rootLC("consumedurabilityhatch_" + ItemDurabilityHatchSize.SMALL.getSerializedName()),
+      () -> new BlockConsumeDurabilityHatch(ItemDurabilityHatchSize.SMALL));
+  public static final DeferredBlock<BlockConsumeDurabilityHatch> ITEM_CONSUME_DURABILITY_HATCH_NORMAL = BLOCKS.register(rootLC("consumedurabilityhatch_" + ItemDurabilityHatchSize.NORMAL.getSerializedName()),
+      () -> new BlockConsumeDurabilityHatch(ItemDurabilityHatchSize.NORMAL));
+  public static final DeferredBlock<BlockConsumeDurabilityHatch> ITEM_CONSUME_DURABILITY_HATCH_BIG = BLOCKS.register(rootLC("consumedurabilityhatch_" + ItemDurabilityHatchSize.BIG.getSerializedName()),
+      () -> new BlockConsumeDurabilityHatch(ItemDurabilityHatchSize.BIG));
+
+  public static final DeferredBlock<BlockRepairDurabilityHatch> ITEM_REPAIR_DURABILITY_HATCH_TINY =
+      BLOCKS.register(rootLC("repairdurabilityhatch_" + ItemDurabilityHatchSize.TINY.getSerializedName()),
+      () -> new BlockRepairDurabilityHatch(ItemDurabilityHatchSize.TINY));
+  public static final DeferredBlock<BlockRepairDurabilityHatch> ITEM_REPAIR_DURABILITY_HATCH_SMALL = BLOCKS.register(rootLC("repairdurabilityhatch_" + ItemDurabilityHatchSize.SMALL.getSerializedName()),
+      () -> new BlockRepairDurabilityHatch(ItemDurabilityHatchSize.SMALL));
+  public static final DeferredBlock<BlockRepairDurabilityHatch> ITEM_REPAIR_DURABILITY_HATCH_NORMAL = BLOCKS.register(rootLC("repairdurabilityhatch_" + ItemDurabilityHatchSize.NORMAL.getSerializedName()),
+      () -> new BlockRepairDurabilityHatch(ItemDurabilityHatchSize.NORMAL));
+  public static final DeferredBlock<BlockRepairDurabilityHatch> ITEM_REPAIR_DURABILITY_HATCH_BIG = BLOCKS.register(rootLC("repairdurabilityhatch_" + ItemDurabilityHatchSize.BIG.getSerializedName()),
+      () -> new BlockRepairDurabilityHatch(ItemDurabilityHatchSize.BIG));
 
   public static final DeferredBlock<BlockFluidInputHatch> FLUID_INPUT_HATCH_TINY = BLOCKS.register(rootLC("fluidinputhatch_" + FluidHatchSize.TINY.getSerializedName()),
       () -> new BlockFluidInputHatch(FluidHatchSize.TINY));

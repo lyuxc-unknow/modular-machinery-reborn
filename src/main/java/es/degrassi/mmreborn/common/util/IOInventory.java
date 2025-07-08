@@ -8,14 +8,18 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,6 +49,10 @@ public class IOInventory implements IItemHandlerModifiable, Container, ISyncable
   private IOInventoryChangedListener listener = null;
   public List<Direction> accessibleSides = new ArrayList<>();
 
+  @Getter
+  @Setter
+  private Level level;
+
   private IOInventory() {
     accessibleSides = Arrays.asList(Direction.values());
   }
@@ -57,6 +65,13 @@ public class IOInventory implements IItemHandlerModifiable, Container, ISyncable
     this.inSlots = inSlots;
     this.outSlots = outSlots;
     this.inventory.addAll(generateInventory());
+    this.accessibleSides = Arrays.asList(accessibleFrom);
+  }
+
+  public IOInventory(int[] inSlots, int[] outSlots, Predicate<ItemStack> filter, Direction... accessibleFrom) {
+    this.inSlots = inSlots;
+    this.outSlots = outSlots;
+    this.inventory.addAll(generateInventory(filter));
     this.accessibleSides = Arrays.asList(accessibleFrom);
   }
 
@@ -113,6 +128,12 @@ public class IOInventory implements IItemHandlerModifiable, Container, ISyncable
       return slotLimits.get(slot);
     }
     return 64;
+  }
+
+  public void setFilter(int slot, Predicate<ItemStack> filter) {
+    this.inventory.stream()
+        .filter(s -> s.getSlot() == slot)
+        .forEach(s -> s.setFilter(filter));
   }
 
   @Override
@@ -192,8 +213,7 @@ public class IOInventory implements IItemHandlerModifiable, Container, ISyncable
   @Override
   public void setChanged() {
     if (listener != null) {
-      for (int i = 0; i < getContainerSize(); i++)
-        listener.onChange(i, getItem(i));
+      listener.onChange();
     }
   }
 
@@ -213,7 +233,53 @@ public class IOInventory implements IItemHandlerModifiable, Container, ISyncable
     return inventory.stream().map(ItemSlot::getItemStack).allMatch(ItemStack::isEmpty);
   }
 
-  // TODO: add durability stuff
+  public int getDurabilityAmount(ItemStack stack) {
+    return this.inputs.stream().filter(component -> isSameItem(component.getItemStack(), stack) && component.getItemStack().isDamageableItem())
+        .mapToInt(component -> component.getItemStack().getMaxDamage() - component.getItemStack().getDamageValue())
+        .sum();
+  }
+
+  public int getSpaceForDurability(ItemStack stack) {
+    return this.inputs.stream().filter(component -> isSameItem(component.getItemStack(), stack) && component.getItemStack().isDamageableItem())
+        .mapToInt(component -> component.getItemStack().getDamageValue())
+        .sum();
+  }
+
+  public void repairItem(ItemStack stack, int amount) {
+    AtomicInteger toRepair = new AtomicInteger(amount);
+    this.inputs.stream().filter(component -> isSameItem(component.getItemStack(), stack) && component.getItemStack().isDamageableItem()).forEach(component -> {
+      int maxRepair = Math.min(component.getItemStack().getDamageValue(), toRepair.get());
+      toRepair.addAndGet(-maxRepair);
+      component.getItemStack().setDamageValue(component.getItemStack().getDamageValue() - maxRepair);
+    });
+    setChanged();
+  }
+
+  public void removeDurability(ItemStack input, int amount) {
+    AtomicInteger toRemove = new AtomicInteger(amount);
+    this.inputs.stream().filter(component -> isSameItem(component.getItemStack(), input) && component.getItemStack().isDamageableItem()).forEach(component -> {
+      int maxRemove = Math.min(component.getItemStack().getMaxDamage() - component.getItemStack().getDamageValue(), toRemove.get());
+      ItemStack stack = component.getItemStack();
+      maxRemove = stack.getItem().damageItem(stack, maxRemove, null, s -> {});
+      if (maxRemove > 0) {
+        maxRemove = EnchantmentHelper.processDurabilityChange((ServerLevel)getLevel(), stack, maxRemove);
+        if (maxRemove <= 0) {
+          return;
+        }
+      }
+      toRemove.addAndGet(-maxRemove);
+      stack.setDamageValue(stack.getDamageValue() + maxRemove);
+      if(stack.getDamageValue() >= stack.getMaxDamage())
+        stack.shrink(1);
+    });
+    setChanged();
+  }
+
+  private static boolean isSameItem(ItemStack toTest, ItemStack ingredient) {
+    if(toTest.getItem() != ingredient.getItem())
+      return false;
+    return ingredient.getComponents().stream().allMatch(component -> component.type() == DataComponents.DAMAGE || (toTest.has(component.type()) && Objects.equals(toTest.get(component.type()), component.value())));
+  }
 
   public CompoundTag writeNBT(HolderLookup.Provider pRegistries) {
     CompoundTag tag = new CompoundTag();
@@ -231,7 +297,6 @@ public class IOInventory implements IItemHandlerModifiable, Container, ISyncable
     this.inSlots = tag.getIntArray("inSlots");
     this.outSlots = tag.getIntArray("outSlots");
     this.miscSlots = tag.getIntArray("miscSlots");
-    // this.inventory.clear();
 
     if (tag.contains("items")) {
       ListTag components = tag.getList("items", Tag.TAG_COMPOUND);
@@ -253,14 +318,18 @@ public class IOInventory implements IItemHandlerModifiable, Container, ISyncable
   }
 
   private List<ItemSlot> generateInventory() {
+    return generateInventory(item -> true);
+  }
+
+  private List<ItemSlot> generateInventory(Predicate<ItemStack> filter) {
     List<ItemSlot> inventory = new ArrayList<>();
     for (Integer slot : inSlots) {
-      ItemSlot itemSlot = new ItemSlot(slot, this, getSlotLimit(slot), getSlotLimit(slot), 0, item -> true);
+      ItemSlot itemSlot = new ItemSlot(slot, this, getSlotLimit(slot), getSlotLimit(slot), 0, filter);
       this.inputs.add(itemSlot);
       inventory.add(itemSlot);
     }
     for (Integer slot : outSlots) {
-      ItemSlot itemSlot = new ItemSlot(slot, this, getSlotLimit(slot), 0, getSlotLimit(slot), item -> true);
+      ItemSlot itemSlot = new ItemSlot(slot, this, getSlotLimit(slot), 0, getSlotLimit(slot), filter);
       this.outputs.add(itemSlot);
       inventory.add(itemSlot);
     }

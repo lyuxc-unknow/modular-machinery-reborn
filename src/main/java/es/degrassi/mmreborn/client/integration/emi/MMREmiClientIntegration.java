@@ -8,10 +8,12 @@ import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.api.integration.emi.RegisterEmiComponentEvent;
 import es.degrassi.mmreborn.api.integration.emi.RegisterEmiRequirementToIngredientEvent;
 import es.degrassi.mmreborn.api.integration.emi.RegisterEmiRequirementToStackEvent;
+import es.degrassi.mmreborn.common.crafting.requirement.RequirementDurability;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementItem;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiBiomeComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiChunkloadComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiDimensionComponent;
+import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiDurabilityComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiEnergyComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiExperienceComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiFluidComponent;
@@ -23,6 +25,7 @@ import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiWeatherComponent;
 import es.degrassi.mmreborn.common.integration.emi.EmiComponentRegistry;
 import es.degrassi.mmreborn.common.integration.emi.EmiIngredientRegistry;
 import es.degrassi.mmreborn.common.integration.emi.EmiStackRegistry;
+import es.degrassi.mmreborn.common.machine.component.DurabilityComponent;
 import es.degrassi.mmreborn.common.machine.component.ItemComponent;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.LootTableHelper;
@@ -48,6 +51,7 @@ public class MMREmiClientIntegration {
     event.register(RequirementTypeRegistration.ENERGY.get(), EmiEnergyComponent::new);
     event.register(RequirementTypeRegistration.EXPERIENCE.get(), EmiExperienceComponent::new);
     event.register(RequirementTypeRegistration.ITEM.get(), EmiItemComponent::new);
+    event.register(RequirementTypeRegistration.DURABILITY.get(), EmiDurabilityComponent::new);
     event.register(RequirementTypeRegistration.FLUID.get(), EmiFluidComponent::new);
     event.register(RequirementTypeRegistration.BIOME.get(), EmiBiomeComponent::new);
     event.register(RequirementTypeRegistration.TIME.get(), EmiTimeComponent::new);
@@ -63,6 +67,10 @@ public class MMREmiClientIntegration {
     event.register(
         RequirementTypeRegistration.ITEM.get(),
         this::emiStackFromItemRequirement
+    );
+    event.register(
+        RequirementTypeRegistration.DURABILITY.get(),
+        this::emiStackFromDurabilityRequirement
     );
     event.register(
         RequirementTypeRegistration.FLUID.get(),
@@ -87,10 +95,18 @@ public class MMREmiClientIntegration {
         RequirementTypeRegistration.ITEM.get(),
         this::emiIngredientFromItemRequirement
     );
+    event.register(
+        RequirementTypeRegistration.DURABILITY.get(),
+        this::emiIngredientFromDurabilityRequirement
+    );
   }
 
   private EmiIngredient emiIngredientFromItemRequirement(RecipeRequirement<ItemComponent, RequirementItem> requirement) {
     return EmiIngredient.of(requirement.requirement().ingredient.ingredient(), requirement.requirement().ingredient.count());
+  }
+
+  private EmiIngredient emiIngredientFromDurabilityRequirement(RecipeRequirement<DurabilityComponent, RequirementDurability> requirement) {
+    return EmiIngredient.of(requirement.requirement().ingredient, requirement.requirement().getAmount());
   }
 
   private List<EmiStack> emiStackFromItemRequirement(RecipeRequirement<ItemComponent, RequirementItem> requirement) {
@@ -102,6 +118,20 @@ public class MMREmiClientIntegration {
         }
       } else if (value instanceof Ingredient.ItemValue(ItemStack item)) {
         stacks.add(EmiStack.of(item, requirement.requirement().ingredient.count()));
+      }
+    }
+    return stacks;
+  }
+
+  private List<EmiStack> emiStackFromDurabilityRequirement(RecipeRequirement<DurabilityComponent, RequirementDurability> requirement) {
+    List<EmiStack> stacks = Lists.newArrayList();
+    for (Ingredient.Value value : requirement.requirement().getIngredient().values) {
+      if (value instanceof Ingredient.TagValue(TagKey<Item> tag)) {
+        for (Item stack : TagUtil.getItems(tag).toList()) {
+          stacks.add(EmiStack.of(stack, requirement.requirement().getAmount()));
+        }
+      } else if (value instanceof Ingredient.ItemValue(ItemStack item)) {
+        stacks.add(EmiStack.of(item, requirement.requirement().getAmount()));
       }
     }
     return stacks;

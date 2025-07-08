@@ -12,6 +12,7 @@ import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ExperienceHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
+import es.degrassi.mmreborn.common.block.prop.ItemDurabilityHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ParallelHatchSize;
 import es.degrassi.mmreborn.common.command.MMRCommand;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
@@ -103,6 +104,10 @@ public class ModularMachineryReborn {
           size.slots = MMRConfig.get().itemSize(size);
           size.cols = MMRConfig.get().itemCols(size);
         }),
+        Pair.of(ItemDurabilityHatchSize.class, (ItemDurabilityHatchSize size) -> {
+          size.slots = MMRConfig.get().durabilitySize(size);
+          size.cols = MMRConfig.get().durabilityCols(size);
+        }),
         Pair.of(ExperienceHatchSize.class, (ExperienceHatchSize size) -> size.capacity =
             MMRConfig.get().experienceSize(size)),
         Pair.of(ParallelHatchSize.class, (ParallelHatchSize size) -> size.max = MMRConfig.get().maxParallel(size))
@@ -158,6 +163,15 @@ public class ModularMachineryReborn {
     event.registerBlockEntity(
         Capabilities.ItemHandler.BLOCK,
         EntityRegistration.ITEM_OUTPUT_BUS.get(),
+        (be, side) -> be.getInventory()
+    );event.registerBlockEntity(
+        Capabilities.ItemHandler.BLOCK,
+        EntityRegistration.ITEM_CONSUME_DURABILITY_HATCH.get(),
+        (be, side) -> be.getInventory()
+    );
+    event.registerBlockEntity(
+        Capabilities.ItemHandler.BLOCK,
+        EntityRegistration.ITEM_REPAIR_DURABILITY_HATCH.get(),
         (be, side) -> be.getInventory()
     );
     event.registerBlockEntity(

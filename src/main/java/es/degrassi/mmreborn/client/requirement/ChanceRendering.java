@@ -1,6 +1,7 @@
 package es.degrassi.mmreborn.client.requirement;
 
 import dev.emi.emi.runtime.EmiDrawContext;
+import es.degrassi.mmreborn.common.crafting.requirement.emi.EmiDurabilityComponent;
 import es.degrassi.mmreborn.common.crafting.requirement.emi.Position;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.machine.IOType;
@@ -50,7 +51,7 @@ public interface ChanceRendering extends Position {
       list.add(Component.translatable("modular_machinery_reborn.ingredient.chance." + getActionType().name().toLowerCase(Locale.ROOT), chance, "%"));
     else if (getChance() == 0)
       list.add(Component.translatable("modular_machinery_reborn.ingredient.chance.not_consumed"));
-    else if (getChance() == 1)
+    else if (getChance() == 1 && !(this instanceof EmiDurabilityComponent))
       list.add(Component.translatable("modular_machinery_reborn.jei.ingredient.item." + getActionType().name().toLowerCase(Locale.ROOT)));
   }
 }

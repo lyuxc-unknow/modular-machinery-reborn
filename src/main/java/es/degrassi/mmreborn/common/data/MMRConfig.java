@@ -6,6 +6,7 @@ import es.degrassi.mmreborn.common.block.prop.EnergyHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ExperienceHatchSize;
 import es.degrassi.mmreborn.common.block.prop.FluidHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ItemBusSize;
+import es.degrassi.mmreborn.common.block.prop.ItemDurabilityHatchSize;
 import es.degrassi.mmreborn.common.block.prop.ParallelHatchSize;
 import es.degrassi.mmreborn.common.util.LoggingLevel;
 import lombok.Getter;
@@ -93,6 +94,16 @@ public class MMRConfig {
   public final ConfigValue<Integer> BIG_item_cols;
   public final ConfigValue<Integer> HUGE_item_cols;
   public final ConfigValue<Integer> LUDICROUS_item_cols;
+
+  public final ConfigValue<Integer> TINY_durability_size;
+  public final ConfigValue<Integer> SMALL_durability_size;
+  public final ConfigValue<Integer> NORMAL_durability_size;
+  public final ConfigValue<Integer> BIG_durability_size;
+
+  public final ConfigValue<Integer> TINY_durability_cols;
+  public final ConfigValue<Integer> SMALL_durability_cols;
+  public final ConfigValue<Integer> NORMAL_durability_cols;
+  public final ConfigValue<Integer> BIG_durability_cols;
 
   public final ConfigValue<Integer> TINY_experience_size;
   public final ConfigValue<Integer> SMALL_experience_size;
@@ -393,6 +404,42 @@ public class MMRConfig {
       builder.pop();
     }
     builder.pop();
+    builder.push("durabilityHatch");
+    {
+      builder.push(ItemDurabilityHatchSize.TINY.getSerializedName());
+      TINY_durability_size = builder
+          .comment("Defines the slots number of item durability hatch")
+          .defineInRange("slots", ItemDurabilityHatchSize.TINY.defaultSlots, 1, Integer.MAX_VALUE);
+      TINY_durability_cols = builder
+          .comment("Defines the slot cols number of item durability hatch")
+          .defineInRange("cols", ItemBusSize.TINY.defaultCols, 1, Integer.MAX_VALUE);
+      builder.pop();
+      builder.push(ItemDurabilityHatchSize.SMALL.getSerializedName());
+      SMALL_durability_size = builder
+          .comment("Defines the slots number of item durability hatch")
+          .defineInRange("slots", ItemDurabilityHatchSize.SMALL.defaultSlots, 1, Integer.MAX_VALUE);
+      SMALL_durability_cols = builder
+          .comment("Defines the slot cols number of item durability hatch")
+          .defineInRange("cols", ItemDurabilityHatchSize.SMALL.defaultCols, 1, Integer.MAX_VALUE);
+      builder.pop();
+      builder.push(ItemDurabilityHatchSize.NORMAL.getSerializedName());
+      NORMAL_durability_size = builder
+          .comment("Defines the slots number of item durability hatch")
+          .defineInRange("slots", ItemDurabilityHatchSize.NORMAL.defaultSlots, 1, Integer.MAX_VALUE);
+      NORMAL_durability_cols = builder
+          .comment("Defines the slot cols number of item durability hatch")
+          .defineInRange("cols", ItemDurabilityHatchSize.NORMAL.defaultCols, 1, Integer.MAX_VALUE);
+      builder.pop();
+      builder.push(ItemDurabilityHatchSize.BIG.getSerializedName());
+      BIG_durability_size = builder
+          .comment("Defines the slots number of item durability hatch")
+          .defineInRange("slots", ItemDurabilityHatchSize.BIG.defaultSlots, 1, Integer.MAX_VALUE);
+      BIG_durability_cols = builder
+          .comment("Defines the slot cols number of item durability hatch")
+          .defineInRange("cols", ItemDurabilityHatchSize.BIG.defaultCols, 1, Integer.MAX_VALUE);
+      builder.pop();
+    }
+    builder.pop();
     builder.push("experienceHatch");
     {
       builder.push(ExperienceHatchSize.TINY.getSerializedName());
@@ -493,6 +540,15 @@ public class MMRConfig {
     };
   }
 
+  public int durabilitySize(ItemDurabilityHatchSize size) {
+    return switch (size) {
+      case TINY -> TINY_durability_size.get();
+      case SMALL -> SMALL_durability_size.get();
+      case NORMAL -> NORMAL_durability_size.get();
+      case BIG -> BIG_durability_size.get();
+    };
+  }
+
   public int itemCols(ItemBusSize size) {
     return switch (size) {
       case TINY -> TINY_item_cols.get();
@@ -502,6 +558,15 @@ public class MMRConfig {
       case BIG -> BIG_item_cols.get();
       case HUGE -> HUGE_item_cols.get();
       case LUDICROUS -> LUDICROUS_item_cols.get();
+    };
+  }
+
+  public int durabilityCols(ItemDurabilityHatchSize size) {
+    return switch (size) {
+      case TINY -> TINY_durability_cols.get();
+      case SMALL -> SMALL_durability_cols.get();
+      case NORMAL -> NORMAL_durability_cols.get();
+      case BIG -> BIG_durability_cols.get();
     };
   }
 

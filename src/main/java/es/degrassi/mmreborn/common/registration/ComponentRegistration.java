@@ -18,6 +18,8 @@ public class ComponentRegistration {
 
   public static final Supplier<ComponentType> COMPONENT_ITEM = MACHINE_COMPONENTS.register(rootLC("item"),
       ComponentType::create);
+  public static final Supplier<ComponentType> COMPONENT_DURABILITY= MACHINE_COMPONENTS.register(rootLC("durability"),
+      ComponentType::create);
   public static final Supplier<ComponentType> COMPONENT_DURATION = MACHINE_COMPONENTS.register(rootLC("duration"),
       ComponentType::create);
   public static final Supplier<ComponentType> COMPONENT_FLUID = MACHINE_COMPONENTS.register(rootLC("fluid"),
