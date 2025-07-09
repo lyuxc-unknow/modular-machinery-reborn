@@ -27,6 +27,8 @@ import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IJeiHelpers;
+import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
+import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.recipe.IFocusFactory;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.IRecipeCategory;
@@ -56,7 +58,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @JeiPlugin
@@ -119,6 +120,7 @@ public class MMRJeiPlugin implements IModPlugin {
         return extraAreas;
       }
     });
+    // TODO: add ghost ingredient handler if needed
   }
 
   private static IGuiClickableArea createBasic(
@@ -145,14 +147,21 @@ public class MMRJeiPlugin implements IModPlugin {
   }
 
   @Override
-  @SuppressWarnings("removal")
   public void registerItemSubtypes(ISubtypeRegistration registration) {
-    registration.registerSubtypeInterpreter(ItemRegistration.CONTROLLER.get(), (stack, context) -> {
-      AtomicReference<String> toReturn = new AtomicReference<>(null);
-      ControllerItem.getMachine(stack).ifPresent(machine -> toReturn.set(machine.getRegistryName().toString()));
-      return toReturn.get();
-    });
+    registration.registerSubtypeInterpreter(ItemRegistration.CONTROLLER.get(), CONTROLLER_ITEM_INTERPRETER);
   }
+
+  public static final ISubtypeInterpreter<ItemStack> CONTROLLER_ITEM_INTERPRETER = new ISubtypeInterpreter<>() {
+    @Override
+    public Object getSubtypeData(ItemStack ingredient, UidContext context) {
+      return ControllerItem.getMachine(ingredient).map(machine -> machine.getRegistryName().toString()).orElse("dummy");
+    }
+
+    @Override
+    public String getLegacyStringSubtypeInfo(ItemStack ingredient, UidContext context) {
+      return ControllerItem.getMachine(ingredient).map(machine -> machine.getRegistryName().toString()).orElse("dummy");
+    }
+  };
 
   @Override
   public void registerCategories(IRecipeCategoryRegistration registration) {
@@ -169,13 +178,11 @@ public class MMRJeiPlugin implements IModPlugin {
   @Override
   public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
     if (jeiHelpers == null) jeiHelpers = registration.getJeiHelpers();
-    int catalystsForMachines = 0;
     for (DynamicMachine machine : ModularMachineryReborn.MACHINES.values()) {
       if (machine == null || machine == DynamicMachine.DUMMY) continue;
       ItemStack stack = new ItemStack(ItemRegistration.CONTROLLER.get());
       stack.set(DataComponentRegistration.MACHINE_DATA, machine.getRegistryName());
       registration.addRecipeCatalysts(getCategory(machine).getRecipeType(), ItemRegistration.BLUEPRINT.get().getDefaultInstance(), stack);
-      catalystsForMachines++;
     }
   }
 

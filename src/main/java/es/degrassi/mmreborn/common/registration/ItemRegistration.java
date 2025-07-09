@@ -11,9 +11,9 @@ import es.degrassi.mmreborn.common.block.prop.ParallelHatchSize;
 import es.degrassi.mmreborn.common.item.BiomeReaderItem;
 import es.degrassi.mmreborn.common.item.CasingItem;
 import es.degrassi.mmreborn.common.item.ChunkloaderItem;
-import es.degrassi.mmreborn.common.item.ConsumeDurabilityHatchItem;
 import es.degrassi.mmreborn.common.item.ControllerItem;
 import es.degrassi.mmreborn.common.item.DimensionalDetectorItem;
+import es.degrassi.mmreborn.common.item.DurabilityHatchItem;
 import es.degrassi.mmreborn.common.item.EnergyHatchItem;
 import es.degrassi.mmreborn.common.item.ExperienceHatchItem;
 import es.degrassi.mmreborn.common.item.FluidHatchItem;
@@ -23,7 +23,6 @@ import es.degrassi.mmreborn.common.item.ItemBlueprint;
 import es.degrassi.mmreborn.common.item.ItemModularium;
 import es.degrassi.mmreborn.common.item.OutputBusItem;
 import es.degrassi.mmreborn.common.item.ParallelHatchItem;
-import es.degrassi.mmreborn.common.item.RepairDurabilityHatchItem;
 import es.degrassi.mmreborn.common.item.StructureCreatorItem;
 import es.degrassi.mmreborn.common.item.TimeCounterItem;
 import es.degrassi.mmreborn.common.item.WeatherSensorItem;
@@ -160,31 +159,18 @@ public class ItemRegistration {
       ITEMS.register(rootLC("outputbus_" + ItemBusSize.LUDICROUS.getSerializedName()),
     () -> new OutputBusItem(BlockRegistration.ITEM_OUTPUT_BUS_LUDICROUS.get(), ItemBusSize.LUDICROUS));
 
-  public static final DeferredItem<ConsumeDurabilityHatchItem> ITEM_CONSUME_DURABILITY_HATCH_TINY =
-      ITEMS.register(rootLC("consumedurabilityhatch_" + ItemDurabilityHatchSize.TINY.getSerializedName()),
-          () -> new ConsumeDurabilityHatchItem(BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_TINY.get(), ItemDurabilityHatchSize.TINY));
-  public static final DeferredItem<ConsumeDurabilityHatchItem> ITEM_CONSUME_DURABILITY_HATCH_SMALL =
-      ITEMS.register(rootLC("consumedurabilityhatch_" + ItemDurabilityHatchSize.SMALL.getSerializedName()),
-          () -> new ConsumeDurabilityHatchItem(BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_SMALL.get(), ItemDurabilityHatchSize.SMALL));
-  public static final DeferredItem<ConsumeDurabilityHatchItem> ITEM_CONSUME_DURABILITY_HATCH_NORMAL =
-      ITEMS.register(rootLC("consumedurabilityhatch_" + ItemDurabilityHatchSize.NORMAL.getSerializedName()),
-          () -> new ConsumeDurabilityHatchItem(BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_NORMAL.get(), ItemDurabilityHatchSize.NORMAL));
-  public static final DeferredItem<ConsumeDurabilityHatchItem> ITEM_CONSUME_DURABILITY_HATCH_BIG =
-      ITEMS.register(rootLC("consumedurabilityhatch_" + ItemDurabilityHatchSize.BIG.getSerializedName()),
-          () -> new ConsumeDurabilityHatchItem(BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_BIG.get(), ItemDurabilityHatchSize.BIG));
-
-  public static final DeferredItem<RepairDurabilityHatchItem> ITEM_REPAIR_DURABILITY_HATCH_TINY =
-      ITEMS.register(rootLC("repairdurabilityhatch_" + ItemDurabilityHatchSize.TINY.getSerializedName()),
-          () -> new RepairDurabilityHatchItem(BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_TINY.get(), ItemDurabilityHatchSize.TINY));
-  public static final DeferredItem<RepairDurabilityHatchItem> ITEM_REPAIR_DURABILITY_HATCH_SMALL =
-      ITEMS.register(rootLC("repairdurabilityhatch_" + ItemDurabilityHatchSize.SMALL.getSerializedName()),
-          () -> new RepairDurabilityHatchItem(BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_SMALL.get(), ItemDurabilityHatchSize.SMALL));
-  public static final DeferredItem<RepairDurabilityHatchItem> ITEM_REPAIR_DURABILITY_HATCH_NORMAL =
-      ITEMS.register(rootLC("repairdurabilityhatch_" + ItemDurabilityHatchSize.NORMAL.getSerializedName()),
-          () -> new RepairDurabilityHatchItem(BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_NORMAL.get(), ItemDurabilityHatchSize.NORMAL));
-  public static final DeferredItem<RepairDurabilityHatchItem> ITEM_REPAIR_DURABILITY_HATCH_BIG =
-      ITEMS.register(rootLC("repairdurabilityhatch_" + ItemDurabilityHatchSize.BIG.getSerializedName()),
-          () -> new RepairDurabilityHatchItem(BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_BIG.get(), ItemDurabilityHatchSize.BIG));
+  public static final DeferredItem<DurabilityHatchItem> ITEM_DURABILITY_HATCH_TINY =
+      ITEMS.register(rootLC("durabilityhatch_" + ItemDurabilityHatchSize.TINY.getSerializedName()),
+          () -> new DurabilityHatchItem(BlockRegistration.ITEM_DURABILITY_HATCH_TINY.get(), ItemDurabilityHatchSize.TINY));
+  public static final DeferredItem<DurabilityHatchItem> ITEM_DURABILITY_HATCH_SMALL =
+      ITEMS.register(rootLC("durabilityhatch_" + ItemDurabilityHatchSize.SMALL.getSerializedName()),
+          () -> new DurabilityHatchItem(BlockRegistration.ITEM_DURABILITY_HATCH_SMALL.get(), ItemDurabilityHatchSize.SMALL));
+  public static final DeferredItem<DurabilityHatchItem> ITEM_DURABILITY_HATCH_NORMAL =
+      ITEMS.register(rootLC("durabilityhatch_" + ItemDurabilityHatchSize.NORMAL.getSerializedName()),
+          () -> new DurabilityHatchItem(BlockRegistration.ITEM_DURABILITY_HATCH_NORMAL.get(), ItemDurabilityHatchSize.NORMAL));
+  public static final DeferredItem<DurabilityHatchItem> ITEM_DURABILITY_HATCH_BIG =
+      ITEMS.register(rootLC("durabilityhatch_" + ItemDurabilityHatchSize.BIG.getSerializedName()),
+          () -> new DurabilityHatchItem(BlockRegistration.ITEM_DURABILITY_HATCH_BIG.get(), ItemDurabilityHatchSize.BIG));
 
   public static final DeferredItem<FluidHatchItem> FLUID_INPUT_HATCH_TINY =
       ITEMS.register(rootLC("fluidinputhatch_" + FluidHatchSize.TINY.getSerializedName()),

@@ -3,7 +3,7 @@ package es.degrassi.mmreborn.client.container;
 import es.degrassi.mmreborn.client.ModularMachineryRebornClient;
 import es.degrassi.mmreborn.common.block.prop.ItemDurabilityHatchSize;
 import es.degrassi.mmreborn.common.data.MMRConfig;
-import es.degrassi.mmreborn.common.entity.base.TileDurabilityHatch;
+import es.degrassi.mmreborn.common.entity.base.DurabilityHatchEntity;
 import es.degrassi.mmreborn.common.registration.ContainerRegistration;
 import es.degrassi.mmreborn.common.util.IOInventory;
 import net.minecraft.network.FriendlyByteBuf;
@@ -18,9 +18,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ItemDurabilityContainer extends ContainerBase<TileDurabilityHatch> {
+public class ItemDurabilityContainer extends ContainerBase<DurabilityHatchEntity> {
 
-  public static void open(ServerPlayer player, TileDurabilityHatch machine) {
+  public static void open(ServerPlayer player, DurabilityHatchEntity machine) {
     player.openMenu(new MenuProvider() {
       @Override
       public @NotNull Component getDisplayName() {
@@ -34,7 +34,7 @@ public class ItemDurabilityContainer extends ContainerBase<TileDurabilityHatch> 
     }, buf -> buf.writeBlockPos(machine.getBlockPos()));
   }
 
-  public ItemDurabilityContainer(int id, Inventory playerInv, TileDurabilityHatch entity) {
+  public ItemDurabilityContainer(int id, Inventory playerInv, DurabilityHatchEntity entity) {
     super(entity, playerInv.player, ContainerRegistration.ITEM_DURABILITY_HATCH.get(), id);
   }
 
@@ -73,7 +73,7 @@ public class ItemDurabilityContainer extends ContainerBase<TileDurabilityHatch> 
         c = 0;
         row++;
       }
-      addSlot(new SlotItemComponent(itemHandler.getInventory().get(s), atomicInteger.getAndIncrement(), xOffset + c * 18, yOffset + row * 18));
+      addSyncedSlot(new SlotItemComponent(itemHandler.getInventory().get(s), atomicInteger.getAndIncrement(), xOffset + c * 18, yOffset + row * 18));
     }
   }
 }

@@ -113,29 +113,17 @@ public class MMRItemTagProvider extends ItemTagsProvider {
             BlockRegistration.ITEM_OUTPUT_BUS_LUDICROUS.get().asItem()
         );
 
-    tag(MMRTags.Items.CONSUME_DURABILITY_HATCH)
+    tag(MMRTags.Items.DURABILITY)
         .add(
-            BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_TINY.get().asItem(),
-            BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_SMALL.get().asItem(),
-            BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_NORMAL.get().asItem(),
-            BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_BIG.get().asItem()
-        );
-
-    tag(MMRTags.Items.REPAIR_DURABILITY_HATCH)
-        .add(
-            BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_TINY.get().asItem(),
-            BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_SMALL.get().asItem(),
-            BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_NORMAL.get().asItem(),
-            BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_BIG.get().asItem()
+            BlockRegistration.ITEM_DURABILITY_HATCH_TINY.get().asItem(),
+            BlockRegistration.ITEM_DURABILITY_HATCH_SMALL.get().asItem(),
+            BlockRegistration.ITEM_DURABILITY_HATCH_NORMAL.get().asItem(),
+            BlockRegistration.ITEM_DURABILITY_HATCH_BIG.get().asItem()
         );
 
     tag(MMRTags.Items.ITEM)
         .addTag(MMRTags.Items.INPUT_BUS)
         .addTag(MMRTags.Items.OUTPUT_BUS);
-
-    tag(MMRTags.Items.DURABILITY)
-        .addTag(MMRTags.Items.CONSUME_DURABILITY_HATCH)
-        .addTag(MMRTags.Items.REPAIR_DURABILITY_HATCH);
 
     tag(MMRTags.Items.ENERGY)
         .addTag(MMRTags.Items.ENERGY_INPUT)

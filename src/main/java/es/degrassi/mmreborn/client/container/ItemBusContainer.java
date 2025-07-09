@@ -73,7 +73,7 @@ public class ItemBusContainer extends ContainerBase<TileItemBus> {
         c = 0;
         row++;
       }
-      addSlot(new SlotItemComponent(itemHandler.getInventory().get(s), atomicInteger.getAndIncrement(), xOffset + c * 18, yOffset + row * 18));
+      addSyncedSlot(new SlotItemComponent(itemHandler.getInventory().get(s), atomicInteger.getAndIncrement(), xOffset + c * 18, yOffset + row * 18));
     }
   }
 }

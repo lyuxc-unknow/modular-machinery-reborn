@@ -16,7 +16,6 @@ public class ItemBusScreen extends BaseScreen<ItemBusContainer, TileItemBus> {
 
   public ItemBusScreen(ItemBusContainer pMenu, Inventory pPlayerInventory, Component pTitle) {
     super(pMenu, pPlayerInventory, pTitle);
-
   }
 
   @Override

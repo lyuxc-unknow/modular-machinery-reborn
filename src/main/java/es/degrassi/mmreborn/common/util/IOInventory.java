@@ -53,8 +53,12 @@ public class IOInventory implements IItemHandlerModifiable, Container, ISyncable
   @Setter
   private Level level;
 
+  @Getter
+  private final Predicate<ItemStack> defaultFilter;
+
   private IOInventory() {
     accessibleSides = Arrays.asList(Direction.values());
+    defaultFilter = stack -> true;
   }
 
   public IOInventory(int[] inSlots, int[] outSlots) {
@@ -64,6 +68,7 @@ public class IOInventory implements IItemHandlerModifiable, Container, ISyncable
   public IOInventory(int[] inSlots, int[] outSlots, Direction... accessibleFrom) {
     this.inSlots = inSlots;
     this.outSlots = outSlots;
+    defaultFilter = stack -> true;
     this.inventory.addAll(generateInventory());
     this.accessibleSides = Arrays.asList(accessibleFrom);
   }
@@ -71,6 +76,7 @@ public class IOInventory implements IItemHandlerModifiable, Container, ISyncable
   public IOInventory(int[] inSlots, int[] outSlots, Predicate<ItemStack> filter, Direction... accessibleFrom) {
     this.inSlots = inSlots;
     this.outSlots = outSlots;
+    defaultFilter = filter;
     this.inventory.addAll(generateInventory(filter));
     this.accessibleSides = Arrays.asList(accessibleFrom);
   }
@@ -113,8 +119,8 @@ public class IOInventory implements IItemHandlerModifiable, Container, ISyncable
         .findFirst()
         .ifPresent(s -> {
           s.setItemStack(stack);
-          setChanged();
         });
+    setChanged();
   }
 
   @Override
@@ -309,7 +315,7 @@ public class IOInventory implements IItemHandlerModifiable, Container, ISyncable
                   .filter(inv -> inv.getSlot() == componentNBT.getInt("slot"))
                   .findFirst()
                   .ifPresentOrElse(inv -> inv.deserialize(pRegistries, componentNBT), () -> {
-                    this.inventory.add(new ItemSlot(this, item -> true, componentNBT, pRegistries));
+                    this.inventory.add(new ItemSlot(this, defaultFilter, componentNBT, pRegistries));
                   });
             }
       });

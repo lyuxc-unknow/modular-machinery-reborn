@@ -2,7 +2,7 @@ package es.degrassi.mmreborn.client.screen;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.client.container.ItemDurabilityContainer;
-import es.degrassi.mmreborn.common.entity.base.TileDurabilityHatch;
+import es.degrassi.mmreborn.common.entity.base.DurabilityHatchEntity;
 import es.degrassi.mmreborn.common.util.TextureSizeHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -12,11 +12,10 @@ import net.minecraft.world.inventory.Slot;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemDurabilityScreen extends BaseScreen<ItemDurabilityContainer, TileDurabilityHatch> {
+public class ItemDurabilityScreen extends BaseScreen<ItemDurabilityContainer, DurabilityHatchEntity> {
 
   public ItemDurabilityScreen(ItemDurabilityContainer pMenu, Inventory pPlayerInventory, Component pTitle) {
     super(pMenu, pPlayerInventory, pTitle);
-
   }
 
   @Override

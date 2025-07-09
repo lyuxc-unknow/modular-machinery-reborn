@@ -38,8 +38,6 @@ public class MMRTags {
     public static final TagKey<Block> OUTPUT_BUS = new Blocks(false, "outputbus").get();
 
     public static final TagKey<Block> DURABILITY = new Blocks(false, "durability_hatch").get();
-    public static final TagKey<Block> CONSUME_DURABILITY_HATCH = new Blocks(false, "consume_durability_hatch").get();
-    public static final TagKey<Block> REPAIR_DURABILITY_HATCH = new Blocks(false, "repair_durability_hatch").get();
 
     public static final TagKey<Block> FLUID = new Blocks(false, "fluidhatch").get();
     public static final TagKey<Block> FLUID_INPUT = new Blocks(false, "fluidinputhatch").get();
@@ -71,8 +69,6 @@ public class MMRTags {
     public static final TagKey<Item> OUTPUT_BUS = new Items(false, "outputbus").get();
 
     public static final TagKey<Item> DURABILITY = new Items(false, "durability_hatch").get();
-    public static final TagKey<Item> CONSUME_DURABILITY_HATCH = new Items(false, "consume_durability_hatch").get();
-    public static final TagKey<Item> REPAIR_DURABILITY_HATCH = new Items(false, "repair_durability_hatch").get();
 
     public static final TagKey<Item> FLUID = new Items(false, "fluidhatch").get();
     public static final TagKey<Item> FLUID_INPUT = new Items(false, "fluidinputhatch").get();

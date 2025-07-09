@@ -22,17 +22,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+@Getter
 @Setter
 @MethodsReturnNonnullByDefault
 public class TimeCounterEntity extends ColorableMachineComponentEntity implements MachineComponentEntity<TimeComponent>, TextureableMachineEntity {
 
-  @Getter
   private ResourceLocation baseTexture;
-  @Getter
   private ResourceLocation overlayTexture;
-  @Getter
   private static final ResourceLocation defaultOverlayTexture = ModularMachineryReborn.rl("block/overlay_time_counter");
-  @Getter
   private static final ResourceLocation defaultBaseTexture = ModularMachineryReborn.rl("block/casing_plain");
   public TimeCounterEntity(BlockPos pos, BlockState blockState) {
     super(EntityRegistration.TIME_COUNTER.get(), pos, blockState);
@@ -53,14 +50,11 @@ public class TimeCounterEntity extends ColorableMachineComponentEntity implement
   }
 
   @Override
-  protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider pRegistries) {
-    super.loadAdditional(nbt, pRegistries);
-    if (nbt.contains("baseTexture")) {
-      setMachineBaseTexture(ResourceLocation.parse(nbt.getString("baseTexture")));
-    }
-    if (nbt.contains("overlayTexture")) {
-      setMachineOverlayTexture(ResourceLocation.parse(nbt.getString("overlayTexture")));
-    }
+  protected void loadAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
+    super.loadAdditional(compound, pRegistries);
+
+    this.baseTexture = compound.contains("baseTexture") ? ResourceLocation.parse(compound.getString("baseTexture")) : defaultBaseTexture;
+    this.overlayTexture = compound.contains("overlayTexture") ? ResourceLocation.parse(compound.getString("overlayTexture")) : defaultOverlayTexture;
   }
 
   @Override

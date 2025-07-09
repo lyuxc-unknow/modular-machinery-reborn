@@ -12,7 +12,6 @@ import es.degrassi.mmreborn.common.network.server.SUpdateMachineTexturePacket;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateItemComponentPacket;
 import es.degrassi.mmreborn.common.util.IOInventory;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -33,14 +32,9 @@ public abstract class TileItemBus extends TileInventory implements MachineCompon
   private ItemBusSize size;
   private IOType ioType;
 
-  @Getter
-  @Setter
   private ResourceLocation baseTexture;
-  @Getter
-  @Setter
   private ResourceLocation overlayTexture;
-  @Getter
-  private final ResourceLocation defaultOverlayTexture;
+  private ResourceLocation defaultOverlayTexture;
   @Getter
   private static final ResourceLocation defaultBaseTexture = ModularMachineryReborn.rl("block/casing_plain");
 
@@ -83,12 +77,11 @@ public abstract class TileItemBus extends TileInventory implements MachineCompon
     if (compound.contains("controllerPos")) {
       controllerPos = BlockPos.of(compound.getLong("controllerPos"));
     }
-    if (compound.contains("baseTexture")) {
-      setMachineBaseTexture(ResourceLocation.parse(compound.getString("baseTexture")));
-    }
-    if (compound.contains("overlayTexture")) {
-      setMachineOverlayTexture(ResourceLocation.parse(compound.getString("overlayTexture")));
-    }
+
+    this.defaultOverlayTexture = ModularMachineryReborn.rl("block/overlay_" + ioType.getSerializedName() + "bus_" + size.getSerializedName());
+
+    this.baseTexture = compound.contains("baseTexture") ? ResourceLocation.parse(compound.getString("baseTexture")) : defaultBaseTexture;
+    this.overlayTexture = compound.contains("overlayTexture") ? ResourceLocation.parse(compound.getString("overlayTexture")) : defaultOverlayTexture;
 
     this.inventory.setListener(new IOInventory.IOInventoryChangedListener() {
       @Override
@@ -130,7 +123,6 @@ public abstract class TileItemBus extends TileInventory implements MachineCompon
   public void setControllerPos(BlockPos pos) {
     this.controllerPos = pos;
   }
-
 
   @Override
   public ModelData getModelData() {

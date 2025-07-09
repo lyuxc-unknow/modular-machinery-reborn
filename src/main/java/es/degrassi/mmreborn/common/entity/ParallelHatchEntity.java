@@ -38,7 +38,7 @@ public class ParallelHatchEntity extends ColorableMachineComponentEntity impleme
   private ParallelComponent component;
   private ResourceLocation baseTexture;
   private ResourceLocation overlayTexture;
-  private final ResourceLocation defaultOverlayTexture;
+  private ResourceLocation defaultOverlayTexture;
   private static final ResourceLocation defaultBaseTexture = ModularMachineryReborn.rl("block/casing_plain");
 
   public ParallelHatchEntity(BlockPos pos, BlockState state, ParallelHatchSize size) {
@@ -89,12 +89,10 @@ public class ParallelHatchEntity extends ColorableMachineComponentEntity impleme
     if (compound.contains("cores")) {
       this.setCores(compound.getInt("cores"));
     }
-    if (compound.contains("baseTexture")) {
-      setMachineBaseTexture(ResourceLocation.parse(compound.getString("baseTexture")));
-    }
-    if (compound.contains("overlayTexture")) {
-      setMachineOverlayTexture(ResourceLocation.parse(compound.getString("overlayTexture")));
-    }
+    this.defaultOverlayTexture = ModularMachineryReborn.rl("block/overlay_parallel_hatch_" + size.getSerializedName());
+
+    this.baseTexture = compound.contains("baseTexture") ? ResourceLocation.parse(compound.getString("baseTexture")) : defaultBaseTexture;
+    this.overlayTexture = compound.contains("overlayTexture") ? ResourceLocation.parse(compound.getString("overlayTexture")) : defaultOverlayTexture;
   }
 
   @Override

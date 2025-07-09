@@ -2,7 +2,6 @@ package es.degrassi.mmreborn.common.registration;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.common.block.BlockDynamicColor;
-import es.degrassi.mmreborn.common.block.BlockHeightMeter;
 import es.degrassi.mmreborn.common.entity.BiomeReaderEntity;
 import es.degrassi.mmreborn.common.entity.ChunkloaderEntity;
 import es.degrassi.mmreborn.common.entity.DimensionalDetectorEntity;
@@ -13,15 +12,14 @@ import es.degrassi.mmreborn.common.entity.ExperienceOutputHatchEntity;
 import es.degrassi.mmreborn.common.entity.FluidInputHatchEntity;
 import es.degrassi.mmreborn.common.entity.FluidOutputHatchEntity;
 import es.degrassi.mmreborn.common.entity.HeightMeterEntity;
-import es.degrassi.mmreborn.common.entity.ItemConsumeDurabilityHatchEntity;
 import es.degrassi.mmreborn.common.entity.ItemInputBusEntity;
 import es.degrassi.mmreborn.common.entity.ItemOutputBusEntity;
-import es.degrassi.mmreborn.common.entity.ItemRepairDurabilityHatchEntity;
 import es.degrassi.mmreborn.common.entity.MachineControllerEntity;
 import es.degrassi.mmreborn.common.entity.ParallelHatchEntity;
 import es.degrassi.mmreborn.common.entity.TimeCounterEntity;
 import es.degrassi.mmreborn.common.entity.WeatherSensorEntity;
 import es.degrassi.mmreborn.common.entity.base.ColorableMachineComponentEntity;
+import es.degrassi.mmreborn.common.entity.base.DurabilityHatchEntity;
 import es.degrassi.mmreborn.common.entity.base.EnergyHatchEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
@@ -119,29 +117,16 @@ public class EntityRegistration {
           ),
           null)
   );
-  public static final Supplier<BlockEntityType<ItemConsumeDurabilityHatchEntity>> ITEM_CONSUME_DURABILITY_HATCH =
+  public static final Supplier<BlockEntityType<DurabilityHatchEntity>> ITEM_DURABILITY_HATCH =
       ENTITY_TYPE.register(
-      rootLC("item_consume_durability_hatch"),
+      rootLC("item_durability_hatch"),
       () -> new BlockEntityType<>(
-          ItemConsumeDurabilityHatchEntity::new,
+          DurabilityHatchEntity::new,
           Set.of(
-              BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_TINY.get(),
-              BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_SMALL.get(),
-              BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_NORMAL.get(),
-              BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_BIG.get()
-          ),
-          null)
-  );
-  public static final Supplier<BlockEntityType<ItemRepairDurabilityHatchEntity>> ITEM_REPAIR_DURABILITY_HATCH =
-      ENTITY_TYPE.register(
-      rootLC("item_repair_durability_hatch"),
-      () -> new BlockEntityType<>(
-          ItemRepairDurabilityHatchEntity::new,
-          Set.of(
-              BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_TINY.get(),
-              BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_SMALL.get(),
-              BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_NORMAL.get(),
-              BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_BIG.get()
+              BlockRegistration.ITEM_DURABILITY_HATCH_TINY.get(),
+              BlockRegistration.ITEM_DURABILITY_HATCH_SMALL.get(),
+              BlockRegistration.ITEM_DURABILITY_HATCH_NORMAL.get(),
+              BlockRegistration.ITEM_DURABILITY_HATCH_BIG.get()
           ),
           null)
   );

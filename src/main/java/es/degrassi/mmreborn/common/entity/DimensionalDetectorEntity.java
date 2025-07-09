@@ -51,15 +51,11 @@ public class DimensionalDetectorEntity extends ColorableMachineComponentEntity i
   }
 
   @Override
-  protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider pRegistries) {
-    super.loadAdditional(nbt, pRegistries);
+  protected void loadAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
+    super.loadAdditional(compound, pRegistries);
 
-    if (nbt.contains("baseTexture")) {
-      setMachineBaseTexture(ResourceLocation.parse(nbt.getString("baseTexture")));
-    }
-    if (nbt.contains("overlayTexture")) {
-      setMachineOverlayTexture(ResourceLocation.parse(nbt.getString("overlayTexture")));
-    }
+    this.baseTexture = compound.contains("baseTexture") ? ResourceLocation.parse(compound.getString("baseTexture")) : defaultBaseTexture;
+    this.overlayTexture = compound.contains("overlayTexture") ? ResourceLocation.parse(compound.getString("overlayTexture")) : defaultOverlayTexture;
   }
 
   @Override

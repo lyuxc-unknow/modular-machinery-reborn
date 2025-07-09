@@ -58,10 +58,10 @@ public class BlockEntitySynchronized extends BlockEntity implements IEntitySynch
     loadAdditional(tag, lookupProvider);
   }
 
-  /*@Override
+  @Override
   public final ClientboundBlockEntityDataPacket getUpdatePacket() {
     return ClientboundBlockEntityDataPacket.create(this);
-  }*/
+  }
 
   public void markForUpdate() {
     if (requestModelUpdate) requestModelDataUpdate();

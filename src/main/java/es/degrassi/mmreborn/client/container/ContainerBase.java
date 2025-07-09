@@ -55,7 +55,6 @@ public abstract class ContainerBase<T extends ColorableMachineComponentEntity> e
     this.firstComponentSlotIndex = slotIndex.get() + 1;
   }
 
-
   /**
    * Adds an item slot to this container
    */

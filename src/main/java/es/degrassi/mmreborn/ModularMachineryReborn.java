@@ -164,14 +164,10 @@ public class ModularMachineryReborn {
         Capabilities.ItemHandler.BLOCK,
         EntityRegistration.ITEM_OUTPUT_BUS.get(),
         (be, side) -> be.getInventory()
-    );event.registerBlockEntity(
-        Capabilities.ItemHandler.BLOCK,
-        EntityRegistration.ITEM_CONSUME_DURABILITY_HATCH.get(),
-        (be, side) -> be.getInventory()
     );
     event.registerBlockEntity(
         Capabilities.ItemHandler.BLOCK,
-        EntityRegistration.ITEM_REPAIR_DURABILITY_HATCH.get(),
+        EntityRegistration.ITEM_DURABILITY_HATCH.get(),
         (be, side) -> be.getInventory()
     );
     event.registerBlockEntity(

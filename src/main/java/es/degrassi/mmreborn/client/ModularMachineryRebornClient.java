@@ -24,7 +24,7 @@ import es.degrassi.mmreborn.common.entity.base.ColorableMachineEntity;
 import es.degrassi.mmreborn.common.entity.base.EnergyHatchEntity;
 import es.degrassi.mmreborn.common.entity.base.ExperienceHatchEntity;
 import es.degrassi.mmreborn.common.entity.base.FluidTankEntity;
-import es.degrassi.mmreborn.common.entity.base.TileDurabilityHatch;
+import es.degrassi.mmreborn.common.entity.base.DurabilityHatchEntity;
 import es.degrassi.mmreborn.common.entity.base.TileItemBus;
 import es.degrassi.mmreborn.common.item.ItemDynamicColor;
 import es.degrassi.mmreborn.common.registration.BlockRegistration;
@@ -150,15 +150,10 @@ public class ModularMachineryRebornClient {
         BlockRegistration.ITEM_OUTPUT_BUS_HUGE.get(),
         BlockRegistration.ITEM_OUTPUT_BUS_LUDICROUS.get(),
 
-        BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_TINY.get(),
-        BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_SMALL.get(),
-        BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_NORMAL.get(),
-        BlockRegistration.ITEM_CONSUME_DURABILITY_HATCH_BIG.get(),
-
-        BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_TINY.get(),
-        BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_SMALL.get(),
-        BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_NORMAL.get(),
-        BlockRegistration.ITEM_REPAIR_DURABILITY_HATCH_BIG.get(),
+        BlockRegistration.ITEM_DURABILITY_HATCH_TINY.get(),
+        BlockRegistration.ITEM_DURABILITY_HATCH_SMALL.get(),
+        BlockRegistration.ITEM_DURABILITY_HATCH_NORMAL.get(),
+        BlockRegistration.ITEM_DURABILITY_HATCH_BIG.get(),
 
         BlockRegistration.FLUID_INPUT_HATCH_TINY.get(),
         BlockRegistration.FLUID_INPUT_HATCH_SMALL.get(),
@@ -261,15 +256,10 @@ public class ModularMachineryRebornClient {
         ItemRegistration.ITEM_OUTPUT_BUS_HUGE.get(),
         ItemRegistration.ITEM_OUTPUT_BUS_LUDICROUS.get(),
 
-        ItemRegistration.ITEM_CONSUME_DURABILITY_HATCH_TINY.get(),
-        ItemRegistration.ITEM_CONSUME_DURABILITY_HATCH_SMALL.get(),
-        ItemRegistration.ITEM_CONSUME_DURABILITY_HATCH_NORMAL.get(),
-        ItemRegistration.ITEM_CONSUME_DURABILITY_HATCH_BIG.get(),
-
-        ItemRegistration.ITEM_REPAIR_DURABILITY_HATCH_TINY.get(),
-        ItemRegistration.ITEM_REPAIR_DURABILITY_HATCH_SMALL.get(),
-        ItemRegistration.ITEM_REPAIR_DURABILITY_HATCH_NORMAL.get(),
-        ItemRegistration.ITEM_REPAIR_DURABILITY_HATCH_BIG.get(),
+        ItemRegistration.ITEM_DURABILITY_HATCH_TINY.get(),
+        ItemRegistration.ITEM_DURABILITY_HATCH_SMALL.get(),
+        ItemRegistration.ITEM_DURABILITY_HATCH_NORMAL.get(),
+        ItemRegistration.ITEM_DURABILITY_HATCH_BIG.get(),
 
         ItemRegistration.FLUID_INPUT_HATCH_TINY.get(),
         ItemRegistration.FLUID_INPUT_HATCH_SMALL.get(),
@@ -460,10 +450,10 @@ public class ModularMachineryRebornClient {
     throw new IllegalStateException("Trying to open a Parallel Hatch container without clicking on a Parallel Hatch block");
   }
 
-  public static TileDurabilityHatch getClientSideItemDurabilityEntity(BlockPos pos) {
+  public static DurabilityHatchEntity getClientSideItemDurabilityEntity(BlockPos pos) {
     if (Minecraft.getInstance().level != null) {
       BlockEntity tile = Minecraft.getInstance().level.getBlockEntity(pos);
-      if (tile instanceof TileDurabilityHatch controller)
+      if (tile instanceof DurabilityHatchEntity controller)
         return controller;
     }
     throw new IllegalStateException("Trying to open a Durability Hatch container without clicking on a Durability Hatch block");

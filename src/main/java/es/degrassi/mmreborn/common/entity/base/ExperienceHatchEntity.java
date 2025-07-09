@@ -43,7 +43,7 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
   @Setter
   private ResourceLocation overlayTexture;
   @Getter
-  private final ResourceLocation defaultOverlayTexture;
+  private ResourceLocation defaultOverlayTexture;
   @Getter
   private static final ResourceLocation defaultBaseTexture = ModularMachineryReborn.rl("block/casing_plain");
 
@@ -127,12 +127,10 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
     if (compound.contains("controllerPos")) {
       controllerPos = BlockPos.of(compound.getLong("controllerPos"));
     }
-    if (compound.contains("baseTexture")) {
-      setMachineBaseTexture(ResourceLocation.parse(compound.getString("baseTexture")));
-    }
-    if (compound.contains("overlayTexture")) {
-      setMachineOverlayTexture(ResourceLocation.parse(compound.getString("overlayTexture")));
-    }
+    this.defaultOverlayTexture = ModularMachineryReborn.rl("block/overlay_experience" + ioType.getSerializedName() + "hatch_" + size.getSerializedName());
+
+    this.baseTexture = compound.contains("baseTexture") ? ResourceLocation.parse(compound.getString("baseTexture")) : defaultBaseTexture;
+    this.overlayTexture = compound.contains("overlayTexture") ? ResourceLocation.parse(compound.getString("overlayTexture")) : defaultOverlayTexture;
   }
 
   @Override

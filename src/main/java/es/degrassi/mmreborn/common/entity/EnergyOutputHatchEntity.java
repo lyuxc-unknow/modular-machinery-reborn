@@ -51,7 +51,7 @@ public class EnergyOutputHatchEntity extends EnergyHatchEntity {
     int receivedEnergy = 0;
     BlockEntity te = level.getBlockEntity(at);
     if (te != null && !(te instanceof EnergyHatchEntity)) {
-      var cache = BlockCapabilityCache.create(Capabilities.EnergyStorage.BLOCK, (ServerLevel) getLevel(), getBlockPos().relative(face), face.getOpposite(),
+      var cache = BlockCapabilityCache.create(Capabilities.EnergyStorage.BLOCK, (ServerLevel) getLevel(), at, face.getOpposite(),
         () -> !isRemoved(), () -> {});
       IEnergyStorage ce = cache.getCapability();
       if (ce != null && ce.canReceive()) {

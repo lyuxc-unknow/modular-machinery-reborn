@@ -4,17 +4,19 @@ import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.controller.ControllerAccessible;
 import es.degrassi.mmreborn.client.model.hatch.HatchBakedModel;
 import es.degrassi.mmreborn.common.block.prop.ItemDurabilityHatchSize;
-import es.degrassi.mmreborn.common.entity.ItemConsumeDurabilityHatchEntity;
 import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineHatchType;
 import es.degrassi.mmreborn.common.machine.component.DurabilityComponent;
 import es.degrassi.mmreborn.common.network.server.SUpdateMachineTexturePacket;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateItemComponentPacket;
+import es.degrassi.mmreborn.common.registration.EntityRegistration;
 import es.degrassi.mmreborn.common.util.IOInventory;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -28,11 +30,10 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import javax.annotation.Nullable;
 
 @Getter
-public abstract class TileDurabilityHatch extends TileInventory implements MachineComponentEntity<DurabilityComponent>,
-    ControllerAccessible, TextureableMachineEntity {
+public class DurabilityHatchEntity extends TileInventory implements MachineComponentEntity<DurabilityComponent>, ControllerAccessible, TextureableMachineEntity {
   private BlockPos controllerPos;
   private ItemDurabilityHatchSize size;
-  private IOType ioType;
+  private final IOType ioType = IOType.INPUT;
 
   @Getter
   @Setter
@@ -41,15 +42,15 @@ public abstract class TileDurabilityHatch extends TileInventory implements Machi
   @Setter
   private ResourceLocation overlayTexture;
   @Getter
-  private final ResourceLocation defaultOverlayTexture;
+  private ResourceLocation defaultOverlayTexture;
   @Getter
   private static final ResourceLocation defaultBaseTexture = ModularMachineryReborn.rl("block/casing_plain");
 
-  public TileDurabilityHatch(BlockEntityType<?> entityType, BlockPos pos, BlockState blockState, ItemDurabilityHatchSize size, IOType ioType) {
+  private DurabilityHatchEntity(BlockEntityType<?> entityType, BlockPos pos, BlockState blockState,
+                          ItemDurabilityHatchSize size, IOType ioType) {
     super(entityType, pos, blockState, size.getSlotCount());
     this.size = size;
-    this.ioType = ioType;
-    this.defaultOverlayTexture = ModularMachineryReborn.rl("block/overlay_" + ioType.getSerializedName() + "bus_" + size.getSerializedName());
+    this.defaultOverlayTexture = ModularMachineryReborn.rl("block/overlay_durabilityhatch_" + size.getSerializedName());
     this.overlayTexture = defaultOverlayTexture;
     this.inventory.setListener(new IOInventory.IOInventoryChangedListener() {
       @Override
@@ -70,6 +71,22 @@ public abstract class TileDurabilityHatch extends TileInventory implements Machi
     });
   }
 
+  public DurabilityHatchEntity(BlockPos pos, BlockState blockState, ItemDurabilityHatchSize size) {
+    this(EntityRegistration.ITEM_DURABILITY_HATCH.get(), pos, blockState, size, IOType.INPUT);
+  }
+  public DurabilityHatchEntity(BlockPos pos, BlockState blockState) {
+    this(EntityRegistration.ITEM_DURABILITY_HATCH.get(), pos, blockState, ItemDurabilityHatchSize.TINY, IOType.INPUT);
+  }
+
+  @Override
+  public IOInventory buildInventory(int slots) {
+    int[] inSlots = new int[slots];
+    for (int i = 0; i < slots; i++) {
+      inSlots[i] = i;
+    }
+    return new IOInventory(inSlots, new int[0], stack -> stack.has(DataComponents.DAMAGE), Direction.values());
+  }
+
   @Nullable
   @Override
   public DurabilityComponent provideComponent() {
@@ -80,16 +97,14 @@ public abstract class TileDurabilityHatch extends TileInventory implements Machi
   protected void loadAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
     super.loadAdditional(compound, pRegistries);
     this.size = ItemDurabilityHatchSize.value(compound.getString("busSize"));
-    this.ioType = IOType.getByString(compound.getString("ioType"));
     if (compound.contains("controllerPos")) {
       controllerPos = BlockPos.of(compound.getLong("controllerPos"));
     }
-    if (compound.contains("baseTexture")) {
-      setMachineBaseTexture(ResourceLocation.parse(compound.getString("baseTexture")));
-    }
-    if (compound.contains("overlayTexture")) {
-      setMachineOverlayTexture(ResourceLocation.parse(compound.getString("overlayTexture")));
-    }
+
+    this.defaultOverlayTexture = ModularMachineryReborn.rl("block/overlay_durabilityhatch_" + size.getSerializedName());
+
+    this.baseTexture = compound.contains("baseTexture") ? ResourceLocation.parse(compound.getString("baseTexture")) : defaultBaseTexture;
+    this.overlayTexture = compound.contains("overlayTexture") ? ResourceLocation.parse(compound.getString("overlayTexture")) : defaultOverlayTexture;
 
     this.inventory.setListener(new IOInventory.IOInventoryChangedListener() {
       @Override
@@ -115,10 +130,6 @@ public abstract class TileDurabilityHatch extends TileInventory implements Machi
     super.saveAdditional(compound, pRegistries);
 
     compound.putString("busSize", this.size.getSerializedName());
-    if (ioType == null) {
-      ioType = this instanceof ItemConsumeDurabilityHatchEntity ? IOType.INPUT : IOType.OUTPUT;
-    }
-    compound.putString("ioType", this.ioType.getSerializedName());
     if (controllerPos != null)
       compound.putLong("controllerPos", controllerPos.asLong());
     if (baseTexture != null)
@@ -131,7 +142,6 @@ public abstract class TileDurabilityHatch extends TileInventory implements Machi
   public void setControllerPos(BlockPos pos) {
     this.controllerPos = pos;
   }
-
 
   @Override
   public ModelData getModelData() {
@@ -186,20 +196,11 @@ public abstract class TileDurabilityHatch extends TileInventory implements Machi
 
   @Override
   public MachineHatchType getHatchType() {
-    return switch(ioType) {
-      case INPUT -> switch (size) {
-        case TINY -> MachineHatchType.CONSUME_DURABILITY_HATCH_TINY;
-        case SMALL -> MachineHatchType.CONSUME_DURABILITY_HATCH_SMALL;
-        case NORMAL -> MachineHatchType.CONSUME_DURABILITY_HATCH_NORMAL;
-        case BIG -> MachineHatchType.CONSUME_DURABILITY_HATCH_BIG;
-      };
-      case OUTPUT -> switch(size) {
-        case TINY -> MachineHatchType.REPAIR_DURABILITY_HATCH_TINY;
-        case SMALL -> MachineHatchType.REPAIR_DURABILITY_HATCH_SMALL;
-        case NORMAL -> MachineHatchType.REPAIR_DURABILITY_HATCH_NORMAL;
-        case BIG -> MachineHatchType.REPAIR_DURABILITY_HATCH_BIG;
-      };
-      default -> null;
+    return switch (size) {
+      case TINY -> MachineHatchType.DURABILITY_HATCH_TINY;
+      case SMALL -> MachineHatchType.DURABILITY_HATCH_SMALL;
+      case NORMAL -> MachineHatchType.DURABILITY_HATCH_NORMAL;
+      case BIG -> MachineHatchType.DURABILITY_HATCH_BIG;
     };
   }
 }

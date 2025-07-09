@@ -38,7 +38,7 @@ public abstract class FluidTankEntity extends ColorableMachineComponentEntity im
   @Setter
   private ResourceLocation overlayTexture;
   @Getter
-  private final ResourceLocation defaultOverlayTexture;
+  private ResourceLocation defaultOverlayTexture;
   @Getter
   private static final ResourceLocation defaultBaseTexture = ModularMachineryReborn.rl("block/casing_plain");
 
@@ -73,12 +73,10 @@ public abstract class FluidTankEntity extends ColorableMachineComponentEntity im
     if (compound.contains("controllerPos")) {
       controllerPos = BlockPos.of(compound.getLong("controllerPos"));
     }
-    if (compound.contains("baseTexture")) {
-      setMachineBaseTexture(ResourceLocation.parse(compound.getString("baseTexture")));
-    }
-    if (compound.contains("overlayTexture")) {
-      setMachineOverlayTexture(ResourceLocation.parse(compound.getString("overlayTexture")));
-    }
+    this.defaultOverlayTexture = ModularMachineryReborn.rl("block/overlay_fluid" + ioType.getSerializedName() + "hatch_" + hatchSize.getSerializedName());
+
+    this.baseTexture = compound.contains("baseTexture") ? ResourceLocation.parse(compound.getString("baseTexture")) : defaultBaseTexture;
+    this.overlayTexture = compound.contains("overlayTexture") ? ResourceLocation.parse(compound.getString("overlayTexture")) : defaultOverlayTexture;
 
     this.tank.setListener(() -> {
       if (getController() != null)

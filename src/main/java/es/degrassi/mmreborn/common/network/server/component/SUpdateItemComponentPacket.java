@@ -1,6 +1,7 @@
 package es.degrassi.mmreborn.common.network.server.component;
 
 import es.degrassi.mmreborn.ModularMachineryReborn;
+import es.degrassi.mmreborn.common.entity.base.TileInventory;
 import es.degrassi.mmreborn.common.entity.base.TileItemBus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -31,8 +32,8 @@ public record SUpdateItemComponentPacket(int slot, ItemStack item, BlockPos pos)
   public static void handle(SUpdateItemComponentPacket packet, IPayloadContext context) {
     if (context.flow().isClientbound())
       context.enqueueWork(() -> {
-        if (context.player().level().getBlockEntity(packet.pos) instanceof TileItemBus entity) {
-          entity.getInventory().setStackInSlot(packet.slot, packet.item);
+        if (context.player().level().getBlockEntity(packet.pos) instanceof TileInventory entity) {
+          entity.getInventory().setItem(packet.slot, packet.item);
         }
       });
   }

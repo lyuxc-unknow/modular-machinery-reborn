@@ -136,6 +136,6 @@ public class RequirementDurability implements IRequirement<DurabilityComponent> 
 
   @Override
   public boolean isComponentValid(DurabilityComponent m, ICraftingContext context) {
-    return getMode().equals(m.getIOType());
+    return true;
   }
 }

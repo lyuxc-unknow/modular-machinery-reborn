@@ -60,17 +60,14 @@ public class HeightMeterEntity extends ColorableMachineComponentEntity implement
   }
 
   @Override
-  protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider pRegistries) {
-    super.loadAdditional(nbt, pRegistries);
-    if (nbt.contains("controllerPos")) {
-      controllerPos = BlockPos.of(nbt.getLong("controllerPos"));
+  protected void loadAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
+    super.loadAdditional(compound, pRegistries);
+    if (compound.contains("controllerPos")) {
+      controllerPos = BlockPos.of(compound.getLong("controllerPos"));
     }
-    if (nbt.contains("baseTexture")) {
-      setMachineBaseTexture(ResourceLocation.parse(nbt.getString("baseTexture")));
-    }
-    if (nbt.contains("overlayTexture")) {
-      setMachineOverlayTexture(ResourceLocation.parse(nbt.getString("overlayTexture")));
-    }
+
+    this.baseTexture = compound.contains("baseTexture") ? ResourceLocation.parse(compound.getString("baseTexture")) : defaultBaseTexture;
+    this.overlayTexture = compound.contains("overlayTexture") ? ResourceLocation.parse(compound.getString("overlayTexture")) : defaultOverlayTexture;
   }
 
   @Override
