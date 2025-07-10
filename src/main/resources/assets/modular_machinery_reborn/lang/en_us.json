@@ -235,15 +235,10 @@
   "block.modular_machinery_reborn.outputbus_huge": "Huge Item Output Bus",
   "block.modular_machinery_reborn.outputbus_ludicrous": "Ludicrous Item Output Bus",
 
-  "block.modular_machinery_reborn.consumedurabilityhatch_tiny": "Tiny Consume Durability Hatch",
-  "block.modular_machinery_reborn.consumedurabilityhatch_small": "Small Consume Durability Hatch",
-  "block.modular_machinery_reborn.consumedurabilityhatch_normal": "Normal Consume Durability Hatch",
-  "block.modular_machinery_reborn.consumedurabilityhatch_big": "Big Consume Durability Hatch",
-
-  "block.modular_machinery_reborn.repairdurabilityhatch_tiny": "Tiny Repair Durability Hatch",
-  "block.modular_machinery_reborn.repairdurabilityhatch_small": "Small Repair Durability Hatch",
-  "block.modular_machinery_reborn.repairdurabilityhatch_normal": "Normal Repair Durability Hatch",
-  "block.modular_machinery_reborn.repairdurabilityhatch_big": "Big Repair Durability Hatch",
+  "block.modular_machinery_reborn.durabilityhatch_tiny": "Tiny Durability Hatch",
+  "block.modular_machinery_reborn.durabilityhatch_small": "Small Durability Hatch",
+  "block.modular_machinery_reborn.durabilityhatch_normal": "Normal Durability Hatch",
+  "block.modular_machinery_reborn.durabilityhatch_big": "Big Durability Hatch",
 
   "block.modular_machinery_reborn.fluidinputhatch_tiny": "Tiny Fluid Input Hatch",
   "block.modular_machinery_reborn.fluidinputhatch_small": "Small Fluid Input Hatch",
