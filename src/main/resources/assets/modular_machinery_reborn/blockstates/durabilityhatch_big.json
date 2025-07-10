@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "modular_machinery_reborn:block/consumedurabilityhatch_big"
+      "model": "modular_machinery_reborn:block/durabilityhatch_big"
     }
   }
 }
