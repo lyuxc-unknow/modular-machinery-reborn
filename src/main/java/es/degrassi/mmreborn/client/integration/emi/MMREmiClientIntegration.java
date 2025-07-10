@@ -36,6 +36,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class MMREmiClientIntegration {
@@ -106,7 +107,16 @@ public class MMREmiClientIntegration {
   }
 
   private EmiIngredient emiIngredientFromDurabilityRequirement(RecipeRequirement<DurabilityComponent, RequirementDurability> requirement) {
-    return EmiIngredient.of(requirement.requirement().ingredient, requirement.requirement().getAmount());
+    return EmiIngredient.of(ingredientFromDurabilityRequirement(requirement.requirement().ingredient), requirement.requirement().getAmount());
+  }
+
+  private Ingredient ingredientFromDurabilityRequirement(Ingredient original) {
+    List<ItemStack> items = Arrays.stream(original.getItems())
+        .map(this::generateWithDurability)
+        .flatMap(List::stream)
+        .unordered()
+        .toList();
+    return Ingredient.of(items.stream());
   }
 
   private List<EmiStack> emiStackFromItemRequirement(RecipeRequirement<ItemComponent, RequirementItem> requirement) {
@@ -128,12 +138,30 @@ public class MMREmiClientIntegration {
     for (Ingredient.Value value : requirement.requirement().getIngredient().values) {
       if (value instanceof Ingredient.TagValue(TagKey<Item> tag)) {
         for (Item stack : TagUtil.getItems(tag).toList()) {
-          stacks.add(EmiStack.of(stack, requirement.requirement().getAmount()));
+          stacks.addAll(generateWithDurability(new ItemStack(stack), requirement.requirement().getAmount()));
         }
       } else if (value instanceof Ingredient.ItemValue(ItemStack item)) {
-        stacks.add(EmiStack.of(item, requirement.requirement().getAmount()));
+        stacks.addAll(generateWithDurability(item, requirement.requirement().getAmount()));
       }
     }
-    return stacks;
+    return stacks.stream().unordered().toList();
+  }
+
+  private List<ItemStack> generateWithDurability(ItemStack stack) {
+    if (!stack.isDamageableItem()) throw new IllegalArgumentException(
+        String.format("Invalid Item given in durability requirement, is not damageable: %s", stack.getDisplayName().getString())
+    );
+    int maxDamage = stack.getMaxDamage();
+    List<ItemStack> damagedItems = Lists.newArrayList();
+    for (int i = 0; i <= maxDamage; i++) {
+      ItemStack copy = stack.copy();
+      copy.setDamageValue(i);
+      damagedItems.add(copy);
+    }
+    return damagedItems.stream().unordered().toList();
+  }
+
+  private List<EmiStack> generateWithDurability(ItemStack stack, int amount) {
+    return generateWithDurability(stack).stream().map(s -> EmiStack.of(s, amount)).toList();
   }
 }

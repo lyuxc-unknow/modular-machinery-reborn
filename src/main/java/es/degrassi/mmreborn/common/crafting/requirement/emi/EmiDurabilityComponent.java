@@ -17,20 +17,56 @@ import es.degrassi.mmreborn.common.machine.component.DurabilityComponent;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 
-public class EmiDurabilityComponent extends EmiComponent<ItemStack, RecipeRequirement<DurabilityComponent, RequirementDurability>> implements SlotTooltip, ItemRendering, ChanceRendering, IngredientHolder {
+public class EmiDurabilityComponent extends EmiComponent<ItemStack, RecipeRequirement<DurabilityComponent, RequirementDurability>> implements SlotTooltip, ItemRendering, IngredientHolder {
   private int item;
   @Getter
   private int width = 16, height = 16;
   @Getter
   @Nullable
   private EmiRecipe recipe;
+  private final EmiIngredient ingredient;
+  private final List<ItemStack> items;
   public EmiDurabilityComponent(RecipeRequirement<DurabilityComponent, RequirementDurability> requirement) {
     super(requirement, 36, 0);
+    this.ingredient = EmiIngredientRegistry.getIngredient(requirement.getType()).create(requirement);
+    this.items = generateWithDurability(requirement.requirement().ingredient);
+  }
+
+  private List<ItemStack> generateWithDurability(Ingredient original) {
+    return Arrays.stream(original.getItems())
+        .map(this::generateWithDurability)
+        .flatMap(List::stream)
+        .unordered()
+        .toList();
+  }
+
+  private List<ItemStack> generateWithDurability(ItemStack stack) {
+    if (!stack.isDamageableItem()) throw new IllegalArgumentException("Invalid not damageable item in durability requirement");
+    int maxDamage = stack.getMaxDamage();
+    List<ItemStack> damagedItems = Lists.newArrayList();
+    if (maxDamage <= 10) {
+      for (int i = 0; i <= maxDamage; i++) {
+        ItemStack copy = stack.copy();
+        copy.setDamageValue(i);
+        damagedItems.add(copy);
+      }
+    } else {
+      for (int i = 0; i <= 10; i++) {
+        ItemStack copy = stack.copy();
+        copy.setDamageValue(Mth.randomBetweenInclusive(RandomSource.create(), 0, maxDamage));
+        damagedItems.add(copy);
+      }
+    }
+    return damagedItems.stream().unordered().toList();
   }
 
   public void recipeContext(EmiRecipe recipe) {
@@ -44,12 +80,12 @@ public class EmiDurabilityComponent extends EmiComponent<ItemStack, RecipeRequir
 
   @Override
   public EmiIngredient getIngredient() {
-    return EmiIngredientRegistry.getIngredient(requirement.getType()).create(requirement);
+    return ingredient;
   }
 
   @Override
   public List<ItemStack> ingredients() {
-    return getIngredient().getEmiStacks().stream().map(EmiStack::getItemStack).toList();
+    return items;
   }
 
   @Override
@@ -66,15 +102,8 @@ public class EmiDurabilityComponent extends EmiComponent<ItemStack, RecipeRequir
     width -= 2;
     height -= 2;
     drawStack(guiGraphics, 1, 1, -1);
-    drawChance(guiGraphics, true);
   }
 
-  @Override
-  public float getChance() {
-    return requirement.chance();
-  }
-
-  @Override
   public IOType getActionType() {
     return requirement.requirement().getMode();
   }
@@ -82,7 +111,6 @@ public class EmiDurabilityComponent extends EmiComponent<ItemStack, RecipeRequir
   @Override
   public List<Component> getTooltip() {
     List<Component> list = Lists.newArrayList();
-    addChanceTooltips(list);
     if (getStack().isEmpty()) {
       return list;
     }

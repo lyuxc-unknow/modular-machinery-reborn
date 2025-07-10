@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.crafting.requirement.jei;
 
+import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import es.degrassi.mmreborn.api.crafting.requirement.RecipeRequirement;
 import es.degrassi.mmreborn.common.crafting.MachineRecipe;
@@ -16,6 +17,8 @@ import mezz.jei.api.recipe.IFocusGroup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
@@ -24,8 +27,14 @@ import java.util.Locale;
 
 public class JeiDurabilityComponent extends JeiComponent<ItemStack, RecipeRequirement<DurabilityComponent,
     RequirementDurability>> {
+  private final List<ItemStack> items;
   public JeiDurabilityComponent(RecipeRequirement<DurabilityComponent, RequirementDurability> requirement) {
     super(requirement, 36, 0);
+    items = Arrays.stream(requirement.requirement().getIngredient().getItems())
+        .map(stack -> generateWithDurability(stack, requirement.requirement().getAmount()))
+        .flatMap(List::stream)
+        .unordered()
+        .toList();
   }
 
   @Override
@@ -40,7 +49,27 @@ public class JeiDurabilityComponent extends JeiComponent<ItemStack, RecipeRequir
 
   @Override
   public List<ItemStack> ingredients() {
-    return Arrays.stream(requirement.requirement().getIngredient().getItems()).map(ItemStack::copy).toList();
+    return items;
+  }
+
+  private List<ItemStack> generateWithDurability(ItemStack stack, int amount) {
+    if (!stack.isDamageableItem()) throw new IllegalArgumentException("Invalid not damageable item in durability requirement");
+    int maxDamage = stack.getMaxDamage();
+    List<ItemStack> damagedItems = Lists.newArrayList();
+    if (maxDamage <= 10) {
+      for (int i = 0; i <= maxDamage; i++) {
+        ItemStack copy = stack.copyWithCount(amount);
+        copy.setDamageValue(i);
+        damagedItems.add(copy);
+      }
+    } else {
+      for (int i = 0; i <= 10; i++) {
+        ItemStack copy = stack.copyWithCount(amount);
+        copy.setDamageValue(Mth.randomBetweenInclusive(RandomSource.create(), 0, maxDamage));
+        damagedItems.add(copy);
+      }
+    }
+    return damagedItems.stream().unordered().toList();
   }
 
   @Override
