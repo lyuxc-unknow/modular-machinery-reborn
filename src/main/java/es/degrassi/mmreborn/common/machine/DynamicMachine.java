@@ -7,6 +7,7 @@ import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.Structure;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.api.codec.NamedCodec;
+import es.degrassi.mmreborn.api.codec.RegistrarCodec;
 import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
 import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.entity.base.TextureableMachineEntity;
@@ -37,7 +38,7 @@ public class DynamicMachine {
       MachineModelLocation.CODEC.optionalFieldOf("controller", MachineModelLocation.DEFAULT).forGetter(DynamicMachine::getControllerModel),
       NamedCodec.unboundedMap(MachineStatus.CODEC, Sounds.CODEC, "Sounds by status").optionalFieldOf("sound", new HashMap<>()).forGetter(DynamicMachine::getSounds),
       NamedCodec.unboundedMap(
-          MachineHatchType.CODEC,
+          RegistrarCodec.HATCH_TYPE,
           TextureableMachineEntity.CODEC,
           "Formed Textures by HatchType"
       ).optionalFieldOf("formed_textures", Maps.newHashMap()).forGetter(DynamicMachine::getFormedTextures)
@@ -125,7 +126,7 @@ public class DynamicMachine {
       JsonObject withColor = new JsonObject();
       withColor.addProperty("should_color", shouldColor);
       withColor.add("textures", texts);
-      formedTexts.add(hatchType.getSerializedName(), withColor);
+      formedTexts.add(hatchType.getId().toString(), withColor);
     });
     json.add("formed_textures", formedTexts);
     return json;

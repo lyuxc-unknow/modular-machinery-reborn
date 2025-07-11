@@ -7,6 +7,7 @@ import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.network.DataType;
 import es.degrassi.mmreborn.common.crafting.ComponentType;
 import es.degrassi.mmreborn.common.crafting.requirement.RequirementType;
+import es.degrassi.mmreborn.common.machine.MachineHatchType;
 import es.degrassi.mmreborn.common.manager.crafting.ProcessorType;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -34,6 +35,7 @@ public class RegistrarCodec<V> implements NamedCodec<V> {
   public static final NamedCodec<RequirementType<?>> REQUIREMENT_NEW =
       of(ModularMachineryReborn.getRequirementRegistrar(), true);
   public static final NamedCodec<ComponentType> COMPONENT = of(ModularMachineryReborn.getComponentRegistrar(), true);
+  public static final NamedCodec<MachineHatchType> HATCH_TYPE = of(ModularMachineryReborn.getMachineHatchTypeRegistrar(), true);
 //    public static final NamedCodec<GuiElementType<?>> GUI_ELEMENT = of(ICustomMachineryAPI.INSTANCE.guiElementRegistrar(), true);
 //    public static final NamedCodec<MachineAppearanceProperty<?>> APPEARANCE_PROPERTY = of(ICustomMachineryAPI.INSTANCE.appearancePropertyRegistrar(), true);
   public static final NamedCodec<DataType<?, ?>> DATA = of(ModularMachineryReborn.dataRegistrar(), true);

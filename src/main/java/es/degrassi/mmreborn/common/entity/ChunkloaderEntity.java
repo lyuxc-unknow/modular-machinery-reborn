@@ -9,6 +9,7 @@ import es.degrassi.mmreborn.common.machine.MachineHatchType;
 import es.degrassi.mmreborn.common.machine.component.ChunkloadComponent;
 import es.degrassi.mmreborn.common.network.server.SUpdateMachineTexturePacket;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
+import es.degrassi.mmreborn.common.registration.MachineHatchTypeRegistration;
 import es.degrassi.mmreborn.common.util.Chunkloader;
 import es.degrassi.mmreborn.common.util.ChunkloaderList;
 import lombok.Getter;
@@ -145,7 +146,7 @@ public class ChunkloaderEntity extends BlockEntityRestrictedTick implements Mach
 
   @Override
   public MachineHatchType getHatchType() {
-    return MachineHatchType.BIOME_READER;
+    return MachineHatchTypeRegistration.BIOME_READER.get();
   }
 
   public void resetTextures() {

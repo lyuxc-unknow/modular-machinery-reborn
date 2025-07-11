@@ -11,6 +11,7 @@ import es.degrassi.mmreborn.common.machine.MachineHatchType;
 import es.degrassi.mmreborn.common.machine.component.ParallelComponent;
 import es.degrassi.mmreborn.common.network.server.SUpdateMachineTexturePacket;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
+import es.degrassi.mmreborn.common.registration.MachineHatchTypeRegistration;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -157,7 +158,13 @@ public class ParallelHatchEntity extends ColorableMachineComponentEntity impleme
 
   @Override
   public MachineHatchType getHatchType() {
-    return MachineHatchType.BIOME_READER;
+    return (switch (size) {
+      case BASIC -> MachineHatchTypeRegistration.PARALLEL_HATCH_BASIC;
+      case ADVANCED -> MachineHatchTypeRegistration.PARALLEL_HATCH_ADVANCED;
+      case MEDIUM -> MachineHatchTypeRegistration.PARALLEL_HATCH_MEDIUM;
+      case ULTIMATE -> MachineHatchTypeRegistration.PARALLEL_HATCH_ULTIMATE;
+      case MAX -> MachineHatchTypeRegistration.PARALLEL_HATCH_MAX;
+    }).get();
   }
 
   public void resetTextures() {

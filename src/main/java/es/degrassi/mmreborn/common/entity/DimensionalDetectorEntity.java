@@ -9,6 +9,7 @@ import es.degrassi.mmreborn.common.machine.MachineHatchType;
 import es.degrassi.mmreborn.common.machine.component.DimensionComponent;
 import es.degrassi.mmreborn.common.network.server.SUpdateMachineTexturePacket;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
+import es.degrassi.mmreborn.common.registration.MachineHatchTypeRegistration;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -106,7 +107,7 @@ public class DimensionalDetectorEntity extends ColorableMachineComponentEntity i
 
   @Override
   public MachineHatchType getHatchType() {
-    return MachineHatchType.BIOME_READER;
+    return MachineHatchTypeRegistration.BIOME_READER.get();
   }
 
   public void resetTextures() {

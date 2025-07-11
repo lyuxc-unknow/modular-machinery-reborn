@@ -9,6 +9,7 @@ import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.MachineHatchType;
 import es.degrassi.mmreborn.common.machine.component.FluidComponent;
 import es.degrassi.mmreborn.common.network.server.SUpdateMachineTexturePacket;
+import es.degrassi.mmreborn.common.registration.MachineHatchTypeRegistration;
 import es.degrassi.mmreborn.common.util.HybridTank;
 import lombok.Getter;
 import lombok.Setter;
@@ -163,26 +164,26 @@ public abstract class FluidTankEntity extends ColorableMachineComponentEntity im
   @Override
   public MachineHatchType getHatchType() {
     return switch(ioType) {
-      case INPUT -> switch (hatchSize) {
-        case TINY -> MachineHatchType.FLUID_INPUT_HATCH_TINY;
-        case SMALL -> MachineHatchType.FLUID_INPUT_HATCH_SMALL;
-        case NORMAL -> MachineHatchType.FLUID_INPUT_HATCH_NORMAL;
-        case REINFORCED -> MachineHatchType.FLUID_INPUT_HATCH_REINFORCED;
-        case BIG -> MachineHatchType.FLUID_INPUT_HATCH_BIG;
-        case HUGE -> MachineHatchType.FLUID_INPUT_HATCH_HUGE;
-        case LUDICROUS -> MachineHatchType.FLUID_INPUT_HATCH_LUDICROUS;
-        case VACUUM -> MachineHatchType.FLUID_INPUT_HATCH_VACUUM;
-      };
-      case OUTPUT -> switch(hatchSize) {
-        case TINY -> MachineHatchType.FLUID_OUTPUT_HATCH_TINY;
-        case SMALL -> MachineHatchType.FLUID_OUTPUT_HATCH_SMALL;
-        case NORMAL -> MachineHatchType.FLUID_OUTPUT_HATCH_NORMAL;
-        case REINFORCED -> MachineHatchType.FLUID_OUTPUT_HATCH_REINFORCED;
-        case BIG -> MachineHatchType.FLUID_OUTPUT_HATCH_BIG;
-        case HUGE -> MachineHatchType.FLUID_OUTPUT_HATCH_HUGE;
-        case LUDICROUS -> MachineHatchType.FLUID_OUTPUT_HATCH_LUDICROUS;
-        case VACUUM -> MachineHatchType.FLUID_INPUT_HATCH_VACUUM;
-      };
+      case INPUT -> (switch (hatchSize) {
+        case TINY -> MachineHatchTypeRegistration.FLUID_INPUT_HATCH_TINY;
+        case SMALL -> MachineHatchTypeRegistration.FLUID_INPUT_HATCH_SMALL;
+        case NORMAL -> MachineHatchTypeRegistration.FLUID_INPUT_HATCH_NORMAL;
+        case REINFORCED -> MachineHatchTypeRegistration.FLUID_INPUT_HATCH_REINFORCED;
+        case BIG -> MachineHatchTypeRegistration.FLUID_INPUT_HATCH_BIG;
+        case HUGE -> MachineHatchTypeRegistration.FLUID_INPUT_HATCH_HUGE;
+        case LUDICROUS -> MachineHatchTypeRegistration.FLUID_INPUT_HATCH_LUDICROUS;
+        case VACUUM -> MachineHatchTypeRegistration.FLUID_INPUT_HATCH_VACUUM;
+      }).get();
+      case OUTPUT -> (switch(hatchSize) {
+        case TINY -> MachineHatchTypeRegistration.FLUID_OUTPUT_HATCH_TINY;
+        case SMALL -> MachineHatchTypeRegistration.FLUID_OUTPUT_HATCH_SMALL;
+        case NORMAL -> MachineHatchTypeRegistration.FLUID_OUTPUT_HATCH_NORMAL;
+        case REINFORCED -> MachineHatchTypeRegistration.FLUID_OUTPUT_HATCH_REINFORCED;
+        case BIG -> MachineHatchTypeRegistration.FLUID_OUTPUT_HATCH_BIG;
+        case HUGE -> MachineHatchTypeRegistration.FLUID_OUTPUT_HATCH_HUGE;
+        case LUDICROUS -> MachineHatchTypeRegistration.FLUID_OUTPUT_HATCH_LUDICROUS;
+        case VACUUM -> MachineHatchTypeRegistration.FLUID_INPUT_HATCH_VACUUM;
+      }).get();
       default -> null;
     };
   }

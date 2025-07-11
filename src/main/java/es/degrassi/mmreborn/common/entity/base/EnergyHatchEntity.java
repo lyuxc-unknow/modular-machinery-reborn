@@ -10,6 +10,7 @@ import es.degrassi.mmreborn.common.machine.MachineHatchType;
 import es.degrassi.mmreborn.common.machine.component.EnergyComponent;
 import es.degrassi.mmreborn.common.network.server.SUpdateMachineTexturePacket;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateEnergyComponentPacket;
+import es.degrassi.mmreborn.common.registration.MachineHatchTypeRegistration;
 import es.degrassi.mmreborn.common.util.IEnergyHandler;
 import es.degrassi.mmreborn.common.util.MiscUtils;
 import lombok.Getter;
@@ -249,26 +250,26 @@ public abstract class EnergyHatchEntity extends ColorableMachineComponentEntity 
   @Override
   public MachineHatchType getHatchType() {
     return switch(ioType) {
-      case INPUT -> switch (size) {
-        case TINY -> MachineHatchType.ENERGY_INPUT_HATCH_TINY;
-        case SMALL -> MachineHatchType.ENERGY_INPUT_HATCH_SMALL;
-        case NORMAL -> MachineHatchType.ENERGY_INPUT_HATCH_NORMAL;
-        case REINFORCED -> MachineHatchType.ENERGY_INPUT_HATCH_REINFORCED;
-        case BIG -> MachineHatchType.ENERGY_INPUT_HATCH_BIG;
-        case HUGE -> MachineHatchType.ENERGY_INPUT_HATCH_HUGE;
-        case LUDICROUS -> MachineHatchType.ENERGY_INPUT_HATCH_LUDICROUS;
-        case ULTIMATE -> MachineHatchType.ENERGY_INPUT_HATCH_ULTIMATE;
-      };
-      case OUTPUT -> switch(size) {
-        case TINY -> MachineHatchType.ENERGY_OUTPUT_HATCH_TINY;
-        case SMALL -> MachineHatchType.ENERGY_OUTPUT_HATCH_SMALL;
-        case NORMAL -> MachineHatchType.ENERGY_OUTPUT_HATCH_NORMAL;
-        case REINFORCED -> MachineHatchType.ENERGY_OUTPUT_HATCH_REINFORCED;
-        case BIG -> MachineHatchType.ENERGY_OUTPUT_HATCH_BIG;
-        case HUGE -> MachineHatchType.ENERGY_OUTPUT_HATCH_HUGE;
-        case LUDICROUS -> MachineHatchType.ENERGY_OUTPUT_HATCH_LUDICROUS;
-        case ULTIMATE -> MachineHatchType.ENERGY_OUTPUT_HATCH_ULTIMATE;
-      };
+      case INPUT -> (switch (size) {
+        case TINY -> MachineHatchTypeRegistration.ENERGY_INPUT_HATCH_TINY;
+        case SMALL -> MachineHatchTypeRegistration.ENERGY_INPUT_HATCH_SMALL;
+        case NORMAL -> MachineHatchTypeRegistration.ENERGY_INPUT_HATCH_NORMAL;
+        case REINFORCED -> MachineHatchTypeRegistration.ENERGY_INPUT_HATCH_REINFORCED;
+        case BIG -> MachineHatchTypeRegistration.ENERGY_INPUT_HATCH_BIG;
+        case HUGE -> MachineHatchTypeRegistration.ENERGY_INPUT_HATCH_HUGE;
+        case LUDICROUS -> MachineHatchTypeRegistration.ENERGY_INPUT_HATCH_LUDICROUS;
+        case ULTIMATE -> MachineHatchTypeRegistration.ENERGY_INPUT_HATCH_ULTIMATE;
+      }).get();
+      case OUTPUT -> (switch(size) {
+        case TINY -> MachineHatchTypeRegistration.ENERGY_OUTPUT_HATCH_TINY;
+        case SMALL -> MachineHatchTypeRegistration.ENERGY_OUTPUT_HATCH_SMALL;
+        case NORMAL -> MachineHatchTypeRegistration.ENERGY_OUTPUT_HATCH_NORMAL;
+        case REINFORCED -> MachineHatchTypeRegistration.ENERGY_OUTPUT_HATCH_REINFORCED;
+        case BIG -> MachineHatchTypeRegistration.ENERGY_OUTPUT_HATCH_BIG;
+        case HUGE -> MachineHatchTypeRegistration.ENERGY_OUTPUT_HATCH_HUGE;
+        case LUDICROUS -> MachineHatchTypeRegistration.ENERGY_OUTPUT_HATCH_LUDICROUS;
+        case ULTIMATE -> MachineHatchTypeRegistration.ENERGY_OUTPUT_HATCH_ULTIMATE;
+      }).get();
       default -> null;
     };
   }

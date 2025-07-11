@@ -27,6 +27,7 @@ public class Registration {
   public static void register(final IEventBus bus) {
     DataComponentRegistration.register(bus);
     ComponentRegistration.register(bus);
+    MachineHatchTypeRegistration.register(bus);
     DataRegistration.register(bus);
     ProcessorTypeRegistration.register(bus);
     RequirementTypeRegistration.register(bus);

@@ -10,6 +10,7 @@ import es.degrassi.mmreborn.common.machine.component.DurabilityComponent;
 import es.degrassi.mmreborn.common.network.server.SUpdateMachineTexturePacket;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateItemComponentPacket;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
+import es.degrassi.mmreborn.common.registration.MachineHatchTypeRegistration;
 import es.degrassi.mmreborn.common.util.IOInventory;
 import lombok.Getter;
 import lombok.Setter;
@@ -196,11 +197,11 @@ public class DurabilityHatchEntity extends TileInventory implements MachineCompo
 
   @Override
   public MachineHatchType getHatchType() {
-    return switch (size) {
-      case TINY -> MachineHatchType.DURABILITY_HATCH_TINY;
-      case SMALL -> MachineHatchType.DURABILITY_HATCH_SMALL;
-      case NORMAL -> MachineHatchType.DURABILITY_HATCH_NORMAL;
-      case BIG -> MachineHatchType.DURABILITY_HATCH_BIG;
-    };
+    return (switch (size) {
+      case TINY -> MachineHatchTypeRegistration.DURABILITY_HATCH_TINY;
+      case SMALL -> MachineHatchTypeRegistration.DURABILITY_HATCH_SMALL;
+      case NORMAL -> MachineHatchTypeRegistration.DURABILITY_HATCH_NORMAL;
+      case BIG -> MachineHatchTypeRegistration.DURABILITY_HATCH_BIG;
+    }).get();
   }
 }

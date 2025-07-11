@@ -9,6 +9,7 @@ import es.degrassi.mmreborn.common.machine.MachineHatchType;
 import es.degrassi.mmreborn.common.machine.component.TimeComponent;
 import es.degrassi.mmreborn.common.network.server.SUpdateMachineTexturePacket;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
+import es.degrassi.mmreborn.common.registration.MachineHatchTypeRegistration;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -110,6 +111,6 @@ public class TimeCounterEntity extends ColorableMachineComponentEntity implement
 
   @Override
   public MachineHatchType getHatchType() {
-    return MachineHatchType.TIME_COUNTER;
+    return MachineHatchTypeRegistration.TIME_COUNTER.get();
   }
 }

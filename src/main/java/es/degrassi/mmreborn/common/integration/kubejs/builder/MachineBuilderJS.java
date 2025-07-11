@@ -6,6 +6,7 @@ import com.google.gson.JsonPrimitive;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.kubejs.event.KubeEvent;
+import es.degrassi.mmreborn.ModularMachineryReborn;
 import es.degrassi.mmreborn.api.Structure;
 import es.degrassi.mmreborn.api.codec.DefaultCodecs;
 import es.degrassi.mmreborn.common.crafting.modifier.ModifierReplacement;
@@ -43,7 +44,7 @@ public class MachineBuilderJS {
     this.id = id;
     modifiers = Lists.newArrayList();
     sounds = Maps.newEnumMap(MachineStatus.class);
-    textureMap = Maps.newEnumMap(MachineHatchType.class);
+    textureMap = Maps.newHashMap();
   }
 
   public MachineBuilderJS name(String name) {
@@ -71,12 +72,15 @@ public class MachineBuilderJS {
     return this;
   }
 
-  public MachineBuilderJS texture(MachineHatchType type, boolean shouldColor, @Nullable ResourceLocation baseTexture,
+  public MachineBuilderJS texture(ResourceLocation type, boolean shouldColor, @Nullable ResourceLocation baseTexture,
                                   @Nullable ResourceLocation overlayTexture) {
+    Objects.requireNonNull(type);
+    MachineHatchType t = ModularMachineryReborn.getMachineHatchTypeRegistrar().get(type);
+    Objects.requireNonNull(t);
     var base = Optional.ofNullable(baseTexture);
     var overlay = Optional.ofNullable(overlayTexture);
     var pair = Pair.of(base, overlay);
-    textureMap.put(type, Pair.of(shouldColor, pair));
+    textureMap.put(t, Pair.of(shouldColor, pair));
     return this;
   }
 

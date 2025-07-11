@@ -10,6 +10,7 @@ import es.degrassi.mmreborn.common.machine.MachineHatchType;
 import es.degrassi.mmreborn.common.machine.component.ItemComponent;
 import es.degrassi.mmreborn.common.network.server.SUpdateMachineTexturePacket;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateItemComponentPacket;
+import es.degrassi.mmreborn.common.registration.MachineHatchTypeRegistration;
 import es.degrassi.mmreborn.common.util.IOInventory;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
@@ -178,24 +179,24 @@ public abstract class TileItemBus extends TileInventory implements MachineCompon
   @Override
   public MachineHatchType getHatchType() {
     return switch(ioType) {
-      case INPUT -> switch (size) {
-        case TINY -> MachineHatchType.ITEM_INPUT_BUS_TINY;
-        case SMALL -> MachineHatchType.ITEM_INPUT_BUS_SMALL;
-        case NORMAL -> MachineHatchType.ITEM_INPUT_BUS_NORMAL;
-        case REINFORCED -> MachineHatchType.ITEM_INPUT_BUS_REINFORCED;
-        case BIG -> MachineHatchType.ITEM_INPUT_BUS_BIG;
-        case HUGE -> MachineHatchType.ITEM_INPUT_BUS_HUGE;
-        case LUDICROUS -> MachineHatchType.ITEM_INPUT_BUS_LUDICROUS;
-      };
-      case OUTPUT -> switch(size) {
-        case TINY -> MachineHatchType.ITEM_OUTPUT_BUS_TINY;
-        case SMALL -> MachineHatchType.ITEM_OUTPUT_BUS_SMALL;
-        case NORMAL -> MachineHatchType.ITEM_OUTPUT_BUS_NORMAL;
-        case REINFORCED -> MachineHatchType.ITEM_OUTPUT_BUS_REINFORCED;
-        case BIG -> MachineHatchType.ITEM_OUTPUT_BUS_BIG;
-        case HUGE -> MachineHatchType.ITEM_OUTPUT_BUS_HUGE;
-        case LUDICROUS -> MachineHatchType.ITEM_OUTPUT_BUS_LUDICROUS;
-      };
+      case INPUT -> (switch (size) {
+        case TINY -> MachineHatchTypeRegistration.ITEM_INPUT_BUS_TINY;
+        case SMALL -> MachineHatchTypeRegistration.ITEM_INPUT_BUS_SMALL;
+        case NORMAL -> MachineHatchTypeRegistration.ITEM_INPUT_BUS_NORMAL;
+        case REINFORCED -> MachineHatchTypeRegistration.ITEM_INPUT_BUS_REINFORCED;
+        case BIG -> MachineHatchTypeRegistration.ITEM_INPUT_BUS_BIG;
+        case HUGE -> MachineHatchTypeRegistration.ITEM_INPUT_BUS_HUGE;
+        case LUDICROUS -> MachineHatchTypeRegistration.ITEM_INPUT_BUS_LUDICROUS;
+      }).get();
+      case OUTPUT -> (switch(size) {
+        case TINY -> MachineHatchTypeRegistration.ITEM_OUTPUT_BUS_TINY;
+        case SMALL -> MachineHatchTypeRegistration.ITEM_OUTPUT_BUS_SMALL;
+        case NORMAL -> MachineHatchTypeRegistration.ITEM_OUTPUT_BUS_NORMAL;
+        case REINFORCED -> MachineHatchTypeRegistration.ITEM_OUTPUT_BUS_REINFORCED;
+        case BIG -> MachineHatchTypeRegistration.ITEM_OUTPUT_BUS_BIG;
+        case HUGE -> MachineHatchTypeRegistration.ITEM_OUTPUT_BUS_HUGE;
+        case LUDICROUS -> MachineHatchTypeRegistration.ITEM_OUTPUT_BUS_LUDICROUS;
+      }).get();
       default -> null;
     };
   }

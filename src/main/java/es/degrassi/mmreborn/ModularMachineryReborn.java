@@ -21,6 +21,7 @@ import es.degrassi.mmreborn.common.data.Config;
 import es.degrassi.mmreborn.common.data.MMRConfig;
 import es.degrassi.mmreborn.common.integration.theoneprobe.TOPInfoProvider;
 import es.degrassi.mmreborn.common.machine.DynamicMachine;
+import es.degrassi.mmreborn.common.machine.MachineHatchType;
 import es.degrassi.mmreborn.common.machine.MachineJsonReloadListener;
 import es.degrassi.mmreborn.common.manager.crafting.ProcessorType;
 import es.degrassi.mmreborn.common.network.server.SLootTablesPacket;
@@ -28,6 +29,7 @@ import es.degrassi.mmreborn.common.network.server.SSyncMachinesPacket;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.registration.DataRegistration;
 import es.degrassi.mmreborn.common.registration.EntityRegistration;
+import es.degrassi.mmreborn.common.registration.MachineHatchTypeRegistration;
 import es.degrassi.mmreborn.common.registration.ProcessorTypeRegistration;
 import es.degrassi.mmreborn.common.registration.Registration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
@@ -250,6 +252,9 @@ public class ModularMachineryReborn {
 
   public static Registry<ComponentType> getComponentRegistrar() {
     return ComponentRegistration.COMPONENTS_REGISTRY;
+  }
+  public static Registry<MachineHatchType> getMachineHatchTypeRegistrar() {
+    return MachineHatchTypeRegistration.MachineHatchType_REGISTRY;
   }
 
   public static Registry<DataType<?, ?>> dataRegistrar() {

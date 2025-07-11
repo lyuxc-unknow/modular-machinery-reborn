@@ -11,6 +11,7 @@ import es.degrassi.mmreborn.common.machine.MachineHatchType;
 import es.degrassi.mmreborn.common.machine.component.ExperienceComponent;
 import es.degrassi.mmreborn.common.network.server.SUpdateMachineTexturePacket;
 import es.degrassi.mmreborn.common.network.server.component.SUpdateExperienceComponentPacket;
+import es.degrassi.mmreborn.common.registration.MachineHatchTypeRegistration;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
@@ -210,26 +211,26 @@ public abstract class ExperienceHatchEntity extends ColorableMachineComponentEnt
   @Override
   public MachineHatchType getHatchType() {
     return switch(ioType) {
-      case INPUT -> switch (size) {
-        case TINY -> MachineHatchType.EXPERIENCE_INPUT_HATCH_TINY;
-        case SMALL -> MachineHatchType.EXPERIENCE_INPUT_HATCH_SMALL;
-        case NORMAL -> MachineHatchType.EXPERIENCE_INPUT_HATCH_NORMAL;
-        case REINFORCED -> MachineHatchType.EXPERIENCE_INPUT_HATCH_REINFORCED;
-        case BIG -> MachineHatchType.EXPERIENCE_INPUT_HATCH_BIG;
-        case HUGE -> MachineHatchType.EXPERIENCE_INPUT_HATCH_HUGE;
-        case LUDICROUS -> MachineHatchType.EXPERIENCE_INPUT_HATCH_LUDICROUS;
-        case VACUUM -> MachineHatchType.EXPERIENCE_INPUT_HATCH_VACUUM;
-      };
-      case OUTPUT -> switch(size) {
-        case TINY -> MachineHatchType.EXPERIENCE_OUTPUT_HATCH_TINY;
-        case SMALL -> MachineHatchType.EXPERIENCE_OUTPUT_HATCH_SMALL;
-        case NORMAL -> MachineHatchType.EXPERIENCE_OUTPUT_HATCH_NORMAL;
-        case REINFORCED -> MachineHatchType.EXPERIENCE_OUTPUT_HATCH_REINFORCED;
-        case BIG -> MachineHatchType.EXPERIENCE_OUTPUT_HATCH_BIG;
-        case HUGE -> MachineHatchType.EXPERIENCE_OUTPUT_HATCH_HUGE;
-        case LUDICROUS -> MachineHatchType.EXPERIENCE_OUTPUT_HATCH_LUDICROUS;
-        case VACUUM -> MachineHatchType.EXPERIENCE_OUTPUT_HATCH_VACUUM;
-      };
+      case INPUT -> (switch (size) {
+        case TINY -> MachineHatchTypeRegistration.EXPERIENCE_INPUT_HATCH_TINY;
+        case SMALL -> MachineHatchTypeRegistration.EXPERIENCE_INPUT_HATCH_SMALL;
+        case NORMAL -> MachineHatchTypeRegistration.EXPERIENCE_INPUT_HATCH_NORMAL;
+        case REINFORCED -> MachineHatchTypeRegistration.EXPERIENCE_INPUT_HATCH_REINFORCED;
+        case BIG -> MachineHatchTypeRegistration.EXPERIENCE_INPUT_HATCH_BIG;
+        case HUGE -> MachineHatchTypeRegistration.EXPERIENCE_INPUT_HATCH_HUGE;
+        case LUDICROUS -> MachineHatchTypeRegistration.EXPERIENCE_INPUT_HATCH_LUDICROUS;
+        case VACUUM -> MachineHatchTypeRegistration.EXPERIENCE_INPUT_HATCH_VACUUM;
+      }).get();
+      case OUTPUT -> (switch(size) {
+        case TINY -> MachineHatchTypeRegistration.EXPERIENCE_OUTPUT_HATCH_TINY;
+        case SMALL -> MachineHatchTypeRegistration.EXPERIENCE_OUTPUT_HATCH_SMALL;
+        case NORMAL -> MachineHatchTypeRegistration.EXPERIENCE_OUTPUT_HATCH_NORMAL;
+        case REINFORCED -> MachineHatchTypeRegistration.EXPERIENCE_OUTPUT_HATCH_REINFORCED;
+        case BIG -> MachineHatchTypeRegistration.EXPERIENCE_OUTPUT_HATCH_BIG;
+        case HUGE -> MachineHatchTypeRegistration.EXPERIENCE_OUTPUT_HATCH_HUGE;
+        case LUDICROUS -> MachineHatchTypeRegistration.EXPERIENCE_OUTPUT_HATCH_LUDICROUS;
+        case VACUUM -> MachineHatchTypeRegistration.EXPERIENCE_OUTPUT_HATCH_VACUUM;
+      }).get();
       default -> null;
     };
   }
