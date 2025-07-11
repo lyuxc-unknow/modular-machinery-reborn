@@ -180,9 +180,7 @@ public class ControllerScreen extends BasePopupScreen<ControllerContainer> {
         offsetY += 7;
       }
       guiGraphics.pose().popPose();
-      for (Renderable renderable : this.renderables) {
-        renderable.render(guiGraphics, mouseX, mouseY, partialTicks);
-      }
+      renderTooltip(guiGraphics, mouseX, mouseY);
       return;
     }
 
@@ -195,7 +193,6 @@ public class ControllerScreen extends BasePopupScreen<ControllerContainer> {
       offsetY += 7;
     }
     guiGraphics.pose().popPose();
-
     renderTooltip(guiGraphics, mouseX, mouseY);
   }
 

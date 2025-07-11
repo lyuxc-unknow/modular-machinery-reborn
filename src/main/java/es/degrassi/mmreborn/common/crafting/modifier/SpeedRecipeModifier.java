@@ -32,7 +32,10 @@ public class SpeedRecipeModifier extends RecipeModifier {
 
   @Override
   public Component getDefaultTooltip() {
-    if (requirementType == RequirementTypeRegistration.SPEED.get() || requirementType == RequirementTypeRegistration.LOOT_TABLE.get())
+    if (requirementType == RequirementTypeRegistration.SPEED.get()
+        || requirementType == RequirementTypeRegistration.LOOT_TABLE.get()
+        || requirementType == RequirementTypeRegistration.DURABILITY.get()
+    )
       return Component.translatable("mmr.recipe.modifier." +  getTargetValue() + "." + getOperation(), modifier);
     return Component.translatable("mmr.recipe.modifier." + getTargetValue() + "." + getOperation(), modifier,
         getMode().getSerializedName(), chance);
