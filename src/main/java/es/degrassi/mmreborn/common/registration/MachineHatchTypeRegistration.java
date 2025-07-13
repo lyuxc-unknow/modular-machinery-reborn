@@ -20,7 +20,6 @@ public class MachineHatchTypeRegistration {
   });
 
   // TODO: update wiki to this new thing
-  // TODO: update examples to this new thing
 
   public static final Supplier<MachineHatchType> BIOME_READER =
       MACHINE_COMPONENTS.register(rootLC("BIOME_READER".toLowerCase(Locale.ENGLISH)),

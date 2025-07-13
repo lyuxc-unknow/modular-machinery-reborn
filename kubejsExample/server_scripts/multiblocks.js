@@ -2,7 +2,7 @@ MMREvents.machines((event) => {
  event.create("mmr:testing")
      .color('#FF2291FF')
      .name('Testing machineJS')
-     .texture("biome_reader", false, "mekanism:block/overlay/chemicals_overlay", null)
+     .texture("modular_machinery_reborn:biome_reader", false, "mekanism:block/overlay/chemicals_overlay", null)
      .structure(
              MMRStructureBuilder.create()
                  .pattern(

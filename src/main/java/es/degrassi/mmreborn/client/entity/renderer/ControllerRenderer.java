@@ -16,8 +16,10 @@ import java.util.Map;
 
 public class ControllerRenderer implements BlockEntityRenderer<MachineControllerEntity> {
   public static final Map<BlockPos, StructureRenderer> renderers = Maps.newHashMap();
-
-  public ControllerRenderer(BlockEntityRendererProvider.Context context) {}
+  private final BlockEntityRendererProvider.Context context;
+  public ControllerRenderer(BlockEntityRendererProvider.Context context) {
+    this.context = context;
+  }
 
   @Override
   public void render(MachineControllerEntity machineControllerEntity, float v, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int i1) {
@@ -27,7 +29,8 @@ public class ControllerRenderer implements BlockEntityRenderer<MachineController
       Direction machineFacing = machineControllerEntity.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
       StructureRenderer renderer = renderers.get(machineControllerEntity.getBlockPos());
       if (renderer.shouldRender()) {
-        renderer.render(poseStack, multiBufferSource, machineFacing, machineControllerEntity.getLevel(), machineControllerEntity.getBlockPos());
+        renderer.render(context, poseStack, multiBufferSource, machineFacing, machineControllerEntity.getLevel(),
+            machineControllerEntity.getBlockPos());
       } else {
         renderers.remove(machineControllerEntity.getBlockPos());
       }

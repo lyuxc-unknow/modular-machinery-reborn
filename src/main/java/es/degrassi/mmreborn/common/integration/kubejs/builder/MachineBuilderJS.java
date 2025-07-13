@@ -74,9 +74,9 @@ public class MachineBuilderJS {
 
   public MachineBuilderJS texture(ResourceLocation type, boolean shouldColor, @Nullable ResourceLocation baseTexture,
                                   @Nullable ResourceLocation overlayTexture) {
-    Objects.requireNonNull(type);
+    Objects.requireNonNull(type, "HatchType cant be null");
     MachineHatchType t = ModularMachineryReborn.getMachineHatchTypeRegistrar().get(type);
-    Objects.requireNonNull(t);
+    Objects.requireNonNull(t, String.format("Invalid HatchType, given: %s", type));
     var base = Optional.ofNullable(baseTexture);
     var overlay = Optional.ofNullable(overlayTexture);
     var pair = Pair.of(base, overlay);
