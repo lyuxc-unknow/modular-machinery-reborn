@@ -322,7 +322,6 @@ unifiedPublishingWithMMRBot {
       curseforge {
         token = CURSE_API_KEY
         id = "1083840"
-        gameVersions.addAll "Java 21"
         relations {
           depends "experiencelib"
           optional "kubejs"
