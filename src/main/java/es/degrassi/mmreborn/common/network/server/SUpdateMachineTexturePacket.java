@@ -41,7 +41,7 @@ public record SUpdateMachineTexturePacket(ResourceLocation texture, boolean base
             entity.setMachineOverlayTexture(packet.texture);
           }
           be.requestModelDataUpdate();
-          //context.player().level().setBlockAndUpdate(be.getBlockPos(), be.getBlockState());
+          context.player().level().setBlockAndUpdate(be.getBlockPos(), be.getBlockState());
           be.setChanged();
         }
       });
