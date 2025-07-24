@@ -23,6 +23,7 @@ import es.degrassi.mmreborn.common.machine.MachineComponent;
 import es.degrassi.mmreborn.common.machine.component.FunctionComponent;
 import es.degrassi.mmreborn.common.machine.component.ItemComponent;
 import es.degrassi.mmreborn.common.machine.component.ParallelComponent;
+import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
 import es.degrassi.mmreborn.common.util.Utils;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
@@ -192,7 +193,11 @@ public class ComponentManager implements INBTSerializable<CompoundTag>, ISyncabl
     if (foundComponentsValues.isEmpty()) updateComponents(true);
     AtomicReference<C> merged = new AtomicReference<>(null);
     Optional.ofNullable(foundComponentsValues.get(requirement.getComponentType()))
-        .map(m -> m.get(requirement.getMode()))
+        .map(m -> {
+          if (requirement.getType().equals(RequirementTypeRegistration.DURABILITY.get()))
+            return m.get(IOType.INPUT);
+          return m.get(requirement.getMode());
+        })
         .stream()
         .flatMap(List::stream)
         .map(m -> (C) m)

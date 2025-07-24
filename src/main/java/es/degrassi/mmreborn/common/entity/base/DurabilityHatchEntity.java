@@ -34,7 +34,6 @@ import javax.annotation.Nullable;
 public class DurabilityHatchEntity extends TileInventory implements MachineComponentEntity<DurabilityComponent>, ControllerAccessible, TextureableMachineEntity {
   private BlockPos controllerPos;
   private ItemDurabilityHatchSize size;
-  private final IOType ioType = IOType.INPUT;
 
   @Getter
   @Setter
@@ -48,7 +47,7 @@ public class DurabilityHatchEntity extends TileInventory implements MachineCompo
   private static final ResourceLocation defaultBaseTexture = ModularMachineryReborn.rl("block/casing_plain");
 
   private DurabilityHatchEntity(BlockEntityType<?> entityType, BlockPos pos, BlockState blockState,
-                          ItemDurabilityHatchSize size, IOType ioType) {
+                          ItemDurabilityHatchSize size) {
     super(entityType, pos, blockState, size.getSlotCount());
     this.size = size;
     this.defaultOverlayTexture = ModularMachineryReborn.rl("block/overlay_durabilityhatch_" + size.getSerializedName());
@@ -73,10 +72,10 @@ public class DurabilityHatchEntity extends TileInventory implements MachineCompo
   }
 
   public DurabilityHatchEntity(BlockPos pos, BlockState blockState, ItemDurabilityHatchSize size) {
-    this(EntityRegistration.ITEM_DURABILITY_HATCH.get(), pos, blockState, size, IOType.INPUT);
+    this(EntityRegistration.ITEM_DURABILITY_HATCH.get(), pos, blockState, size);
   }
   public DurabilityHatchEntity(BlockPos pos, BlockState blockState) {
-    this(EntityRegistration.ITEM_DURABILITY_HATCH.get(), pos, blockState, ItemDurabilityHatchSize.TINY, IOType.INPUT);
+    this(EntityRegistration.ITEM_DURABILITY_HATCH.get(), pos, blockState, ItemDurabilityHatchSize.TINY);
   }
 
   @Override
@@ -91,7 +90,7 @@ public class DurabilityHatchEntity extends TileInventory implements MachineCompo
   @Nullable
   @Override
   public DurabilityComponent provideComponent() {
-    return new DurabilityComponent(this.getInventory(), ioType);
+    return new DurabilityComponent(this.getInventory());
   }
 
   @Override

@@ -252,32 +252,37 @@ public class IOInventory implements IItemHandlerModifiable, Container, ISyncable
   }
 
   public void repairItem(ItemStack stack, int amount) {
-    AtomicInteger toRepair = new AtomicInteger(amount);
-    this.inputs.stream().filter(component -> isSameItem(component.getItemStack(), stack) && component.getItemStack().isDamageableItem()).forEach(component -> {
-      int maxRepair = Math.min(component.getItemStack().getDamageValue(), toRepair.get());
-      toRepair.addAndGet(-maxRepair);
-      component.getItemStack().setDamageValue(component.getItemStack().getDamageValue() - maxRepair);
-    });
-    setChanged();
+    removeDurability(stack, -amount);
+    /*AtomicInteger toRepair = new AtomicInteger(amount);
+    this.inputs.stream()
+        .filter(component -> isSameItem(component.getItemStack(), stack) && component.getItemStack().isDamageableItem())
+        .forEach(component -> {
+          int maxRepair = Math.min(component.getItemStack().getDamageValue(), toRepair.get());
+          toRepair.addAndGet(-maxRepair);
+          component.getItemStack().setDamageValue(component.getItemStack().getDamageValue() - maxRepair);
+        });
+    setChanged();*/
   }
 
   public void removeDurability(ItemStack input, int amount) {
     AtomicInteger toRemove = new AtomicInteger(amount);
-    this.inputs.stream().filter(component -> isSameItem(component.getItemStack(), input) && component.getItemStack().isDamageableItem()).forEach(component -> {
-      int maxRemove = Math.min(component.getItemStack().getMaxDamage() - component.getItemStack().getDamageValue(), toRemove.get());
-      ItemStack stack = component.getItemStack();
-      maxRemove = stack.getItem().damageItem(stack, maxRemove, null, s -> {});
-      if (maxRemove > 0) {
-        maxRemove = EnchantmentHelper.processDurabilityChange((ServerLevel)getLevel(), stack, maxRemove);
-        if (maxRemove <= 0) {
-          return;
-        }
-      }
-      toRemove.addAndGet(-maxRemove);
-      stack.setDamageValue(stack.getDamageValue() + maxRemove);
-      if(stack.getDamageValue() >= stack.getMaxDamage())
-        stack.shrink(1);
-    });
+    this.inputs.stream()
+        .filter(component -> isSameItem(component.getItemStack(), input) && component.getItemStack().isDamageableItem())
+        .forEach(component -> {
+          int maxRemove = Math.min(component.getItemStack().getMaxDamage() - component.getItemStack().getDamageValue(), toRemove.get());
+          ItemStack stack = component.getItemStack();
+          maxRemove = stack.getItem().damageItem(stack, maxRemove, null, s -> {});
+          if (maxRemove > 0) {
+            maxRemove = EnchantmentHelper.processDurabilityChange((ServerLevel)getLevel(), stack, maxRemove);
+            if (maxRemove <= 0) {
+              return;
+            }
+          }
+          toRemove.addAndGet(-maxRemove);
+          stack.setDamageValue(stack.getDamageValue() + maxRemove);
+          if(stack.getDamageValue() >= stack.getMaxDamage())
+            stack.shrink(1);
+        });
     setChanged();
   }
 

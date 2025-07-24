@@ -1,5 +1,6 @@
 package es.degrassi.mmreborn.common.crafting.requirement;
 
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -14,6 +15,7 @@ import es.degrassi.mmreborn.common.machine.IOType;
 import es.degrassi.mmreborn.common.machine.component.DurabilityComponent;
 import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.registration.RequirementTypeRegistration;
+import es.degrassi.mmreborn.common.util.MMRLogger;
 import lombok.Getter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -22,6 +24,7 @@ import net.neoforged.neoforge.common.crafting.CraftingHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.function.Function;
 
 @Getter
 @SuppressWarnings("UnstableApiUsage")
@@ -29,7 +32,7 @@ public class RequirementDurability implements IRequirement<DurabilityComponent> 
   public static final NamedCodec<RequirementDurability> CODEC = NamedCodec.record(instance -> instance.group(
           NamedCodec.of(CraftingHelper.makeIngredientCodec(true)).fieldOf("ingredient").aliases("item").forGetter(req -> req.ingredient),
           NamedCodec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("amount", 1).forGetter(RequirementDurability::getAmount),
-          NamedCodec.enumCodec(IOType.class).fieldOf("mode").forGetter(IRequirement::getMode),
+          IOType.CODEC.fieldOf("mode").forGetter(IRequirement::getMode),
           PositionedRequirement.POSITION_CODEC.optionalFieldOf("position", new PositionedRequirement(0, 0)).forGetter(IRequirement::getPosition)
       ).apply(instance, (item, amount, mode, position) -> new RequirementDurability(mode, item, amount, position)),
       "RequirementDurability");
@@ -56,14 +59,22 @@ public class RequirementDurability implements IRequirement<DurabilityComponent> 
     return ComponentRegistration.COMPONENT_DURABILITY.get();
   }
 
-
   @Override
   public boolean test(DurabilityComponent component, ICraftingContext context) {
-    int amount = (int)context.getIntegerModifiedValue(this.amount, this);
+    int a = (int)context.getIntegerModifiedValue(this.amount, this);
     if(getMode().isInput())
-      return Arrays.stream(this.ingredient.getItems()).mapToInt(item -> component.getContainerProvider().getDurabilityAmount(item)).sum() >= amount;
+      return processWithLog(amount -> Arrays.stream(this.ingredient.getItems()).mapToInt(item -> component.getContainerProvider().getDurabilityAmount(item)).sum() >= amount, a);
     else
-      return Arrays.stream(this.ingredient.getItems()).mapToInt(item -> component.getContainerProvider().getSpaceForDurability(item)).sum() >= amount;
+      return processWithLog(amount -> Arrays.stream(this.ingredient.getItems()).mapToInt(item -> component.getContainerProvider().getSpaceForDurability(item)).sum() >= amount, 1);
+  }
+
+  private boolean processWithLog(Function<Integer, Boolean> function, int amount) {
+    boolean processed = function.apply(amount);
+    MMRLogger.INSTANCE.warn("Processed DurabilityRequirement: {} Test for mode {} with result {}",
+        new GsonBuilder().setPrettyPrinting().create().toJson(this.asJson()),
+        getMode(),
+        processed);
+    return processed;
   }
 
   @Override

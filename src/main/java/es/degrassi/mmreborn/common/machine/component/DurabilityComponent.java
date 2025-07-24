@@ -7,16 +7,12 @@ import es.degrassi.mmreborn.common.registration.ComponentRegistration;
 import es.degrassi.mmreborn.common.util.IOInventory;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class DurabilityComponent extends MachineComponent<IOInventory> {
   private final IOInventory handler;
 
-  public DurabilityComponent(IOInventory handler, IOType ioType) {
-    super(ioType);
+  public DurabilityComponent(IOInventory handler) {
+    super(IOType.INPUT);
     this.handler = handler;
   }
 
@@ -41,9 +37,6 @@ public class DurabilityComponent extends MachineComponent<IOInventory> {
   @SuppressWarnings("unchecked")
   public <C extends MachineComponent<?>> C merge(C c) {
     DurabilityComponent comp = (DurabilityComponent) c;
-    return (C) new DurabilityComponent(
-        IOInventory.mergeBuild(handler, comp.handler),
-        getIOType()
-    );
+    return (C) new DurabilityComponent(IOInventory.mergeBuild(handler, comp.handler));
   }
 }
