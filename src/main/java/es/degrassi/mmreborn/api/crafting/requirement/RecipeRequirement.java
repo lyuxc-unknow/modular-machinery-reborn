@@ -60,7 +60,7 @@ public class RecipeRequirement<C extends MachineComponent<?>, R extends IRequire
 
   public CraftingResult test(ComponentManager manager, ICraftingContext context) {
     C component = findComponent(manager, context);
-    if (component == null) return CraftingResult.error(Component.empty());
+    if (component == null) return CraftingResult.error(requirement.getMissingComponentErrorMessage(requirement.getMode()));
     return this.requirement.test(component, context) ? CraftingResult.success() : CraftingResult.error(Component.empty());
   }
 

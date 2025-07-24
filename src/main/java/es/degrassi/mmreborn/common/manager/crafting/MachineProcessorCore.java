@@ -84,6 +84,8 @@ public class MachineProcessorCore implements ISyncableStuff {
             .filter(holder -> holder.value() instanceof MachineRecipe)
             .map(holder -> (RecipeHolder<MachineRecipe>) holder)
             .ifPresent(this::setRecipe);
+        //Remove all requirements that were already processed before the machine was unloaded.
+        this.requirementList.getProcessRequirements().entrySet().removeIf(entry -> entry.getKey() < this.recipeProgressTime / this.recipeTotalTime);
         this.futureRecipeID = null;
         this.tile.getComponentManager().updateComponents(true);
       }
@@ -119,12 +121,10 @@ public class MachineProcessorCore implements ISyncableStuff {
       if (this.phase == Phase.PROCESS_TICK)
         this.processTickRequirements();
 
-      if (this.recipeProgressTime >= this.recipeTotalTime) {
+      if (this.currentRecipe != null && this.error == null && this.recipeProgressTime >= this.recipeTotalTime - this.context.getModifiedSpeed()) {
         if (this.isLastRecipeTick) {
           this.isLastRecipeTick = false;
-          this.currentRecipe = null;
-          this.recipeProgressTime = 0.0f;
-          this.context = null;
+          this.reset();
           this.recipeFinder.findRecipe(true).ifPresent(this::setRecipe);
         } else
           this.isLastRecipeTick = true;
@@ -243,6 +243,7 @@ public class MachineProcessorCore implements ISyncableStuff {
     this.requirementList = null;
     this.context = null;
     this.phase = Phase.CONDITIONS;
+    this.currentProcessRequirements.clear();
   }
 
   public void setSearchImmediately() {

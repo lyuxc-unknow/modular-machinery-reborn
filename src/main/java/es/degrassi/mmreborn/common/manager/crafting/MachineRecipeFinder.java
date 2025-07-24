@@ -68,7 +68,8 @@ public class MachineRecipeFinder {
         RecipeChecker<MachineRecipe> checker = iterator.next();
         if (!this.componentChanged && checker.isInventoryRequirementsOnly() && !immediately)
           continue;
-        if (checker.check(this.tile, this.mutableCraftingContext.setRecipe(checker.getRecipe().value(), checker.getRecipe().id()), this.componentChanged || immediately)) {
+        if (checker.check(this.tile, this.mutableCraftingContext.setRecipe(checker.getRecipe().value(),
+            checker.getRecipe().id()), immediately || this.componentChanged)) {
           setComponentChanged(false);
           return Optional.of(checker.getRecipe());
         }

@@ -38,7 +38,7 @@ public class RecipeChecker<T extends MachineRecipe> {
       this.checkedInventoryRequirements.clear();
       this.inventoryRequirementsOk = false;
 
-      for (var requirement : this.inventoryRequirements) {
+      for (RecipeRequirement<?, ?> requirement : this.inventoryRequirements) {
         if (this.checkedInventoryRequirements.contains(requirement))
           continue;
         this.checkedInventoryRequirements.add(requirement);
